@@ -23,7 +23,7 @@
 
 # parse.py
 
-```Python
+```python
 user_columns = (
     "id",
     "gender",
@@ -54,7 +54,7 @@ def import_data(data_path=DATA_FILE):
 
 # analyze.py
 
-```Python
+```python
 def sort_stores_by_score(dataframes, n=20, min_reviews=30):
     """
     Req. 1-2-1 각 음식점의 평균 평점을 계산하여 높은 평점의 음식점 순으로 `n`개의 음식점을 정렬하여 리턴합니다
