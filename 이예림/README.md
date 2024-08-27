@@ -119,7 +119,7 @@ def get_most_active_users(dataframes, n=20):
 
 ✅ Matplotlib, Folium 라이브러리를 통한 시각화 
 
-⬜ EDA 
+✅ Sparse 행렬 데이터 타입을 활용한 유저-아이템 행렬 생성 
 
 
 - 주제: 파이썬을 사용하여 데이터를 가공 및 분석
@@ -132,7 +132,7 @@ def get_most_active_users(dataframes, n=20):
 
 <details><summary><h6>Code</h6></summary>
 
-# 파일명
+# visualize.py
 
 ```python
 def show_store_review_distribution_graph(dataframes):
@@ -263,6 +263,76 @@ def show_stores_distribution_graph(dataframes):
     store_map.save("gumi_stores_distribution_map.html")
     print("지도 파일이 'gumi_stores_distribution_map.html'로 저장되었습니다.")
 ```
+
+</details>
+
+<details><summary><h6>Image</h6></summary>
+
+#### 전체 음식점 리뷰 개수 분포 
+
+![전체 음식점 리뷰 개수 분포](images/image-1.png)
+
+
+#### 각 음식점 평균 평점 분포
+
+![각 음식점 평균 평점 분포](images/image-2.png)
+
+
+#### 유저 리뷰 개수 분포 
+
+![유저 리뷰 개수 분포](images/image-3.png)
+
+
+#### 유저 성별/나이대 분포
+
+![유저 성별/나이대 분포](images/image-4.png)
+
+
+#### 지도에 음식점 데이터 표시
+
+![음식점 지도](images/image-5.png)
+
+</details>
+
+
+### Sparse 행렬 데이터 타입을 활용한 데이터 저장 
+
+<details><summary><h6>Code</h6></summary>
+
+# matrix.py
+
+```python
+def make_user_store_matrix(dataframes):
+    reviews = dataframes["reviews"]
+
+    user_store_review_grouped = reviews.groupby(['user', 'store'])['score'].mean()
+    sparse_matrix = user_store_review_grouped.unstack()
+    sparse_df = sparse_matrix.astype(pd.SparseDtype("float", np.nan))
+
+    return sparse_df
+
+
+def make_user_store_category_matrix(dataframes):
+    store = dataframes["stores"]
+    reviews = dataframes["reviews"]
+
+    review_store = pd.merge(
+        dataframes["reviews"], dataframes["stores"], left_on="store", right_on="id"
+    )
+
+    user_store_review_grouped = review_store.groupby(['user', 'category'])['score'].mean()
+    sparse_matrix = user_store_review_grouped.unstack()
+    sparse_df = sparse_matrix.astype(pd.SparseDtype("float", np.nan))
+
+    return sparse_df
+```
+
+</details>
+<details><summary><h6>Image</h6></summary>
+
+#### 유저-상점, 유저-카테고리 희소행렬
+
+![희소행렬](images/image.png)
 
 </details>
 </details>
