@@ -1,7 +1,11 @@
-### 08.26
-타입 스크립트 강의
-<br>
+<p>
+<details>
+<summary> <h5>8월 26일</h5> </summary>
 
+# 타입 스크립트 학습
+
+## 기초 1
+```javascript
 // 배열
 let numArr:number[] = [1, 2, 3]
 
@@ -32,7 +36,6 @@ const users: [string,number][]= [
   // [4, "빌런"] // 여기에 오류가 나기 때문에 튜플로 가이드 지정
 ];
 
-<br>
 // object
 let user: {
   id?: number;  // ?는 있어도 되고 없어도 되고, 있으면 넘버형으로 해야한다!
@@ -65,8 +68,10 @@ let config: {
 
 // config.apikey = "hacked" //readonly는 값 못바꾸게 함
 
-<br>
+```
 
+## 기초 2
+```javascript
 // 타입 별칭
 let user: {
   id: number;
@@ -172,4 +177,6 @@ const user3 = {
 }
 
 console.log(user1, user2, user3)
-<br>
+```
+</details>
+</p>
