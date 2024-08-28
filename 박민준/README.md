@@ -64,3 +64,60 @@ def get_most_active_users(dataframes, n=20):
 ```
 </details>
 </p>
+
+<p>
+<details>
+<summary> <h5>8월 27일</h5> </summary>
+
+# SUB PJT 1
+
+## Req. 1-3-1 전체 음식점의 리뷰 개수 분포를 그래프로 나타냅니다. 
+
+```python
+def show_store_review_distribution_graph(dataframes, n=100):
+    # store와 reviews를 merge 함
+    stores_reviews = pd.merge(
+        dataframes["stores"], dataframes["reviews"], left_on="id", right_on="store"
+    )
+
+    # 리뷰 개수를 review_counts 필드로 재정의
+    review_counts = stores_reviews.groupby("store_name").size().reset_index(name="review_counts")
+
+    # 너무 많은 데이터로 인해 상위 100개만 노출
+    top_100_reviews = review_counts.sort_values(by=["review_counts"], ascending=False).head(n)
+
+    chart = sns.barplot(x="store_name", y="review_counts", data=top_100_reviews)
+    chart.set_xticklabels(chart.get_xticklabels(), rotation=45)
+    plt.title("음식점의 리뷰 개수 분포")
+    plt.show()
+```
+
+## Req. 1-3-2 각 음식점의 평균 평점을 그래프로 나타냅니다.
+
+```python
+def show_store_average_ratings_graph(dataframes, n=100, min_reviews=30):
+    # store와 reviews를 merge 함
+    stores_reviews = pd.merge(
+        dataframes["stores"], dataframes["reviews"], left_on="id", right_on="store"
+    )
+
+    # 리뷰 개수 구하기
+    review_counts = stores_reviews.groupby("store").size()
+
+    # min_reviews 이상인 음식점만 필터링
+    filtered_stores_reviews = stores_reviews[stores_reviews["store"].isin(review_counts[review_counts >= min_reviews].index)]
+
+    # 가게와 가게이름으로 그룹화하며 score 필드를 평균 평점으로 정의
+    scores_group = filtered_stores_reviews.groupby(["store", "store_name"])["score"].mean().reset_index(name="score")
+
+    # 데이터가 너무 많아 상위 100개만 노출
+    top_100_scores_group = scores_group.sort_values(by=["score"], ascending=False).head(n)
+
+    chart = sns.barplot(x="store_name", y="score", data=top_100_scores_group)
+    chart.set_xticklabels(chart.get_xticklabels(), rotation=45)
+    plt.title("음식점의 리뷰 개수 분포")
+    plt.show()
+```
+
+</details>
+</p>

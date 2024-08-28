@@ -19,6 +19,8 @@
             - 등장한지 오래된 간단한 모델
         - 얕은 데이터 구조에서 유리
 
+
+### Pandas를 통한 데이터 전처리, 통계 분석 실습 
 <details><summary><h6>Code</h6></summary>
 
 # parse.py
@@ -111,17 +113,228 @@ def get_most_active_users(dataframes, n=20):
 
 <p>
 <details>
-<summary> <h5>8월 26일</h5> </summary>
+<summary> <h5>8월 27일</h5> </summary>
 
-# 주제
+✅ 데이터 분석 코드(Pandas, 26일 진행) 리팩토링 
 
-## 타이틀1
+✅ Matplotlib, Folium 라이브러리를 통한 시각화 
 
-타이틀 1의 내용
+✅ Sparse 행렬 데이터 타입을 활용한 유저-아이템 행렬 생성 
 
-## 타이틀2
 
-타이틀 2의 내용
+- 주제: 파이썬을 사용하여 데이터를 가공 및 분석
+    - Pandas를 통한 정제, 통계적 분석
+    - Matplotlib, Folium 라이브러리를 통한 시각화
+    - EDA(Exploratory Data Analysis; EDA) - 탐색적 데이터 분석
+        - 데이터를 이해하는 단계
+
+### Matplotlib, Folium 라이브러리를 통한 시각화 실습
+
+<details><summary><h6>Code</h6></summary>
+
+# visualize.py
+
+```python
+def show_store_review_distribution_graph(dataframes):
+    """
+    Req. 1-3-1 전체 음식점의 리뷰 개수 분포를 그래프로 나타냅니다. 
+    """
+    # 전체 음식점 데이터 가져오기
+    most_reviewed_stores = get_most_reviewed_stores(dataframes, dataframes["stores"].shape[0])
+    
+    # 리뷰 개수의 히스토그램 생성
+    plt.figure(figsize=(10, 6))
+    plt.hist(most_reviewed_stores['review_count'], bins=100, color='skyblue', edgecolor='black')
+    
+    # 가로 너비를 최대 리뷰 개수에 맞추기
+    # 101이 있어서 그냥 30으로 설정
+    max_review_count = most_reviewed_stores['review_count'].max()
+    print(max_review_count)
+    plt.xlim(0, 30)  # x축 범위 설정
+
+    plt.title('음식점 리뷰 개수 분포')
+    plt.xlabel('리뷰 개수')
+    plt.ylabel('음식점 수')
+    plt.grid(axis='y', alpha=0.75)
+    
+    # 그래프 보여주기
+    plt.show()
+
+
+def show_store_average_ratings_graph(dataframes):
+    """
+    Req. 1-3-2 각 음식점의 평균 평점을 그래프로 나타냅니다.
+    """
+    df = sort_stores_by_score(dataframes, dataframes["stores"].shape[0], 0)
+    # 리뷰 개수의 히스토그램 생성
+    plt.figure(figsize=(10, 6))
+    plt.hist(df['score'], bins=30, color='skyblue', edgecolor='black')
+    
+    # 가로 너비를 최대 리뷰 개수에 맞추기
+    # 101이 있어서 그냥 30으로 설정
+    max_score = df['score'].max()
+    min_score = df['score'].min()
+    plt.xlim(min_score, max_score)  # x축 범위 설정
+
+    plt.title('음식점 평균 평점 분포')
+    plt.xlabel('평균 평점')
+    plt.ylabel('음식점 수')
+    plt.grid(axis='y', alpha=0.75)
+    
+    # 그래프 보여주기
+    plt.show()
+
+
+def show_user_review_distribution_graph(dataframes):
+    """
+    Req. 1-3-3 전체 유저의 리뷰 개수 분포를 그래프로 나타냅니다.
+    """
+    df = get_most_active_users(dataframes, dataframes["users"].shape[0])
+    
+    plt.figure(figsize=(10, 6))
+    plt.hist(df['review_count'], bins=100, color='lightgreen', edgecolor='black')
+
+    # 가로 너비를 최대 리뷰 개수에 맞추기
+    # 최대가 너무 커서 100에 맞춤
+    max_review_count = df['review_count'].max()
+    plt.xlim(0, 100)  # x축 범위 설정
+    
+    plt.title('유저 리뷰 개수 분포')
+    plt.xlabel('리뷰 개수')
+    plt.ylabel('유저 수')
+    plt.grid(axis='y', alpha=0.75)
+    
+    plt.show()
+
+
+
+def show_user_age_gender_distribution_graph(dataframes):
+    """
+    Req. 1-3-4 전체 유저의 성별/나이대 분포를 그래프로 나타냅니다.
+    """
+    df = dataframes["users"]
+    # 나이를 10년 단위로 나누기
+    # age 컬럼을 정수형으로 변환
+    df['age'] = df['age'].astype(int)
+    df['age_group'] = (2024 - df['age']) // 10 * 10  # 현재 연도에 맞춰 나이대 계산
+
+    # 성별과 나이대별로 그룹화하여 각 그룹의 수를 계산
+    age_gender_distribution = df.groupby(['gender', 'age_group']).size().reset_index(name='count')
+
+    # 그래프로 표현
+    plt.figure(figsize=(12, 6))
+    chart = sns.barplot(x="age_group", y="count", hue="gender", data=age_gender_distribution)
+    chart.set_xticklabels(chart.get_xticklabels(), rotation=45)
+    plt.title("성별 및 나이대 분포")
+    plt.xlabel("나이대")
+    plt.ylabel("유저 수")
+    plt.legend(title='성별')
+    plt.show()
+
+
+def show_stores_distribution_graph(dataframes):
+    """
+    Req. 1-3-5 각 음식점의 위치 분포를 지도에 나타냅니다.
+    """
+    df = dataframes['stores']
+    # 'address' 컬럼의 NaN 값을 처리
+    df = df[df['address'].notna()]
+    # 구미 지역의 음식점만 필터링
+    gumi_stores = df[df['address'].str.contains('구미') & df['address'].str.contains('경상북도')]
+
+    # 중심 좌표 설정 (구미의 평균 좌표)
+    map_center = [36.0976, 128.3442]  # 구미의 중심 좌표
+    store_map = folium.Map(location=map_center, zoom_start=12)
+
+    # 각 음식점의 위치에 마커 추가
+    for idx, row in gumi_stores.iterrows():
+        if pd.notna(row['category']) and row['category']:
+            popup_text = f"{row['store_name']} ({row['category']})"
+        else:
+            popup_text = row['store_name']
+        
+        folium.Marker(
+            location=[row['latitude'], row['longitude']],
+            popup=popup_text,
+            icon=folium.Icon(color='blue')
+        ).add_to(store_map)
+
+    # 지도를 HTML 파일로 저장
+    store_map.save("gumi_stores_distribution_map.html")
+    print("지도 파일이 'gumi_stores_distribution_map.html'로 저장되었습니다.")
+```
+
+</details>
+
+<details><summary><h6>Image</h6></summary>
+
+#### 전체 음식점 리뷰 개수 분포 
+
+![전체 음식점 리뷰 개수 분포](images/image-1.png)
+
+
+#### 각 음식점 평균 평점 분포
+
+![각 음식점 평균 평점 분포](images/image-2.png)
+
+
+#### 유저 리뷰 개수 분포 
+
+![유저 리뷰 개수 분포](images/image-3.png)
+
+
+#### 유저 성별/나이대 분포
+
+![유저 성별/나이대 분포](images/image-4.png)
+
+
+#### 지도에 음식점 데이터 표시
+
+![음식점 지도](images/image-5.png)
+
+</details>
+
+
+### Sparse 행렬 데이터 타입을 활용한 데이터 저장 
+
+<details><summary><h6>Code</h6></summary>
+
+# matrix.py
+
+```python
+def make_user_store_matrix(dataframes):
+    reviews = dataframes["reviews"]
+
+    user_store_review_grouped = reviews.groupby(['user', 'store'])['score'].mean()
+    sparse_matrix = user_store_review_grouped.unstack()
+    sparse_df = sparse_matrix.astype(pd.SparseDtype("float", np.nan))
+
+    return sparse_df
+
+
+def make_user_store_category_matrix(dataframes):
+    store = dataframes["stores"]
+    reviews = dataframes["reviews"]
+
+    review_store = pd.merge(
+        dataframes["reviews"], dataframes["stores"], left_on="store", right_on="id"
+    )
+
+    user_store_review_grouped = review_store.groupby(['user', 'category'])['score'].mean()
+    sparse_matrix = user_store_review_grouped.unstack()
+    sparse_df = sparse_matrix.astype(pd.SparseDtype("float", np.nan))
+
+    return sparse_df
+```
+
+</details>
+<details><summary><h6>Image</h6></summary>
+
+#### 유저-상점, 유저-카테고리 희소행렬
+
+![희소행렬](images/image.png)
+
+</details>
 </details>
 </p>
 
