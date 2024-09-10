@@ -358,4 +358,6 @@ gradle-app.setting
 # Java heap dump
 *.hprof
 
+application-secret.yml
+
 # End of https://www.toptal.com/developers/gitignore/api/windows,java,gradle,intellij+all,python,visualstudiocode

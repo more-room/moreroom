@@ -16,7 +16,7 @@ public class MemberSignupRequestDTO {
     private String passwordCheck;
     private String nickname;
     private Boolean gender;
-//    private String regionId;
+    private String regionId;
     private Date birth;
     private Integer clearRoom;
     private Boolean delFlag;

@@ -10,7 +10,6 @@ import jakarta.persistence.Table;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -26,6 +25,7 @@ import lombok.experimental.SuperBuilder;
 public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "memberId")
     private Long memberId;
     @Column(nullable = false, unique = true, length = 50)
     private String email;
@@ -35,11 +35,11 @@ public class Member extends BaseEntity {
     private String nickname;
     @Column(nullable = false)
     private Boolean gender;
-//    @Column(nullable = false, length = 50)
-//    private String regionId;
+    @Column(nullable = false, length = 50)
+    private String regionId;
     @Column(nullable = false)
     private Date birth;
-    @Column(nullable = false)
+    @Column(nullable = false, name= "clearRoom")
     @Builder.Default
     private Integer clearRoom = 0;
     @Column(nullable = false)

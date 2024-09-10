@@ -5,7 +5,7 @@ import com.moreroom.domain.member.entity.Member;
 import com.moreroom.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,7 +17,7 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @GetMapping("")
+    @PostMapping("")
     public ResponseEntity<Member> signup(@RequestBody MemberSignupRequestDTO memberSignupRequestDTO) {
 
         memberService.signup(memberSignupRequestDTO);
