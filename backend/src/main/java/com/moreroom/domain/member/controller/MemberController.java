@@ -7,6 +7,7 @@ import com.moreroom.domain.member.service.CustomUserDetailsService;
 import com.moreroom.domain.member.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -26,9 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController {
 
     private final MemberService memberService;
-    private final AuthService authService;
     private final AuthenticationManager authenticationManager;
-    private final CustomUserDetailsService customUserDetailsService;
 
     @PostMapping("")
     public ResponseEntity<Member> signup(@RequestBody MemberSignupRequestDTO memberSignupRequestDTO) {
@@ -41,32 +40,28 @@ public class MemberController {
     @PostMapping("/login")
     public void login(@RequestBody Map<String, String> loginRequest, HttpServletRequest request, HttpServletResponse response) {
         try {
-//            // AuthenticationManager를 통해 인증 시도
-//            Authentication authentication = authenticationManager.authenticate(
-//                new UsernamePasswordAuthenticationToken(
-//                    loginRequest.get("email"),
-//                    loginRequest.get("password")
-//                )
-//            );
-            boolean authentication = authService.authenticate(loginRequest.get("email"), loginRequest.get("password"));
+            // AuthenticationManager를 통해 인증 시도
+            Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                    loginRequest.get("email"),
+                    loginRequest.get("password")
+                )
+            );
 
-            if (authentication) {
-//                System.out.println(request.getSession().getId());
-//                System.out.println(SecurityContextHolder.getContext().getAuthentication());
+            // 인증 성공 시 SecurityContextHolder에 인증 정보 저장
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-                response.setStatus(HttpServletResponse.SC_OK);
-            }
-            else {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            }
-//            // 인증 성공 시 SecurityContextHolder에 인증 정보 저장
-//            SecurityContextHolder.getContext().setAuthentication(authentication);
-//            response.setStatus(HttpServletResponse.SC_OK);
+            // 인증된 후 세션에 해당 인증 정보 저장
+            HttpSession session = request.getSession(true);
+            session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
+
+            response.setStatus(HttpServletResponse.SC_OK);
         } catch (Exception e) {
             // 인증 실패 시 처리
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
     }
+
 
     @PostMapping("/logout")
     public void logout(HttpServletRequest request, HttpServletResponse response) {
@@ -79,8 +74,6 @@ public class MemberController {
         // 세션에서 인증된 사용자 정보 가져오기
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println(SecurityContextHolder.getContext());
-        System.out.println(authentication);
 
         if (authentication != null && authentication.isAuthenticated()) {
             String sessionId = request.getSession().getId();
