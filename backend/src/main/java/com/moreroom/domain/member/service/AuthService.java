@@ -1,5 +1,12 @@
 package com.moreroom.domain.member.service;
 
+import java.util.ArrayList;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import com.moreroom.domain.member.entity.Member;
@@ -19,7 +26,19 @@ public class AuthService {
         Member member = memberRepository.findByEmail(email)
             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        // 사용자가 입력한 비밀번호(평문)와 데이터베이스의 암호화된 비밀번호 비교
-        return passwordEncoder.matches(rawPassword, member.getPassword());
+        if (passwordEncoder.matches(rawPassword, member.getPassword())) {
+
+            UserDetails userDetails = new User(member.getEmail(), member.getPassword(), new ArrayList<>());
+            Authentication auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+//            SecurityContextHolder.getContext().setAuthentication(auth);
+//            System.out.println(SecurityContextHolder.getContext().getAuthentication());
+            SecurityContext context = SecurityContextHolder.createEmptyContext();
+            context.setAuthentication(auth);
+            SecurityContextHolder.setContext(context);
+            System.out.println(auth);
+            System.out.println(context);
+            return true;
+        }
+        return false;
     }
 }

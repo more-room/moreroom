@@ -41,19 +41,27 @@ public class MemberController {
     @PostMapping("/login")
     public void login(@RequestBody Map<String, String> loginRequest, HttpServletRequest request, HttpServletResponse response) {
         try {
-            // AuthenticationManager를 통해 인증 시도
-            Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                    loginRequest.get("email"),
-                    loginRequest.get("password")
-                )
-            );
+//            // AuthenticationManager를 통해 인증 시도
+//            Authentication authentication = authenticationManager.authenticate(
+//                new UsernamePasswordAuthenticationToken(
+//                    loginRequest.get("email"),
+//                    loginRequest.get("password")
+//                )
+//            );
+            boolean authentication = authService.authenticate(loginRequest.get("email"), loginRequest.get("password"));
 
-            // 인증 성공 시 SecurityContextHolder에 인증 정보 저장
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            System.out.println(request.getSession().getId());
-            System.out.println(SecurityContextHolder.getContext());
-            response.setStatus(HttpServletResponse.SC_OK);
+            if (authentication) {
+//                System.out.println(request.getSession().getId());
+//                System.out.println(SecurityContextHolder.getContext().getAuthentication());
+
+                response.setStatus(HttpServletResponse.SC_OK);
+            }
+            else {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            }
+//            // 인증 성공 시 SecurityContextHolder에 인증 정보 저장
+//            SecurityContextHolder.getContext().setAuthentication(authentication);
+//            response.setStatus(HttpServletResponse.SC_OK);
         } catch (Exception e) {
             // 인증 실패 시 처리
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -71,7 +79,7 @@ public class MemberController {
         // 세션에서 인증된 사용자 정보 가져오기
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
+        System.out.println(SecurityContextHolder.getContext());
         System.out.println(authentication);
 
         if (authentication != null && authentication.isAuthenticated()) {
