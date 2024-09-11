@@ -1,0 +1,57 @@
+@font-face {
+  font-family: 'Paperlogy';
+  src: url('./assets/fonts/Paperlogy-1Thin.ttf');
+}
+
+@font-face {
+  font-family: 'Paperlogy';
+  src: url('./assets/fonts/Paperlogy-2ExtraLight.ttf');
+}
+
+@font-face {
+  font-family: 'Paperlogy';
+  src: url('./assets/fonts/Paperlogy-3Light.ttf');
+}
+
+@font-face {
+  font-family: 'Paperlogy';
+  src: url('./assets/fonts/Paperlogy-4Regular.ttf');
+}
+
+@font-face {
+  font-family: 'Paperlogy';
+  src: url('./assets/fonts/Paperlogy-5Medium.ttf');
+}
+
+@font-face {
+  font-family: 'Paperlogy';
+  src: url('./assets/fonts/Paperlogy-6SemiBold.ttf');
+}
+
+@font-face {
+  font-family: 'Paperlogy';
+  src: url('./assets/fonts/Paperlogy-7Bold.ttf');
+}
+
+@font-face {
+  font-family: 'Paperlogy';
+  src: url('./assets/fonts/Paperlogy-8ExtraBold.ttf');
+}
+
+@font-face {
+  font-family: 'Paperlogy';
+  src: url('./assets/fonts/Paperlogy-9Black.ttf');
+}
+
+body,
+#root {
+  margin: 0;
+  font-family: 'Paperlogy';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
