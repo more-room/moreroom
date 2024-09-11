@@ -4,7 +4,7 @@ import com.moreroom.domain.member.dto.request.MemberSignupRequestDTO;
 import com.moreroom.domain.member.entity.Member;
 import com.moreroom.domain.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
-import java.time.LocalDateTime;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -39,10 +39,12 @@ public class MemberService {
             .gender(memberSignupRequestDTO.getGender())
             .regionId(memberSignupRequestDTO.getRegionId())
             .birth(memberSignupRequestDTO.getBirth())
-            .clearRoom(memberSignupRequestDTO.getClearRoom())
-            .createdAt(LocalDateTime.now())
             .build();
 
         memberRepository.save(member);
+    }
+
+    public Optional<Member> findByEmail(String email) {
+        return memberRepository.findByEmail(email);
     }
 }

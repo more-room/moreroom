@@ -18,7 +18,4 @@ public class MemberSignupRequestDTO {
     private Boolean gender;
     private String regionId;
     private Date birth;
-    private Integer clearRoom;
-    private Boolean delFlag;
-
 }
