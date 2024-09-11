@@ -1,5 +1,6 @@
 package com.moreroom.domain.member.entity;
 
+import com.moreroom.domain.member.dto.request.MemberUpdateRequestDTO;
 import com.moreroom.global.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -47,4 +48,12 @@ public class Member extends BaseEntity {
     private Boolean delFlag = false;
     @Column
     private String photo;
+
+    public void updateMember(MemberUpdateRequestDTO memberUpdateRequestDTO) {
+        this.nickname = memberUpdateRequestDTO.getNickname();
+        this.gender = memberUpdateRequestDTO.getGender();
+        this.regionId = memberUpdateRequestDTO.getRegionId();
+        this.birth = memberUpdateRequestDTO.getBirth();
+        this.clearRoom = memberUpdateRequestDTO.getClearRoom();
+    }
 }
