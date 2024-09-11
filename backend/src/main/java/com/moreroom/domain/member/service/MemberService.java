@@ -1,11 +1,15 @@
 package com.moreroom.domain.member.service;
 
 import com.moreroom.domain.member.dto.request.MemberSignupRequestDTO;
+import com.moreroom.domain.member.dto.request.MemberUpdateRequestDTO;
+import com.moreroom.domain.member.dto.response.MemberProfileResponseDTO;
+import com.moreroom.domain.member.dto.response.MemberResponseDTO;
 import com.moreroom.domain.member.entity.Member;
 import com.moreroom.domain.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -44,7 +48,42 @@ public class MemberService {
         memberRepository.save(member);
     }
 
-    public Optional<Member> findByEmail(String email) {
-        return memberRepository.findByEmail(email);
+    public MemberResponseDTO getMemberInformation() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        if (memberRepository.findByEmail(email).isPresent()) {
+            return MemberResponseDTO.toDTO(memberRepository.findByEmail(email).get());
+        }
+        return null;
+    }
+
+    public MemberProfileResponseDTO getMemberProfile() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        if (memberRepository.findByEmail(email).isPresent()) {
+            return MemberProfileResponseDTO.toDTO(memberRepository.findByEmail(email).get());
+        }
+        return null;
+    }
+
+    public MemberProfileResponseDTO findByMemberId(Long memberId) {
+        if (memberRepository.findById(memberId).isPresent()) {
+            return MemberProfileResponseDTO.toDTO(memberRepository.findById(memberId).get());
+        }
+        return null;
+    }
+
+    @Transactional
+    public void updateMemberInformation(MemberUpdateRequestDTO memberUpdateRequestDTO) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        if (memberRepository.findByEmail(email).isPresent()) {
+            Member member = memberRepository.findByEmail(email).get();
+
+            member.updateMember(memberUpdateRequestDTO);
+        }
+        else {
+            throw new RuntimeException();
+        }
     }
 }
