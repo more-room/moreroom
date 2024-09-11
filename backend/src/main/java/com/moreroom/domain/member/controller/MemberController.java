@@ -1,21 +1,26 @@
 package com.moreroom.domain.member.controller;
 
 import com.moreroom.domain.member.dto.request.MemberSignupRequestDTO;
+import com.moreroom.domain.member.dto.request.MemberUpdateRequestDTO;
+import com.moreroom.domain.member.dto.response.MemberProfileResponseDTO;
+import com.moreroom.domain.member.dto.response.MemberResponseDTO;
 import com.moreroom.domain.member.entity.Member;
-import com.moreroom.domain.member.service.AuthService;
-import com.moreroom.domain.member.service.CustomUserDetailsService;
 import com.moreroom.domain.member.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -81,5 +86,49 @@ public class MemberController {
         } else {
             return "Anonymous";
         }
+    }
+
+    @GetMapping("")
+    public ResponseEntity<MemberResponseDTO> getCurrentMember() {
+
+        MemberResponseDTO memberResponseDTO = memberService.getMemberInformation();
+
+        if (memberResponseDTO != null) {
+            return new ResponseEntity<>(memberResponseDTO,
+                HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("/mypage")
+    public ResponseEntity<MemberProfileResponseDTO> getCurrentMemberProfile() {
+
+        MemberProfileResponseDTO memberProfileResponseDTO = memberService.getMemberProfile();
+
+        if (memberProfileResponseDTO != null) {
+            return new ResponseEntity<>(memberProfileResponseDTO,
+                HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("/{memberId}")
+    public ResponseEntity<MemberProfileResponseDTO> getMemberById(@PathVariable(name = "memberId") Long memberId) {
+
+        MemberProfileResponseDTO memberProfileResponseDTO = memberService.findByMemberId(memberId);
+
+        if (memberProfileResponseDTO != null) {
+            return new ResponseEntity<>(memberProfileResponseDTO,
+                HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @PatchMapping("")
+    public ResponseEntity<Member> updateMember(@RequestBody MemberUpdateRequestDTO memberUpdateRequestDTO) {
+        memberService.updateMemberInformation(memberUpdateRequestDTO);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
