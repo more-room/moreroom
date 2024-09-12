@@ -7,12 +7,13 @@ import com.moreroom.domain.member.dto.response.MemberResponseDTO;
 import com.moreroom.domain.member.entity.Member;
 import com.moreroom.domain.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MemberService {
@@ -85,5 +86,13 @@ public class MemberService {
         else {
             throw new RuntimeException();
         }
+    }
+
+    public Boolean checkExistEmail(String email) {
+        return memberRepository.existsByEmail(email);
+    }
+
+    public Boolean checkExistNickname(String nickname) {
+        return memberRepository.existsByNickname(nickname);
     }
 }
