@@ -10,19 +10,21 @@ export const Button = ({
   scale,
   disabled = false,
   fullwidth = false,
-  rounded= 0 ,
+  rounded = 0,
   handler,
   ...props
 }: ButtonProps) => {
-  return <button 
-    css = {[
-      base(fullwidth, rounded),
-      variantCss(variant, color, scale)
-    ]}
-    disabled={disabled}
-    onClick={handler}
-    {...props}
-  >
-    {children}
-  </button>;
+  return (
+    <button
+      css={[
+        base(color, fullwidth, rounded, scale),
+        variantCss(variant, color, scale),
+      ]}
+      disabled={disabled}
+      onClick={handler}
+      {...props}
+    >
+      {children}
+    </button>
+  );
 };

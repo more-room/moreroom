@@ -36,7 +36,7 @@ const ColorStyle = {
     contrastText: '#fff',
     hover: Colors.dark['700'],
     active: Colors.dark['500'],
-    disabled: Colors.dark['400'],
+    disabled: Colors.dark['300'],
   },
   light: {
     main: '#fff',
