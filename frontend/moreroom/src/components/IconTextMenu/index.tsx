@@ -11,9 +11,10 @@ export const IconTypoMenu = ({
   icon = <BellIcon />,
   menu = '메뉴',
   selected = false,
+  ...props
 }: IconTypoMenuProps) => {
   return (
-    <div css={containerCss}>
+    <div css={containerCss} {...props}>
       <Icon size={1.5} color={selected ? 'primary' : 'grey'}>
         {icon}
       </Icon>
@@ -24,6 +25,7 @@ export const IconTypoMenu = ({
       >
         {menu}
       </Typography>
+      {children}
     </div>
   );
 };
