@@ -40,6 +40,9 @@ const meta = {
     rounded: {
       description: '테두리의 둥근 정도입니다. 단위는 rem 기준으로 적용됩니다.',
     },
+    handler: {
+      description: '버튼을 클릭했을 때의 핸들러 함수입니다.',
+    },
   },
 } satisfies Meta<typeof Button>;
 
@@ -55,6 +58,7 @@ export const Primary: Story = {
     disabled: false,
     fullwidth: false,
     rounded: 0,
+    
   },
 };
 

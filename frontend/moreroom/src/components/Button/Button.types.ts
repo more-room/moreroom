@@ -11,4 +11,5 @@ export interface ButtonProps extends React.ComponentProps<'button'> {
   disabled?: boolean;
   fullwidth?: boolean;
   rounded?: number;
+  handler: () => void;
 }

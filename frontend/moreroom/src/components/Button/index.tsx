@@ -11,6 +11,7 @@ export const Button = ({
   disabled = false,
   fullwidth = false,
   rounded= 0 ,
+  handler,
   ...props
 }: ButtonProps) => {
   return <button 
@@ -19,6 +20,7 @@ export const Button = ({
       variantCss(variant, color, scale)
     ]}
     disabled={disabled}
+    onClick={handler}
     {...props}
   >
     {children}
