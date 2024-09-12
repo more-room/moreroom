@@ -1,7 +1,7 @@
 FROM nginx:alpine
 LABEL authors="LEE JIHYE"
 
-COPY ./frontend/build /usr/share/nginx/html
+COPY ./frontend/moreroom/build /usr/share/nginx/html
 # COPY ./image /usr/share/nginx/html/images
 COPY nginx.conf.template /etc/nginx/nginx.conf.template
 
