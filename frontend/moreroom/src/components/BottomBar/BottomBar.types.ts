@@ -4,6 +4,6 @@ export interface BottomBarProps extends React.ComponentProps<'div'> {
   children?: ReactNode;
   icons: ReactNode[];
   menus: string[];
-  selected: number;
+  defaultSelect?: number;
   onHandleChange: (menu: number) => void;
 }

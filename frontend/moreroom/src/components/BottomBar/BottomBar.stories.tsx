@@ -28,6 +28,6 @@ export const Primary: Story = {
   args: {
     icons: [<BellIcon />, <BellIcon />, <BellIcon />],
     menus: ['메뉴1', '메뉴2', '메뉴3'],
-    selected: 1,
+    onHandleChange: (menu: number) => console.log('change to ', menu),
   },
 };
