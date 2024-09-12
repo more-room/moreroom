@@ -4,6 +4,8 @@ import com.moreroom.domain.member.mail.dto.request.EmailCheckRequestDTO;
 import com.moreroom.domain.member.mail.service.MailService;
 import com.moreroom.domain.member.mail.dto.request.EmailRequestDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,10 +18,10 @@ public class MailController {
 
     private final MailService mailService;
 
-    @PostMapping ("/send-email")
-    public String mailSend(@RequestBody EmailRequestDTO emailDto){
-        System.out.println("이메일 인증 이메일 :"+emailDto.getEmail());
-        return mailService.joinEmail(emailDto.getEmail());
+    @PostMapping("/send-email")
+    public ResponseEntity<String> mailSend(@RequestBody EmailRequestDTO emailDto){
+        mailService.joinEmail(emailDto.getEmail());
+        return new ResponseEntity<>(HttpStatus.OK);
     }
     @PostMapping("/check-email")
     public String AuthCheck(@RequestBody EmailCheckRequestDTO emailCheckDto){
@@ -32,7 +34,9 @@ public class MailController {
         }
     }
 
-
-
-
+    @PostMapping("/temporary-password")
+    public ResponseEntity<String> temporaryPassword(@RequestBody EmailRequestDTO emailRequestDTO) {
+        mailService.joinEmailWithPassword(emailRequestDTO.getEmail());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
