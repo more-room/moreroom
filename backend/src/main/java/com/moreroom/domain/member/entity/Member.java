@@ -56,4 +56,8 @@ public class Member extends BaseEntity {
         this.birth = memberUpdateRequestDTO.getBirth();
         this.clearRoom = memberUpdateRequestDTO.getClearRoom();
     }
+
+    public void changePassword(String newPassword) {
+        this.password = newPassword;
+    }
 }
