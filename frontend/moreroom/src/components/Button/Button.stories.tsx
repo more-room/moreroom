@@ -1,7 +1,7 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Button } from './index';
-import { Palette } from '../../types/globalStyleTypes';
+import { ColorScale, Palette } from '../../types/globalStyleTypes';
 
 const meta = {
   title: 'UI/Components/Button',
@@ -27,6 +27,10 @@ const meta = {
     color: {
       description: '적용할 컬러 팔레트입니다.',
     },
+    scale: {
+      description:
+        '적용할 컬러스케일입니다.\n입력되지 않으면 MainColor가 적용됩니다.',
+    },
     disabled: {
       description: '버튼의 비활성화 여부입니다.',
     },
@@ -46,7 +50,7 @@ export const Primary: Story = {
     color: 'primary',
     variant: 'contained',
     disabled: false,
-    fullwidth: false
+    fullwidth: false,
   },
 };
 
@@ -57,4 +61,60 @@ const colors: Palette[] = [
   'grey',
   'dark',
   'light',
-]
+];
+
+const scales: ColorScale[] = [
+  '50',
+  '100',
+  '200',
+  '300',
+  '400',
+  '500',
+  '600',
+  '700',
+  '800',
+  '900',
+  'A100',
+  'A200',
+  'A400',
+  'A700',
+];
+
+export const MainColors: Story = {
+  args: {
+    ...Primary.args,
+  },
+  render: (args) => (
+<div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+      {colors.map((color) => (
+        <Button key={color} {...args} color={color}>
+          {color}
+        </Button>
+      ))}
+    </div>
+  )
+}
+
+export const ColorsWithScales: Story = {
+  args: {
+    ...Primary.args,
+  },
+  render: (args) => (
+    <div>
+      {colors.map((color) => (
+        <div
+          key={color}
+          style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}
+        >
+          {color != 'dark' &&
+            color != 'light' &&
+            scales.map((scale) => (
+              <Button key={scale} {...args} color={color} scale={scale}>
+                {scale}
+              </Button>
+            ))}
+        </div>
+      ))}
+    </div>
+  ),
+};

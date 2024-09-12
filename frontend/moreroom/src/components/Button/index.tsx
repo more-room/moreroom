@@ -13,6 +13,7 @@ export const Button = ({
   children,
   variant = 'contained',
   color = 'primary',
+  scale,
   disabled = false,
   fullwidth = false,
   ...props
@@ -20,7 +21,7 @@ export const Button = ({
   return <button 
     css = {[
       base(fullwidth),
-      variantCss(variant, color)
+      variantCss(variant, color, scale)
     ]}
     disabled={disabled}
     {...props}
