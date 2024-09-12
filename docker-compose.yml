@@ -104,13 +104,13 @@ services:
       - backend-network
 
 volumes:
-  mysql_vol:
+  mysql-vol:
     external: true
   redis_data:
     external: true
   mongo-vol:
     external: true
-  jenkins_home:
+  # jenkins_home:
 
 networks:
   backend-network:
