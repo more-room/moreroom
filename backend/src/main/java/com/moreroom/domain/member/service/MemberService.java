@@ -6,6 +6,10 @@ import com.moreroom.domain.member.dto.request.PasswordChangeDTO;
 import com.moreroom.domain.member.dto.response.MemberProfileResponseDTO;
 import com.moreroom.domain.member.dto.response.MemberResponseDTO;
 import com.moreroom.domain.member.entity.Member;
+import com.moreroom.domain.member.exception.MemberExistsEmailException;
+import com.moreroom.domain.member.exception.MemberExistsNicknameException;
+import com.moreroom.domain.member.exception.MemberNotFoundException;
+import com.moreroom.domain.member.exception.MemberPasswordNotMatchedException;
 import com.moreroom.domain.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -26,15 +30,15 @@ public class MemberService {
     public void signup(MemberSignupRequestDTO memberSignupRequestDTO) {
 
         if (!memberSignupRequestDTO.getPassword().equals(memberSignupRequestDTO.getPasswordCheck())) {
-            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+            throw new MemberPasswordNotMatchedException();
         }
 
         if (memberRepository.existsByEmail(memberSignupRequestDTO.getEmail())) {
-            throw new RuntimeException("이미 존재하는 이메일입니다.");
+            throw new MemberExistsEmailException();
         }
 
         if (memberRepository.existsByNickname(memberSignupRequestDTO.getNickname())) {
-            throw new RuntimeException("이미 존재하는 닉네임입니다.");
+            throw new MemberExistsNicknameException();
         }
 
 
@@ -56,7 +60,7 @@ public class MemberService {
         if (memberRepository.findByEmail(email).isPresent()) {
             return MemberResponseDTO.toDTO(memberRepository.findByEmail(email).get());
         }
-        return null;
+        throw new MemberNotFoundException();
     }
 
     public MemberProfileResponseDTO getMemberProfile() {
@@ -65,14 +69,14 @@ public class MemberService {
         if (memberRepository.findByEmail(email).isPresent()) {
             return MemberProfileResponseDTO.toDTO(memberRepository.findByEmail(email).get());
         }
-        return null;
+        throw new MemberNotFoundException();
     }
 
     public MemberProfileResponseDTO findByMemberId(Long memberId) {
         if (memberRepository.findById(memberId).isPresent()) {
             return MemberProfileResponseDTO.toDTO(memberRepository.findById(memberId).get());
         }
-        return null;
+        throw new MemberNotFoundException();
     }
 
     @Transactional
@@ -85,7 +89,7 @@ public class MemberService {
             member.updateMember(memberUpdateRequestDTO);
         }
         else {
-            throw new RuntimeException();
+            throw new MemberNotFoundException();
         }
     }
 
@@ -102,7 +106,7 @@ public class MemberService {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
         if (!passwordChangeDTO.getNewPassword().equals(passwordChangeDTO.getNewPasswordCheck())) {
-            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+            throw new MemberPasswordNotMatchedException();
         }
 
         if (memberRepository.findByEmail(email).isPresent()) {
