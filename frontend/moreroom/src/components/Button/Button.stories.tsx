@@ -80,20 +80,40 @@ const scales: ColorScale[] = [
   'A700',
 ];
 
-export const MainColors: Story = {
+export const Contained: Story = {
   args: {
     ...Primary.args,
+    variant: 'contained',
   },
   render: (args) => (
-<div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
       {colors.map((color) => (
         <Button key={color} {...args} color={color}>
           {color}
         </Button>
       ))}
     </div>
-  )
-}
+  ),
+};
+
+export const Outlined: Story = {
+  args: {
+    ...Primary.args,
+    variant: 'outlined',
+  },
+  parameters: {
+    controls: false,
+  },
+  render: (args) => (
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+      {colors.map((color) => (
+        <Button key={color} {...args} color={color}>
+          {color}
+        </Button>
+      ))}
+    </div>
+  ),
+};
 
 export const ColorsWithScales: Story = {
   args: {
