@@ -10,4 +10,5 @@ export interface ButtonProps extends React.ComponentProps<'button'> {
   scale?: ColorScale;
   disabled?: boolean;
   fullwidth?: boolean;
+  rounded?: number;
 }

@@ -37,6 +37,9 @@ const meta = {
     fullwidth: {
       description: '`width`를 상위 노드의 크기에 맞출지 여부입니다.',
     },
+    rounded: {
+      description: '테두리의 둥근 정도입니다. 단위는 rem 기준으로 적용됩니다.',
+    },
   },
 } satisfies Meta<typeof Button>;
 
@@ -51,6 +54,7 @@ export const Primary: Story = {
     variant: 'contained',
     disabled: false,
     fullwidth: false,
+    rounded: 0,
   },
 };
 
@@ -124,7 +128,7 @@ export const ColorsWithScales: Story = {
       {colors.map((color) => (
         <div
           key={color}
-          style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}
+          style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3rem' }}
         >
           {color != 'dark' &&
             color != 'light' &&

@@ -3,12 +3,6 @@ import React from 'react';
 import { ButtonProps } from './Button.types';
 import { base, variantCss } from './Button.styles';
 
-//  children: ReactNode;
-// variant?: ButtonVariant;
-// color?: Palette;
-// disabled?: boolean;
-// fullwidth?: boolean;
-
 export const Button = ({
   children,
   variant = 'contained',
@@ -16,11 +10,12 @@ export const Button = ({
   scale,
   disabled = false,
   fullwidth = false,
+  rounded= 0 ,
   ...props
 }: ButtonProps) => {
   return <button 
     css = {[
-      base(fullwidth),
+      base(fullwidth, rounded),
       variantCss(variant, color, scale)
     ]}
     disabled={disabled}

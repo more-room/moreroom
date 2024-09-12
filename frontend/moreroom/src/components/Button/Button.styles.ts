@@ -2,13 +2,14 @@ import {css} from '@emotion/react'
 import { ColorScale, Palette } from '../../types/globalStyleTypes'
 import { Colors, MainColors } from '../../styles/globalStyle'
 import { ButtonVariant } from './Button.types'
+import ColorStyle from '../../styles/colorStyle'
 
-export const base = (fullwidth:boolean) => css`
+export const base = (fullwidth:boolean, rounded:number) => css`
   box-sizing: border-box;
   transition: all 100ms ease;
   user-select: none;
   padding: 0.55rem 1rem;
-
+  border-radius: ${rounded}rem;
 
   :enabled {
     cursor: pointer;
@@ -30,35 +31,36 @@ export const variantCss = (variant: ButtonVariant, color: Palette, scale?: Color
       return css`
         background-color: ${!scale ? MainColors[color] : Colors[color][scale]};
         color: white;
-        border : 2px solid ${!scale ? MainColors[color] : Colors[color][scale]};
+        border : 0.125rem solid ${!scale ? MainColors[color] : Colors[color][scale]};
 
         :enabled {
           :active {
-            background-color: ${Colors[color]['A100']};
-            border: 2px solid ${Colors[color]['A100']};
+            background-color: ${ColorStyle[color].active};
+            border: 0.125rem solid ${ColorStyle[color].active};
           }
         }
 
         :disabled {
-          background-color: ${Colors[color]['200']};
-          border: 2px solid ${Colors[color]['200']};
+          background-color: ${ColorStyle[color].disabled};
+          border: 0.125rem solid ${ColorStyle[color].disabled};
         }
       `;
     case 'outlined':
       return css`
         background-color: transparent;
         color: ${!scale ? MainColors[color] : Colors[color][scale]};
-        border: 2px solid ${!scale ? MainColors[color] : Colors[color][scale]};
+        border: 0.125rem solid ${!scale ? MainColors[color] : Colors[color][scale]};
 
         :enabled {
           :active {
-            border: 2px solid ${Colors[color]['A100']};
+            color: ${ColorStyle[color].active};
+            border: 0.125rem solid ${ColorStyle[color].active};
           }
         }
 
         :disabled {
-          color: 2px solid ${Colors[color]['200']};;
-          border: 2px solid ${Colors[color]['200']};
+          color: ${ColorStyle[color].disabled};
+          border: 0.125rem solid ${ColorStyle[color].disabled};
         }
       `;
     default:
