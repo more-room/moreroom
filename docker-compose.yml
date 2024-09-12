@@ -1,4 +1,14 @@
 services:
+  # jenkins:
+  #   image: jenkins/jenkins:latest
+  #   user: root
+  #   volumes:
+  #     - jenkins_home:/var/jenkins_home
+  #     - /var/run/docker.sock:/var/run/docker.sock # Docker socket mount
+  #   ports:
+  #     - "8080:8080"
+  #     - "50000:50000"
+      
   nginx:
     image: ${DOCKER_IMAGE}:${DOCKER_TAG_FE}-latest
     container_name: ${DOCKER_TAG_FE}
@@ -11,7 +21,7 @@ services:
       - SERVER_NAME=${SERVER_NAME}
       - CONTEXT_PATH=${CONTEXT_PATH}
       - TZ=Asia/Seoul
-    volumes:
+    # volumes:
       # - /home/ubuntu/data/certbot/conf:/etc/letsencrypt
       # - /home/ubuntu/data/certbot/www:/var/www/certbot
     networks:
@@ -100,6 +110,7 @@ volumes:
     external: true
   mongo-vol:
     external: true
+  jenkins_home:
 
 networks:
   backend-network:
