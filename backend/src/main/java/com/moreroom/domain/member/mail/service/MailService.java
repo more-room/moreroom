@@ -72,13 +72,10 @@ public class MailService {
         String content =
             "MOREROOM을 방문해주셔서 감사합니다." + 	//html 형식으로 작성 !
                 "<br><br>" +
-                "인증 번호는 " + authNumber + "입니다." +
+                "인증번호는 " + authNumber + "입니다." +
                 "<br>" +
                 "인증번호를 제대로 입력해주세요."; //이메일 내용 삽입
         if (memberRepository.findByEmail(email).isPresent()) {
-            Member member = memberRepository.findByEmail(email).get();
-            member.changePassword(passwordEncoder.encode(tempPassword));
-
             mailSend(setFrom, email, title, content);
         }
         else {
