@@ -70,7 +70,7 @@ services:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - TZ=Asia/Seoul
     volumes:
-      - mysql_vol:/var/lib/mysql
+      - mysql-vol:/var/lib/mysql
     ports:
       - "${MYSQL_BINDING_PORT}:3306"
     networks:
