@@ -1,4 +1,4 @@
-package com.moreroom.domain.member.email.dto.request;
+package com.moreroom.domain.member.mail.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
