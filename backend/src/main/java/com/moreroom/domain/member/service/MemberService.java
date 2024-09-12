@@ -2,6 +2,7 @@ package com.moreroom.domain.member.service;
 
 import com.moreroom.domain.member.dto.request.MemberSignupRequestDTO;
 import com.moreroom.domain.member.dto.request.MemberUpdateRequestDTO;
+import com.moreroom.domain.member.dto.request.PasswordChangeDTO;
 import com.moreroom.domain.member.dto.response.MemberProfileResponseDTO;
 import com.moreroom.domain.member.dto.response.MemberResponseDTO;
 import com.moreroom.domain.member.entity.Member;
@@ -94,5 +95,19 @@ public class MemberService {
 
     public Boolean checkExistNickname(String nickname) {
         return memberRepository.existsByNickname(nickname);
+    }
+
+    @Transactional
+    public void passwordChange(PasswordChangeDTO passwordChangeDTO) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        if (!passwordChangeDTO.getNewPassword().equals(passwordChangeDTO.getNewPasswordCheck())) {
+            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+        }
+
+        if (memberRepository.findByEmail(email).isPresent()) {
+            Member member = memberRepository.findByEmail(email).get();
+            member.changePassword(passwordEncoder.encode(passwordChangeDTO.getNewPassword()));
+        }
     }
 }

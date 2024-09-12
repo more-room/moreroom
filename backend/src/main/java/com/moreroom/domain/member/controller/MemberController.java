@@ -4,6 +4,7 @@ import com.moreroom.domain.member.dto.request.ExistEmailDTO;
 import com.moreroom.domain.member.dto.request.ExistNicknameDTO;
 import com.moreroom.domain.member.dto.request.MemberSignupRequestDTO;
 import com.moreroom.domain.member.dto.request.MemberUpdateRequestDTO;
+import com.moreroom.domain.member.dto.request.PasswordChangeDTO;
 import com.moreroom.domain.member.dto.response.MemberProfileResponseDTO;
 import com.moreroom.domain.member.dto.response.MemberResponseDTO;
 import com.moreroom.domain.member.entity.Member;
@@ -159,5 +160,12 @@ public class MemberController {
             response.put("duplicated", "False");
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
+    }
+
+    @PostMapping("/password-change")
+    public ResponseEntity<Member> passwordChange(@RequestBody PasswordChangeDTO passwordChangeDTO) {
+        memberService.passwordChange(passwordChangeDTO);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

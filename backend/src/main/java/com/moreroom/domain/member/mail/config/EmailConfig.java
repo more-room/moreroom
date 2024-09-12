@@ -1,4 +1,4 @@
-package com.moreroom.domain.member.email.config;
+package com.moreroom.domain.member.mail.config;
 
 
 import java.util.Properties;
