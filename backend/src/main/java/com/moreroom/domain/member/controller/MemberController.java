@@ -1,5 +1,7 @@
 package com.moreroom.domain.member.controller;
 
+import com.moreroom.domain.member.dto.request.ExistEmailDTO;
+import com.moreroom.domain.member.dto.request.ExistNicknameDTO;
 import com.moreroom.domain.member.dto.request.MemberSignupRequestDTO;
 import com.moreroom.domain.member.dto.request.MemberUpdateRequestDTO;
 import com.moreroom.domain.member.dto.response.MemberProfileResponseDTO;
@@ -9,6 +11,7 @@ import com.moreroom.domain.member.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,7 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -130,5 +132,32 @@ public class MemberController {
         memberService.updateMemberInformation(memberUpdateRequestDTO);
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/exist-email")
+    public ResponseEntity<Map<String, String>> emailCheck(@RequestBody ExistEmailDTO emailDTO) {
+        Map<String, String> response = new HashMap<>();
+
+        if (memberService.checkExistEmail(emailDTO.getEmail()).equals(Boolean.TRUE)) {
+            response.put("duplicated", "True");
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+        else {
+            response.put("duplicated", "False");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+    }
+
+    @PostMapping("/exist-nickname")
+    public ResponseEntity<Map<String, String>> nicknameCheck(@RequestBody ExistNicknameDTO nicknameDTO) {
+        Map<String, String> response = new HashMap<>();
+
+        if (memberService.checkExistNickname(nicknameDTO.getNickname()).equals(Boolean.TRUE)) {
+            response.put("duplicated", "True");
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        } else {
+            response.put("duplicated", "False");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
     }
 }
