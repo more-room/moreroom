@@ -17,6 +17,12 @@ export default [
           ignore: ['css'],
         },
       ],
+      'react/jsx-key': [
+        'error',
+        {
+          ignore: ['key'],
+        },
+      ],
     },
   },
 ];

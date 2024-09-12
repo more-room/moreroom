@@ -11,6 +11,7 @@ export const BottomBar = ({
   menus = ['메뉴1', '메뉴2', '메뉴3'],
   defaultSelect,
   onHandleChange,
+  ...props
 }: BottomBarProps) => {
   const [curMenu, setCurMenu] = useState<number>(
     defaultSelect ? defaultSelect : 0,
@@ -21,7 +22,7 @@ export const BottomBar = ({
     setCurMenu(menu);
   };
   return (
-    <div css={containerCss}>
+    <div css={containerCss} {...props}>
       {icons.map((icon, idx) => {
         return (
           <div key={idx} onClick={() => handler(idx)}>
@@ -34,6 +35,7 @@ export const BottomBar = ({
           </div>
         );
       })}
+      {children}
     </div>
   );
 };
