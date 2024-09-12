@@ -1,8 +1,8 @@
-package com.moreroom.domain.member.email.controller;
+package com.moreroom.domain.member.mail.controller;
 
-import com.moreroom.domain.member.email.dto.request.EmailCheckRequestDTO;
-import com.moreroom.domain.member.email.service.MailService;
-import com.moreroom.domain.member.email.dto.request.EmailRequestDTO;
+import com.moreroom.domain.member.mail.dto.request.EmailCheckRequestDTO;
+import com.moreroom.domain.member.mail.service.MailService;
+import com.moreroom.domain.member.mail.dto.request.EmailRequestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

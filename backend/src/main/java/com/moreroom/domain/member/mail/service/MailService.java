@@ -1,4 +1,4 @@
-package com.moreroom.domain.member.email.service;
+package com.moreroom.domain.member.mail.service;
 
 import com.moreroom.global.util.RedisUtil;
 import jakarta.mail.MessagingException;
