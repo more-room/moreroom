@@ -1,6 +1,7 @@
 package com.moreroom.domain.member.mail.controller;
 
 import com.moreroom.domain.member.mail.dto.request.EmailCheckRequestDTO;
+import com.moreroom.domain.member.mail.exception.MailAuthNotMatchedException;
 import com.moreroom.domain.member.mail.service.MailService;
 import com.moreroom.domain.member.mail.dto.request.EmailRequestDTO;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,7 @@ public class MailController {
             return "ok";
         }
         else{
-            throw new NullPointerException("뭔가 잘못!");
+            throw new MailAuthNotMatchedException();
         }
     }
 
