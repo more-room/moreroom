@@ -58,6 +58,9 @@ services:
       - REDIS_PORT=${REDIS_PORT}
       - REDIS_PASSWORD=${REDIS_PASSWORD}
       - MONGODB_URL=${MONGODB_URL}
+      - MAIL_USERNAME=${MAIL_USERNAME}
+      - MAIL_PASSWORD=${MAIL_PASSWORD}
+      - CONTEXT_PATH=${CONTEXT_PATH}
       - TZ=Asia/Seoul
     expose:
       - ${BACKEND_PORT}
