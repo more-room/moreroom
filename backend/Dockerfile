@@ -5,7 +5,7 @@ FROM openjdk:17-jdk-slim
 WORKDIR /app
 
 # 3. 빌드된 JAR 파일을 컨테이너로 복사
-ARG JAR_FILE_PATH=./build/libs/backend-0.0.1-SNAPSHOT.jar
+ARG JAR_FILE_PATH=./build/libs/moreroom-0.0.1-SNAPSHOT.jar
 COPY ${JAR_FILE_PATH} deploy.jar
 
 # 4. 애플리케이션을 실행하는 명령어 설정
