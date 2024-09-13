@@ -2,5 +2,8 @@ spring:
   application:
     name: moreroom
 
+  profiles:
+    active: ${PROFILES_ACTIVE}  # prod or other profile names (replace it with ${PROFILES_ACTIVE} when committing & pushing)
+
   config:
-    import: application-secret.yml
+    import: optional:file:.env[.properties]
