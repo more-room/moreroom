@@ -3,8 +3,7 @@ import { Colors, MainColors } from '../../styles/globalStyle';
 import { TDate } from './Date.types';
 
 export const base = (selected: boolean) => css`
-  flex: 1;
-  max-width: 2rem;
+  width: 2rem;
   height: 2rem;
   display: flex;
   flex-direction: column;

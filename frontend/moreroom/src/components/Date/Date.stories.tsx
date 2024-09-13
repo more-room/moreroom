@@ -17,7 +17,20 @@ const meta = {
     ),
   ],
   tags: ['!autodocs'],
-  argTypes: {},
+  argTypes: {
+    date: {
+      description: '날짜입니다',
+    },
+    type: {
+      description: '날짜의 종류입니다',
+    },
+    selected: {
+      description: '날짜의 선택 여부입니다',
+    },
+    hasContents: {
+      description: '날짜에 컨텐츠가 있는지 여부입니다',
+    },
+  },
 } satisfies Meta<typeof Date>;
 
 export default meta;
