@@ -12,6 +12,7 @@ import com.moreroom.domain.member.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +39,7 @@ public class MemberController {
     private final AuthenticationManager authenticationManager;
 
     @PostMapping("")
-    public ResponseEntity<Member> signup(@RequestBody MemberSignupRequestDTO memberSignupRequestDTO) {
+    public ResponseEntity<Member> signup(@RequestBody @Valid MemberSignupRequestDTO memberSignupRequestDTO) {
 
         memberService.signup(memberSignupRequestDTO);
 
@@ -129,14 +130,14 @@ public class MemberController {
     }
 
     @PatchMapping("")
-    public ResponseEntity<Member> updateMember(@RequestBody MemberUpdateRequestDTO memberUpdateRequestDTO) {
+    public ResponseEntity<Member> updateMember(@RequestBody @Valid MemberUpdateRequestDTO memberUpdateRequestDTO) {
         memberService.updateMemberInformation(memberUpdateRequestDTO);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/exist-email")
-    public ResponseEntity<Map<String, String>> emailCheck(@RequestBody ExistEmailDTO emailDTO) {
+    public ResponseEntity<Map<String, String>> emailCheck(@RequestBody @Valid ExistEmailDTO emailDTO) {
         Map<String, String> response = new HashMap<>();
 
         if (memberService.checkExistEmail(emailDTO.getEmail()).equals(Boolean.TRUE)) {
@@ -150,7 +151,7 @@ public class MemberController {
     }
 
     @PostMapping("/exist-nickname")
-    public ResponseEntity<Map<String, String>> nicknameCheck(@RequestBody ExistNicknameDTO nicknameDTO) {
+    public ResponseEntity<Map<String, String>> nicknameCheck(@RequestBody @Valid ExistNicknameDTO nicknameDTO) {
         Map<String, String> response = new HashMap<>();
 
         if (memberService.checkExistNickname(nicknameDTO.getNickname()).equals(Boolean.TRUE)) {
@@ -163,7 +164,7 @@ public class MemberController {
     }
 
     @PostMapping("/password-change")
-    public ResponseEntity<Member> passwordChange(@RequestBody PasswordChangeDTO passwordChangeDTO) {
+    public ResponseEntity<Member> passwordChange(@RequestBody @Valid PasswordChangeDTO passwordChangeDTO) {
         memberService.passwordChange(passwordChangeDTO);
 
         return new ResponseEntity<>(HttpStatus.OK);
