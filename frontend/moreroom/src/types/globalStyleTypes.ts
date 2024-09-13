@@ -22,3 +22,5 @@ export type ColorScale =
   | 'A400'
   | 'A700';
 export type FontWeight = 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
+
+export type Size = 'sm' | 'md' | 'lg' | 'xl';
