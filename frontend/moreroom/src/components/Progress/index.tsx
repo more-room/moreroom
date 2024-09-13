@@ -7,11 +7,13 @@ export const Progress = ({
   color = 'primary',
   variant = 'rounded',
   transparentBackground = false,
-  size = 'sm',
-  value,
-  max,
+  size = 'md',
+  value = 1,
+  max = 3,
   ...props
 }: ProgressProps) => {
+
+
   return (
     <div
       css={[base(transparentBackground), sizeCss[size], variantCss[variant]]}

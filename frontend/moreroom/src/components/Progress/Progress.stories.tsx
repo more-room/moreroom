@@ -1,7 +1,8 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Progress } from './index';
-import { ColorScale, Palette } from '../../types/globalStyleTypes';
+import { Palette, Size } from '../../types/globalStyleTypes';
+import { ProgressVariant } from './Progress.types';
 
 const meta = {
   title: 'UI/Components/Progress',
@@ -46,11 +47,88 @@ type Story = StoryObj<typeof Progress>;
 
 export const Primary: Story = {
   args: {
-    size: 'sm',
+    size: 'md',
     variant: 'rounded',
     color: 'primary',
     value: 1,
     max: 3,
     transparentBackground: false,
   },
+};
+
+const colors: Palette[] = [
+  'primary',
+  'secondary',
+  'danger',
+  'grey',
+  'dark',
+  'light',
+];
+
+export const MainColors: Story = {
+  args: {
+    ...Primary.args,
+  },
+  render: (args) => (
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+      {colors.map((color) => (
+        <div key={color} style={{ width: '100%' }}>
+          <Progress {...args} color={color} />
+        </div>
+      ))}
+    </div>
+  ),
+};
+
+const sizes: Size[] = ['sm', 'md', 'lg', 'xl'];
+
+export const Sizes: Story = {
+  args: {
+    ...Primary.args,
+  },
+  render: (args) => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+      {sizes.map((size) => (
+        <div key={size} style={{ width: '100%' }}>
+          <Progress {...args} size={size}/>
+        </div>
+      ))}
+    </div>
+  ),
+};
+
+const variants: ProgressVariant[] = ['rounded', 'rectangle'];
+
+export const Variants: Story = {
+  args: {
+    ...Primary.args,
+  },
+  render: (args) => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+      {variants.map((variant) => (
+        <div key={variant} style={{ width: '100%' }}>
+          <Progress {...args} variant={variant} size={'xl'}/>
+          <span>{variant}</span>
+        </div>
+      ))}
+    </div>
+  ),
+};
+
+const transparentBackgrounds: boolean[] = [false, true];
+
+export const TransparentBackground: Story = {
+  args: {
+    ...Primary.args,
+  },
+  render: (args) => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+      {transparentBackgrounds.map((transparentBackground) => (
+        <div key={transparentBackground.toString()} style={{ width: '100%' }}>
+          <Progress {...args} transparentBackground={transparentBackground} size={'md'} />
+          <span>{transparentBackground.toString()}</span>
+        </div>
+      ))}
+    </div>
+  ),
 };
