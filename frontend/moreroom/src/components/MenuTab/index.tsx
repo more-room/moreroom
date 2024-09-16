@@ -1,16 +1,18 @@
 /** @jsxImportSource @emotion/react */
-import React, { Children, useState } from 'react';
+import React, { useState } from 'react';
 import { Button } from '../Button';
 import { MenuTabProps } from './MenuTab.types';
-import { activeCss, containerCss, inactiveCss } from './MenuTab.styles';
+import { activeCss, containerCss, inactiveCss, variantCss } from './MenuTab.styles';
+
 
 export const MenuTab = ({
   children,
-  size = 'md',
   variant = 'contained',
   border = 0,
   color = 'primary',
-  onChangeMenu,
+  fontSize = 1,
+  fontWeight = 500,
+  onChangeMenu = () => {},
   ...props
 }: MenuTabProps) => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -20,16 +22,20 @@ export const MenuTab = ({
     onChangeMenu(index);
   };
 
+  const tabCount = React.Children.count(children);
 
   return (
-    <div css={containerCss} {...props}>
-      <div css={activeCss}></div>
+    <div css={containerCss(border, variant)} {...props}>
+      <div css={[activeCss(activeIndex, tabCount), variantCss[variant](color, tabCount)]}></div>
       {React.Children.map(children, (child, index) => (
-        <Button css={inactiveCss} onClick={()=>handleTabClick(index)} size={size} color={color}>
+        <Button
+          css={[inactiveCss(tabCount, color, variant, index === activeIndex, fontSize, fontWeight)]}
+          handler={() => handleTabClick(index)}
+          color={color}
+        >
           {child}
         </Button>
       ))}
-      {/* <Button onClick={() => handleTabClick(index)}></Button> */}
     </div>
-  )
-}
+  );
+};
