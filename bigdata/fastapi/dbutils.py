@@ -1,8 +1,18 @@
 from pymongo import MongoClient
+import pymysql
+import json
+
+## ------------------ mongoDB 
 
 def mongo_connect():
-    client = MongoClient(host='j11d206.p.ssafy.io', port=27017)
-    return client 
+    with open('config.json') as config_file:
+        config = json.load(config_file)
+
+        client = MongoClient(host=config['mongo_host'], port=27017)
+        return client 
+
+def mongo_disconnect(client):
+    client.close()
 
 def mongo_get_collection(client, db_name, col_name):
     db = client[db_name]
@@ -27,3 +37,33 @@ def mongo_save_with_update(collection, data):
     for item in data:
         mongo_update_one(collection, {'theme_id': item['theme_id']}, 
                          {'similar_themes': item['similar_themes'], 'similar_themes_sim': item['similar_themes_sim']})
+
+
+## -------------- mysql 
+
+def mysql_connect():
+    with open('config.json') as config_file:
+        config = json.load(config_file)
+
+        connection = pymysql.connect(
+            host= config['mysql_host'],
+            port=3306,
+            user= config['mysql_user'],
+            password= config['mysql_pw'],
+            database= config['mysql_db'],
+            cursorclass=pymysql.cursors.DictCursor
+        )
+
+        return connection 
+    
+def mysql_disconnect(connection):
+    connection.close() 
+
+
+def mysql_read_all(connection, query):
+    with connection.cursor() as cursor:
+        sql_query = query
+        cursor.execute(sql_query)
+        results = cursor.fetchall()
+
+        return results

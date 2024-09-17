@@ -13,7 +13,7 @@ import re
 
 ### 다른 파일 import 
 
-from dbutils import mongo_connect, mongo_get_collection, mongo_save_with_delete, mongo_save_with_update
+from dbutils import mongo_connect, mongo_get_collection, mongo_save_with_delete, mongo_save_with_update, mongo_disconnect
 
 
 ### ------------ 최근 방문한 테마와 비슷한 테마 
@@ -178,9 +178,9 @@ def extract_total_similar_theme(theme_df, total_model, N=10, threshold=0.3):
         indices = np.argsort(-total_model[i])[:N+1]  
         top_n_list = [int(theme_df.loc[index, 'themeId']) for index in indices if index != i and total_model[i][index] > threshold]
         top_n_sim_list = [total_model[i][index] for index in indices if index != i and total_model[i][index] > threshold]
-        top_n['theme_id'] = int(theme_df.loc[i, 'themeId'])
-        top_n['similar_themes'] = top_n_list
-        top_n['similar_themes_sim'] = top_n_sim_list
+        top_n['themeId'] = int(theme_df.loc[i, 'themeId'])
+        top_n['similarThemes'] = top_n_list
+        top_n['similarThemesSim'] = top_n_sim_list
         top_n_ids.append(top_n)
     
     return top_n_ids
@@ -189,9 +189,14 @@ def extract_total_similar_theme(theme_df, total_model, N=10, threshold=0.3):
 # #### 7. DB 저장 
 def save_data(result):
     client = mongo_connect()
-    col = mongo_get_collection(client, "themeRec", "similarTheme")
-    mongo_save_with_delete(col, result)
-    # mongo_save_with_update(col, result)
+    try:
+        col = mongo_get_collection(client, "themeRec", "similarTheme")
+        mongo_save_with_delete(col, result)
+        # mongo_save_with_update(col, result)
+    except Exception as e:
+        print(f"Error: {e}")
+    finally:
+        mongo_disconnect(client)
 
 
 
