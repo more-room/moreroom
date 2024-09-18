@@ -3,8 +3,9 @@ import { StarIcon } from '@heroicons/react/24/solid';
 import { Icon } from '../Icon';
 import { Palette } from '../../types/globalStyleTypes';
 import {
-  backgroundCss,
   base,
+  backgroundCss,
+  containerCss,
   glowCss,
   glowStarCss,
   filledCss,
@@ -15,14 +16,14 @@ export const CustomStarIcon: React.FC<{
   size?: number;
   activeColor: Palette;
   transparentBackground: boolean;
-  isActive: boolean;
+  isDragging: boolean;
   disabled: boolean;
-}> = ({ fill, size = 1.5, activeColor, transparentBackground, isActive }) => {
+}> = ({ fill, size = 1.5, activeColor, transparentBackground, isDragging, disabled }) => {
   return (
-    <div css={base(size)}>
-      {/* 클릭했을 때 나타나는 별 효과 */}
-      {isActive && (
-        <div css={glowCss}>
+    <div css={containerCss(size)}>
+      {/* 드래그 중일 때 나타나는 별 효과 */}
+      {isDragging && !disabled && (
+        <div css={[base, glowCss]}>
           <Icon size={size}>
             <StarIcon css={glowStarCss(activeColor)} />
           </Icon>
@@ -31,11 +32,11 @@ export const CustomStarIcon: React.FC<{
 
       {/* 점수 없을 때 기본 배경 */}
       <Icon size={size}>
-        <StarIcon css={backgroundCss(transparentBackground)} />
+        <StarIcon css={[base, backgroundCss(transparentBackground)]} />
       </Icon>
 
       {/* 점수에 따른 별 색상 */}
-      <div css={filledCss(fill)}>
+      <div css={[base, filledCss(fill)]}>
         <Icon color={activeColor} size={size}>
           <StarIcon />
         </Icon>
@@ -43,7 +44,6 @@ export const CustomStarIcon: React.FC<{
     </div>
   );
 };
-
 
 
 
