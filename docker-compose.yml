@@ -61,6 +61,8 @@ services:
       - MAIL_USERNAME=${MAIL_USERNAME}
       - MAIL_PASSWORD=${MAIL_PASSWORD}
       - CONTEXT_PATH=${CONTEXT_PATH}
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
       - TZ=Asia/Seoul
     expose:
       - ${BACKEND_PORT}
@@ -70,7 +72,26 @@ services:
       - mysql
       - redis
       - mongodb
+      - rabbitmq
     
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3-management-alpine
+    init: true
+    volumes:
+      - /home/ubuntu/rabbitmq/data:/var/lib/rabbitmq # rabbitmq 데이터 접근
+      - /home/ubuntu/rabbitmq/etc:/etc/rabbitmq # rabbitmq configuration 파일 설정
+      - /home/ubuntu/rabbitmq/logs:/var/log/rabbitmq # rabbitmq 로그 접근
+    ports:
+      - "5672:5672" # AMQP 프로토콜
+      - "15672:15672" # 관리 UI
+      - "61613:61613" # STOMP 프로토콜
+      - "15674:15674" # Web STOMP (웹소켓)
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+    networks:
+      - backend-network
 
   mysql:
     image: mysql:8.0.32
