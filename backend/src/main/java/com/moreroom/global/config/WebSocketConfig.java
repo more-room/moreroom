@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
@@ -23,8 +24,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
    */
   @Override
   public void configureMessageBroker(MessageBrokerRegistry registry) {
-    registry.enableSimpleBroker("/topic"); //SimpleBroker 거쳐서 바로 구독자에게 전송
-    registry.setApplicationDestinationPrefixes("/app"); //Handler 거쳐서 가공 후 구독자에게 전송
+    registry.setPathMatcher(new AntPathMatcher(".")); //url을 chat/room/3 -> chat.room.3로 참조하기 위한 설정
+    registry.setApplicationDestinationPrefixes("/pub"); //Handler 거쳐서 가공 후 구독자에게 전송
+    registry.enableStompBrokerRelay("/queue", "/topic", "/exchange", "/amq/queue"); //stomp borker relay 활성화. rabbitmq 연동 위한 설정
+    // /queue, /topic, /exchange, /amq/queue로 시작하는 목적지로 메세지 발행하면 이 메세지들은 외부 STOMP 브로커로 전달
   }
 
   /**
