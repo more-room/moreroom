@@ -24,4 +24,8 @@ public class Region {
     @Column(nullable = false)
     @Builder.Default
     private Integer regionLevel = 2;
+    @Column(length = 50)
+    private String parentRegionId;
+    @Column(length = 100)
+    private String parentRegionName;
 }
