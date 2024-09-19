@@ -5,10 +5,9 @@ import json
 ## ------------------ mongoDB 
 
 def mongo_connect():
-    with open('config.json') as config_file:
+    with open('config.json', encoding='utf-8') as config_file:
         config = json.load(config_file)
-
-        client = MongoClient(host=config['mongo_host'], port=27017)
+        client = MongoClient(host=config['mongo_host'], port=config['mongo_port'])
         return client 
 
 def mongo_disconnect(client):
@@ -47,7 +46,7 @@ def mysql_connect():
 
         connection = pymysql.connect(
             host= config['mysql_host'],
-            port=3306,
+            port= config['mysql_port'],
             user= config['mysql_user'],
             password= config['mysql_pw'],
             database= config['mysql_db'],
