@@ -347,3 +347,6 @@ $RECYCLE.BIN/
 
 # Custom
 */application-secret.yml
+
+backend/.idea/codeStyles/codeStyleConfig.xml
+
