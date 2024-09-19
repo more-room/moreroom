@@ -1,4 +1,4 @@
-package com.moreroom.domain.member.entity;
+package com.moreroom.domain.mapping.member.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
