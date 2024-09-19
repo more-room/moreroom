@@ -1,8 +1,8 @@
-import React, { useState, useMemo, useCallback, useRef, useEffect } from "react";
-import { CustomStarIcon } from "./StarIcon";
+import React, { useState, useMemo, useRef, useEffect } from "react";
+import { CustomStarIcon } from "./CustomStarIcon";
 import { RatingProps } from "./Rating.types";
 
-const Rating: React.FC<RatingProps> = ({
+export const Rating = ({
   count = 5,
   value = 3,
   size = 1.5,
@@ -10,7 +10,8 @@ const Rating: React.FC<RatingProps> = ({
   transparentBackground = false,
   disabled = false,
   onChange = () => {},
-}) => {
+  ...props
+}: RatingProps) => {
   const [hoverValue, setHoverValue] = useState<number | undefined>(undefined);
   const [isDragging, setIsDragging] = useState(false);
   const ratingRef = useRef<HTMLDivElement>(null);
@@ -91,6 +92,7 @@ const Rating: React.FC<RatingProps> = ({
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
       style={{ display: 'inline-flex'}}
+      {...props}
     >
       {stars}
     </div>
