@@ -32,6 +32,12 @@ http  {
             proxy_set_header X-Forwarded-Proto $scheme;
         }
 
+        location /  {
+            root /usr/share/nginx/html;
+            index index.html index.htm;
+            try_files $uri $uri/ /index.html;
+        }
+
         # 정적 자산 (JS, CSS, 이미지 등)
         location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg)$ {
             root /usr/share/nginx/html;
