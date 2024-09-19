@@ -33,7 +33,7 @@ export const Primary: Story = {
       <div
         style={{ backgroundColor: `${Colors['grey']['800']}`, width: '280px' }}
       >
-        <Years year={curYear} setYear={setCurYear} />
+        <Years />
       </div>
     );
   },

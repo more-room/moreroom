@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Calendar } from '.';
-import dayjs from 'dayjs';
 import { useCalendarStore } from '../../stores/calendarStore';
 
 const meta = {
@@ -18,7 +17,14 @@ const meta = {
     ),
   ],
   tags: ['!autodocs'],
-  argTypes: {},
+  argTypes: {
+    bgColor: {
+      description: '배경색입니다',
+    },
+    bgColorScale: {
+      description: '배경색의 스케일입니다',
+    },
+  },
 } satisfies Meta<typeof Calendar>;
 
 export default meta;

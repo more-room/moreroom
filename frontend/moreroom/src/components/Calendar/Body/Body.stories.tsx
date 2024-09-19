@@ -31,7 +31,7 @@ export const Primary: Story = {
       <div
         style={{ backgroundColor: `${Colors['grey']['800']}`, width: '280px' }}
       >
-        <Body year={2024} month={7} />
+        <Body />
       </div>
     );
   },

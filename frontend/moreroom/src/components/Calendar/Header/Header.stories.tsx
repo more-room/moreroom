@@ -17,14 +17,7 @@ const meta = {
     ),
   ],
   tags: ['!autodocs'],
-  argTypes: {
-    year: {
-      description: '년도',
-    },
-    month: {
-      description: '월',
-    },
-  },
+  argTypes: {},
 } satisfies Meta<typeof Header>;
 
 export default meta;
