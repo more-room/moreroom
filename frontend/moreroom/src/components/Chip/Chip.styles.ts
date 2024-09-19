@@ -1,4 +1,5 @@
 import { css } from '@emotion/react';
+import { Colors } from '../../styles/globalStyle';
 import { FontWeight, Palette } from '../../types/globalStyleTypes';
 import ColorStyle from '../../styles/colorStyle';
 
@@ -12,4 +13,7 @@ export const base = (color:Palette, border:number, fontSize:number, fontWeight:F
   font-size: ${fontSize}rem;
   font-weight: ${fontWeight};
   text-align: center;
+  display: flex;
+  width: fit-content;
+  align-items: center;
 `;
