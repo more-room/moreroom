@@ -4,7 +4,7 @@ import { ModalProps } from './Modal.types';
 import { base } from './Modal.styles';
 import { Backdrop } from '../Backdrop';
 
-export const Modal = ({ height = 60, children }: ModalProps) => {
+export const Modal = ({ height = 60, children, ...props }: ModalProps) => {
   return (
     <Backdrop
       style={{
@@ -12,7 +12,9 @@ export const Modal = ({ height = 60, children }: ModalProps) => {
         alignItems: 'end',
       }}
     >
-      <div css={base(height)}>{children}</div>
+      <div css={base(height)} {...props}>
+        {children}
+      </div>
     </Backdrop>
   );
 };

@@ -17,7 +17,20 @@ const meta = {
     ),
   ],
   tags: ['!autodocs'],
-  argTypes: {},
+  argTypes: {
+    icons: {
+      description: '메뉴의 아이콘들입니다',
+    },
+    menus: {
+      description: '메뉴들입니다',
+    },
+    onHandleChange: {
+      description: '메뉴 변경 시 핸들러 함수입니다',
+    },
+    defaultSelect: {
+      description: '초기 선택 메뉴입니다',
+    },
+  },
 } satisfies Meta<typeof BottomBar>;
 
 export default meta;
