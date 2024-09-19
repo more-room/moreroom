@@ -30,9 +30,8 @@ public class Review extends BaseEntity {
     @Column(nullable = false)
     private Integer themeId;
     private String content;
-    // 별점 Integer 맞나요? float 아니고?
     @Column(nullable = false)
-    private Integer score;
+    private float score;
     @LastModifiedDate
     private LocalDateTime updatedAt;
     @Builder.Default
