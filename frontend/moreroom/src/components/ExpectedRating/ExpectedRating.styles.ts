@@ -13,7 +13,10 @@ export const base = css`
 export const boxStyle1 = (
   size: number,
   weight: number,
-  borderRadius: number
+  borderRadius: number,
+  backgroundColor: Palette,
+  color: Palette,
+  scale?: ColorScale,
 ) => css`
   display: flex;
   align-items: center;
@@ -23,8 +26,12 @@ export const boxStyle1 = (
   font-weight: ${weight};
   font-size: ${size}rem;
   padding: ${size * 0.5}rem;
-  background-color: ${Colors['grey']['100']};
-  color: ${Colors['primary']['A200']};
+  /* background-color: ${Colors['grey']['100']};
+  color: ${Colors['primary']['A200']}; */
+
+  background-color: ${scale ? Colors[backgroundColor][scale] : Colors[backgroundColor]['100']};
+  color: ${scale ? Colors[color][scale] : Colors[color]['A200']};
+
   border-radius: ${borderRadius}rem; /* 둥글기 설정 */
 `;
 
@@ -32,7 +39,10 @@ export const boxStyle1 = (
 export const boxStyle2 = (
   size: number,
   weight: number,
-  borderRadius: number
+  borderRadius: number,
+  backgroundColor: Palette,
+  color: Palette,
+  scale?: ColorScale,
 ) => css`
   display: flex;
   align-items: center;
@@ -42,7 +52,10 @@ export const boxStyle2 = (
   font-weight: ${weight};
   font-size: ${size}rem;
   padding: ${size * 0.5}rem;
-  background-color: ${Colors['primary']['A200']};
-  color: ${Colors['grey']['100']};
+
+
+  background-color: ${scale ? Colors[backgroundColor][scale] : Colors[backgroundColor]['A200']};
+  color: ${scale ? Colors[color][scale] : Colors[color]['100']};
+
   border-radius: ${borderRadius}rem; /* 둥글기 설정 */
 `;
