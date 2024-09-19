@@ -11,7 +11,7 @@ export const Years = ({ children, ...props }: YearsProps) => {
   const [years, setYears] = useState<number[]>([]);
 
   useEffect(() => {
-    let newYears = [];
+    let newYears: number[] = [];
     for (let y = 2010; y <= dayjs().year(); y++) {
       newYears.push(y);
     }
