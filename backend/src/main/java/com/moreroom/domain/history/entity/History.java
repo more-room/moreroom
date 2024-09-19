@@ -35,7 +35,7 @@ public class History extends BaseEntity {
     private Integer hintCount;
     @Column(length = 2000)
     private String content;
-    private float memberLevel;
+    private Integer memberLevel;
     @LastModifiedDate
     private LocalDateTime updatedAt;
     @Column(nullable = false)
