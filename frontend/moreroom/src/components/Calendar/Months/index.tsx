@@ -10,7 +10,7 @@ export const Months = ({ children, ...props }: MonthsProps) => {
   const [months, setMonths] = useState<number[]>([]);
 
   useEffect(() => {
-    let newMonths = [];
+    let newMonths: number[] = [];
     for (let m = 1; m <= 12; m++) {
       newMonths.push(m);
     }
