@@ -4,7 +4,7 @@ import { ChipProps } from './Chip.types';
 import { base } from './Chip.styles';
 
 export const Chip = ({
-  children,
+  children = 'Chip',
   color = 'primary',
   border = 1,
   fontSize = 1,
