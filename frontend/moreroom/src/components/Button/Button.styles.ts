@@ -49,7 +49,7 @@ export const variantCss = (
     case 'contained':
       return css`
         background-color: ${!scale ? MainColors[color] : Colors[color][scale]};
-        color: white;
+        color: ${ColorStyle[color].contrastText};
       `;
       
     case 'outlined':

@@ -17,7 +17,17 @@ const meta = {
     ),
   ],
   tags: ['!autodocs'],
-  argTypes: {},
+  argTypes: {
+    icon: {
+      description: '메뉴의 아이콘입니다',
+    },
+    menu: {
+      description: '메뉴입니다',
+    },
+    selected: {
+      description: '메뉴의 선택 여부입니다',
+    },
+  },
 } satisfies Meta<typeof IconTypoMenu>;
 
 export default meta;
