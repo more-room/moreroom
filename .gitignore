@@ -345,8 +345,7 @@ $RECYCLE.BIN/
 /.idea/S11P21D206.iml
 /.idea/vcs.xml
 
+bigdata/fastapi/config.json
 # Custom
 */application-secret.yml
-
 backend/.idea/codeStyles/codeStyleConfig.xml
-
