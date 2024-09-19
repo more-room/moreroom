@@ -24,13 +24,6 @@ const meta = {
     children: {
       description: 'text를 입력해주세요',
     },
-    color: {
-      description: '글자 색상입니다.\n기본 색상은 grey 입니다.',
-    },
-    scale: {
-      description:
-        '적용할 컬러 스케일입니다.\n입력되지 않으면 MainColor가 적용됩니다.',
-    },
     size: {
       description: '적용할 사이즈입니다.\nrem 단위로 입력하면 됩니다.',
     },
@@ -52,10 +45,27 @@ type Story = StoryObj<typeof ExpectedRating>;
 
 export const Primary: Story = {
   args: {
-    children: 'text',
-    color: 'primary',
+    children: ['예상', '4.5'],
+    // color: 'primary',
     size: 1,
-    weight: 400,
-
+    weight: 600,
+    border: 0,
   },
 };
+
+const sizes: number[] = [0.5, 0.625, 0.75, 0.875, 1, 1.125, 1.25];
+
+export const ExpectedRatingSizes: Story = {
+  args: {
+    ...Primary.args,
+  },
+  render: (args) => (
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+      {sizes.map((size) => (
+        <ExpectedRating key={size} {...args} size={size}>
+          {['예상', `${size}rem`]}
+        </ExpectedRating>
+      ))}
+    </div>
+  ),
+}

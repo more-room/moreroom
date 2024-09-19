@@ -1,34 +1,19 @@
 /** @jsxImportSource @emotion/react */
-import React, { Children } from 'react';
-import { base } from './ExpectedRating.styles';
-import { ExpectedRatingProps } from './ExpectedRating.types';
-import { Colors } from '../../styles/globalStyle';
+import React from 'react';
+import { boxStyle1, boxStyle2, base } from './ExpectedRating.styles'; // 스타일을 불러옴
+import { ExpectedRatingProps } from './ExpectedRating.types'; // 타입을 정의하는 파일
 
 export const ExpectedRating = ({
-  backgroundColor = 'primary',  // 기본 값은 Palette에 맞춰서 설정
-  color = 'dark',          // 기본 값은 Palette에 맞춰서 설정
-  border = 0.1,
-  weight = 400,
-  size = 1.5,
-  scale,
-  borderRadius = 0.5,
-  children = '',
+  children = ['예상', '4.5'],
+  size = 1, // 각 박스의 크기 (정사각형 한 변의 길이, rem 단위)
+  weight = 600, // 글자 굵기
+  borderRadius = 0.5, // 각 박스의 테두리 둥글기 (rem)
   ...props
 }: ExpectedRatingProps) => {
   return (
-    <div style={{ display: 'flex', width: 'fit-content', gap: '0.2rem', alignItems: 'center' }} {...props}>
-      <div
-        css={base(backgroundColor, color, border, weight, size, scale, borderRadius)}  // Colors에서 가져오기
-        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0.5rem 1rem' }}
-      >
-        {children}
-      </div>
-      <div
-        css={base(backgroundColor, color, border, weight, size, scale, borderRadius)}  // 색상 반전
-        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0.5rem 1rem' }}
-      >
-        {children}
-      </div>
+    <div css={base} {...props}>
+      <div css={boxStyle1(size, weight, borderRadius)}>{children[0]}</div>
+      <div css={boxStyle2(size, weight, borderRadius)}>{children[1]}</div>
     </div>
   );
 };
