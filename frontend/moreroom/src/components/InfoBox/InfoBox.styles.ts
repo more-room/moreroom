@@ -7,6 +7,7 @@ export const base = (
   scale?: ColorScale,
   size?: number,
   weight?: FontWeight,
+  // fontSize?: number,
   borderRadius?: number,
 
 ) => css`
@@ -16,5 +17,8 @@ background-color: ${Colors['grey']['800']};
 font-size: ${size}rem;
 font-weight: ${weight};
 border-radius: ${borderRadius}rem;
-
+text-align: center;
+display: flex;
+width: fit-content;
+align-items: center;
 `
