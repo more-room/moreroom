@@ -39,6 +39,6 @@ export const Primary: Story = {
   args: {
     poster: './assets/image/2ways.jpg',
     title: '2ways',
-    genreList: ['기타'],
+    genreList: ['기타', '추리', '미스터리'],
   },
 };
