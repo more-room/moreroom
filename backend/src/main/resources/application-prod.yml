@@ -41,6 +41,12 @@ spring:
     mongodb:
       uri: ${MONGODB_URL}
 
+  rabbitmq:
+    username: ${RABBITMQ_DEFAULT_USER}
+    password: ${RABBITMQ_DEFAULT_PASS}
+    port: 5672
+    host: rabbitmq
+
 server:
   servlet:
     session:

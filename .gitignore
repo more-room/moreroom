@@ -344,4 +344,9 @@ $RECYCLE.BIN/
 /.idea/modules.xml
 /.idea/S11P21D206.iml
 /.idea/vcs.xml
+
+# Custom
+*/application-secret.yml
+
 backend/.idea/codeStyles/codeStyleConfig.xml
+
