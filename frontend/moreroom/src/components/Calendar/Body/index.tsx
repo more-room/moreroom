@@ -5,14 +5,11 @@ import { Typography } from '../../Typography';
 import { head, base, week, headBox } from './Body.styles';
 import { getDays, heads } from '../../../utils/dateUtils';
 import { Date } from '../../Date';
-import dayjs from 'dayjs';
+import { useCalendarStore } from '../../../stores/calendarStore';
 
-export const Body = ({
-  year = dayjs().year(),
-  month = dayjs().month() + 1,
-  children,
-  ...props
-}: BodyProps) => {
+export const Body = ({ children, ...props }: BodyProps) => {
+  const store = useCalendarStore();
+
   return (
     <div css={base} {...props}>
       <div css={head}>
@@ -24,14 +21,15 @@ export const Body = ({
           </div>
         ))}
       </div>
-      {getDays(year, month).map((w) => {
+      {getDays(store.curYear, store.curMonth).map((w) => {
         return (
           <div css={week}>
             {w.map((d) => (
               <Date
+                key={d.date()}
                 date={d.date()}
                 type={
-                  d.month() + 1 !== month
+                  d.month() + 1 !== store.curMonth
                     ? 'disable'
                     : d.day() === 0
                       ? 'sun'
