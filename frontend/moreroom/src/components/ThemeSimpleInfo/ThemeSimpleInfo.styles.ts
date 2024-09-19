@@ -4,13 +4,6 @@ import { Colors } from '../../styles/globalStyle';
 export const base = css`
   background-color: #313131;
   width: fit-content;
-
-  .img {
-    /* width: 5.625rem;
-    height: 7rem; */
-    /* width: 1rem;
-    height: 0.5rem; */
-  }
 `;
 
 export const imgCss = css`
