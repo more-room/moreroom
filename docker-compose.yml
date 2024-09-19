@@ -79,6 +79,7 @@ services:
   rabbitmq:
     container_name: rabbitmq
     image: rabbitmq:3-management-alpine
+    user: "1001:1001"
     init: true
     volumes:
       - /home/ubuntu/rabbitmq/data:/var/lib/rabbitmq # rabbitmq 데이터 접근
