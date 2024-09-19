@@ -163,9 +163,9 @@ def fetch_theme_data():
             database=db_name
         )
         cursor = connection.cursor()
-        cursor.execute("SELECT themeId, playtime, maxPeople FROM Theme")
+        cursor.execute("SELECT themeId, playtime, maxPeople, price FROM Theme")
         result = cursor.fetchall()
-        theme_data = {row[0]: {'playtime': row[1], 'maxPlayer': row[2]} for row in result}
+        theme_data = {row[0]: {'playtime': row[1], 'maxPlayer': row[2], 'price': row[3]} for row in result}
         return theme_data
     except mysql.connector.Error as error:
         print(f"데이터 조회 중 오류 발생: {error}")
@@ -206,7 +206,7 @@ def generate_review_data(num_reviews, member_ids, theme_data):
         member_id = random.choice(member_ids)  # 실제 존재하는 멤버ID 선택
         theme_id = random.choice(list(theme_data.keys()))  # 실제 존재하는 테마ID 선택
         content = generate_review_content()  # 랜덤한 리뷰 내용 생성
-        score = random.randint(1, 5)  # 1에서 5점 사이의 점수
+        score = round(random.uniform(0.5, 5.0) * 2) / 2  # 1에서 5점 사이의 점수
         
         # 생성일, 수정일은 현재 연도 내의 무작위 시간
         created_at = fake.date_time_this_year()
@@ -319,11 +319,12 @@ def generate_history_data(num_records, member_ids, theme_data, review_data):
         member_id = random.choice(member_ids)  # 실제 존재하는 멤버ID 선택
         theme_id = random.choice(list(theme_data.keys()))  # 실제 존재하는 테마ID 선택
         theme_info = theme_data[theme_id]
+        price = theme_info['price']
         playtime = theme_info['playtime']
         max_players = theme_info['maxPlayer']
 
         # memberPlayTime은 테마의 playTime에서 -30분에서 +10분 사이로 랜덤 설정
-        member_play_time = random.randint(playtime - 30, playtime + 10)
+        member_play_time = max(random.randint(playtime - 30, playtime + 10), 15)
         
         # players는 maxPlayer 이하로 설정
         players = random.randint(1, max_players)
@@ -331,10 +332,10 @@ def generate_history_data(num_records, member_ids, theme_data, review_data):
         # 무작위로 힌트 개수, 성공 여부, 가격 설정
         hint_count = random.randint(0, 3)
         success_flag = random.randint(0, 1)  # 0: 실패, 1: 성공
-        price = random.randint(10000, 50000)
+        price = random.randrange(price - 6000, price, 1000)
         
-        # memberLevel은 1.0에서 5.0 사이의 랜덤 값
-        member_level = round(random.uniform(1.0, 5.0), 1)
+        # memberLevel은 1에서 5 사이의 랜덤 값
+        member_level = random.randint(1, 5)
         
         # content는 무작위로 생성된 일기 형식의 문장 사용
         content = generate_diary_content()
