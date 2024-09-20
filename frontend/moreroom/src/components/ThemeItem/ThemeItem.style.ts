@@ -1,35 +1,29 @@
 import { css } from '@emotion/react';
-import { Colors } from '../../styles/globalStyle';
 
-export const base = css`
+export const containerCss = css`
   background-color: #313131;
   display: flex;
   align-items: center;
-  padding: 0.375rem;
 `;
 
 export const imgCss = css`
   width: 5rem;
   height: 6.25rem;
-`
+`;
 
-export const brandCss = css`
-  color: ${Colors['grey']['500']};
-  font-size: 0.625rem;
-  font-weight: 600;
-`
+export const infoCss = css`
+  padding: 0.375rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+`;
 
-export const titleCss = css`
-  color:#fff;
-  font-size: 1rem;
-  font-weight: 700;
-  padding-left: 0.55rem;
-`
+export const infoItemCss = css`
+  display: flex;
+  align-items: center;
+  gap: 0.28125rem;
+`;
 
 export const contentCss = css`
-  color: ${Colors['grey']['500']};
-  font-size: 0.76rem;
-  font-weight: 400;
-  padding-top: 0.375rem;
-  padding-left: 0.55rem;
+  padding-left: 0.1rem;
 `
