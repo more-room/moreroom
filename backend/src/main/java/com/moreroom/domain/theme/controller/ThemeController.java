@@ -1,5 +1,6 @@
 package com.moreroom.domain.theme.controller;
 
+import com.moreroom.domain.theme.dto.request.ThemeListRequestDto;
 import com.moreroom.domain.theme.dto.response.ThemeDetailResponseDto;
 import com.moreroom.domain.theme.service.ThemeService;
 import com.moreroom.global.util.FindMemberService;
@@ -22,11 +23,9 @@ public class ThemeController {
     @GetMapping("/{themeId}")
     public ResponseEntity<ThemeDetailResponseDto> getThemeById(
         @PathVariable(name = "themeId") Integer themeId) {
-        // Todo: memberId 연결
         long memberId = findMemberService.findCurrentMember();
         ThemeDetailResponseDto themeDetailResponseDto = themeService.findThemeById(themeId,
             memberId);
-//        System.out.println(userDetails.toString());
         if (themeDetailResponseDto != null) {
             return new ResponseEntity<>(themeDetailResponseDto,
                 HttpStatus.OK);
@@ -36,8 +35,9 @@ public class ThemeController {
     }
 
     @GetMapping()
-    public ResponseEntity<?> getThemesByFilter() {
-
+    public ResponseEntity<?> getThemesByFilter(ThemeListRequestDto themeListRequestDto) {
+        themeListRequestDto.setDefaults();
+        System.out.println("themeListRequestDto = " + themeListRequestDto.toString());
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }
