@@ -2,6 +2,7 @@ package com.moreroom.domain.theme.controller;
 
 import com.moreroom.domain.theme.dto.response.ThemeDetailResponseDto;
 import com.moreroom.domain.theme.service.ThemeService;
+import com.moreroom.global.util.FindMemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,12 +17,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class ThemeController {
 
     private final ThemeService themeService;
+    private final FindMemberService findMemberService;
 
     @GetMapping("/{themeId}")
     public ResponseEntity<ThemeDetailResponseDto> getThemeById(
         @PathVariable(name = "themeId") Integer themeId) {
         // Todo: memberId 연결
-        ThemeDetailResponseDto themeDetailResponseDto = themeService.findThemeById(themeId, 4L);
+        long memberId = findMemberService.findCurrentMember();
+        ThemeDetailResponseDto themeDetailResponseDto = themeService.findThemeById(themeId,
+            memberId);
 //        System.out.println(userDetails.toString());
         if (themeDetailResponseDto != null) {
             return new ResponseEntity<>(themeDetailResponseDto,

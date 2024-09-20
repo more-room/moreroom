@@ -23,15 +23,15 @@ public class ThemeService {
 
     public ThemeDetailResponseDto findThemeById(Integer themeId, Long memberId) {
         // 1. theme 조회
-        Theme theme = themeRepository.findByThemeId(themeId).orElseThrow(
+        Theme theme = themeRepository.findById(themeId).orElseThrow(
             ThemeNotFoundException::new);
         // 2. review 정보 합산
-        List<Review> reviewList = reviewRepository.findAllByThemeId(theme.getThemeId());
+        List<Review> reviewList = reviewRepository.findAllByThemeThemeId(theme.getThemeId());
         int reviewCount = reviewList.size();
         double reviewScore = reviewList.stream().mapToDouble(Review::getScore).average().orElse(0);
         // 3. 플레이 여부 확인 (기록)
         boolean playFlag =
-            !historyRepository.findAllByMemberIdAndThemeId(memberId, themeId).isEmpty();
+            !historyRepository.findAllByMemberMemberIdAndThemeThemeId(memberId, themeId).isEmpty();
         // 4. Dto 변환 후 반환
         return ThemeDetailResponseDto.toDto(theme, reviewCount, reviewScore, playFlag);
     }

@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ThemeRepository extends JpaRepository<Theme, Integer> {
 
-    Optional<Theme> findByThemeId(Integer themeId);
+    Optional<Theme> findById(Integer id);
 }

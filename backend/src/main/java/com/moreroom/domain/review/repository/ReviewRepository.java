@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
-    List<Review> findAllByThemeId(Integer themeId);
+    List<Review> findAllByThemeThemeId(Integer themeId);
 }
