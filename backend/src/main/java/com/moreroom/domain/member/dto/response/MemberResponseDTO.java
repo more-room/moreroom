@@ -22,7 +22,7 @@ public class MemberResponseDTO {
             .nickname(member.getNickname())
             .gender((member.getGender().equals(false)) ? "M" : "F")
             .birth(member.getBirth())
-            .regionId(member.getRegionId())
+            .regionId(member.getRegion().getRegionId())
             .clearRoom(member.getClearRoom())
             .build();
     }
