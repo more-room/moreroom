@@ -15,17 +15,6 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @RequiredArgsConstructor
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-  @Value("${spring.rabbitmq.host}")
-  private String relayHost;
-
-  @Value("${spring.rabbitmq.port}")
-  private int relayPort;
-
-  @Value("${spring.rabbitmq.username}")
-  private String relayUsername;
-
-  @Value("${spring.rabbitmq.password}")
-  private String relayPassword;
 
   /**
    * enable a simple memory-based message broker
@@ -37,19 +26,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
    */
   @Override
   public void configureMessageBroker(MessageBrokerRegistry registry) {
-    // rabbitmq 설정
-//    registry.setApplicationDestinationPrefixes("/pub") //메세지를 보낼(publish) 경로 설정
-//        .setUserDestinationPrefix("/users") //특정 사용자에게 메세지 전송시 사용할 주소
-//        .enableStompBrokerRelay("/queue", "/topic", "/exchange") //메세지 수신(subscribe), 경로를 설정해주는 메서드
-//        .setRelayHost(relayHost) //?
-//        .setVirtualHost("/") //?
-//        .setRelayPort(relayPort) // RabbitMQ STOMP 기본 포트
-//        .setSystemLogin(relayUsername)
-//        .setSystemPasscode(relayPassword)
-//        .setClientLogin(relayUsername)
-//        .setClientPasscode(relayPassword);
-
-    registry.enableSimpleBroker("/topic"); //SimpleBroker 거쳐서 바로 구독자에게 전송
+    //topic: 구독한 모든사람에게 전송, /queue: 한명에게만 전송
+    registry.enableSimpleBroker("/topic", "/queue"); //SimpleBroker 거쳐서 바로 구독자에게 전송
     registry.setApplicationDestinationPrefixes("/app"); //Handler 거쳐서 가공 후 구독자에게 전송
   }
 
@@ -65,6 +43,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
   //클라이언트에게 오는 메세지 처리
   @Override
   public void configureClientInboundChannel(ChannelRegistration registration) {
-    WebSocketMessageBrokerConfigurer.super.configureClientInboundChannel(registration);
+    //ChannelRegistration에 ChannelInterceptor을 상속받아서 preSend를 구현한 후 인터셉터로 등록
+    registration.interceptors();
   }
 }
