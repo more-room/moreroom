@@ -12,5 +12,5 @@ export const base = (bgColor?: Palette, bgColorScale?: ColorScale) => css`
     ? !bgColorScale
       ? MainColors[bgColor]
       : Colors[bgColor][bgColorScale]
-    : '#313131'};
+    : '#212121'};
 `;
