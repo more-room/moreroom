@@ -1,11 +1,18 @@
 package com.moreroom.domain.history.entity;
 
+import com.moreroom.domain.member.entity.Member;
+import com.moreroom.domain.review.entity.Review;
+import com.moreroom.domain.theme.entity.Theme;
 import com.moreroom.global.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,11 +32,15 @@ public class History extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long historyId;
-    @Column(nullable = false)
-    private Long memberId;
-    @Column(nullable = false)
-    private Integer themeId;
-    private Long reviewId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false, name = "memberId")
+    private Member member;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false, name = "themeId")
+    private Theme theme;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reviewId")
+    private Review review;
     private Integer memberPlayTime;
     private Integer price;
     private Integer hintCount;
