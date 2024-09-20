@@ -1,13 +1,13 @@
 import React from 'react';
 import './App.css';
 import { Route, Routes } from 'react-router-dom';
-import { Test } from './pages/Test';
+import { ThemeList } from './pages/Themes/ThemeList';
 
 function App() {
   return (
     <>
       <Routes>
-        <Route path="/test" element={<Test />} />
+        <Route path="/themes" element={<ThemeList />} />
       </Routes>
     </>
   );
