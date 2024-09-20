@@ -1,42 +1,4 @@
-export interface ITheme {
-  themeId?: number;
-  poster?: string;
-  title?: string;
-  genreId?: number;
-  genrename?: string;
-  playtime?: number;
-  minPeople?: number;
-  maxPeople?: number;
-  level?: number;
-  price?: number;
-  description?: string;
-  memberLevel?: number;
-  reviewCount?: number;
-  reviewScore?: number;
-  brandName?: string;
-  branchName?: string;
-  playFlag?: boolean;
-  // cafeId: number,
-  // regionId: string,
-  // address: string,
-}
-
-export interface ThemeList {
-  themeList: ITheme[];
-}
-
-export interface ICafe {
-  cafeId: number;
-  brandId: number;
-  regionId: string;
-  address: string;
-  cafeName: string;
-  tel: string;
-  link: string;
-  latitude: number;
-  longitude: number;
-  themeCount: number;
-}
+import { IThemeListReview } from './reviewTypes';
 
 /* 제목 검색 결과 */
 export interface ISearchTitleResult {
@@ -61,5 +23,49 @@ export interface ISearchThemesRequestParameter {
   title: string;
   pageNumber: number;
   pageSize: number;
-  sort: string;
+}
+
+/* 테마 공통 */
+export interface IThemeCommon {
+  themeId: number;
+  title: string;
+  poster: string;
+  playtime: number;
+  genreList: string[];
+  review: IThemeListReview;
+}
+
+/* 테마 목록 조회 - 테마 목록 */
+export interface IThemeListItem extends IThemeCommon {
+  regionId: string;
+}
+
+export interface IThemeList {
+  themeList: IThemeListItem[];
+}
+
+/* 테마 목록 조회 */
+export interface IThemeListResponse {
+  content: IThemeList;
+  pageNumber: number;
+  pageSize: number;
+  totalPage: number;
+  totalElements: number;
+}
+
+/* 테마 상세 조회 */
+export interface IThemeDetail extends IThemeCommon {
+  minPeople: number;
+  maxPeople: number;
+  level: number;
+  price: number;
+  description: string;
+  memberLevel: number;
+  member: {
+    playFlag: boolean;
+  };
+}
+
+export interface IThemeDetailResponse {
+  theme: IThemeDetail;
 }

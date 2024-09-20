@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
-import { ThemeItemInfoProps } from './ThemeItem.types';
+import { ThemeItemProps } from './ThemeItem.types';
 import {
   containerCss,
   contentCss,
@@ -14,19 +14,15 @@ import { Icon } from '../Icon';
 import { Typography } from '../Typography';
 import { LabeledTypography } from '../LabeledTypography';
 
-export const ThemeItemInfo = ({
+export const ThemeItem = ({
   theme,
-  pattern='',
+  pattern = '',
   ...props
-}: ThemeItemInfoProps) => {
+}: ThemeItemProps) => {
   return (
     <div css={containerCss} {...props}>
-      <div >
-        <img
-          css={imgCss}
-          src={theme?.poster}
-          alt="포스터 사진"
-        />
+      <div>
+        <img css={imgCss} src={theme?.poster} alt="포스터 사진" />
       </div>
       <div css={infoCss}>
         <div css={infoItemCss}>
@@ -37,13 +33,13 @@ export const ThemeItemInfo = ({
             {theme?.brandName} - {theme?.branchName}
           </Typography>
         </div>
-          <LabeledTypography
-            normalColor="light"
-            pattern={pattern}
-            size={1}
-            str={theme?.title ?? '테마 없음'} // undefined일 경우 '테마 없음' 출력
-            weight={700}
-          />
+        <LabeledTypography
+          normalColor="light"
+          pattern={pattern}
+          size={1}
+          str={theme?.title ?? '테마 없음'} // undefined일 경우 '테마 없음' 출력
+          weight={700}
+        />
         <Typography
           css={contentCss}
           color="grey"
