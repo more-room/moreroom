@@ -9,6 +9,7 @@ import com.moreroom.domain.member.dto.request.PasswordChangeDTO;
 import com.moreroom.domain.member.dto.response.MemberProfileResponseDTO;
 import com.moreroom.domain.member.dto.response.MemberResponseDTO;
 import com.moreroom.domain.member.entity.Member;
+import com.moreroom.domain.region.entity.Region;
 import com.moreroom.domain.mapping.member.entity.MemberHashtagMapping;
 import com.moreroom.domain.member.exception.MemberExistsEmailException;
 import com.moreroom.domain.member.exception.MemberExistsNicknameException;
@@ -16,6 +17,7 @@ import com.moreroom.domain.member.exception.MemberNotFoundException;
 import com.moreroom.domain.member.exception.MemberPasswordNotMatchedException;
 import com.moreroom.domain.mapping.member.repository.MemberHashtagMappingRepository;
 import com.moreroom.domain.member.repository.MemberRepository;
+import com.moreroom.domain.region.repository.RegionRepository;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +33,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final HashtagRepository hashtagRepository;
+    private final RegionRepository regionRepository;
     private final MemberHashtagMappingRepository memberHashtagMappingRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -54,7 +57,7 @@ public class MemberService {
             .password(passwordEncoder.encode(memberSignupRequestDTO.getPassword()))
             .nickname(memberSignupRequestDTO.getNickname())
             .gender(memberSignupRequestDTO.getGender())
-            .regionId(memberSignupRequestDTO.getRegionId())
+            .region(regionRepository.getReferenceById(memberSignupRequestDTO.getRegionId()))
             .birth(memberSignupRequestDTO.getBirth())
             .build();
 
@@ -93,7 +96,9 @@ public class MemberService {
         if (memberRepository.findByEmail(email).isPresent()) {
             Member member = memberRepository.findByEmail(email).get();
 
-            member.updateMember(memberUpdateRequestDTO);
+            Region region = regionRepository.getReferenceById(memberUpdateRequestDTO.getRegionId());
+
+            member.updateMember(memberUpdateRequestDTO, region);
         }
         else {
             throw new MemberNotFoundException();

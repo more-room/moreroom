@@ -1,11 +1,14 @@
 package com.moreroom.domain.cafe.entity;
 
 import com.moreroom.domain.brand.entity.Brand;
+import com.moreroom.domain.region.entity.Region;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
@@ -24,9 +27,12 @@ public class Cafe {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer cafeId;
-    private Integer brandId;
-    @Column(nullable = false, length = 50)
-    private String regionId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "brandId")
+    private Brand brand;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "regionId")
+    private Region region;
     @Column(nullable = false, length = 50)
     private String cafeName;
     @Column(length = 100)

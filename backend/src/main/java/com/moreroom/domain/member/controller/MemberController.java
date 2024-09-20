@@ -143,7 +143,7 @@ public class MemberController {
 
         if (memberService.checkExistEmail(emailDTO.getEmail()).equals(Boolean.TRUE)) {
             response.put("duplicated", "True");
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
         else {
             response.put("duplicated", "False");
@@ -157,7 +157,7 @@ public class MemberController {
 
         if (memberService.checkExistNickname(nicknameDTO.getNickname()).equals(Boolean.TRUE)) {
             response.put("duplicated", "True");
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } else {
             response.put("duplicated", "False");
             return new ResponseEntity<>(response, HttpStatus.OK);
