@@ -1,24 +1,35 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
 import { ThemeItemInfoProps } from './ThemeItem.types';
-import { containerCss, contentCss, imgCss, infoCss, infoItemCss } from './ThemeItem.style';
+import {
+  containerCss,
+  contentCss,
+  imgCss,
+  infoCss,
+  infoItemCss,
+  lineCss,
+} from './ThemeItem.style';
 import { MapPinIcon, StarIcon } from '@heroicons/react/24/solid';
 import { Icon } from '../Icon';
 import { Typography } from '../Typography';
+import { LabeledTypography } from '../LabeledTypography';
+import { ThemeTypes } from '../../types/themeTypes';
 
 export const ThemeItemInfo = ({
   poster,
-  title,
+  title = '2Ways',
   genreList = ['기타'],
   brandName,
   branchName,
   playtime,
-  review,
+  reviewCount,
+  labeled,
+  pattern='',
   ...props
 }: ThemeItemInfoProps) => {
   return (
     <div css={containerCss} {...props}>
-      <div>
+      <div >
         <img
           css={imgCss}
           src={`${process.env.PUBLIC_URL}/2ways.jpg`}
@@ -34,10 +45,26 @@ export const ThemeItemInfo = ({
             {brandName} - {branchName}
           </Typography>
         </div>
-        <Typography css={contentCss} color="light" size={1} weight={700}>
-          2Ways
-        </Typography>
-        <Typography css={contentCss} color="grey" scale="500" size={0.76} weight={400}>
+        {labeled ? (
+          <LabeledTypography
+            normalColor="light"
+            pattern={pattern}
+            size={1}
+            str={title}
+            weight={700}
+          />
+        ) : (
+          <Typography css={contentCss} color="light" size={1} weight={700}>
+            {title}
+          </Typography>
+        )}
+        <Typography
+          css={contentCss}
+          color="grey"
+          scale="500"
+          size={0.76}
+          weight={400}
+        >
           {playtime}분 / {genreList.join(', ')}
         </Typography>
         <div css={infoItemCss}>
@@ -45,9 +72,10 @@ export const ThemeItemInfo = ({
             <StarIcon />
           </Icon>
           <Typography color="grey" scale="500" size={0.76} weight={400}>
-            리뷰({review})
+            리뷰({reviewCount})
           </Typography>
         </div>
+        <div css={lineCss}></div>
       </div>
     </div>
   );

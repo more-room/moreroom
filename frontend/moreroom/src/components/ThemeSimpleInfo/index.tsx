@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
 import { ThemeSimpleInfoProps } from './ThemeSimpleInfo.types';
-import './2ways.jpg'
 import { base, genreCss, imgCss, titleCss } from './ThemeSimpleInfo.styles';
 export const ThemeSimpleInfo = ({
   poster = '/2ways.jpg',

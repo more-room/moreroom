@@ -37,9 +37,17 @@ const meta = {
       description:
         '방탈출 플레이타임입니다.',
     },
-    review: {
+    reviewCount: {
       description:
         '방탈출 리뷰 갯수입니다.',
+    },
+    labeled: {
+      description:
+        '검색용/조회용 구분하는 용도입니다.',
+    },
+    pattern: {
+      description:
+        '검색 키워드입니다.',
     },
   },
 } satisfies Meta<typeof ThemeItemInfo>;
@@ -56,6 +64,6 @@ export const Primary: Story = {
     brandName:'넥스트 에디션',
     branchName:'건대 2호점',
     playtime:80,
-    review:127,
+    reviewCount:127,
   },
 };
