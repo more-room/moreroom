@@ -13,17 +13,9 @@ import { MapPinIcon, StarIcon } from '@heroicons/react/24/solid';
 import { Icon } from '../Icon';
 import { Typography } from '../Typography';
 import { LabeledTypography } from '../LabeledTypography';
-import { ThemeTypes } from '../../types/themeTypes';
 
 export const ThemeItemInfo = ({
-  poster,
-  title = '2Ways',
-  genreList = ['기타'],
-  brandName,
-  branchName,
-  playtime,
-  reviewCount,
-  labeled,
+  theme,
   pattern='',
   ...props
 }: ThemeItemInfoProps) => {
@@ -32,7 +24,7 @@ export const ThemeItemInfo = ({
       <div >
         <img
           css={imgCss}
-          src={`${process.env.PUBLIC_URL}/2ways.jpg`}
+          src={theme?.poster}
           alt="포스터 사진"
         />
       </div>
@@ -42,22 +34,16 @@ export const ThemeItemInfo = ({
             <MapPinIcon />
           </Icon>
           <Typography color="grey" scale="500" size={0.625} weight={600}>
-            {brandName} - {branchName}
+            {theme?.brandName} - {theme?.branchName}
           </Typography>
         </div>
-        {labeled ? (
           <LabeledTypography
             normalColor="light"
             pattern={pattern}
             size={1}
-            str={title}
+            str={theme?.title ?? '테마 없음'} // undefined일 경우 '테마 없음' 출력
             weight={700}
           />
-        ) : (
-          <Typography css={contentCss} color="light" size={1} weight={700}>
-            {title}
-          </Typography>
-        )}
         <Typography
           css={contentCss}
           color="grey"
@@ -65,14 +51,14 @@ export const ThemeItemInfo = ({
           size={0.76}
           weight={400}
         >
-          {playtime}분 / {genreList.join(', ')}
+          {theme?.playtime}분 / {theme?.genrename}
         </Typography>
         <div css={infoItemCss}>
           <Icon color="secondary" size={1}>
             <StarIcon />
           </Icon>
           <Typography color="grey" scale="500" size={0.76} weight={400}>
-            리뷰({reviewCount})
+            리뷰({theme?.reviewCount})
           </Typography>
         </div>
         <div css={lineCss}></div>

@@ -6,6 +6,8 @@ export const containerCss = css`
   display: flex;
   height: 6.25rem;
   align-items: flex-start;
+  border-radius: 0.25rem;
+  margin-bottom: 10rem;
 `;
 
 export const imgCss = css`
@@ -32,7 +34,7 @@ export const contentCss = css`
 `;
 
 export const lineCss = css`
-  width: 80vw;
+  width: 70vw; // 스크린 크기의 70%
   border: 0.0625rem solid ${Colors['grey']['900']};
   margin-top: 0.18rem !important;
   align-self: flex-end;

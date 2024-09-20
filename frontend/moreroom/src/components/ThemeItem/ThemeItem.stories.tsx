@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import type { Meta, StoryObj } from '@storybook/react';
 import { ThemeItemInfo } from ".";
+import { ThemeList } from "../../types/themeTypes";
 
 const meta = {
   title: 'UI/Components/ThemeItemInfo',
@@ -17,33 +18,8 @@ const meta = {
   ],
   tags: ['!autodocs'],
   argTypes: {
-    poster: {
-      description: '방탈출 포스터 url입니다.',
-    },
-    title: {
-      description: '방탈출 타이틀입니다.',
-    },
-    genreList: {
-      description:
-        '방탈출 장르 리스트입니다.',
-    },
-    brandName: {
-      description: '방탈출 브랜드 이름입니다.',
-    },
-    branchName: {
-      description: '방탈출 지점 이름입니다.',
-    },
-    playtime: {
-      description:
-        '방탈출 플레이타임입니다.',
-    },
-    reviewCount: {
-      description:
-        '방탈출 리뷰 갯수입니다.',
-    },
-    labeled: {
-      description:
-        '검색용/조회용 구분하는 용도입니다.',
+    theme: {
+      description: '',
     },
     pattern: {
       description:
@@ -57,13 +33,25 @@ export default meta;
 type Story = StoryObj<typeof ThemeItemInfo>;
 
 export const Primary: Story = {
-  args: {
-    poster: './assets/image/2ways.jpg',
-    title: '2ways',
-    genreList: ['기타', '추리', '미스터리'],
-    brandName:'넥스트 에디션',
-    branchName:'건대 2호점',
-    playtime:80,
-    reviewCount:127,
+  args: {pattern:''},
+  render: () => {
+    const [themeList, setThemeList] = useState<ThemeList>({
+      themeList: [
+        {
+          poster: '/posters/heaven.png',
+          title: 'HEAVEN',
+          genrename: '스릴러',
+          playtime: 60,
+          reviewCount: 127,
+          brandName: '넥스트 에디션',
+          branchName: '건대2호점',
+        },
+      ],
+    });
+    return (
+      <div style={{ width: '328px' }}>
+        <ThemeItemInfo theme={themeList.themeList[0]}/>
+      </div>
+    );
   },
 };
