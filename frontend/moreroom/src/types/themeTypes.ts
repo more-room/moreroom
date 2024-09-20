@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 
-export interface ThemeTypes {
+export interface ITheme {
   themeId?: number,
   poster?: string,
   title?: string,
@@ -24,10 +24,10 @@ export interface ThemeTypes {
 }
 
 export interface ThemeList {
-  themeList : ThemeTypes[];
+  themeList : ITheme[];
 }
 
-export interface CafeTypes {
+export interface ICafe {
   cafeId: number,
   brandId: number,
   regionId: string,

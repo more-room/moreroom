@@ -1,6 +1,5 @@
-import { ReactNode } from "react";
-import { ThemeTypes } from "../../types/themeTypes";
+import { ITheme } from "../../types/themeTypes";
 
 export interface ThemeSimpleInfoProps extends React.ComponentProps<'div'> {
-  theme?: ThemeTypes,
+  theme?: ITheme,
 }
