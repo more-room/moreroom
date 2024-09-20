@@ -21,7 +21,7 @@ import lombok.ToString;
 @Builder
 @AllArgsConstructor
 @ToString(callSuper = true)
-@IdClass(PartyHashtagMapping.class)
+@IdClass(PartyRequestHashtagMapping.class)
 public class PartyRequestHashtagMapping {
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
