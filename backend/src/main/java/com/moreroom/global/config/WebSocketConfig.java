@@ -1,5 +1,6 @@
 package com.moreroom.global.config;
 
+import com.moreroom.global.interceptor.WebSocketInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +16,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @RequiredArgsConstructor
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
+  private final WebSocketInterceptor webSocketInterceptor;
 
   /**
    * enable a simple memory-based message broker
@@ -44,6 +46,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
   @Override
   public void configureClientInboundChannel(ChannelRegistration registration) {
     //ChannelRegistration에 ChannelInterceptor을 상속받아서 preSend를 구현한 후 인터셉터로 등록
-    registration.interceptors();
+    registration.interceptors(webSocketInterceptor);
   }
 }

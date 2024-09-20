@@ -17,8 +17,8 @@ public class PartyService {
   // 채팅방 만들기
   public Party createInitialParty(Theme theme, Member master) {
     return Party.builder()
-        .themeId(theme.getThemeId())
-        .masterId(master.getMemberId())
+        .theme(theme)
+        .masterMember(master)
         .roomName(theme.getTitle() + " " + master.getNickname())
         .maxMember(3)
         .build();
