@@ -1,4 +1,4 @@
-package com.moreroom.domain.theme.controlleer;
+package com.moreroom.domain.theme.controller;
 
 import com.moreroom.domain.theme.dto.response.ThemeDetailResponseDto;
 import com.moreroom.domain.theme.service.ThemeService;
