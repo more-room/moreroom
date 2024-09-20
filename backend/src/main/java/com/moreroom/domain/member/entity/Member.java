@@ -12,7 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.util.Date;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -41,10 +41,10 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private Boolean gender;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "regionId")
+    @JoinColumn(name = "regionId", nullable = false)
     private Region region;
     @Column(nullable = false)
-    private Date birth;
+    private LocalDate birth;
     @Column(nullable = false, name= "clearRoom")
     @Builder.Default
     private Integer clearRoom = 0;
