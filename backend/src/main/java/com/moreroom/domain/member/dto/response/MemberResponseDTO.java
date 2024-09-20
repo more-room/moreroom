@@ -1,7 +1,7 @@
 package com.moreroom.domain.member.dto.response;
 
 import com.moreroom.domain.member.entity.Member;
-import java.util.Date;
+import java.time.LocalDate;
 import lombok.Builder;
 import lombok.Data;
 
@@ -12,7 +12,7 @@ public class MemberResponseDTO {
     private String email;
     private String nickname;
     private String gender;
-    private Date birth;
+    private LocalDate birth;
     private String regionId;
     private Integer clearRoom;
 
@@ -22,7 +22,7 @@ public class MemberResponseDTO {
             .nickname(member.getNickname())
             .gender((member.getGender().equals(false)) ? "M" : "F")
             .birth(member.getBirth())
-            .regionId(member.getRegionId())
+            .regionId(member.getRegion().getRegionId())
             .clearRoom(member.getClearRoom())
             .build();
     }

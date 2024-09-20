@@ -30,13 +30,9 @@ public class AuthService {
 
             UserDetails userDetails = new User(member.getEmail(), member.getPassword(), new ArrayList<>());
             Authentication auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-//            SecurityContextHolder.getContext().setAuthentication(auth);
-//            System.out.println(SecurityContextHolder.getContext().getAuthentication());
             SecurityContext context = SecurityContextHolder.createEmptyContext();
             context.setAuthentication(auth);
             SecurityContextHolder.setContext(context);
-            System.out.println(auth);
-            System.out.println(context);
             return true;
         }
         return false;
