@@ -1,6 +1,7 @@
 package com.moreroom.global.config;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -14,6 +15,18 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @RequiredArgsConstructor
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
+  @Value("${spring.rabbitmq.host}")
+  private String relayHost;
+
+  @Value("${spring.rabbitmq.port}")
+  private int relayPort;
+
+  @Value("${spring.rabbitmq.username}")
+  private String relayUsername;
+
+  @Value("${spring.rabbitmq.password}")
+  private String relayPassword;
+
   /**
    * enable a simple memory-based message broker
    * to carry the greeting messages back to the client
@@ -24,10 +37,20 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
    */
   @Override
   public void configureMessageBroker(MessageBrokerRegistry registry) {
-    registry.setPathMatcher(new AntPathMatcher(".")); //url을 chat/room/3 -> chat.room.3로 참조하기 위한 설정
-    registry.setApplicationDestinationPrefixes("/pub"); //Handler 거쳐서 가공 후 구독자에게 전송
-    registry.enableStompBrokerRelay("/queue", "/topic", "/exchange", "/amq/queue"); //stomp borker relay 활성화. rabbitmq 연동 위한 설정
-    // /queue, /topic, /exchange, /amq/queue로 시작하는 목적지로 메세지 발행하면 이 메세지들은 외부 STOMP 브로커로 전달
+    // rabbitmq 설정
+//    registry.setApplicationDestinationPrefixes("/pub") //메세지를 보낼(publish) 경로 설정
+//        .setUserDestinationPrefix("/users") //특정 사용자에게 메세지 전송시 사용할 주소
+//        .enableStompBrokerRelay("/queue", "/topic", "/exchange") //메세지 수신(subscribe), 경로를 설정해주는 메서드
+//        .setRelayHost(relayHost) //?
+//        .setVirtualHost("/") //?
+//        .setRelayPort(relayPort) // RabbitMQ STOMP 기본 포트
+//        .setSystemLogin(relayUsername)
+//        .setSystemPasscode(relayPassword)
+//        .setClientLogin(relayUsername)
+//        .setClientPasscode(relayPassword);
+
+    registry.enableSimpleBroker("/topic"); //SimpleBroker 거쳐서 바로 구독자에게 전송
+    registry.setApplicationDestinationPrefixes("/app"); //Handler 거쳐서 가공 후 구독자에게 전송
   }
 
   /**
@@ -35,7 +58,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
    */
   @Override
   public void registerStompEndpoints(StompEndpointRegistry registry) {
-    registry.addEndpoint("/ws")  //ws://localhost:8081/ws 에서 웹소켓 연결
+    registry.addEndpoint("/ws")  //ws://localhost:8081/api/ws 에서 웹소켓 연결
         .setAllowedOriginPatterns("*");
   }
 
