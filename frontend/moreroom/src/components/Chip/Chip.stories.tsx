@@ -22,10 +22,16 @@ const meta = {
       description: 'text를 입력해주세요',
     },
     color: {
-      description: '글자 색상입니다.\n기본 색상은 grey 입니다.',
+      description: 'Chip 색상입니다.',
     },
     border: {
-      description: '적용할 사이즈입니다.\nrem 단위로 입력하면 됩니다.',
+      description: '테두리 둥근 정도입니다.\nrem 단위로 입력하면 됩니다.',
+    },
+    fontSize: {
+      description: '적용할 폰트 사이즈입니다.\nrem 단위로 입력하면 됩니다.',
+    },
+    fontWeight: {
+      description: '적용할 폰트 굵기입니다.\nrem 단위로 입력하면 됩니다.',
     },
   },
 } satisfies Meta<typeof Chip>;
@@ -36,7 +42,7 @@ type Story = StoryObj<typeof Chip>;
 
 export const Primary: Story = {
   args: {
-    children: 'text',
+    children: 'Chip',
     color: 'primary',
     border: 1,
     fontSize: 1,
@@ -118,33 +124,3 @@ export const FontWeights: Story = {
     </div>
   ),
 }
-
-// export const FilterChipSizes: Story = {
-//   args: {
-//     ...Primary.args,
-//   },
-//   render: (args) => (
-//     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
-//       {sizes.map((size) => (
-//         <Chip key={size} {...args}>
-//           {size}rem
-//         </Chip>
-//       ))}
-//     </div>
-//   ),
-// };
-
-// export const borderRadius: Story = {
-//   args: {
-//     ...Primary.args,
-//   },
-//   render: (args) => (
-//     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
-//       {borderradius.map((border) => (
-//         <Chip key={border} {...args} border={border}>
-//           {border}rem
-//         </Chip>
-//       ))}
-//     </div>
-//   ),
-// };
