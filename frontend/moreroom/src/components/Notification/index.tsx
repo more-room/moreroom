@@ -20,9 +20,8 @@ export const Notification = ({
         alignItems: 'center',
         justifyContent: 'center',
       }}
-      {...props}
     >
-      <div css={base}>
+      <div css={base} {...props}>
         <Typography color="light" size={1} weight={500}>
           {ment}
         </Typography>

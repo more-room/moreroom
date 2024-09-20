@@ -18,7 +18,17 @@ const meta = {
     ),
   ],
   tags: ['!autodocs'],
-  argTypes: {},
+  argTypes: {
+    ment: {
+      description: '설명할 멘트입니다',
+    },
+    type: {
+      description: 'Notification 의 종류입니다',
+    },
+    handler: {
+      description: '확인 버튼에 대한 핸들러 함수입니다',
+    },
+  },
 } satisfies Meta<typeof Notification>;
 
 export default meta;

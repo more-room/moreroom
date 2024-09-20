@@ -2,6 +2,7 @@ package com.moreroom.domain.member.controller;
 
 import com.moreroom.domain.member.dto.request.ExistEmailDTO;
 import com.moreroom.domain.member.dto.request.ExistNicknameDTO;
+import com.moreroom.domain.member.dto.request.HashtagDTO;
 import com.moreroom.domain.member.dto.request.MemberSignupRequestDTO;
 import com.moreroom.domain.member.dto.request.MemberUpdateRequestDTO;
 import com.moreroom.domain.member.dto.request.PasswordChangeDTO;
@@ -32,7 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/auth/member")
+@RequestMapping("/auth/member")
 public class MemberController {
 
     private final MemberService memberService;
@@ -167,6 +168,12 @@ public class MemberController {
     public ResponseEntity<Member> passwordChange(@RequestBody @Valid PasswordChangeDTO passwordChangeDTO) {
         memberService.passwordChange(passwordChangeDTO);
 
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/hashtag")
+    public ResponseEntity<Member> hashtagChange(@RequestBody HashtagDTO hashtagDTO) {
+        memberService.hashtagChange(hashtagDTO);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

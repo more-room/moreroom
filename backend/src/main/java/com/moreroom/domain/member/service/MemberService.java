@@ -1,17 +1,23 @@
 package com.moreroom.domain.member.service;
 
+import com.moreroom.domain.hashtag.entity.Hashtag;
+import com.moreroom.domain.hashtag.repository.HashtagRepository;
+import com.moreroom.domain.member.dto.request.HashtagDTO;
 import com.moreroom.domain.member.dto.request.MemberSignupRequestDTO;
 import com.moreroom.domain.member.dto.request.MemberUpdateRequestDTO;
 import com.moreroom.domain.member.dto.request.PasswordChangeDTO;
 import com.moreroom.domain.member.dto.response.MemberProfileResponseDTO;
 import com.moreroom.domain.member.dto.response.MemberResponseDTO;
 import com.moreroom.domain.member.entity.Member;
+import com.moreroom.domain.mapping.member.entity.MemberHashtagMapping;
 import com.moreroom.domain.member.exception.MemberExistsEmailException;
 import com.moreroom.domain.member.exception.MemberExistsNicknameException;
 import com.moreroom.domain.member.exception.MemberNotFoundException;
 import com.moreroom.domain.member.exception.MemberPasswordNotMatchedException;
+import com.moreroom.domain.mapping.member.repository.MemberHashtagMappingRepository;
 import com.moreroom.domain.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,6 +30,8 @@ import org.springframework.stereotype.Service;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final HashtagRepository hashtagRepository;
+    private final MemberHashtagMappingRepository memberHashtagMappingRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
@@ -40,7 +48,6 @@ public class MemberService {
         if (memberRepository.existsByNickname(memberSignupRequestDTO.getNickname())) {
             throw new MemberExistsNicknameException();
         }
-
 
         Member member = Member.builder()
             .email(memberSignupRequestDTO.getEmail())
@@ -112,6 +119,34 @@ public class MemberService {
         if (memberRepository.findByEmail(email).isPresent()) {
             Member member = memberRepository.findByEmail(email).get();
             member.changePassword(passwordEncoder.encode(passwordChangeDTO.getNewPassword()));
+        }
+    }
+
+    @Transactional
+    public void hashtagChange(HashtagDTO hashtagDTO) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (memberRepository.findByEmail(email).isPresent()) {
+            Member member = memberRepository.findByEmail(email).get();
+
+            List<Integer> hashtagIdList = hashtagDTO.getHashtagList();
+
+            List<Hashtag> hashtagList = hashtagRepository.findAllById(hashtagIdList);
+
+            for (Hashtag hashtag : hashtagList) {
+                if (memberHashtagMappingRepository.existsMemberHashtagMappingByMemberAndHashtag(member, hashtag)) {
+                    MemberHashtagMapping memberHashtagMapping = memberHashtagMappingRepository.findByMemberAndHashtag(member, hashtag);
+
+                    memberHashtagMappingRepository.delete(memberHashtagMapping);
+                } else {
+                    MemberHashtagMapping memberHashtagMapping = MemberHashtagMapping.builder()
+                        .member(member)
+                        .hashtag(hashtag)
+                        .build();
+                    memberHashtagMappingRepository.save(memberHashtagMapping);
+                }
+            }
+        } else {
+            throw new MemberNotFoundException();
         }
     }
 }

@@ -46,11 +46,22 @@ const ColorStyle = {
     disabled: '#eee',
   },
   text: {
-    primary: '#000',
-    secondary: Colors.grey['700'],
+    primary: Colors.primary['A200'],
+    secondary: Colors.secondary['400'],
+    danger:Colors.danger['A200'],
+    grey:Colors.grey['600'],
+    dark:Colors.light['900'],
+    light:Colors.dark['900'],
     disabled: Colors.grey.A100,
   },
-  background: '#fff',
+  background: {
+    primary: Colors.primary['50'],
+    secondary: Colors.secondary['50'],
+    danger:Colors.danger['50'],
+    grey:Colors.grey['200'],
+    dark:Colors.dark['900'],
+    light:Colors.light['900'],
+  },
 }
 
 export default ColorStyle;

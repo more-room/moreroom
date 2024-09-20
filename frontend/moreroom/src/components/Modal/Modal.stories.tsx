@@ -18,7 +18,14 @@ const meta = {
     ),
   ],
   tags: ['!autodocs'],
-  argTypes: {},
+  argTypes: {
+    height: {
+      description: '모달의 높이입니다(0~100%)',
+    },
+    children: {
+      description: '모달의 내용입니다',
+    },
+  },
 } satisfies Meta<typeof Modal>;
 
 export default meta;
