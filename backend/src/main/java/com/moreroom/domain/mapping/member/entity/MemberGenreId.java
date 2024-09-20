@@ -1,4 +1,4 @@
-package com.moreroom.domain.member.entity;
+package com.moreroom.domain.mapping.member.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
@@ -6,22 +6,22 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
-public class MemberHashtagId implements Serializable {
+public class MemberGenreId implements Serializable {
     @Column(name = "memberId")
     private Long memberId;
-    @Column(name = "hashtagId")
-    private Long hashtagId;
+    @Column(name = "genreId")
+    private Long genreId;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        MemberHashtagId that = (MemberHashtagId) o;
-        return Objects.equals(memberId, that.memberId) && Objects.equals(hashtagId, that.hashtagId);
+        MemberGenreId that = (MemberGenreId) o;
+        return Objects.equals(memberId, that.memberId) && Objects.equals(genreId, that.genreId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(memberId, hashtagId);
+        return Objects.hash(memberId, genreId);
     }
 }
