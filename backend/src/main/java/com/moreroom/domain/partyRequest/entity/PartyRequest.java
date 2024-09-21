@@ -44,4 +44,11 @@ public class PartyRequest extends BaseEntity {
     @Column(nullable = false)
     @Builder.Default
     private MatchingStatus matchingStatus = NOT_MATCHED;
+
+    @Column(length = 36)
+    private String redisUuid;
+
+    public void setUuid(String uuid) {
+        this.redisUuid = uuid;
+    }
 }

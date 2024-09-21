@@ -1,5 +1,9 @@
 package com.moreroom.global.util;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.HashMap;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -10,7 +14,9 @@ import java.time.Duration;
 @Service
 @RequiredArgsConstructor
 public class RedisUtil {
+
     private final StringRedisTemplate redisTemplate;//Redis에 접근하기 위한 Spring의 Redis 템플릿 클래스
+    private final ObjectMapper objectMapper;
 
     public String getData(String key){//지정된 키(key)에 해당하는 데이터를 Redis에서 가져오는 메서드
         ValueOperations<String,String> valueOperations=redisTemplate.opsForValue();
@@ -27,5 +33,21 @@ public class RedisUtil {
     }
     public void deleteData(String key){//지정된 키(key)에 해당하는 데이터를 Redis에서 삭제하는 메서드
         redisTemplate.delete(key);
+    }
+
+    // HashMap<Long, String> 저장
+    public void saveLongStringHashMapExpire(String key, HashMap<Long, String> hashmap, long duration)
+        throws JsonProcessingException {
+        String hashmapJson = objectMapper.writeValueAsString(hashmap);
+        redisTemplate.opsForValue().set(key, hashmapJson, Duration.ofSeconds(duration));
+    }
+
+    // HashMap<Long, String> 꺼내기
+    public HashMap<Long, String> getLongStringHashMap(String key) throws JsonProcessingException {
+        String hashmapJson = redisTemplate.opsForValue().get(key);
+        if (hashmapJson != null) {
+            return objectMapper.readValue(hashmapJson, new TypeReference<>() {}); // 반환타입이 HashMap<Long, String>이기 때문에 java가 타입 추론을 할 수 있다.(java7)
+        }
+        return null;
     }
 }
