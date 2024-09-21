@@ -1,5 +1,6 @@
 package com.moreroom.global.config;
 
+import com.moreroom.global.interceptor.TestPrincipalHandshakeInterceptor;
 import com.moreroom.global.interceptor.WebSocketInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +18,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
   private final WebSocketInterceptor webSocketInterceptor;
+  private final TestPrincipalHandshakeInterceptor testPrincipalHandshakeInterceptor;
 
   /**
    * enable a simple memory-based message broker
@@ -39,6 +41,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
   @Override
   public void registerStompEndpoints(StompEndpointRegistry registry) {
     registry.addEndpoint("/ws")  //ws://localhost:8081/api/ws 에서 웹소켓 연결
+        .addInterceptors(testPrincipalHandshakeInterceptor)
         .setAllowedOriginPatterns("*");
   }
 
