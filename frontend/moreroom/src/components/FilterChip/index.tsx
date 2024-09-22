@@ -1,24 +1,24 @@
 /** @jsxImportSource @emotion/react */
-import React, { Children } from 'react';
-import { base } from './FilterChip.styles'
+import React from 'react';
+import { base } from './FilterChip.styles';
 import { FilterChipProps } from './FilterChip.types';
 
 export const FilterChip = ({
-  // color = 'primary',
-  // fill = 'secondary',
-  border = 0,
-  weight = 400,
+  color = 'primary',
+  size = 0.875,
+  rounded = false,
   selected = false,
-  scale,
-  size = 1,
-  borderRadius = 0.5,
- 
+  onHandleClick = () => console.log('hello'),
   children = 'text',
   ...props
 }: FilterChipProps) => {
   return (
-    <button css={base( border, size, weight, selected, scale, borderRadius)} {...props}>
+    <div
+      css={base(color, size, rounded, selected)}
+      onClick={onHandleClick}
+      {...props}
+    >
       {children}
-    </button>
+    </div>
   );
 };

@@ -1,29 +1,22 @@
-import { css, SerializedStyles} from '@emotion/react';
-import { ColorScale, FontWeight, Palette } from '../../types/globalStyleTypes';
+import { css } from '@emotion/react';
+import { Palette } from '../../types/globalStyleTypes';
 import { Colors, MainColors } from '../../styles/globalStyle';
-import { number } from 'prop-types';
 
 export const base = (
-  // color: Palette,
-  // fill: Palette,
-  border: number,
+  color: Palette,
   size: number,
-  weight: FontWeight,
+  rounded: boolean,
   selected: boolean,
-  scale?: ColorScale,
-  borderRadius?: number,
-  
-  
 ) => css`
-  
-  // color: ${selected ? Colors['primary']['50'] : Colors['grey']['300']}
-  color: ${selected ? Colors['primary']['A200'] : Colors['grey']['500']};
-  background-color: ${selected ? Colors['primary']['50'] : 'transparent'};
+  width: fit-content;
+  height: fit-content;
+  padding: 0.5rem 1rem;
+  color: ${selected ? MainColors[color] : MainColors['grey']};
+  background-color: ${selected
+    ? Colors[color][color === 'grey' ? '200' : '50']
+    : 'transparent'};
   font-size: ${size}rem;
-  font-weight: ${weight};
-  border-radius: ${borderRadius}rem;
-  border: ${selected ? `${border}rem` : `0.1rem solid ${Colors['grey']['500']}` }
-  
-  
+  font-weight: ${selected ? 700 : 400};
+  border: ${selected ? 0 : 0.0625}rem solid ${MainColors['grey']};
+  border-radius: ${rounded ? 1 : 0.5}rem;
 `;
-
