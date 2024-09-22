@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
-import { ThemeItemInfoProps } from './ThemeItem.types';
+import { ThemeItemProps } from './ThemeItem.types';
 import {
   containerCss,
   contentCss,
@@ -14,19 +14,15 @@ import { Icon } from '../Icon';
 import { Typography } from '../Typography';
 import { LabeledTypography } from '../LabeledTypography';
 
-export const ThemeItemInfo = ({
+export const ThemeItem = ({
   theme,
-  pattern='',
+  pattern = '',
   ...props
-}: ThemeItemInfoProps) => {
+}: ThemeItemProps) => {
   return (
     <div css={containerCss} {...props}>
-      <div >
-        <img
-          css={imgCss}
-          src={theme?.poster}
-          alt="포스터 사진"
-        />
+      <div>
+        <img css={imgCss} src={theme.poster} alt="포스터 사진" />
       </div>
       <div css={infoCss}>
         <div css={infoItemCss}>
@@ -34,16 +30,16 @@ export const ThemeItemInfo = ({
             <MapPinIcon />
           </Icon>
           <Typography color="grey" scale="500" size={0.625} weight={600}>
-            {theme?.brandName} - {theme?.branchName}
+            {theme.cafe.brandName} - {theme.cafe.branchName}
           </Typography>
         </div>
-          <LabeledTypography
-            normalColor="light"
-            pattern={pattern}
-            size={1}
-            str={theme?.title ?? '테마 없음'} // undefined일 경우 '테마 없음' 출력
-            weight={700}
-          />
+        <LabeledTypography
+          normalColor="light"
+          pattern={pattern}
+          size={1}
+          str={theme.title}
+          weight={700}
+        />
         <Typography
           css={contentCss}
           color="grey"
@@ -51,14 +47,18 @@ export const ThemeItemInfo = ({
           size={0.76}
           weight={400}
         >
-          {theme?.playtime}분 / {theme?.genrename}
+          {theme.playtime}분 /{' '}
+          {theme.genreList.map(
+            (genre: string, idx: number) =>
+              genre + (idx === theme.genreList.length - 1 ? '' : ', '),
+          )}
         </Typography>
         <div css={infoItemCss}>
           <Icon color="secondary" size={1}>
             <StarIcon />
           </Icon>
           <Typography color="grey" scale="500" size={0.76} weight={400}>
-            리뷰({theme?.reviewCount})
+            리뷰({theme.review.count})
           </Typography>
         </div>
         <div css={lineCss}></div>

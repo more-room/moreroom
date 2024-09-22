@@ -1,6 +1,6 @@
 import { FontWeight, Palette } from '../../types/globalStyleTypes';
 
-export interface LabeledTypographyProps {
+export interface LabeledTypographyProps extends React.ComponentProps<'div'> {
   str: string;
   pattern: string;
   normalColor?: Palette;
