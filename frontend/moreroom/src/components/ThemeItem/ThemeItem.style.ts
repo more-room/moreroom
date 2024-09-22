@@ -2,25 +2,28 @@ import { css } from '@emotion/react';
 import { Colors } from '../../styles/globalStyle';
 
 export const containerCss = css`
-  background-color: #313131;
   display: flex;
-  height: 6.25rem;
-  align-items: flex-start;
-  border-radius: 0.25rem;
-  margin-bottom: 10rem;
+  align-items: center;
+  column-gap: 0.5rem;
+  width: 100%;
+  padding: 0 1rem;
+  background-color: #313131;
+  box-sizing: border-box;
 `;
 
 export const imgCss = css`
   width: 5rem;
-  height: 6.25rem;
+  height: 6.5rem;
   border-radius: 0.25rem;
 `;
 
 export const infoCss = css`
-  padding: 0.375rem;
   display: flex;
   flex-direction: column;
-  gap: 0.375rem;
+  row-gap: 0.375rem;
+  width: 100%;
+  padding: 1rem 0rem;
+  border-bottom: 1px solid ${Colors['grey']['700']};
 `;
 
 export const infoItemCss = css`
@@ -31,11 +34,4 @@ export const infoItemCss = css`
 
 export const contentCss = css`
   padding-left: 0.1rem;
-`;
-
-export const lineCss = css`
-  width: 70vw; // 스크린 크기의 70%
-  border: 0.0625rem solid ${Colors['grey']['900']};
-  margin-top: 0.18rem !important;
-  align-self: flex-end;
 `;

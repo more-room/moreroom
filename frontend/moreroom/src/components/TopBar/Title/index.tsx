@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Icon } from '../../Icon';
 import { ChevronLeftIcon } from '@heroicons/react/24/outline';
 import { Typography } from '../../Typography';
@@ -10,9 +10,18 @@ export const Title = ({
   type = 'default',
   backHandler = () => console.log('going back'),
   title = '타이틀',
+  defaultValue,
   searchHandler = (value: string) => console.log('input value = ', value),
   ...props
 }: TitleProps) => {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (inputRef.current && defaultValue) {
+      inputRef.current.value = defaultValue;
+    }
+  }, [defaultValue]);
+
   return (
     <div css={base} {...props}>
       {type !== 'withoutBack' && (
@@ -22,6 +31,7 @@ export const Title = ({
       )}
       {type === 'search' ? (
         <input
+          ref={inputRef}
           placeholder="검색어를 입력해주세요"
           onChange={(e) => searchHandler(e.target.value)}
           css={inputCss}

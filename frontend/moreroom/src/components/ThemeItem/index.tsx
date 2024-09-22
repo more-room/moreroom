@@ -7,7 +7,6 @@ import {
   imgCss,
   infoCss,
   infoItemCss,
-  lineCss,
 } from './ThemeItem.style';
 import { MapPinIcon, StarIcon } from '@heroicons/react/24/solid';
 import { Icon } from '../Icon';
@@ -21,15 +20,13 @@ export const ThemeItem = ({
 }: ThemeItemProps) => {
   return (
     <div css={containerCss} {...props}>
-      <div>
-        <img css={imgCss} src={theme.poster} alt="포스터 사진" />
-      </div>
+      <img css={imgCss} src={theme.poster} alt="포스터 사진" />
       <div css={infoCss}>
         <div css={infoItemCss}>
           <Icon color="primary" size={1}>
             <MapPinIcon />
           </Icon>
-          <Typography color="grey" scale="500" size={0.625} weight={600}>
+          <Typography color="grey" scale="500" size={0.8125} weight={500}>
             {theme.cafe.brandName} - {theme.cafe.branchName}
           </Typography>
         </div>
@@ -44,8 +41,8 @@ export const ThemeItem = ({
           css={contentCss}
           color="grey"
           scale="500"
-          size={0.76}
-          weight={400}
+          size={0.8125}
+          weight={500}
         >
           {theme.playtime}분 /{' '}
           {theme.genreList.map(
@@ -57,11 +54,10 @@ export const ThemeItem = ({
           <Icon color="secondary" size={1}>
             <StarIcon />
           </Icon>
-          <Typography color="grey" scale="500" size={0.76} weight={400}>
+          <Typography color="grey" scale="500" size={0.8125} weight={500}>
             리뷰({theme.review.count})
           </Typography>
         </div>
-        <div css={lineCss}></div>
       </div>
     </div>
   );

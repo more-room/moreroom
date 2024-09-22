@@ -28,3 +28,68 @@ themeMock.onGet('/api/theme/search').reply((config) => {
     }, 100);
   });
 });
+
+themeMock.onGet('/api/theme').reply((config) => {
+  console.log(config.params);
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([
+        200,
+        {
+          content: {
+            themeList: [
+              {
+                themeId: 1,
+                title: 'Bad Rob Bad',
+                poster: '/posters/badrobbad.png',
+                playtime: 80,
+                genreList: ['스토리', '드라마'],
+                regionId: '111000000',
+                review: {
+                  count: 10,
+                  score: 4.5,
+                },
+                cafe: {
+                  cafeId: 34,
+                  brandName: '제로월드',
+                  branchName: '강남점',
+                  cafeName: '제로월드 강남점',
+                  address: '주소',
+                },
+                member: {
+                  playFlag: true,
+                },
+              },
+              {
+                themeId: 2,
+                title: 'Bad Rob Bad',
+                poster: '/posters/badrobbad.png',
+                playtime: 80,
+                genreList: ['스토리', '드라마'],
+                regionId: '111000000',
+                review: {
+                  count: 10,
+                  score: 4.5,
+                },
+                cafe: {
+                  cafeId: 34,
+                  brandName: '제로월드',
+                  branchName: '강남점',
+                  cafeName: '제로월드 강남점',
+                  address: '주소',
+                },
+                member: {
+                  playFlag: true,
+                },
+              },
+            ],
+          },
+          pageNumber: 0,
+          pageSize: 10,
+          totalPage: 10,
+          totalElements: 99,
+        },
+      ]);
+    }, 500);
+  });
+});

@@ -1,7 +1,8 @@
 import { css } from '@emotion/react';
 
-export const container = css`
+export const listContainer = css`
   display: flex;
   flex-direction: column;
-  height: 100%;
+  row-gap: 1rem;
+  overflow-y: scroll;
 `;

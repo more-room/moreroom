@@ -8,6 +8,7 @@ import {
   useSearchTitleStore,
   useThemePageStore,
 } from '../../../stores/themeStore';
+import { SearchList } from './SearchList';
 
 export type TThemePage = 'default' | 'search';
 
@@ -25,12 +26,23 @@ export const ThemeList = () => {
       .catch((err) => console.log(err));
   };
 
+  /* 뒤로가기 핸들러 */
+  const onBackHandler = () => {
+    if (themePageStore.type === 'search') themePageStore.setType('default');
+  };
+
   return (
     <div css={container}>
       <TopBar>
-        <TopBar.Title type="search" searchHandler={onSearchHandler} />
+        <TopBar.Title
+          type="search"
+          defaultValue={searchTitleStore.title}
+          searchHandler={onSearchHandler}
+          backHandler={onBackHandler}
+        />
       </TopBar>
       {themePageStore.type === 'search' && <SearchTitle />}
+      {themePageStore.type === 'default' && <SearchList />}
     </div>
   );
 };

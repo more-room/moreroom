@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
-import { titleContainer } from '../styles';
+import { titleContainer } from './styles';
 import {
   useSearchTitleStore,
   useThemePageStore,

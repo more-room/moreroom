@@ -1,5 +1,9 @@
 import { create } from 'zustand';
-import { ISearchTitleResponse } from '../types/themeTypes';
+import {
+  ISearchThemesRequestParameter,
+  ISearchTitleResponse,
+  IThemeList,
+} from '../types/themeTypes';
 
 /* 테마 페이지 */
 type ThemePageStoreState = {
@@ -38,3 +42,24 @@ export const useSearchTitleStore = create<
 }));
 
 /* 테마 목록 검색 */
+type SearchThemesState = {
+  filters: ISearchThemesRequestParameter;
+  results: IThemeList;
+};
+
+type SearchThemesAction = {
+  setFilters: (filters: SearchThemesState['filters']) => void;
+  setResults: (results: SearchThemesState['results']) => void;
+};
+
+export const useSearchThemesStore = create<
+  SearchThemesState & SearchThemesAction
+>()((set) => ({
+  filters: {},
+  results: {
+    pageNumber: -1,
+    pageSize: 10,
+  },
+  setFilters: (filters) => set(() => ({ filters: filters })),
+  setResults: (results) => set(() => ({ results: results })),
+}));
