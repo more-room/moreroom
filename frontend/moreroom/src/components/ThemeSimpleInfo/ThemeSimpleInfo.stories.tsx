@@ -33,7 +33,7 @@ export const Primary: Story = {
   render: () => {
     const [theme, setTheme] = useState<IThemeCommon>({
       themeId: 1,
-      poster: 'S3 이미지 링크',
+      poster: '/posters/last.png',
       title: 'LAST',
       playtime: 60,
       review: {

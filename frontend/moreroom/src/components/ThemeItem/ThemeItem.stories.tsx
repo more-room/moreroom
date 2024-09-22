@@ -37,7 +37,7 @@ export const Primary: Story = {
     const [themeItem, setThemeItem] = useState<IThemeListItem>({
       themeId: 1,
       title: 'Bad Rob Bad',
-      poster: '주소',
+      poster: '/posters/badrobbad.png',
       playtime: 80,
       genreList: ['스토리', '드라마'],
       regionId: '111000000',
