@@ -33,6 +33,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     //topic: 구독한 모든사람에게 전송, /queue: 한명에게만 전송
     registry.enableSimpleBroker("/topic", "/queue"); //SimpleBroker 거쳐서 바로 구독자에게 전송
     registry.setApplicationDestinationPrefixes("/app"); //Handler 거쳐서 가공 후 구독자에게 전송
+    registry.setUserDestinationPrefix("/user"); // 특정 유저에게만 메세지 보내기 위해 설정 (convertAndSendToUser 사용 위함)
   }
 
   /**

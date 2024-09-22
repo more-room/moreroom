@@ -48,7 +48,12 @@ public class PartyRequest extends BaseEntity {
     @Column(length = 36)
     private String redisUuid;
 
+    //update용 메서드
     public void setUuid(String uuid) {
         this.redisUuid = uuid;
+    }
+
+    public void changeStatus(MatchingStatus status) {
+        this.matchingStatus = status;
     }
 }

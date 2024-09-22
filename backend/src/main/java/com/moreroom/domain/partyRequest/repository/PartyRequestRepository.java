@@ -9,5 +9,11 @@ import org.springframework.data.repository.query.Param;
 
 public interface PartyRequestRepository extends JpaRepository<PartyRequest, Long> {
   @Query("select pr from PartyRequest pr where pr.theme.themeId = :themeId and pr.member.memberId in :memberIdList")
-  List<PartyRequest> findByThemeIdandMemberIdList(@Param("themeId") Long themeId, @Param("memberIdList") List<Long> memberIdList);
+  List<PartyRequest> findByThemeIdandMemberIdList(@Param("themeId") Integer themeId, @Param("memberIdList") List<Long> memberIdList);
+
+  @Query("select pr from PartyRequest pr where pr.theme.themeId = :themeId and pr.member.memberId = :memberId")
+  PartyRequest findByThemeIdandMemberId(@Param("themeId") Integer themeId, @Param("memberId") Long memberId);
+
+  @Query("select pr from PartyRequest pr where pr.redisUuid = :uuid")
+  List<PartyRequest> findByUuid(@Param("uuid") String uuid);
 }
