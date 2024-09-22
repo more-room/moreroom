@@ -3,6 +3,7 @@ package com.moreroom.global.exception;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,7 +56,23 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<?> handleIllegalArgumentException(IllegalArgumentException e) {
+        e.printStackTrace();
+        return new ResponseEntity<>(
+            new ErrorMessage("INVALID_PARAMETER", "Invalid parameter included"),
+            HttpStatus.BAD_REQUEST
+        );
+    }
 
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<?> handleNoSuchElementException(NoSuchElementException e) {
+        e.printStackTrace();
+        return new ResponseEntity<>(
+            new ErrorMessage("INVALID_PARAMETER", "Invalid parameter included"),
+            HttpStatus.BAD_REQUEST
+        );
+    }
 
     @AllArgsConstructor
     private static class ErrorMessage {

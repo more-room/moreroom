@@ -16,11 +16,11 @@ import com.moreroom.global.util.RedisUtil;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,13 +37,13 @@ public class PartyMatchingService {
   private final ThemeRepository themeRepository;
 
 //  @Scheduled(cron = "0 0 18 * * *", zone = "Asia/Seoul")
-  @Scheduled(fixedRate = 3600000, initialDelay = 10000)
+//  @Scheduled(fixedRate = 3600000, initialDelay = 10000)
   @Transactional
   public void partyMatchingAndRequest() throws JsonProcessingException {
     log.info("스케줄러 동작함");
     //TODO 파티매칭 로직 넣기 -> themeId와 MemberList를 줘야 한다.
     List<Member> partyMembers = getPartyMembers(); //임시
-    Integer themeId = 263;
+    Integer themeId = 10;
     List<Long> memberIdList = partyMembers.stream()
         .map(Member::getMemberId)
         .toList();
@@ -55,14 +55,14 @@ public class PartyMatchingService {
 
 
   // 1. 파티 매칭 결과 : 유저 3명 데려오기 -> 임시로 구현함. 이후에 파티 매칭 로직 완성되면 거기에서 받아와야 함
-  // 개발용 임시 정보 : 각각 memberId 1212, 1627, 1841 / themeId : 263인 partyRequest
-  // partyRequest: 각각 863, 826, 114
+  // 개발용 임시 정보 : 각각 memberId 2002, 2003, 2004 / themeId : 10인 partyRequest
+  // partyRequest: 각각 1001, 1002, 1003
   public List<Member> getPartyMembers() {
-    Member member1 = memberRepository.findByEmail("hyeonu64@example.org")
+    Member member1 = memberRepository.findByEmail("pingu1@ssafy.com")
         .orElseThrow(MemberNotFoundException::new);
-    Member member2 = memberRepository.findByEmail("jeongho91@example.net")
+    Member member2 = memberRepository.findByEmail("pingu2@ssafy.com")
         .orElseThrow(MemberNotFoundException::new);
-    Member member3 = memberRepository.findByEmail("jeonghobag@example.net")
+    Member member3 = memberRepository.findByEmail("pingu3@ssafy.com")
         .orElseThrow(MemberNotFoundException::new);
     return Arrays.asList(member1, member2, member3);
   }
@@ -123,14 +123,14 @@ public class PartyMatchingService {
 
   // 5. 멤버 수락/거절 -> 멤버 상태 설정
   @Transactional
-  public boolean setPartyAcceptStatus(String uuid, Long memberId, Integer themeId, boolean accept)
+  public HashMap<Long, String> setPartyAcceptStatus(String uuid, Long memberId, Integer themeId, boolean accept)
       throws JsonProcessingException {
     String key = "PARTYMATCH:" + uuid;
     HashMap<Long, String> partyAcceptRecordMap = redisUtil.getLongStringHashMap(key);
 
     if (partyAcceptRecordMap == null) {
       partyBroke(uuid);
-      return false; //expired되었다면 false 반환
+      return null; //expired되었다면 null 반환
     }
 
     //expired되지 않은 경우
@@ -141,21 +141,28 @@ public class PartyMatchingService {
         partyAcceptRecordMap.put(-1L, memberId.toString());
       }
 
-      partyAcceptRecordMap.put(memberId, "ACCEPT"); // 해당 멤버 상태 업데이트
-      int acceptMemberCnt = Integer.parseInt(partyAcceptRecordMap.get(-2L));
-      acceptMemberCnt++;
-      partyAcceptRecordMap.put(-2L, Integer.toString(acceptMemberCnt)); //accept한 멤버 수 업데이트
+      String status = partyAcceptRecordMap.get(memberId);
+      if (Objects.equals(status, "TBD")) {
+        partyAcceptRecordMap.put(memberId, "ACCEPT"); // 해당 멤버 상태 업데이트
+        int acceptMemberCnt = Integer.parseInt(partyAcceptRecordMap.get(-2L));
+        acceptMemberCnt++;
+        partyAcceptRecordMap.put(-2L, Integer.toString(acceptMemberCnt)); //accept한 멤버 수 업데이트
 
-      //mysql 작업
-      PartyRequest partyRequest = partyRequestRepository.findByThemeIdandMemberId(themeId, memberId);
-      partyRequest.changeStatus(MatchingStatus.PENDING);
-      return true;
+        //mysql 작업
+        PartyRequest partyRequest = partyRequestRepository.findByThemeIdandMemberId(themeId, memberId);
+        if (partyRequest == null) {
+          throw new IllegalArgumentException();
+        }
+        partyRequest.changeStatus(MatchingStatus.PENDING);
+      }
+
+      return partyAcceptRecordMap;
     } else {
       //한명이라도 거절하면 파티 깨짐
       partyBroke(uuid);
       redisUtil.deleteData(key);
     }
-    return false;
+    return null;
   }
 
   // 파티 깨진 경우

@@ -19,7 +19,7 @@ public class TestPrincipalHandshakeInterceptor implements HandshakeInterceptor {
   public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response,
       WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception {
     //가짜 Authentication 객체 생성
-    Authentication fakeAuthentication = new UsernamePasswordAuthenticationToken("hyeonu64@example.org", "1234",
+    Authentication fakeAuthentication = new UsernamePasswordAuthenticationToken("pingu1@ssafy.com", "1234",
         Collections.emptyList());
 
     //SecurityContext에 등록
