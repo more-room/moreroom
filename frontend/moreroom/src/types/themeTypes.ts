@@ -1,4 +1,5 @@
-import { IThemeListReview } from './reviewTypes';
+import { ICafeThemeList } from './cafeTypes';
+import { IThemeReview } from './reviewTypes';
 
 /* 제목 검색 결과 */
 export interface ISearchTitleResult {
@@ -32,40 +33,40 @@ export interface IThemeCommon {
   poster: string;
   playtime: number;
   genreList: string[];
-  review: IThemeListReview;
+  review: IThemeReview;
+  member: {
+    playFlag: boolean;
+  };
 }
 
-/* 테마 목록 조회 - 테마 목록 */
+/* 테마 목록 조회 - 각 목록 아이템 */
 export interface IThemeListItem extends IThemeCommon {
   regionId: string;
-}
-
-export interface IThemeList {
-  themeList: IThemeListItem[];
+  cafe: ICafeThemeList;
 }
 
 /* 테마 목록 조회 */
-export interface IThemeListResponse {
-  content: IThemeList;
+export interface IThemeList {
+  content: {
+    themeList: IThemeListItem[];
+  };
   pageNumber: number;
   pageSize: number;
   totalPage: number;
   totalElements: number;
 }
 
-/* 테마 상세 조회 */
-export interface IThemeDetail extends IThemeCommon {
+/* 테마 상세 조회 - 아이템 */
+export interface IThemeDetailItem extends IThemeCommon {
   minPeople: number;
   maxPeople: number;
   level: number;
   price: number;
   description: string;
   memberLevel: number;
-  member: {
-    playFlag: boolean;
-  };
 }
 
-export interface IThemeDetailResponse {
-  theme: IThemeDetail;
+/* 테마 상세 조회 */
+export interface IThemeDetail {
+  theme: IThemeDetailItem;
 }

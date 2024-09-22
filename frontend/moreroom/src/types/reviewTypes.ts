@@ -1,5 +1,5 @@
-/* 테마 목록 조회 - 리뷰 정보 */
-export interface IThemeListReview {
+/* 테마 목록 & 테마 상세 조회 */
+export interface IThemeReview {
   count: number;
   score: number;
 }
