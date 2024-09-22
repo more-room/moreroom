@@ -33,7 +33,7 @@ export const ThemeRecommend = ({
         <div css={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
           <img css={imgCss} src={theme?.poster} alt="포스터 사진" />
 
-          {/* 예상 등급 (포스터 왼쪽 하단에 배치) */}
+          {/* 예상 등급 */}
           <div css={ratingCss}>
             <ExpectedRating size={0.5}/>
           </div>
@@ -66,7 +66,7 @@ export const ThemeRecommend = ({
                 <CheckIcon css={checkIconCss} /> 
               </div>
             </Icon>
-            <Typography color="light" scale="500" size={0.76} weight={400}>
+            <Typography color="light" scale="500" size={0.76} weight={300}>
                나와 비슷한 성향의 사용자가 좋아하는 테마
               <div css={lineCss}></div>
             </Typography>
@@ -80,7 +80,7 @@ export const ThemeRecommend = ({
                 <CheckIcon css={checkIconCss} /> 
               </div>
             </Icon>
-            <Typography color="light" scale="500" size={0.76} weight={400}>
+            <Typography color="light" scale="500" size={0.76} weight={300}>
                높은 별점을 주신 'Bad Rob Bad'와 비슷한 테마
               <div css={lineCss}></div>
             </Typography>

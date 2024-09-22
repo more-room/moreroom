@@ -4,7 +4,7 @@ import { Colors } from '../../styles/globalStyle';
 export const containerCss = css`
   background-color: #313131;
   display: flex;
-  width: 20rem;
+  width: 19rem;
   height: 20.25rem;
   align-items: flex-start;
   border-radius: 0.25rem;
@@ -14,9 +14,9 @@ export const containerCss = css`
 export const imgCss = css`
   width: 18rem;
   height: 13.25rem;
-  border-radius: 0.25rem;
+  /* border-radius: 0.25rem; */
   margin-left: 0.5rem;      
-  margin-right: 1rem; 
+  margin-right: 0%.5; 
   margin-top: 0.25rem;
   margin-bottom: 0.25rem;
   position: 'relative';
@@ -43,7 +43,7 @@ export const contentCss = css`
 `;
 
 export const lineCss = css`
-  width: 50vw; // 스크린 크기의 70%
+  width: 50vw; 
   border: 0.0625rem solid ${Colors['light']['900']};
   margin-top: 0.18rem !important;
   align-self: flex-end;
@@ -80,5 +80,4 @@ export const ratingCss = css`
   bottom: 6.3rem;
   left: 0.5rem;
   padding: 0.25rem 0.5rem;
-  
 `;
