@@ -1,8 +1,10 @@
 package com.moreroom.global.exception;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
@@ -42,5 +44,22 @@ public class GlobalExceptionHandler {
             ));
 
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(JsonProcessingException.class)
+    public ResponseEntity<?> handleJsonProcessingException(JsonProcessingException e) {
+        e.printStackTrace();
+        return new ResponseEntity<>(
+            new ErrorMessage("INVALID_PARAMETER", "Invalid parameter included"),
+            HttpStatus.BAD_REQUEST
+        );
+    }
+
+
+
+    @AllArgsConstructor
+    private static class ErrorMessage {
+        private String code;
+        private String message;
     }
 }

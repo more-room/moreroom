@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @AllArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class PartyMatchingService {
 
   private final MemberRepository memberRepository;
@@ -34,9 +36,11 @@ public class PartyMatchingService {
   private final SimpMessagingTemplate simpMessagingtemplate;
   private final ThemeRepository themeRepository;
 
-  @Scheduled(cron = "0 0 18 * * *", zone = "Asia/Seoul")
+//  @Scheduled(cron = "0 0 18 * * *", zone = "Asia/Seoul")
+  @Scheduled(fixedRate = 3600000, initialDelay = 10000)
   @Transactional
   public void partyMatchingAndRequest() throws JsonProcessingException {
+    log.info("스케줄러 동작함");
     //TODO 파티매칭 로직 넣기 -> themeId와 MemberList를 줘야 한다.
     List<Member> partyMembers = getPartyMembers(); //임시
     Integer themeId = 263;
@@ -112,7 +116,8 @@ public class PartyMatchingService {
               theme.getTitle(),
               cafeName,
               partyRequest.getPartyRequestId(),
-              uuid));
+              uuid,
+              theme.getThemeId()));
     }
   }
 
