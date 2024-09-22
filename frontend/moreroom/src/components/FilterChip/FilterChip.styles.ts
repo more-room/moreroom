@@ -19,4 +19,5 @@ export const base = (
   font-weight: ${selected ? 700 : 400};
   border: ${selected ? 0 : 0.0625}rem solid ${MainColors['grey']};
   border-radius: ${rounded ? 1 : 0.5}rem;
+  white-space: nowrap;
 `;

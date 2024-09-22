@@ -5,4 +5,5 @@ export const listContainer = css`
   flex-direction: column;
   row-gap: 1rem;
   overflow-y: scroll;
+  padding-bottom: 1rem;
 `;

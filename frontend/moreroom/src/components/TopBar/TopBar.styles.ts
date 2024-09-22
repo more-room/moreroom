@@ -7,6 +7,7 @@ export const base = (bgColor?: Palette, bgColorScale?: ColorScale) => css`
   align-items: center;
   width: 100%;
   height: 3rem;
+  min-height: 3rem;
   padding: 0 1rem;
   background-color: ${bgColor
     ? !bgColorScale
