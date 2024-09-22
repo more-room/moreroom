@@ -1,8 +1,7 @@
-import { ReactNode } from 'react';
-import { IThemeListInfo } from '../../types/themeTypes';
+import { IThemeListItem } from '../../types/themeTypes';
 
 export interface ThemeItemProps extends React.ComponentProps<'div'> {
-  theme: IThemeListInfo;
+  theme: IThemeListItem;
   pattern?: string;
 }
 

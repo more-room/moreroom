@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { ThemeSimpleInfo } from ".";
-import { ThemeList } from "../../types/themeTypes";
-
+import { ThemeSimpleInfo } from '.';
+import { IThemeCommon } from '../../types/themeTypes';
 
 const meta = {
   title: 'UI/Components/ThemeSimpleInfo',
@@ -32,18 +31,23 @@ type Story = StoryObj<typeof ThemeSimpleInfo>;
 export const Primary: Story = {
   args: {},
   render: () => {
-    const [themeList, setThemeList] = useState<ThemeList>({
-      themeList: [
-        {
-          poster: '/posters/heaven.png',
-          title: 'HEAVEN',
-          genrename: '스릴러',
-        },
-      ],
+    const [theme, setTheme] = useState<IThemeCommon>({
+      themeId: 1,
+      poster: 'S3 이미지 링크',
+      title: 'LAST',
+      playtime: 60,
+      review: {
+        count: 10,
+        score: 4.5,
+      },
+      genreList: ['스토리', '드라마'],
+      member: {
+        playFlag: true,
+      },
     });
     return (
       <div style={{ width: '328px' }}>
-        <ThemeSimpleInfo theme={themeList.themeList[0]} />
+        <ThemeSimpleInfo theme={theme} />
       </div>
     );
   },

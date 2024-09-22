@@ -22,7 +22,7 @@ export const ThemeItem = ({
   return (
     <div css={containerCss} {...props}>
       <div>
-        <img css={imgCss} src={theme?.poster} alt="포스터 사진" />
+        <img css={imgCss} src={theme.poster} alt="포스터 사진" />
       </div>
       <div css={infoCss}>
         <div css={infoItemCss}>
@@ -30,14 +30,14 @@ export const ThemeItem = ({
             <MapPinIcon />
           </Icon>
           <Typography color="grey" scale="500" size={0.625} weight={600}>
-            {theme?.brandName} - {theme?.branchName}
+            {theme.cafe.brandName} - {theme.cafe.branchName}
           </Typography>
         </div>
         <LabeledTypography
           normalColor="light"
           pattern={pattern}
           size={1}
-          str={theme?.title ?? '테마 없음'} // undefined일 경우 '테마 없음' 출력
+          str={theme.title}
           weight={700}
         />
         <Typography
@@ -47,14 +47,18 @@ export const ThemeItem = ({
           size={0.76}
           weight={400}
         >
-          {theme?.playtime}분 / {theme?.genrename}
+          {theme.playtime}분 /{' '}
+          {theme.genreList.map(
+            (genre: string, idx: number) =>
+              genre + (idx === theme.genreList.length - 1 ? '' : ', '),
+          )}
         </Typography>
         <div css={infoItemCss}>
           <Icon color="secondary" size={1}>
             <StarIcon />
           </Icon>
           <Typography color="grey" scale="500" size={0.76} weight={400}>
-            리뷰({theme?.reviewCount})
+            리뷰({theme.review.count})
           </Typography>
         </div>
         <div css={lineCss}></div>

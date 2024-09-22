@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { ThemeItem } from '.';
-import { IThemeCommon } from '../../types/themeTypes';
-import { count } from 'console';
+import { IThemeListItem } from '../../types/themeTypes';
 
 const meta = {
   title: 'UI/Components/ThemeItem',
@@ -34,23 +33,32 @@ type Story = StoryObj<typeof ThemeItem>;
 
 export const Primary: Story = {
   args: { pattern: '' },
-  render: () => {
-    const [themeList, setThemeList] = useState<IThemeCommon>({
-      {
-        themeId: 1;
-        title: 'Heaven';
-        poster: '/posters/heaven.png';
-        playtime: 80;
-        genreList: ['공포', '미스테리', '추리'];
-        review: {
-          count: 127,
-          score: 0,
-        };
+  render: (args) => {
+    const [themeItem, setThemeItem] = useState<IThemeListItem>({
+      themeId: 1,
+      title: 'Bad Rob Bad',
+      poster: '주소',
+      playtime: 80,
+      genreList: ['스토리', '드라마'],
+      regionId: '111000000',
+      review: {
+        count: 10,
+        score: 4.5,
+      },
+      cafe: {
+        cafeId: 34,
+        brandName: '제로월드',
+        branchName: '강남점',
+        cafeName: '제로월드 강남점',
+        address: '주소',
+      },
+      member: {
+        playFlag: true,
       },
     });
     return (
       <div style={{ width: '328px' }}>
-        <ThemeItem theme={themeList.themeList[0]} />
+        <ThemeItem theme={themeItem} />
       </div>
     );
   },
