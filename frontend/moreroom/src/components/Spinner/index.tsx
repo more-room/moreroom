@@ -1,15 +1,15 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
 import { SpinnerProps } from './Spinner.types';
+import { base } from './Spinner.styles';
 
 export const Spinner = ({
-  size = 'md',
+  size = 'sm',
   color = 'primary',
-  scale = '700',
+  scale,
   ...props
 }: SpinnerProps) => {
   return (
-    <div {...props}></div>
+    <div css={base(size, color, scale)} {...props}/>
   );
-  
 };
