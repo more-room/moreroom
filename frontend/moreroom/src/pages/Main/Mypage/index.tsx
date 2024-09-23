@@ -135,7 +135,7 @@ export const MyPage = () => {
               </Icon>
             }
             children="프로필 편집"
-            url="/member/mypage/profile"
+            url="/member/mypage/profile/edit"
           />
         </div>
         <div css={sectionCss}>

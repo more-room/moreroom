@@ -21,9 +21,37 @@ import { Typography } from '../../../../components/Typography';
 import { ManageInfo } from '../ManageInfo';
 import { Icon } from '../../../../components/Icon';
 import { useNavigate } from 'react-router-dom';
+import { useQueries, useSuspenseQuery } from '@tanstack/react-query';
+import { getUserInfo } from '../../../../apis/mypageApi';
 
 export const Profile = () => {
+  // const userProfileStore = use
   const nav = useNavigate();
+  const { data, error, isFetching } = useSuspenseQuery({
+    // 객체 구조 분해 할당
+    queryKey: ['profile'],
+    queryFn: async () => await getUserInfo(),
+  });
+
+  if (isFetching) {
+    return <div>Loading...</div>; // 데이터 로딩 중 표시
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>; // 에러 발생 시 표시
+  }
+  const genreNames = data?.data?.genreList?.map(
+    (genre: { id: number; name: string }) => genre.name,
+  );
+
+  const genderhandler = (gender: string) => {
+    if (gender === 'M') {
+      return '남성';
+    } else {
+      return '여성';
+    }
+  };
+
   return (
     <div>
       <TopBar>
@@ -37,7 +65,7 @@ export const Profile = () => {
         <UserCircleIcon css={profileCss} />
         <div css={userInfoCss}>
           <Typography color="light" size={1.25} weight={700}>
-            닉네임
+            {data.data.nickname}
           </Typography>
           <Typography color="grey" scale="500" size={0.75} weight={700}>
             경상북도 구미시
@@ -50,7 +78,7 @@ export const Profile = () => {
                 <CakeIcon />
               </Icon>
             }
-            children="2024년 09월 23일"
+            children={data.data.birth}
           />
           <ManageInfo
             icon={
@@ -58,7 +86,7 @@ export const Profile = () => {
                 <UserIcon />
               </Icon>
             }
-            children="남성"
+            children={genderhandler(data.data.gender)}
           />
           <ManageInfo
             icon={
@@ -66,7 +94,7 @@ export const Profile = () => {
                 <EnvelopeIcon />
               </Icon>
             }
-            children="abc@mail.com"
+            children={data.data.email}
           />
           <ManageInfo
             icon={
@@ -74,7 +102,7 @@ export const Profile = () => {
                 <KeyIcon />
               </Icon>
             }
-            children="0방"
+            children={data.data.clearRoom}
           />
           <ManageInfo
             icon={
@@ -82,7 +110,7 @@ export const Profile = () => {
                 <Square3Stack3DIcon />
               </Icon>
             }
-            children="스릴러"
+            children={genreNames}
           />
           <ManageInfo
             icon={

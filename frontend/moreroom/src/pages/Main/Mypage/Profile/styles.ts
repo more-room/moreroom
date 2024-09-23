@@ -32,3 +32,7 @@ export const manageInfoContainerCss = css`
   gap: 1.5rem;
   width: 100%;
 `;
+
+export const textFieldCss = css`
+  color: white;
+`
