@@ -64,8 +64,5 @@ def get_demographics_theme():
     # print(top_reviews_by_age_gender)
 
 
-get_demographics_theme()
-
-
 
 

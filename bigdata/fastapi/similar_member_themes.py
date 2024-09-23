@@ -115,10 +115,3 @@ def get_similar_member_theme():
     print(result)
     save_data(result)
 
-
-
-get_similar_member_theme()
-
-
-
-

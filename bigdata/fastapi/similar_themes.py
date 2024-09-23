@@ -210,7 +210,7 @@ def get_recent_similar_theme():
     save_data(result)
     # print(result)
 
-get_recent_similar_theme() 
+
 
 ## ----------------------------------------
 '''
