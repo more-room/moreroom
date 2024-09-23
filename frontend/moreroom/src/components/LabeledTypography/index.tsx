@@ -16,21 +16,24 @@ export const LabeledTypography = ({
 }: LabeledTypographyProps) => {
   return (
     <div css={base} {...props}>
-      {str.split(new RegExp(`(${pattern})`, 'gi')).map((s: string) => {
-        return (
-          <Typography
-            color={
-              s.toLowerCase() === pattern.toLowerCase()
-                ? highlightColor
-                : normalColor
-            }
-            weight={s.toLowerCase() === pattern.toLowerCase() ? 700 : weight}
-            size={size}
-          >
-            {s}
-          </Typography>
-        );
-      })}
+      {str
+        .split(new RegExp(`(${pattern})`, 'gi'))
+        .map((s: string, idx: number) => {
+          return (
+            <Typography
+              key={idx}
+              color={
+                s.toLowerCase() === pattern.toLowerCase()
+                  ? highlightColor
+                  : normalColor
+              }
+              weight={s.toLowerCase() === pattern.toLowerCase() ? 700 : weight}
+              size={size}
+            >
+              {s}
+            </Typography>
+          );
+        })}
     </div>
   );
 };
