@@ -10,7 +10,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -43,8 +42,8 @@ public class Cafe {
     private String link;
     @Column(length = 50)
     private String branchName;
-    private float latitude;
-    private float longitude;
+    private Float latitude;
+    private Float longitude;
     @Column(nullable = false)
     @Builder.Default
     private boolean openFlag = true;

@@ -3,6 +3,7 @@ package com.moreroom.global.util;
 import com.moreroom.domain.member.entity.Member;
 import com.moreroom.domain.member.exception.MemberNotFoundException;
 import com.moreroom.domain.member.repository.MemberRepository;
+import java.security.Principal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -22,5 +23,10 @@ public class FindMemberService {
             return member.getMemberId();
         }
         throw new MemberNotFoundException();
+    }
+
+    public Member findCurrentMember(Principal principal) {
+        String email = principal.getName();
+        return memberRepository.findByEmail(email).orElseThrow(MemberNotFoundException::new);
     }
 }

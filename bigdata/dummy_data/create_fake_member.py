@@ -322,8 +322,12 @@ nouns = [
 ]
 
 
-# 중복된 닉네임을 방지하기 위해 생성된 닉네임을 저장할 집합
+# 중복된 닉네임과 이메일을 방지하기 위해 생성된 닉네임과 이메일을 저장할 집합
 generated_nicknames = set()
+generated_emails = set()
+
+# 장르와 지역 데이터를 정의 (생략 - 동일)
+# adjectives와 nouns 데이터도 동일하게 유지합니다.
 
 # 형용사 + 명사로 닉네임 생성 함수 (중복 방지)
 def generate_unique_nickname():
@@ -335,12 +339,20 @@ def generate_unique_nickname():
             generated_nicknames.add(nickname)
             return nickname
 
+# 중복 방지된 이메일 생성 함수
+def generate_unique_email():
+    while True:
+        email = fake.email()
+        if email not in generated_emails:  # 중복 체크
+            generated_emails.add(email)
+            return email
+
 def generate_user_data(num_users):
     users = []
     
     for _ in range(num_users):
-        email = fake.email()
-        password = f'$2a$10$UfVSjaS3VB9t3jFa08p0l.8kklyyRqt7bnjVdEj4YNW4.EUeHWY3a'
+        email = generate_unique_email()
+        password = f'$2a$10$UfVSjaS3VB9t3jFa08p0l.8kklyyRqt7bnjVdEj4YNW4.EUeHWY3a'  # bcrypt 예시
         nickname = generate_unique_nickname()
         gender = random.randint(0, 1)  # 0: 여성, 1: 남성
         region_id, region_name, region_level, parent_region_id, parent_region_name = random.choice(regions)
@@ -380,7 +392,8 @@ def insert_user_data_to_db(user_data):
             host = os.getenv('HOST'),
             user = os.getenv('USER'),  # 데이터베이스 사용자 이름
             password = os.getenv('PASSWORD'),  # 데이터베이스 비밀번호
-            database = os.getenv('DATABASE')  # 사용할 데이터베이스 이름
+            database = os.getenv('DATABASE'),  # 사용할 데이터베이스 이름
+            port = os.getenv('PORT')
         )
         cursor = connection.cursor()
 

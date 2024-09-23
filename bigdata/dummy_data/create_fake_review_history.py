@@ -14,6 +14,7 @@ db_host = os.getenv('HOST')
 db_user = os.getenv('USER')
 db_password = os.getenv('PASSWORD')
 db_name = os.getenv('DATABASE')
+port = os.getenv('PORT')
 
 # Faker 초기화
 fake = Faker('ko_KR')
@@ -160,7 +161,8 @@ def fetch_theme_data():
             host=db_host,
             user=db_user,
             password=db_password,
-            database=db_name
+            database=db_name,
+            port=port
         )
         cursor = connection.cursor()
         cursor.execute("SELECT themeId, playtime, maxPeople, price FROM Theme")
@@ -183,7 +185,8 @@ def fetch_member_ids():
             host=db_host,
             user=db_user,
             password=db_password,
-            database=db_name
+            database=db_name,
+            port = port
         )
         cursor = connection.cursor()
         cursor.execute("SELECT memberId FROM member")
@@ -235,6 +238,7 @@ def insert_review_data_to_db(reviews):
             user=db_user,
             password=db_password,
             database=db_name,
+            port = port,
             use_pure=True
         )
         cursor = connection.cursor()
@@ -278,7 +282,8 @@ def fetch_review_id(member_id, theme_id):
             host=db_host,
             user=db_user,
             password=db_password,
-            database=db_name
+            database=db_name,
+            port = port
         )
         cursor = connection.cursor()
         query = """
@@ -377,6 +382,7 @@ def insert_history_data_to_db(history_records):
             user=db_user,
             password=db_password,
             database=db_name,
+            port = port,
             use_pure=True
         )
         cursor = connection.cursor()
