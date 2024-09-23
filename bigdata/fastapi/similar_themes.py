@@ -209,6 +209,7 @@ def get_recent_similar_theme():
     result = extract_total_similar_theme(theme_df, hybrid_model) 
     save_data(result)
     # print(result)
+    
 
 
 

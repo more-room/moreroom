@@ -6,7 +6,7 @@ from dbutils import mysql_connect, mysql_disconnect, mysql_read_all
 from dbutils import mongo_connect, mongo_get_collection, mongo_save_with_delete, mongo_save_with_update, mongo_disconnect
 
 
-def load_db_data(path):
+def load_db_data():
     connection = mysql_connect()
     members = mysql_read_all(connection, "SELECT * FROM member")
     # pandas DataFrame으로 변환
@@ -20,7 +20,11 @@ def load_db_data(path):
     member_df['age_group'] = member_df['age'].apply(lambda age: (age // 10) * 10)
 
     # 리뷰 데이터 읽기
-    review_df = pd.read_csv(path+"dummy_userThemeReview.csv", encoding='utf-8')
+    # review_df = pd.read_csv(path+"dummy_userThemeReview.csv", encoding='utf-8')
+    reviews = mysql_read_all(connection, "SELECT memberId, themeId, score, reviewId FROM review")
+    review_df = pd.DataFrame(reviews)
+    # pandas DataFrame으로 변환
+    m_df = pd.DataFrame(members)
 
     mysql_disconnect(connection)
 
@@ -31,9 +35,10 @@ def calculate_theme_score(rm_df, N=10):
     grouped = rm_df.groupby(['age_group', 'gender', 'themeId'])['score'].mean().reset_index()
     # 연령대, 성별로만 묶어서 N개의 테마를 뽑고, list로 저장한다 
     result_dict = grouped.groupby(['age_group', 'gender']) \
-        .apply(lambda x: x.sort_values(by='score', ascending=False).head(10)['themeId'].tolist()) \
-        .reset_index() \
-        .rename(columns={0: 'theme_ids'})
+        .apply(lambda x: x.sort_values(by='score', ascending=False).head(N)['themeId'].tolist()) \
+        .reset_index() 
+
+    result_dict.columns = ['age_group', 'gender', 'theme_ids']
 
     # 리스트로 변환
     result = []

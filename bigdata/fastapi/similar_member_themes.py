@@ -6,6 +6,7 @@ from scipy.spatial.distance import jaccard
 from scipy.sparse import csr_matrix
 
 ## ------- 다른 파일 
+from dbutils import mysql_connect, mysql_disconnect, mysql_read_all
 from dbutils import mongo_connect, mongo_get_collection, mongo_save_with_delete, mongo_disconnect
 
 
@@ -18,8 +19,26 @@ from dbutils import mongo_connect, mongo_get_collection, mongo_save_with_delete,
 
 # 데이터 로드
 def load_local_data(path):
+    mr_df = pd.read_csv(path+"dummy_userThemeReview.csv", encoding='utf-8')
+    mg_df = pd.read_csv(path+"dummy_memberGenre.csv", encoding='utf-8')
+
+    return mr_df, mg_df
+
+def load_local_data_small(path):
     mr_df = pd.read_csv(path+"dummy_userThemeReview_small.csv", encoding='utf-8')
     mg_df = pd.read_csv(path+"dummy_memberGenre_small.csv", encoding='utf-8')
+
+    return mr_df, mg_df
+
+def load_mysql_data():
+    connection = mysql_connect()
+    
+    mr = mysql_read_all(connection, "SELECT memberId, themeId, score, reviewId FROM review")
+    mr_df = pd.DataFrame(mr)
+    mg = mysql_read_all(connection, "SELECT memberId, genreId FROM membergenremapping")
+    mg_df = pd.DataFrame(mg)
+
+    mysql_disconnect(connection)
 
     return mr_df, mg_df
 
