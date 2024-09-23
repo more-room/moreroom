@@ -8,6 +8,6 @@ import lombok.Getter;
 @Getter
 public class ThemeReviewResponseDto {
 
-    private Integer count;
+    private Long count;
     private Double score;
 }

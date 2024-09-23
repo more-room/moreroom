@@ -1,20 +1,20 @@
 package com.moreroom.domain.theme.service;
 
+import com.moreroom.domain.genre.repository.GenreRepository;
 import com.moreroom.domain.history.repository.HistoryRepository;
-import com.moreroom.domain.review.entity.Review;
+import com.moreroom.domain.mapping.theme.repository.ThemeGenreMappingRepository;
 import com.moreroom.domain.review.repository.ReviewRepository;
 import com.moreroom.domain.theme.dto.request.ThemeListRequestDto;
 import com.moreroom.domain.theme.dto.response.ThemeDetailResponseDto;
-import com.moreroom.domain.theme.dto.response.ThemeListResponseDto;
-import com.moreroom.domain.theme.entity.Theme;
-import com.moreroom.domain.theme.exception.ThemeNotFoundException;
+import com.moreroom.domain.theme.repository.ThemeQueryRepository;
 import com.moreroom.domain.theme.repository.ThemeRepository;
-import java.util.List;
+import com.moreroom.global.dto.PageResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -24,8 +24,16 @@ public class ThemeService {
     private final ThemeRepository themeRepository;
     private final ReviewRepository reviewRepository;
     private final HistoryRepository historyRepository;
+    private final GenreRepository genreRepository;
+    private final ThemeGenreMappingRepository themeGenreMappingRepository;
 
+    private final ThemeQueryRepository themeQueryRepository;
+
+    @Transactional(readOnly = true)
     public ThemeDetailResponseDto findThemeById(Integer themeId, Long memberId) {
+        return themeQueryRepository.findThemeDetailById(themeId, memberId);
+
+        /*
         // 1. theme 조회
         Theme theme = themeRepository.findById(themeId).orElseThrow(
             ThemeNotFoundException::new);
@@ -37,15 +45,29 @@ public class ThemeService {
         boolean playFlag =
             !historyRepository.findAllByMemberMemberIdAndThemeThemeId(memberId, themeId).isEmpty();
         // 4. 장르 정보
-
+        List<ThemeGenreMapping> tgList = themeGenreMappingRepository.findAllByThemeThemeId(theme.getThemeId());
+        List<Genre> genreMapping = genreRepository.findAll();
+        List<String> genreList = tgList.stream()
+            .map(tg -> genreMapping.stream()
+                .filter(g -> g.getGenreId().equals(tg.getGenre().getGenreId()))
+                .findFirst()
+                .map(Genre::getGenreName)
+                .orElse(null))
+            .filter(Objects::nonNull) // null이 아닌 값들만 필터링
+            .toList();
         // 5. Dto 변환 후 반환
-        return ThemeDetailResponseDto.toDto(theme, reviewCount, reviewScore, playFlag);
+        return ThemeDetailResponseDto.toDto(theme, reviewCount, reviewScore, playFlag, genreList);
+        */
     }
 
-    public ThemeListResponseDto findThemes(ThemeListRequestDto themeListRequestDto) {
+    @Transactional(readOnly = true)
+    public PageResponseDto findThemes(ThemeListRequestDto themeListRequestDto, Long memberId) {
         PageRequest pageRequest = PageRequest.of(themeListRequestDto.getPageNumber(),
             themeListRequestDto.getPageSize(), Sort.by("themeId").ascending());
 
-        return null;
+        PageResponseDto pageResponseDto = themeQueryRepository.findAllByFilter(themeListRequestDto,
+            pageRequest, memberId);
+
+        return pageResponseDto;
     }
 }

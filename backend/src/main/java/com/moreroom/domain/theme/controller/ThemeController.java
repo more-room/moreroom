@@ -3,6 +3,7 @@ package com.moreroom.domain.theme.controller;
 import com.moreroom.domain.theme.dto.request.ThemeListRequestDto;
 import com.moreroom.domain.theme.dto.response.ThemeDetailResponseDto;
 import com.moreroom.domain.theme.service.ThemeService;
+import com.moreroom.global.dto.PageResponseDto;
 import com.moreroom.global.util.FindMemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,7 @@ public class ThemeController {
         ThemeDetailResponseDto themeDetailResponseDto = themeService.findThemeById(themeId,
             memberId);
         if (themeDetailResponseDto != null) {
+            System.out.println("themeDetailResponseDto = " + themeDetailResponseDto);
             return new ResponseEntity<>(themeDetailResponseDto,
                 HttpStatus.OK);
         }
@@ -35,9 +37,16 @@ public class ThemeController {
     }
 
     @GetMapping()
-    public ResponseEntity<?> getThemesByFilter(ThemeListRequestDto themeListRequestDto) {
+    public ResponseEntity<PageResponseDto> getThemesByFilter(
+        ThemeListRequestDto themeListRequestDto) {
+        long memberId = findMemberService.findCurrentMember();
         themeListRequestDto.setDefaults();
-        System.out.println("themeListRequestDto = " + themeListRequestDto.toString());
+        PageResponseDto pageResponseDto = themeService.findThemes(themeListRequestDto, memberId);
+        if (pageResponseDto != null) {
+            System.out.println("pageResponseDto = " + pageResponseDto);
+            return new ResponseEntity<>(pageResponseDto,
+                HttpStatus.OK);
+        }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }
