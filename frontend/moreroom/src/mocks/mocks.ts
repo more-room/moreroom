@@ -244,3 +244,16 @@ mock.onGet('/api/auth/member/mypage').reply((config) => {
     }, 100);
   });
 });
+
+mock.onPatch('/api/auth/member/hashtag').reply((config) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([
+        200,
+        {
+          hashtagIdList: [1, 2],
+        },
+      ]);
+    }, 100);
+  });
+});

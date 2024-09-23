@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 
 export const containerCss = css`
-  margin: 1.875rem 2.5rem;
+  margin: 1.875rem 2rem;
   padding-bottom: 1rem;
   display: flex;
   flex-direction: column;
@@ -9,5 +9,12 @@ export const containerCss = css`
 `
 
 export const userInfoCss = css`
-
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 `;
+
+export const nicknameCss = css`
+  display: flex;
+  gap: 0.2rem;
+`
