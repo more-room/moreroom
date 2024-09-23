@@ -55,7 +55,7 @@ export const ThemeRecommend = ({
           {/* 위치 정보 */}
           <div css={infoItemCss}>
             <Typography color="grey" scale="500" size={0.625} weight={600}>
-              {theme?.cafe.brandName} - {theme?.cafe.branchName}
+              {theme.cafe.brandName} - {theme.cafe.branchName}
             </Typography>
           </div>
           
