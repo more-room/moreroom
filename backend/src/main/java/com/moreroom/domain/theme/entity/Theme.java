@@ -40,11 +40,6 @@ public class Theme {
     private Integer price;
     @Column(length = 2000)
     private String description;
-    private Float avgScore;
-    private Float userLevel;
-    private Float problemScore;
-    private Float storyScore;
-    private Float activityScore;
-    private Float fearScore;
-    private Float userLevelJb;
+    private Double avgScore;
+    private Double userLevel;
 }
