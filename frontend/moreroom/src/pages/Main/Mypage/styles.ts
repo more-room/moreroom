@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import { Colors } from '../../styles/globalStyle';
+import { Colors } from '../../../styles/globalStyle';
 
 export const containerCss = css`
   padding: 1rem;

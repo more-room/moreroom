@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
-import { TopBar } from '../../../components/TopBar';
+import { TopBar } from '../../../../components/TopBar';
 import {
   CakeIcon,
   EnvelopeIcon,
@@ -10,10 +10,16 @@ import {
   UserCircleIcon,
   UserIcon,
 } from '@heroicons/react/24/solid';
-import { containerCss, profileCss, userInfoCss, sectionCss, manageInfoContainerCss } from './styles';
-import { Typography } from '../../../components/Typography';
+import {
+  containerCss,
+  profileCss,
+  userInfoCss,
+  sectionCss,
+  manageInfoContainerCss,
+} from './styles';
+import { Typography } from '../../../../components/Typography';
 import { ManageInfo } from '../ManageInfo';
-import { Icon } from '../../../components/Icon';
+import { Icon } from '../../../../components/Icon';
 import { useNavigate } from 'react-router-dom';
 
 export const Profile = () => {

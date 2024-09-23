@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
-import { TopBar } from '../../components/TopBar';
+import { TopBar } from '../../../components/TopBar';
 import {
   ArchiveBoxXMarkIcon,
   ArrowRightStartOnRectangleIcon,
@@ -15,11 +15,11 @@ import {
   profileContainer,
   sectionCss,
 } from './styles';
-import { Typography } from '../../components/Typography';
-import { Chip } from '../../components/Chip';
+import { Typography } from '../../../components/Typography';
+import { Chip } from '../../../components/Chip';
 import { ManageInfo } from './ManageInfo';
 import { UserIcon } from '@heroicons/react/24/solid';
-import { Icon } from '../../components/Icon';
+import { Icon } from '../../../components/Icon';
 import {
   PencilIcon,
   CalendarDaysIcon,
@@ -32,7 +32,11 @@ export const MyPage = () => {
   return (
     <div>
       <TopBar>
-        <TopBar.Title type="default" title="마이페이지" backHandler={()=>nav(-1)}/>
+        <TopBar.Title
+          type="default"
+          title="마이페이지"
+          backHandler={() => nav(-1)}
+        />
       </TopBar>
       <div css={profileContainer}>
         <UserCircleIcon css={profile} />
