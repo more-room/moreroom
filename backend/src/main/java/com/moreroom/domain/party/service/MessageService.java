@@ -24,4 +24,8 @@ public class MessageService {
 
     partyMessageRepository.save(partyMessage);
   }
+
+  //채팅 내역 불러오기
+
+
 }
