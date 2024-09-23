@@ -177,7 +177,7 @@ public class PartyMatchingService {
       simpMessagingtemplate.convertAndSendToUser(
           request.getMember().getEmail(),
           "/queue/message",
-          new SocketNotificationDto("PARTY-BROKEN", "파티 매칭 실패"));
+          new SocketNotificationDto("PARTY_BROKEN", "파티가 매칭되지 않았습니다."));
     }
   }
 

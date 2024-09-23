@@ -92,9 +92,9 @@ public class PartyService {
   }
 
   //채팅방 참여 알림 메세지 만들기
-  public String makeWelcomeMessage(String partyId, Member member) {
+  public String makeWelcomeMessage(Long partyId, Member member) {
     StringBuilder sb = new StringBuilder();
-    Party party = partyRepository.findById(Long.parseLong(partyId)).orElseThrow();
+    Party party = partyRepository.findById(partyId).orElseThrow();
     return sb.append(member.getNickname())
         .append("님이 ")
         .append(party.getRoomName())

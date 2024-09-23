@@ -33,7 +33,7 @@ public class Party extends BaseEntity {
     @JoinColumn(name = "themeId", nullable = false)
     private Theme theme;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "memberId", nullable = false)
+    @JoinColumn(name = "masterId", nullable = false)
     private Member masterMember;
     @Column(nullable = false, length = 50)
     private String roomName;
