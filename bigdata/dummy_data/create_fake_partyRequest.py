@@ -25,7 +25,7 @@ def fetch_member_theme_ids():
         cursor.execute("SELECT memberId FROM Member")
         member_ids = [row[0] for row in cursor.fetchall()]
         
-        cursor.execute("SELECT themeId FROM Theme")
+        cursor.execute("SELECT themeId FROM Theme LIMIT 50")
         theme_ids = [row[0] for row in cursor.fetchall()]
         
         return member_ids, theme_ids
