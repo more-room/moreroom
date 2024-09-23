@@ -3,6 +3,7 @@ package com.moreroom.global.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.moreroom.global.dto.RedisUserInfo;
 import java.util.HashMap;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -47,6 +48,22 @@ public class RedisUtil {
         String hashmapJson = redisTemplate.opsForValue().get(key);
         if (hashmapJson != null) {
             return objectMapper.readValue(hashmapJson, new TypeReference<>() {}); // 반환타입이 HashMap<Long, String>이기 때문에 java가 타입 추론을 할 수 있다.(java7)
+        }
+        return null;
+    }
+
+    // RedisUserInfo 저장
+    public void saveRedisUserInfo(String key, RedisUserInfo info, long duration)
+        throws JsonProcessingException {
+        String infoJson = objectMapper.writeValueAsString(info);
+        redisTemplate.opsForValue().set(key, infoJson, Duration.ofSeconds(duration));
+    }
+
+    // RedisUserInfo 꺼내기
+    public RedisUserInfo getRedisUserInfo(String key) throws JsonProcessingException {
+        String infoJson = redisTemplate.opsForValue().get(key);
+        if (infoJson != null) {
+            return objectMapper.readValue(infoJson, new TypeReference<>() {});
         }
         return null;
     }
