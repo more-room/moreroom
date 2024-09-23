@@ -55,7 +55,7 @@ export const ThemeRecommend = ({
           {/* 위치 정보 */}
           <div css={infoItemCss}>
             <Typography color="grey" scale="500" size={0.625} weight={600}>
-              {theme?.brandName} - {theme?.branchName}
+              {theme?.cafe.brandName} - {theme?.cafe.branchName}
             </Typography>
           </div>
           
@@ -81,7 +81,7 @@ export const ThemeRecommend = ({
               </div>
             </Icon>
             <Typography color="light" scale="500" size={0.76} weight={300}>
-               높은 별점을 주신 'Bad Rob Bad'와 비슷한 테마
+               높은 별점을 주신 'Heaven'과 비슷한 테마
               <div css={lineCss}></div>
             </Typography>
           </div>

@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
-import { ITheme } from "../../types/themeTypes";
+import { IThemeListItem } from "../../types/themeTypes";
 
 export interface ThemeRecommendProps extends React.ComponentProps<'div'>  {
-  theme?: ITheme,
+  theme?: IThemeListItem,
   pattern?:string,
 }
