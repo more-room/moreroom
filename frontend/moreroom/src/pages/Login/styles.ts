@@ -3,10 +3,12 @@ import { Colors } from '../../styles/globalStyle';
 
 
 export const loginpagecontainer = css`
-  margin-top: 9rem;
-  /* display: flex; */
+  margin-top: 7rem;
+  display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  width: 100%;
 `
 export const imgCss = css`
   display: flex;
@@ -34,10 +36,11 @@ export const formStyles = css`
   flex-direction: column;
   align-items: center;
   width: 100%;
+  
 
   .MuiTextField-root {
     width: 90%; /* 화면에 맞춰 너비 조정 */
-    max-width: 25rem; /* 최대 너비를 25rem으로 설정 */
+    max-width: 40rem; /* 최대 너비를 25rem으로 설정 */
     margin-bottom: 1.5rem; /* 필드 간 간격 조정 */
   }
 
@@ -45,6 +48,7 @@ export const formStyles = css`
     width: 100%;
     fieldset {
       border-color: ${Colors['grey']['500']};
+      color: ${Colors['grey']['500']};
     }
     &:hover fieldset {
       border-color: ${Colors['grey']['500']};
@@ -67,7 +71,7 @@ export const buttonStyles = css`
   color: white;
   border: none;
   cursor: pointer;
-  width: 90%; /* 작은 화면에 맞춰 버튼 너비 설정 */
+  width: 50%; /* 작은 화면에 맞춰 버튼 너비 설정 */
   max-width: 25rem;
   padding: 1rem;
   font-size: 1rem;

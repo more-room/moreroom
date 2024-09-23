@@ -64,8 +64,8 @@ export const Login = () => {
       <div css={formStyles}>
         {/* 이메일 입력 필드 */}
         <TextField
-          required
-          id="outlined-required"
+          // required
+          id="outlined-basic"
           label="email"
           className="custom-textfield"
           value={email}
@@ -85,6 +85,7 @@ export const Login = () => {
                 )}
               </InputAdornment>
             ),
+            // style: { color: 'grey'}
           }}
           fullWidth
         />
@@ -128,12 +129,22 @@ export const Login = () => {
           color='primary'
           scale="500"
           fullwidth={true}
-          rounded={0.5}
+          rounded={0.2}
           handler={handleLogin}
         >
           로그인
         </Button>
       </div>
+
+      <p>
+        <a  href="/" css={iconcolors} >비밀번호</a>&nbsp;찾기
+      </p>
+
+      <p>
+        아직 계정이 없으신가요?-&nbsp;
+          <a href="/" css={iconcolors}>회원가입</a>
+        &nbsp;하러가기
+      </p>
     </div>
   );
 };

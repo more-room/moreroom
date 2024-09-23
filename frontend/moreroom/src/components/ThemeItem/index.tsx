@@ -7,7 +7,7 @@ import {
   imgCss,
   infoCss,
   infoItemCss,
-} from './ThemeItem.style';
+} from './ThemeItem.styles';
 import { MapPinIcon, StarIcon } from '@heroicons/react/24/solid';
 import { Icon } from '../Icon';
 import { Typography } from '../Typography';
