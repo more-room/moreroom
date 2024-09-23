@@ -15,7 +15,7 @@ function App() {
       <Routes>
         <Route path="/themes" element={<ThemeList />} />
         <Route path="/login" element={<Login />} />
-        {/* <Route path="/chating" element={<Chating />} /> */}
+        <Route path="/chating" element={<Chating />} />
         
       </Routes>
       {modalStore.isOpen && (
