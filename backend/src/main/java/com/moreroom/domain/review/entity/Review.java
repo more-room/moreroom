@@ -38,7 +38,7 @@ public class Review extends BaseEntity {
     private Theme theme;
     private String content;
     @Column(nullable = false)
-    private float score;
+    private Float score;
     @LastModifiedDate
     private LocalDateTime updatedAt;
     @Builder.Default
