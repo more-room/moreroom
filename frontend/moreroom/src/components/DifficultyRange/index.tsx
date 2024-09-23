@@ -16,6 +16,7 @@ export const DifficultyRange = ({
       {difficultyArray.map((diff: string, idx: number) => {
         return (
           <div
+            key={idx}
             css={box(dir, size, idx + 1 <= difficulty && diff)}
             onClick={() => handler(idx + 1)}
           />

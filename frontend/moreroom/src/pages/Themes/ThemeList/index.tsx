@@ -5,16 +5,19 @@ import { container } from './styles';
 import { getThemeTitles } from '../../../apis/themeApi';
 import { SearchTitle } from './SearchTitle';
 import {
+  useSearchThemesStore,
   useSearchTitleStore,
   useThemePageStore,
 } from '../../../stores/themeStore';
 import { SearchList } from './SearchList';
+import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 
 export type TThemePage = 'default' | 'search';
 
 export const ThemeList = () => {
   const themePageStore = useThemePageStore();
   const searchTitleStore = useSearchTitleStore();
+  const searchThemesStore = useSearchThemesStore();
 
   /* 테마 제목 검색 핸들러 */
   const onSearchHandler = async (value: string) => {
@@ -31,6 +34,16 @@ export const ThemeList = () => {
     if (themePageStore.type === 'search') themePageStore.setType('default');
   };
 
+  /* 아이콘 핸들러 */
+  const onTitleHandler = () => {
+    const after = {
+      ...searchThemesStore.filters,
+      title: searchTitleStore.title,
+    };
+    searchThemesStore.setFilters(after);
+    themePageStore.setType('default');
+  };
+
   return (
     <div css={container}>
       <TopBar>
@@ -40,6 +53,7 @@ export const ThemeList = () => {
           searchHandler={onSearchHandler}
           backHandler={onBackHandler}
         />
+        <TopBar.Right icon={<MagnifyingGlassIcon />} handler={onTitleHandler} />
       </TopBar>
       {themePageStore.type === 'search' && <SearchTitle />}
       {themePageStore.type === 'default' && <SearchList />}

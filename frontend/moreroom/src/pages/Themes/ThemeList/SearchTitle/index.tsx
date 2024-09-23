@@ -2,6 +2,7 @@
 import React from 'react';
 import { titleContainer } from './styles';
 import {
+  useSearchThemesStore,
   useSearchTitleStore,
   useThemePageStore,
 } from '../../../../stores/themeStore';
@@ -10,11 +11,15 @@ import { LabeledTypography } from '../../../../components/LabeledTypography';
 export const SearchTitle = () => {
   const themePageStore = useThemePageStore();
   const searchTitleStore = useSearchTitleStore();
+  const searchThemesStore = useSearchThemesStore();
 
   /* 특정 테마 선택 핸들러 */
   const onHandleTitleSelect = (title: string) => {
     searchTitleStore.setTitle(title);
     themePageStore.setType('default');
+
+    const after = { ...searchThemesStore.filters, title: title };
+    searchThemesStore.setFilters(after);
   };
 
   return (

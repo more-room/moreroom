@@ -6,6 +6,7 @@ import { container, items, regionContainer } from './styles';
 import { IRegionCommon, IRegionItem } from '../../../../types/infoTypes';
 import { Typography } from '../../../../components/Typography';
 import { Item } from '../Item';
+import { useSearchThemesStore } from '../../../../stores/themeStore';
 
 export const Region = () => {
   const regionQuery = useSuspenseQuery({
@@ -13,6 +14,7 @@ export const Region = () => {
     queryFn: async () => await getRegions(),
   });
 
+  const searchThemesStore = useSearchThemesStore();
   const [selected, setSelected] = useState<IRegionCommon>(
     regionQuery.data.data.regions[0],
   );
@@ -22,6 +24,16 @@ export const Region = () => {
 
   const handler = (region: IRegionCommon) => {
     setSelected(region);
+  };
+  const handleFilter = (isAdd: boolean, regionId: string) => {
+    if (isAdd) {
+      const after = { ...searchThemesStore.filters, region: regionId };
+      searchThemesStore.setFilters(after);
+    } else {
+      const after = { ...searchThemesStore.filters };
+      delete after.region;
+      searchThemesStore.setFilters(after);
+    }
   };
 
   useEffect(() => {
@@ -52,14 +64,34 @@ export const Region = () => {
         })}
       </div>
       <div css={items}>
-        <Item item={selected.regionName + ' 전체'} fullWidth={true} />
+        <Item
+          item={selected.regionName + ' 전체'}
+          fullWidth={true}
+          selected={selected.regionId === searchThemesStore.filters.region}
+          handler={() => {
+            handleFilter(
+              !(selected.regionId === searchThemesStore.filters.region),
+              selected.regionId,
+            );
+          }}
+        />
       </div>
       <Typography color="light" size={0.875} weight={700}>
         시/군/구
       </Typography>
       <div css={items}>
         {sigungu.map((s: IRegionCommon) => (
-          <Item item={s.regionName} />
+          <Item
+            key={s.regionId}
+            item={s.regionName}
+            selected={s.regionId === searchThemesStore.filters.region}
+            handler={() => {
+              handleFilter(
+                !(s.regionId === searchThemesStore.filters.region),
+                s.regionId,
+              );
+            }}
+          />
         ))}
       </div>
     </div>

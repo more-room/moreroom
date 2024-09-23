@@ -11,16 +11,24 @@ import { Level } from './Level';
 import { Brand } from './Brand';
 import { Playtime } from './Playtime';
 import { Price } from './Price';
+import { useSearchThemesStore } from '../../../stores/themeStore';
+import { useModal } from '../../../hooks/useModal';
 
 export interface ThemeFiltersProps {
   type: string;
 }
 
 export const ThemeFilters = ({ type }: ThemeFiltersProps) => {
+  const searchThemesStore = useSearchThemesStore();
+  const modal = useModal();
   const [curType, setCurType] = useState<string>(type);
 
   const handler = (filter: string) => {
     setCurType(filter);
+  };
+  const clickHandler = () => {
+    console.log(searchThemesStore.filters);
+    modal.hide();
   };
 
   return (
@@ -37,7 +45,7 @@ export const ThemeFilters = ({ type }: ThemeFiltersProps) => {
           {curType === 'price' && <Price />}
         </Suspense>
       </ErrorBoundary>
-      <Button rounded={0.5} handler={() => console.log('적용')}>
+      <Button rounded={0.5} handler={clickHandler}>
         적용하기
       </Button>
     </div>

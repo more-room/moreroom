@@ -7,15 +7,17 @@ export interface ItemProps {
   item: string;
   fullWidth?: boolean;
   selected?: boolean;
+  handler?: () => void;
 }
 
 export const Item = ({
   item,
   fullWidth = false,
   selected = false,
+  handler = () => console.log('click'),
 }: ItemProps) => {
   return (
-    <div css={container(fullWidth, selected)}>
+    <div css={container(fullWidth, selected)} onClick={handler}>
       <Typography
         color={selected ? 'primary' : 'grey'}
         weight={selected ? 600 : 400}

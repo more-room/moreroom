@@ -55,7 +55,9 @@ type SearchThemesAction = {
 export const useSearchThemesStore = create<
   SearchThemesState & SearchThemesAction
 >()((set) => ({
-  filters: {},
+  filters: {
+    genreList: [],
+  },
   results: {
     pageNumber: -1,
     pageSize: 10,

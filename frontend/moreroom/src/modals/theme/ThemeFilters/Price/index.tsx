@@ -1,10 +1,12 @@
 /** @jsxImportSource @emotion/react */
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { container, range } from './styles';
 import { Typography } from '../../../../components/Typography';
 import Slider from '@mui/material/Slider';
+import { useSearchThemesStore } from '../../../../stores/themeStore';
 
 export const Price = () => {
+  const searchThemesStore = useSearchThemesStore();
   const [price, setPrice] = useState<number>(30000);
 
   const addComma = (price: number) =>
@@ -26,7 +28,11 @@ export const Price = () => {
         min={10000}
         max={300000}
         color={'secondary'}
-        onChange={(e, v) => setPrice(Number(v))}
+        onChange={(e, v) => {
+          setPrice(Number(v));
+          const after = { ...searchThemesStore.filters, price: Number(v) };
+          searchThemesStore.setFilters(after);
+        }}
       />
       <Typography
         size={1}

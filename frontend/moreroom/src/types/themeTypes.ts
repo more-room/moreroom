@@ -46,7 +46,7 @@ export const levelMent = [
 
 /* 테마 검색 요청 */
 export interface ISearchThemesRequestParameter {
-  genreList?: number[];
+  genreList: number[];
   people?: number;
   region?: string;
   level?: number;

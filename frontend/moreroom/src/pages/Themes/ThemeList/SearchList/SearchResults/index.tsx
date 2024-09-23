@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { getThemes } from '../../../../../apis/themeApi';
 import {
   useSearchThemesStore,
@@ -21,6 +21,10 @@ export const SearchResults = () => {
   if (themeQuery.error && !themeQuery.isFetching) {
     throw themeQuery.error;
   }
+
+  useEffect(() => {
+    themeQuery.refetch();
+  }, [searchThemeStore.filters]);
 
   return (
     <div css={listContainer}>
