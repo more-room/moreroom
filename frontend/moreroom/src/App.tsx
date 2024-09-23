@@ -5,6 +5,7 @@ import { ThemeList } from './pages/Themes/ThemeList';
 import { MyPage } from './pages/Main/Mypage';
 import { Profile } from './pages/Main/Mypage/Profile';
 import { Home } from './pages/Main/Home';
+import { EditProfile } from './pages/Main/Mypage/EditProfile';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/themes" element={<ThemeList />} />
         <Route path="/member/mypage" element={<MyPage />} />
         <Route path="/member/mypage/profile" element={<Profile />} />
+        <Route path="/member/mypage/profile/edit" element={<EditProfile />} />
       </Routes>
     </>
   );
