@@ -10,13 +10,13 @@ export const base = (
   rounded: number,
   scale?: ColorScale,
 ) => css`
-
   box-sizing: border-box;
   transition: all 100ms ease;
   user-select: none;
   padding: 0.55rem 1rem;
   border-radius: ${rounded}rem;
   border: 0.125rem solid ${!scale ? MainColors[color] : Colors[color][scale]};
+  font-family: 'Paperlogy';
 
   :enabled {
     cursor: pointer;
@@ -44,14 +44,13 @@ export const variantCss = (
   color: Palette,
   scale?: ColorScale,
 ) => {
-
   switch (variant) {
     case 'contained':
       return css`
         background-color: ${!scale ? MainColors[color] : Colors[color][scale]};
         color: ${ColorStyle[color].contrastText};
       `;
-      
+
     case 'outlined':
       return css`
         background-color: transparent;

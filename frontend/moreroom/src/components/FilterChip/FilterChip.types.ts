@@ -1,16 +1,11 @@
 import { ReactNode } from 'react';
-import {ColorScale, FontWeight, Palette } from '../../types/globalStyleTypes'
+import { Palette } from '../../types/globalStyleTypes';
 
-export interface FilterChipProps extends React.ComponentProps<'button'>{
+export interface FilterChipProps extends React.ComponentProps<'div'> {
   children: ReactNode;
-  // color?: Palette;
-  // fill: Palette;
-  border: number;
-  scale?: ColorScale;
+  color?: Palette;
   size?: number;
-  weight?: FontWeight;
+  rounded?: boolean;
   selected?: boolean;
- 
-  borderRadius? : number
-  onHandleChange: (index: number) => void;
+  onHandleClick: () => void;
 }

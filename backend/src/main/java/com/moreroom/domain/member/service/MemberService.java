@@ -1,5 +1,6 @@
 package com.moreroom.domain.member.service;
 
+import com.moreroom.domain.hashtag.dto.response.HashtagResponseDTO;
 import com.moreroom.domain.hashtag.entity.Hashtag;
 import com.moreroom.domain.hashtag.repository.HashtagRepository;
 import com.moreroom.domain.mapping.member.entity.MemberHashtagMapping;
@@ -72,13 +73,38 @@ public class MemberService {
 
     public MemberProfileResponseDTO getMemberProfile() {
 
-        return MemberProfileResponseDTO.toDTO(memberRepository.getReferenceById(findMemberService.findCurrentMember()));
+        Long memberId = findMemberService.findCurrentMember();
+
+        Member member = memberRepository.getReferenceById(memberId);
+
+        List<MemberHashtagMapping> hashtagMappingList = memberHashtagMappingRepository.findByMember(member);
+
+        List<HashtagResponseDTO> hashtagList = hashtagMappingList.stream()
+            .map(mapping -> {
+                Hashtag hashtag = mapping.getHashtag();
+                return HashtagResponseDTO.toDTO(hashtag);
+            })
+            .toList();
+
+        return MemberProfileResponseDTO.toDTO(member, hashtagList);
     }
 
     public MemberProfileResponseDTO findByMemberId(Long memberId) {
 
         if (memberRepository.findById(memberId).isPresent()) {
-            return MemberProfileResponseDTO.toDTO(memberRepository.findById(memberId).get());
+
+            Member member = memberRepository.getReferenceById(memberId);
+
+            List<MemberHashtagMapping> hashtagMappingList = memberHashtagMappingRepository.findByMember(member);
+
+            List<HashtagResponseDTO> hashtagList = hashtagMappingList.stream()
+                .map(mapping -> {
+                    Hashtag hashtag = mapping.getHashtag();
+                    return HashtagResponseDTO.toDTO(hashtag);
+                })
+                .toList();
+
+            return MemberProfileResponseDTO.toDTO(member, hashtagList);
         }
         throw new MemberNotFoundException();
     }
