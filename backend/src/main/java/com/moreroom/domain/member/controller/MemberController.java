@@ -10,6 +10,8 @@ import com.moreroom.domain.member.dto.response.MemberProfileResponseDTO;
 import com.moreroom.domain.member.dto.response.MemberResponseDTO;
 import com.moreroom.domain.member.entity.Member;
 import com.moreroom.domain.member.service.MemberService;
+import com.moreroom.global.util.FindMemberService;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -38,6 +40,7 @@ public class MemberController {
 
     private final MemberService memberService;
     private final AuthenticationManager authenticationManager;
+    private final FindMemberService findMemberService;
 
     @PostMapping("")
     public ResponseEntity<Member> signup(@RequestBody @Valid MemberSignupRequestDTO memberSignupRequestDTO) {
@@ -60,6 +63,16 @@ public class MemberController {
 
             // 인증 성공 시 SecurityContextHolder에 인증 정보 저장
             SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            // 쿠키 정보 저장
+            Cookie idCookie = new Cookie("memberId",
+                String.valueOf(findMemberService.findCurrentMember()));
+//            idCookie.setHttpOnly(true);
+//            idCookie.setSecure(true);
+            idCookie.setMaxAge(60 * 60 * 24 * 7);
+            idCookie.setPath("/");
+//            idCookie.setDomain("localhost");
+            response.addCookie(idCookie);
 
             // 인증된 후 세션에 해당 인증 정보 저장
             HttpSession session = request.getSession(true);

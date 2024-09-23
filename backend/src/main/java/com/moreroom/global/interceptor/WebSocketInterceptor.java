@@ -1,8 +1,10 @@
 package com.moreroom.global.interceptor;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.moreroom.domain.member.entity.Member;
 import com.moreroom.domain.member.exception.MemberNotFoundException;
 import com.moreroom.domain.member.repository.MemberRepository;
+import com.moreroom.global.dto.RedisUserInfo;
 import com.moreroom.global.util.RedisUtil;
 import java.security.Principal;
 import java.util.Arrays;
@@ -15,6 +17,7 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -29,7 +32,6 @@ public class WebSocketInterceptor implements ChannelInterceptor {
 
   private final MemberRepository memberRepository;
   private final RedisUtil redisUtil;
-  private final AuthenticationManager authenticationManager;
 
   @Override
   public Message<?> preSend(Message<?> message, MessageChannel channel) {
@@ -59,12 +61,18 @@ public class WebSocketInterceptor implements ChannelInterceptor {
         log.info("EMAIL IS NULL");
         return null;
       }
-      String[] userInfo = setNicknameAndPhoto(email);
+
+      RedisUserInfo userInfo = null;
+      try {
+        userInfo = setUserInfo(email);
+      } catch (JsonProcessingException e) {
+        throw new RuntimeException(e);
+      }
 
       //헤더에 닉네임, 프사 저장
-      accessor.setNativeHeader("nickname", userInfo[0]);
-      accessor.setNativeHeader("photo", userInfo[1]);
-      log.info("nickname: {}, photo: {}", userInfo[0], userInfo[1]);
+      accessor.setNativeHeader("nickname", userInfo.getNickname());
+      accessor.setNativeHeader("photo", userInfo.getPhoto());
+      log.info("nickname: {}, photo: {}", accessor.getFirstNativeHeader("nickname"), accessor.getFirstNativeHeader("photo"));
     }
 
     // 로그용
@@ -72,26 +80,23 @@ public class WebSocketInterceptor implements ChannelInterceptor {
       log.info("SUBSCRIBED CHANNEL: {}, SESSION USER INFO: {}", accessor.getDestination(), accessor.getUser().getName());
     }
 
-    return message;
+    return MessageBuilder.createMessage(message.getPayload(), accessor.getMessageHeaders());
   }
 
-  private String[] setNicknameAndPhoto(String email) {
-    String nicknameKey = "nickname:" + email;
-    String photoKey = "photo:" + email;
+  private RedisUserInfo setUserInfo(String email) throws JsonProcessingException {
+    String key = "USERINFO:" + email;
 
-    String nickname = redisUtil.getData(nicknameKey);
-    String photo = redisUtil.getData(photoKey);
+    RedisUserInfo info = redisUtil.getRedisUserInfo(key);
 
-    if (nickname == null && photo == null) {
+    if (info == null) {
       Member member = memberRepository.findByEmail(email)
           .orElseThrow(MemberNotFoundException::new);
-      nickname = member.getNickname();
-      photo = member.getPhoto();
-      redisUtil.setDataExpire(nicknameKey, nickname, 3600);
-      redisUtil.setDataExpire(photoKey, photo, 3600);
+      info = new RedisUserInfo(member.getMemberId(), member.getNickname(),
+          member.getPhoto());
+      redisUtil.saveRedisUserInfo(key, info, 7200);
     }
 
-    return new String[]{nickname, photo};
+    return info;
   }
 
 }

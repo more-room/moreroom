@@ -4,6 +4,8 @@ import { Route, Routes } from 'react-router-dom';
 import { ThemeList } from './pages/Themes/ThemeList';
 import { Modal } from './components/Modal';
 import { useModalStore } from './stores/modalStore';
+import { Login } from './pages/Login';
+import { Chating } from './pages/Chating';
 import { MyPage } from './pages/Main/Mypage';
 import { Profile } from './pages/Main/Mypage/Profile';
 import { Home } from './pages/Main/Home';
@@ -17,6 +19,9 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/themes" element={<ThemeList />} />
+        <Route path="/login" element={<Login />} />
+        {/* <Route path="/chating" element={<Chating />} /> */}
+        
         <Route path="/member/mypage" element={<MyPage />} />
         <Route path="/member/mypage/profile" element={<Profile />} />
         <Route path="/member/mypage/profile/edit" element={<EditProfile />} />
