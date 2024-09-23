@@ -32,14 +32,16 @@ public class PartyService {
   private final PartyRepository partyRepository;
   private final MemberPartyMappingRepository memberPartyMappingRepository;
   private final SimpMessagingTemplate simpMessagingtemplate;
+  private final PartyRequestRepository partyRequestRepository;
 
   //파티 만들고 유저 참가시키기
   @Transactional
-  public void createPartyAndJoin(Integer themeId, HashMap<Long, String> partyAcceptMap) {
+  public void createPartyAndJoin(Integer themeId, HashMap<Long, String> partyAcceptMap, String uuid) {
     Theme theme = themeRepository.findById(themeId).orElseThrow();
     Party party = createInitialParty(theme, partyAcceptMap); //파티 만들기
     partyRepository.save(party); //파티 저장
     joinToParty(partyAcceptMap, party); //파티 참가
+    changePartyRequestStatus(uuid); //partyRequest 삭제
   }
 
   // 파티 만들기
@@ -82,6 +84,23 @@ public class PartyService {
         new SocketNotificationDto("CHATROOM_SUBSCRIBE", party.getPartyId()));
   }
 
+  //partyRequest 삭제
+  @Transactional
+  public void changePartyRequestStatus(String uuid) {
+    List<PartyRequest> partyRequestList = partyRequestRepository.findByUuid(uuid);
+    partyRequestRepository.deleteAll(partyRequestList);
+  }
+
+  //채팅방 참여 알림 메세지 만들기
+  public String makeWelcomeMessage(String partyId, Member member) {
+    StringBuilder sb = new StringBuilder();
+    Party party = partyRepository.findById(Long.parseLong(partyId)).orElseThrow();
+    return sb.append(member.getNickname())
+        .append("님이 ")
+        .append(party.getRoomName())
+        .append(" 파티에 참여했습니다.")
+        .toString();
+  }
 
 
 

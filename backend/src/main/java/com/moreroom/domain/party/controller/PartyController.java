@@ -31,7 +31,7 @@ public class PartyController {
     HashMap<Long, String> partyAcceptMap = partyMatchingService.setPartyAcceptStatus(dto.getUuid(), memberId, dto.getThemeId(),
         dto.isAccept()); //파티 참가 상태 업데이트
     if (partyAcceptMap != null && partyAcceptMap.get(-2L).equals("3")) {
-      partyService.createPartyAndJoin(dto.getThemeId(), partyAcceptMap); //3명 모두 동의한 경우 파티 만들고 참가
+      partyService.createPartyAndJoin(dto.getThemeId(), partyAcceptMap, dto.getUuid()); //3명 모두 동의한 경우 파티 만들고 참가
     }
 
     return new ResponseEntity<>(HttpStatus.OK);
