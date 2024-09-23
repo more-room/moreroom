@@ -1,5 +1,6 @@
 package com.moreroom.global.config;
 
+import com.moreroom.global.interceptor.TestPrincipalHandshakeInterceptor;
 import com.moreroom.global.interceptor.WebSocketInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +18,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
   private final WebSocketInterceptor webSocketInterceptor;
+  private final TestPrincipalHandshakeInterceptor testPrincipalHandshakeInterceptor;
 
   /**
    * enable a simple memory-based message broker
@@ -31,6 +33,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     //topic: 구독한 모든사람에게 전송, /queue: 한명에게만 전송
     registry.enableSimpleBroker("/topic", "/queue"); //SimpleBroker 거쳐서 바로 구독자에게 전송
     registry.setApplicationDestinationPrefixes("/app"); //Handler 거쳐서 가공 후 구독자에게 전송
+    registry.setUserDestinationPrefix("/user"); // 특정 유저에게만 메세지 보내기 위해 설정 (convertAndSendToUser 사용 위함)
   }
 
   /**
@@ -39,6 +42,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
   @Override
   public void registerStompEndpoints(StompEndpointRegistry registry) {
     registry.addEndpoint("/ws")  //ws://localhost:8081/api/ws 에서 웹소켓 연결
+        .addInterceptors(testPrincipalHandshakeInterceptor)
         .setAllowedOriginPatterns("*");
   }
 

@@ -22,33 +22,20 @@ const meta = {
   tags: ['!autodocs'],
   argTypes: {
     children: {
-      description: 'text를 입력해주세요',
+      description: 'FilterChip 에 표시할 내용입니다',
     },
-    // color: {
-    //   description: '글자 색상입니다.\n기본 색상은 grey 입니다.',
-    // },
-    // fill: {
-    //   description: '배경 색상입니다. \n기본 색상은 secondary 입니다.',
-    // },
-    scale: {
-      description:
-        '적용할 컬러 스케일입니다.\n입력되지 않으면 MainColor가 적용됩니다.',
+    color: {
+      description: '표시할 색상입니다',
     },
     size: {
-      description: '적용할 사이즈입니다.\nrem 단위로 입력하면 됩니다.',
+      description: '폰트의 크기입니다',
     },
-    weight: {
-      description: '적용할 굵기입니다.',
+    rounded: {
+      description: '둥근 정도입니다',
     },
     selected: {
-      description: '선택 여부 입니다.'
+      description: '선택 여부입니다',
     },
-    border: {
-      description: '적용할 테두리 굵기 입니다.'
-    },
-    borderRadius: {
-      description: '적용할 테두리 굴곡 입니다.'
-    }
   },
 } satisfies Meta<typeof FilterChip>;
 
@@ -58,101 +45,67 @@ type Story = StoryObj<typeof FilterChip>;
 
 export const Primary: Story = {
   args: {
-    children: 'text',
-    // color: 'grey',
-    // fill: 'secondary',
-    size: 1,
-    weight: 400,
-    selected: false
+    children: 'FilterChip',
+    color: 'primary',
+    size: 0.875,
+    rounded: true,
+    selected: true,
   },
 };
 
-const colors: Palette[] = [
-  'primary',
-  'secondary',
-  'danger',
-  'grey',
-  'dark',
-  'light',
-];
-const sizes: number[] = [0.5, 0.625, 0.75, 0.875, 1, 1.125, 1.25];
-const borderradius: number[] = [0.5, 1]
+const colors: Palette[] = ['primary', 'secondary', 'danger', 'grey', 'dark'];
+const sizes: number[] = [0.625, 0.75, 0.875, 1];
 
-export const MainColorsFilterChip: Story = {
+export const ChipColors: Story = {
   args: {
     ...Primary.args,
   },
   render: (args) => (
-    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
-     <FilterChip {...args} selected={false}>
-        {`기본값 (미선택)`}
-      </FilterChip>
-
-      
-      <FilterChip {...args} selected={true}>
-        {`선택 시 (선택)`}
-      </FilterChip>
-    </div>
-  ),
-};
-
-export const FilterChipSizes: Story = {
-  args: {
-    ...Primary.args,
-  },
-  render: (args) => (
-    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
-      {sizes.map((size) => (
-        <FilterChip key={size} {...args} size={size}>
-          {size}rem
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+        <FilterChip {...args} selected={false}>
+          default
         </FilterChip>
+        <FilterChip {...args} rounded={false} selected={false}>
+          default
+        </FilterChip>
+      </div>
+      {colors.map((color: Palette) => (
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+          <FilterChip {...args} color={color}>
+            {color}
+          </FilterChip>
+          <FilterChip {...args} color={color} rounded={false}>
+            {color}
+          </FilterChip>
+        </div>
       ))}
     </div>
   ),
 };
 
-export const borderRadius: Story = {
+export const ChipSizes: Story = {
   args: {
     ...Primary.args,
   },
   render: (args) => (
-    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
-      {borderradius.map((border) => (
-        <FilterChip key={border} {...args} borderRadius={border}>
-          {border}rem
-        </FilterChip>
-      ))}
-    </div>
-  )
-}
-
-export const FilterChipSizeVariants: Story = {
-  args: {
-    ...Primary.args,
-  },
-  render: (args) => (
-    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
-      {sizes.map((size) => (
-        <FilterChip
-          key={size}
-          {...args}
-          size={size} // size를 전달하여 크기를 변경
-          style={{
-            fontSize: `${size}rem`, // size에 따라 글자 크기 설정
-            padding: `${size * 0.5}rem ${size}rem`, // 패딩을 size에 따라 동적으로 설정
-            borderRadius: `1rem`, // borderRadius 고정
-            lineHeight: '1', // 텍스트가 중앙에 오도록 줄 높이 설정
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            height: `${size * 2}rem`, // 버튼 높이를 size에 비례하여 조정
-            width: `${size * 4}rem`, // 버튼 너비를 size에 비례하여 조정
-          }}
-        >
-          {size}
-        </FilterChip>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+        {sizes.map((size: number) => (
+          <FilterChip {...args} size={size} selected={false}>
+            {size}rem
+          </FilterChip>
+        ))}
+      </div>
+      {colors.map((color: Palette) => (
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+          {sizes.map((size: number) => (
+            <FilterChip {...args} color={color} size={size}>
+              {size}rem
+            </FilterChip>
+          ))}
+        </div>
       ))}
     </div>
   ),
 };
-
