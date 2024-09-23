@@ -50,6 +50,8 @@ spring:
 server:
   servlet:
     session:
+      cookie:
+        path: /
       timeout: 90m
     context-path: /${CONTEXT_PATH}
   port: ${BACKEND_PORT}
