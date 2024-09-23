@@ -14,7 +14,6 @@ export const containerCss = css`
 export const imgCss = css`
   width: 18rem;
   height: 13.25rem;
-  /* border-radius: 0.25rem; */
   margin-left: 0.5rem;      
   margin-right: 0%.5; 
   margin-top: 0.25rem;
