@@ -42,7 +42,7 @@ export const Login = () => {
           sessionStorage.setItem('sessionToken', response.data.token);
 
           // 로그인 성공 후 홈으로 리다이렉트
-          navigate('/theme');
+          navigate('/');
           resetFields();  // 로그인 후 필드 초기화
         } else {
           throw new Error("로그인 실패");
@@ -145,6 +145,7 @@ export const Login = () => {
           <a href="/" css={iconcolors}>회원가입</a>
         &nbsp;하러가기
       </p>
+
     </div>
   );
 };

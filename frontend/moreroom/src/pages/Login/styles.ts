@@ -40,7 +40,7 @@ export const formStyles = css`
 
   .MuiTextField-root {
     width: 90%; /* 화면에 맞춰 너비 조정 */
-    max-width: 40rem; /* 최대 너비를 25rem으로 설정 */
+    max-width: 25rem; /* 최대 너비를 25rem으로 설정 */
     margin-bottom: 1.5rem; /* 필드 간 간격 조정 */
   }
 
