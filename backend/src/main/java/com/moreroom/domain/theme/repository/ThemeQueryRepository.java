@@ -231,4 +231,79 @@ public class ThemeQueryRepository extends QuerydslRepositoryCustom {
 
         return PageResponseDto.toDto(themeListResponseDto, pn, ps, tp, te);
     }
+
+
+    public ThemeListResponseDto findByThemeIds(List<Integer> themeIds, Long memberId) {
+        // 1. 테마 및 관련 정보 조회
+        List<Tuple> results = jpaQueryFactory
+            .select(theme, cafe, region.regionId,
+                review.count(), review.score.avg(), genre.genreName
+//               , history.isNotNull().coalesce(false)
+            )
+            .from(theme)
+            .leftJoin(cafe).on(cafe.cafeId.eq(theme.cafe.cafeId))
+            .innerJoin(region).on(region.regionId.eq(cafe.region.regionId))
+            .leftJoin(themeGenreMapping).on(themeGenreMapping.theme.themeId.eq(theme.themeId))
+            .leftJoin(genre).on(genre.genreId.eq(themeGenreMapping.genre.genreId))
+            .leftJoin(review).on(review.theme.themeId.eq(theme.themeId))
+//            .leftJoin(history).on(history.member.memberId.eq(memberId), history.theme.themeId.eq(theme.themeId))
+            .where(theme.themeId.in(themeIds))
+            .groupBy(theme.themeId, cafe.cafeId, region.regionId, genre.genreName
+//                , history
+            )
+            .orderBy(theme.themeId.asc())
+            .fetch();
+
+        // 2. 변환
+        Map<Integer, ThemeListComponentDto> themeMap = new HashMap<>();
+
+        for (Tuple tuple : results) {
+            Theme theme = tuple.get(0, Theme.class);
+            Cafe cafe = tuple.get(1, Cafe.class);
+            String regionId = tuple.get(2, String.class);
+            Long reviewCount = tuple.get(3, Long.class);
+            Double avgScore = tuple.get(4, Double.class);
+            String genreName = tuple.get(5, String.class);
+//            Boolean playFlag = tuple.get(6, Boolean.class);
+
+            // DTO 생성 및 업데이트
+            ThemeListComponentDto themeDto = themeMap.computeIfAbsent(theme.getThemeId(),
+                id -> ThemeListComponentDto.builder()
+                    .themeId(theme.getThemeId())
+                    .title(theme.getTitle())
+                    .poster(theme.getPoster())
+                    .playtime(theme.getPlaytime())
+                    .genreList(new ArrayList<>())
+                    .regionId(regionId)
+                    .cafe(ThemeCafeResponseDto.builder()
+                        .address(cafe.getAddress())
+                        .cafeName(cafe.getCafeName())
+                        .branchName(cafe.getBranchName())
+                        .brandName(cafe.getBrand() != null ? cafe.getBrand().getBrandName() : null)
+                        .cafeId(cafe.getCafeId())
+                        .build())
+//                .member(ThemeMemberResponseDto.builder()
+//                    .playFlag(playFlag)
+//                    .build())
+                    .build());
+
+            // 리뷰 정보 업데이트
+            themeDto.setReview(ThemeReviewResponseDto.builder()
+                .count(reviewCount)
+                .score(avgScore)
+                .build());
+
+            // 장르 추가 (중복 체크)
+            if (genreName != null && !themeDto.getGenreList().contains(genreName)) {
+                themeDto.getGenreList().add(genreName);
+            }
+        }
+
+        ThemeListResponseDto themeListResponseDto = ThemeListResponseDto.builder()
+            .themeList(new ArrayList<>(themeMap.values()))
+            .build();
+
+        return themeListResponseDto;
+    }
+
 }
