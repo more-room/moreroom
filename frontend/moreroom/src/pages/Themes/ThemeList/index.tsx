@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { TopBar } from '../../../components/TopBar';
 import { container } from './styles';
 import { getThemeTitles } from '../../../apis/themeApi';

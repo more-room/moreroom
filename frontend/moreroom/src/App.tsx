@@ -2,13 +2,20 @@ import React from 'react';
 import './App.css';
 import { Route, Routes } from 'react-router-dom';
 import { ThemeList } from './pages/Themes/ThemeList';
+import { Modal } from './components/Modal';
+import { useModalStore } from './stores/modalStore';
 
 function App() {
+  const modalStore = useModalStore();
+
   return (
     <>
       <Routes>
         <Route path="/themes" element={<ThemeList />} />
       </Routes>
+      {modalStore.isOpen && (
+        <Modal height={modalStore.height}>{modalStore.contents}</Modal>
+      )}
     </>
   );
 }
