@@ -88,7 +88,7 @@ export const MyPage = () => {
               </Icon>
             }
             children="파티"
-            url="/mypage/profile"
+            url="/party"
           />
           <ManageInfo
             icon={
