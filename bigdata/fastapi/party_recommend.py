@@ -1,20 +1,10 @@
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
+from fastapi import HTTPException
+
 from sklearn.cluster import KMeans
 from sklearn.metrics.pairwise import cosine_similarity
 import pandas as pd
 import numpy as np
 import os
-import asyncio
-
-# FastAPI 앱 생성
-app = FastAPI()
-
-matched_users = set()
-
-# 요청 본문 데이터 모델 정의
-class PartyRequest(BaseModel):
-    party_request_id: int
 
 # 데이터 로드 함수
 def load_data():
@@ -31,7 +21,7 @@ def load_data():
     return party_request_df, request_hashtag_df, member_hashtag_df
 
 # 1. 파티 요청 ID로 테마 ID와 멤버 ID 찾기
-def get_theme_and_member_id_by_party_request(party_request_id, party_request_df):
+def get_theme_and_member_id_by_party_request(party_request_id, party_request_df, matched_users):
     try:
         row = party_request_df[party_request_df['partyRequestId'] == party_request_id]
         if row.empty:
@@ -50,7 +40,7 @@ def get_theme_and_member_id_by_party_request(party_request_id, party_request_df)
         raise ValueError("파티 요청 ID에서 테마 ID 또는 멤버 ID를 찾는 중 오류가 발생했습니다.")
 
 # 2. 같은 테마를 선택한 후보 유저 리스트 만들기 (테마 ID로 필터링)
-def get_candidate_users(theme_id, party_request_df):
+def get_candidate_users(theme_id, party_request_df, matched_users):
     try:
         print(f"테마 ID {theme_id}에 해당하는 유저들을 필터링합니다.")
         theme_users = party_request_df[party_request_df['themeId'] == theme_id]['memberId'].unique()
@@ -106,7 +96,7 @@ def calculate_hashtag_similarity(member_hashtag_df, similar_users):
         raise ValueError("해시태그 유사도 계산 중 오류가 발생했습니다.")
 
 # 5. 유사도가 높은 유저로 파티 구성 (본인을 포함한 3명)
-def create_party(similarity_matrix, similar_users, target_member_id, initial_threshold=0.8):
+def create_party(similarity_matrix, similar_users, target_member_id, matched_users, initial_threshold=0.8):
     try:
         print(f"유저 {target_member_id}에 대한 파티를 생성합니다.")
 
@@ -161,7 +151,7 @@ def create_party(similarity_matrix, similar_users, target_member_id, initial_thr
         raise ValueError("파티 구성 중 오류가 발생했습니다.")
 
 # 비동기 함수로 파티 매칭 처리
-async def process_party_matching(party_request: PartyRequest):
+async def process_party_matching(party_request, matched_users):
     try:
         print(f"파티 요청 ID {party_request.party_request_id}을(를) 받았습니다.")
         
@@ -169,7 +159,7 @@ async def process_party_matching(party_request: PartyRequest):
         party_request_df, request_hashtag_df, member_hashtag_df = load_data()
         
         # 2. 파티 요청 ID로 테마 ID와 멤버 ID 찾기
-        theme_id, member_id = get_theme_and_member_id_by_party_request(party_request.party_request_id, party_request_df)
+        theme_id, member_id = get_theme_and_member_id_by_party_request(party_request.party_request_id, party_request_df, matched_users)
 
         # 이미 매칭된 유저이거나 요청이 잘못되었을 때 매칭 중단
         if theme_id is None or member_id is None:
@@ -179,7 +169,7 @@ async def process_party_matching(party_request: PartyRequest):
             }
 
         # 3. 같은 테마를 선택한 후보 유저 리스트 만들기 (테마 ID로 필터링)
-        candidate_users = get_candidate_users(theme_id, party_request_df)
+        candidate_users = get_candidate_users(theme_id, party_request_df, matched_users)
         if len(candidate_users) < 3:
             print(f"매칭에 필요한 유저 수가 부족합니다. {len(candidate_users)}명의 유저만 찾았습니다.")
             return {
@@ -199,7 +189,7 @@ async def process_party_matching(party_request: PartyRequest):
         similarity_matrix = calculate_hashtag_similarity(member_hashtag_df, similar_users)
         
         # 6. 유사한 파티원 구성 (본인을 포함한 3명)
-        party_members = create_party(similarity_matrix, similar_users, member_id)
+        party_members = create_party(similarity_matrix, similar_users, member_id, matched_users)
         if party_members is None:
             return {
                 "party_request_id": int(party_request.party_request_id),
@@ -216,16 +206,3 @@ async def process_party_matching(party_request: PartyRequest):
     except Exception as e:
         print(f"파티 매칭 중 오류 발생: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
-
-# FastAPI 엔드포인트 - 비동기적으로 1000개의 요청 처리
-@app.post("/recommend_party_batch/")
-async def recommend_party_batch():
-    requests = [PartyRequest(party_request_id=i) for i in range(1, 1001)]
-    tasks = [process_party_matching(request) for request in requests]
-    results = await asyncio.gather(*tasks)
-    return results
-
-@app.post("/recommend_party/")
-async def recommend_party(request: PartyRequest):
-    result = await process_party_matching(request)
-    return result
