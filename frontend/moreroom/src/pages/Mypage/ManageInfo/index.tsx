@@ -1,9 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Icon } from '../../../../components/Icon';
-import { Typography } from '../../../../components/Typography';
-import { containerCss, contentCss } from './styles';
+import { Typography } from '../../../components/Typography';
+import { containerCss } from './styles';
 
 interface ManageInfoProps {
   icon: JSX.Element;
@@ -17,8 +16,8 @@ export const ManageInfo = ({ icon, children, chips, url }: ManageInfoProps) => {
 
   return (
     <div css={containerCss}>
-      {icon}
-      <div css={contentCss}>
+      <div>{icon}</div>
+      <div>
         {children && (
           <Typography
             color="light"

@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import { Colors } from '../../../styles/globalStyle';
+import { Colors } from '../../styles/globalStyle';
 
 export const containerCss = css`
   padding: 1rem;
@@ -12,8 +12,7 @@ export const profileContainer = css`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 2.1875rem auto;
-  /* text-align: center; */
+  margin: 2rem auto;
 `;
 
 export const profile = css`

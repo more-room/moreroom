@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
-import { TopBar } from '../../../components/TopBar';
+import { TopBar } from '../../components/TopBar';
 import {
   ArchiveBoxXMarkIcon,
   ArrowRightStartOnRectangleIcon,
@@ -16,11 +16,11 @@ import {
   profileContainer,
   sectionCss,
 } from './styles';
-import { Typography } from '../../../components/Typography';
-import { Chip } from '../../../components/Chip';
+import { Typography } from '../../components/Typography';
+import { Chip } from '../../components/Chip';
 import { ManageInfo } from './ManageInfo';
 import { UserIcon } from '@heroicons/react/24/solid';
-import { Icon } from '../../../components/Icon';
+import { Icon } from '../../components/Icon';
 import {
   PencilIcon,
   CalendarDaysIcon,
@@ -42,12 +42,17 @@ export const MyPage = () => {
       <div css={profileContainer}>
         <UserCircleIcon css={profile} />
         <div>
-          <Typography color="light" size={1.5} weight={600}>
-            닉네임
+          <Typography
+            style={{ marginBottom: '0.5rem' }}
+            color="light"
+            size={1.5}
+            weight={600}
+          >
+            D206탈출왕
           </Typography>
           <div css={ChipCss}>
             <Chip border={1} color="primary" fontSize={0.625} fontWeight={500}>
-              0방
+              10방
             </Chip>
             <Chip
               border={1}
@@ -56,7 +61,7 @@ export const MyPage = () => {
               fontWeight={500}
               css={ChipCss}
             >
-              대구
+              구미시
             </Chip>
             <Chip
               border={1}
@@ -65,7 +70,7 @@ export const MyPage = () => {
               fontWeight={500}
               css={ChipCss}
             >
-              스릴러
+              스토리
             </Chip>
           </div>
         </div>
@@ -123,6 +128,15 @@ export const MyPage = () => {
           <ManageInfo
             icon={
               <Icon color="light" size={1.25}>
+                <HashtagIcon />
+              </Icon>
+            }
+            children="해시태그 편집"
+            url="/mypage/hashtag/edit"
+          />
+          <ManageInfo
+            icon={
+              <Icon color="light" size={1.25}>
                 <UserIcon />
               </Icon>
             }
@@ -136,15 +150,6 @@ export const MyPage = () => {
               </Icon>
             }
             children="프로필 편집"
-            url="/mypage/profile/edit"
-          />
-          <ManageInfo
-            icon={
-              <Icon color="light" size={1.25}>
-                <HashtagIcon />
-              </Icon>
-            }
-            children="해시태그 편집"
             url="/mypage/profile/edit"
           />
         </div>

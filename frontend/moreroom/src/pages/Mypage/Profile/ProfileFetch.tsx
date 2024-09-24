@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
-import { TopBar } from '../../../../components/TopBar';
+import { TopBar } from '../../../components/TopBar';
 import {
   CakeIcon,
   EnvelopeIcon,
@@ -17,33 +17,28 @@ import {
   sectionCss,
   manageInfoContainerCss,
 } from './styles';
-import { Typography } from '../../../../components/Typography';
+import { Typography } from '../../../components/Typography';
 import { ManageInfo } from '../ManageInfo';
-import { Icon } from '../../../../components/Icon';
+import { Icon } from '../../../components/Icon';
 import { useNavigate } from 'react-router-dom';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { getUserInfo } from '../../../../apis/mypageApi';
-import { useHashtagStore } from '../../../../stores/mypageStore';
-import { Chip } from '../../../../components/Chip';
+import { getUserInfo } from '../../../apis/mypageApi';
+import { useHashtagStore } from '../../../stores/mypageStore';
+import { Chip } from '../../../components/Chip';
+import { Ihashtags } from '../../../types/mypageTypes';
 
-export const Profile = () => {
+export const ProfileFetch = () => {
   const nav = useNavigate();
-  const { selectedHashtags, toggleHashtag } = useHashtagStore();
+  const { selectedHashtags } = useHashtagStore();
+  const hashtags = Ihashtags;
   const { data, error, isFetching } = useSuspenseQuery({
     queryKey: ['profile'],
     queryFn: async () => await getUserInfo(),
   });
 
-  if (isFetching) {
-    return <div>Loading...</div>; // 데이터 로딩 중 표시
+  if (error && !isFetching) {
+    throw error;
   }
-
-  if (error) {
-    return <div>Error: {error.message}</div>; // 에러 발생 시 표시
-  }
-  const genreNames = data?.data?.genreList?.map(
-    (genre: { id: number; name: string }) => genre.name,
-  );
 
   const genderhandler = (gender: string) => {
     if (gender === 'M') {
@@ -52,21 +47,6 @@ export const Profile = () => {
       return '여성';
     }
   };
-
-  const hashtags = [
-    { id: 30, label: '리더쉽' },
-    { id: 31, label: '쫄보' },
-    { id: 32, label: '공포면역' },
-    { id: 33, label: '고수예요' },
-    { id: 34, label: '초보예요' },
-    { id: 35, label: '활동적이에요' },
-    { id: 36, label: '눈치가 빨라요' },
-    { id: 37, label: '꼼꼼해요' },
-    { id: 38, label: '적극적이에요' },
-    { id: 39, label: '분석적이에요' },
-    { id: 40, label: '스토리를 좋아해요' },
-    { id: 41, label: '분위기 메이커' },
-  ];
 
   return (
     <div>

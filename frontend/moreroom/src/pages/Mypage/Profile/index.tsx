@@ -1,13 +1,13 @@
 import React, { Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
-import { HashtagFetch } from './HashTagFetch';
+import { ProfileFetch } from './ProfileFetch';
 
-export const HashTag= () => {
+export const Profile = () => {
   return (
     <div>
       <ErrorBoundary fallback={<>에러</>}>
         <Suspense fallback={<>로딩중</>}>
-          <HashtagFetch />
+          <ProfileFetch />
         </Suspense>
       </ErrorBoundary>
     </div>
