@@ -67,6 +67,8 @@ services:
             - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
             - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
             - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+            - FAST_API_URL=${FAST_API_URL}
+            - SERVER_DOMAIN=${SERVER_DOMAIN}
             - TZ=Asia/Seoul
         expose:
             - ${BACKEND_PORT}
