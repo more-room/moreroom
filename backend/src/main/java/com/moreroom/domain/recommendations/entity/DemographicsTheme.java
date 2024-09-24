@@ -13,6 +13,6 @@ public class DemographicsTheme {
 
     @Id
     private String id;
-    private Long groupId;
+    private String groupId;
     private List<Integer> demographicThemes;
 }
