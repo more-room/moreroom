@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import React, { useState, useEffect } from "react";
 import { TopBar } from "../../components/TopBar";
+import { BottomBar } from "../../components/BottomBar";
 import {
   container,
   themeCard,
@@ -15,14 +16,15 @@ import {
   iconcolors2,
   cardcontainer,
   ellipsisIconWrapper, // 오른쪽 상단 아이콘을 위한 스타일
-  roomname
+  roomname,
+  bottombarcss
 } from "./styles"; // 스타일 파일
 
 import { useSearchPartiesStore } from "../../stores/chatingStore"; // zustand store
 import { getPartyList } from "../../apis/chatApi"; // getPartyList 함수 임포트
 
 // 아이콘 임포트
-import { MapPinIcon, ClockIcon, UserGroupIcon, EllipsisHorizontalCircleIcon } from '@heroicons/react/24/solid';
+import { MapPinIcon, ClockIcon, UserGroupIcon, EllipsisHorizontalCircleIcon, BellIcon } from '@heroicons/react/24/solid';
 import { Chip } from "../../components/Chip";
 import { Typography } from "../../components/Typography";
 import { IParty } from '../../stores/chatingStore' // IParty 타입 임포트
@@ -60,6 +62,9 @@ export const Chating = () => {
     return false;
   };
 
+  const handlechange = () => {
+    console.log('1')
+  }
   return (
     <div css={container}>
       <TopBar>
@@ -133,6 +138,11 @@ export const Chating = () => {
           <div>파티 목록이 없습니다.</div>
         )}
       </div>
+      <BottomBar css={bottombarcss}
+        icons={[<BellIcon />, <BellIcon />, <BellIcon />]}
+        menus={['메뉴1', '메뉴2', '메뉴3']}
+        onHandleChange={handlechange}>
+      </BottomBar>
     </div>
   );
 };
