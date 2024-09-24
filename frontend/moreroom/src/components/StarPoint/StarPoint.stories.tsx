@@ -1,8 +1,7 @@
-import React from "react";
+import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { StarPoint } from '.';
 import { ColorScale, Palette } from '../../types/globalStyleTypes';
-import { StarIcon } from "@heroicons/react/24/solid";
 
 const meta = {
   title: 'UI/Components/StarPoint',
@@ -29,8 +28,12 @@ const meta = {
       description:
         '적용할 컬러스케일입니다.\n입력되지 않으면 MainColor가 적용됩니다.',
     },
-    size: {
-      description: '적용할 사이즈입니다.\nrem 단위로 입력하면 됩니다.',
+    iconSize: {
+      description: '적용할 아이콘 사이즈입니다.\nrem 단위로 입력하면 됩니다.',
+    },
+    numberSize: {
+      description:
+        '적용할 리뷰 점수 사이즈입니다.\nrem 단위로 입력하면 됩니다.',
     },
   },
 } satisfies Meta<typeof StarPoint>;
@@ -43,7 +46,8 @@ export const Primary: Story = {
   args: {
     children: '3.8',
     color: 'primary',
-    size: 4,
+    iconSize: 1,
+    numberSize: 1,
   },
 };
 
@@ -71,8 +75,6 @@ const scales: ColorScale[] = [
   'A400',
   'A700',
 ];
-const sizes: number[] = [3.5, 3.625, 3.75, 3.875, 4, 4.125, 4.25];
-
 
 export const MainColors: Story = {
   args: {
@@ -108,21 +110,6 @@ export const ColorsWithScales: Story = {
               </StarPoint>
             ))}
         </div>
-      ))}
-    </div>
-  ),
-};
-
-export const Sizes: Story = {
-  args: {
-    ...Primary.args,
-  },
-  render: (args) => (
-    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
-      {sizes.map((size) => (
-        <StarPoint key={size} {...args} size={size}>
-          {args.children}
-        </StarPoint>
       ))}
     </div>
   ),
