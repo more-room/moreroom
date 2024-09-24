@@ -47,6 +47,9 @@ spring:
     port: 5672
     host: rabbitmq
 
+  fastAPI:
+    URL: ${FAST_API_URL}
+
 server:
   servlet:
     session:

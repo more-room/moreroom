@@ -1,7 +1,6 @@
 package com.moreroom.domain.partyRequest.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.moreroom.domain.cafe.entity.Cafe;
 import com.moreroom.domain.member.entity.Member;
 import com.moreroom.domain.member.exception.MemberNotFoundException;
 import com.moreroom.domain.member.repository.MemberRepository;
@@ -14,14 +13,13 @@ import com.moreroom.domain.theme.repository.ThemeRepository;
 import com.moreroom.global.dto.SocketNotificationDto;
 import com.moreroom.global.util.RedisUtil;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -35,7 +33,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Slf4j
 public class PartyMatchingService {
@@ -47,7 +45,7 @@ public class PartyMatchingService {
   private final ThemeRepository themeRepository;
   private final RestTemplate restTemplate;
 
-  private static final String FASTAPI_URL = "http://127.0.0.1:8000/recommend_party_batch/";
+  private final String fastAPI_URL;
 
   // FastAPI의 여러 파티 매칭 결과를 가져오는 메서드
   private List<Map<String, Object>> getBatchPartyMatchingResultFromFastAPI() {
@@ -57,7 +55,7 @@ public class PartyMatchingService {
 
       // FastAPI에서 매칭 결과 리스트를 받아옴
       ResponseEntity<List> response = restTemplate.exchange(
-          FASTAPI_URL, HttpMethod.POST, requestEntity, List.class);
+          fastAPI_URL, HttpMethod.POST, requestEntity, List.class);
 
       if (response.getStatusCode().is2xxSuccessful()) {
         return response.getBody();
@@ -99,8 +97,6 @@ public class PartyMatchingService {
       List<Integer> partyMemberIds = (List<Integer>) matchingResult.get("party_members");
 
       if (partyMemberIds == null || partyMemberIds.size() < 3) {
-        log.error("유효한 파티 멤버를 찾을 수 없습니다. 매칭된 멤버 수: " + (partyMemberIds == null ? 0
-            : partyMemberIds.size()));
         continue;
       }
 
@@ -117,20 +113,6 @@ public class PartyMatchingService {
       sendPartyNotification(partyMembers, themeId, uuid); //알림 보내기
     }
   }
-
-
-//  // 1. 파티 매칭 결과 : 유저 3명 데려오기 -> 임시로 구현함. 이후에 파티 매칭 로직 완성되면 거기에서 받아와야 함
-//  // 개발용 임시 정보 : 각각 memberId 2002, 2003, 2004 / themeId : 10인 partyRequest
-//  // partyRequest: 각각 1001, 1002, 1003
-//  public List<Member> getPartyMembers() {
-//    Member member1 = memberRepository.findByEmail("pingu1@ssafy.com")
-//        .orElseThrow(MemberNotFoundException::new);
-//    Member member2 = memberRepository.findByEmail("pingu2@ssafy.com")
-//        .orElseThrow(MemberNotFoundException::new);
-//    Member member3 = memberRepository.findByEmail("pingu3@ssafy.com")
-//        .orElseThrow(MemberNotFoundException::new);
-//    return Arrays.asList(member1, member2, member3);
-//  }
 
   // 2. 각 member의 파티요청의 UUID 필드에 레디스용 UUID 만들어 저장
   @Transactional
