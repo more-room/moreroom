@@ -79,8 +79,8 @@ public class PartyMatchingService {
     return members;
   }
 
-  @Scheduled(cron = "0 0 18 * * *", zone = "Asia/Seoul")
-  @Scheduled(fixedRate = 3600000, initialDelay = 10000)
+//  @Scheduled(cron = "0 0 18 * * *", zone = "Asia/Seoul")
+//  @Scheduled(fixedRate = 3600000, initialDelay = 10000)
   @Transactional
   public void partyMatchingAndRequest() throws JsonProcessingException {
     log.info("스케줄러 동작함");
