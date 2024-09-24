@@ -42,10 +42,16 @@ def fetch_member_theme_ids():
 # 파티 요청 데이터 생성
 def generate_party_request_data(num_requests, member_ids, theme_ids):
     party_requests = []
+    existing_requests = set()  # 중복된 memberId, themeId 조합을 저장하는 집합
     
-    for _ in range(num_requests):
+    while len(party_requests) < num_requests:
         member_id = random.choice(member_ids)
         theme_id = random.choice(theme_ids)
+        
+        # 유저와 테마의 조합이 중복되는지 확인
+        if (member_id, theme_id) in existing_requests:
+            continue  # 중복된 경우, 새로운 조합을 찾기 위해 다시 시도
+
         created_at = fake.date_time_this_year().strftime('%Y-%m-%d %H:%M:%S')
         last_matched_at = None  # 처음에는 매칭되지 않음
         matching_status = 'NOT_MATCHED'
@@ -57,9 +63,13 @@ def generate_party_request_data(num_requests, member_ids, theme_ids):
             'last_matched_at': last_matched_at,
             'matching_status': matching_status
         }
+        
+        # 새로운 요청 데이터를 리스트에 추가하고, 해당 조합을 집합에 저장
         party_requests.append(party_request)
+        existing_requests.add((member_id, theme_id))  # 조합 저장
     
     return party_requests
+
 
 # DB에 파티 요청 데이터 삽입
 def insert_party_request_data_to_db(party_request_data):

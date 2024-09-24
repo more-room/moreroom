@@ -14,7 +14,7 @@ def load_data():
     request_hashtag_mapping_path = os.path.join(base_path, 'requesthashtagmapping.csv')
     member_hashtag_mapping_path = os.path.join(base_path, 'memberhashtagmapping.csv')
 
-    party_request_df = pd.read_csv(party_request_path, encoding='utf-8', names=['partyRequestId', 'memberId', 'themeId', 'date', 'null', 'status'])
+    party_request_df = pd.read_csv(party_request_path, encoding='utf-8', names=['partyRequestId', 'memberId', 'themeId', 'date', 'null', 'status', 'uuid'])
     request_hashtag_df = pd.read_csv(request_hashtag_mapping_path, encoding='utf-8', names=['requestId', 'hashtagId'])
     member_hashtag_df = pd.read_csv(member_hashtag_mapping_path, encoding='utf-8', names=['memberId', 'hashtagId'])
 
