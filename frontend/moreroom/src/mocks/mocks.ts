@@ -553,3 +553,81 @@ mock.onGet('/api/recommendations/demographics-themes').reply((config) => {
     }, 500);
   });
 });
+
+// ============mypage
+mock.onGet('/api/auth/member').reply((config) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([
+        200,
+        {
+          email: 'ssafy123@ssafy.com',
+          password: 'ssafy123',
+          nickname: 'D206탈출왕',
+          gender: 'M',
+          birth: '1998-07-20',
+          regionId: 'D206',
+          genreList: [
+            {
+              id: 1,
+              name: '스토리',
+            },
+            {
+              id: 2,
+              name: '판타지',
+            },
+          ],
+          clearRoom: 10,
+        },
+      ]);
+    }, 100);
+  });
+});
+
+mock.onGet('/api/auth/member/mypage').reply((config) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([
+        200,
+        {
+          nickname: '닉네임',
+          genreList: [
+            {
+              id: 1,
+              name: '스토리',
+            },
+            {
+              id: 2,
+              name: '판타지',
+            },
+          ],
+          hashtagList: [
+            {
+              id: 1,
+              name: '뉴비',
+            },
+            {
+              id: 2,
+              name: '리더십',
+            },
+          ],
+          photo: '프로필사진주소',
+        },
+      ]);
+    }, 100);
+  });
+});
+
+mock.onPatch('/api/auth/member/hashtag').reply((config) => {
+  console.log(config.data)
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([
+        200,
+        {
+          hashtagIdList: [1, 2],
+        },
+      ]);
+    }, 100);
+  });
+});
