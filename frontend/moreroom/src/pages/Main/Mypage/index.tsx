@@ -4,6 +4,7 @@ import { TopBar } from '../../../components/TopBar';
 import {
   ArchiveBoxXMarkIcon,
   ArrowRightStartOnRectangleIcon,
+  HashtagIcon,
   UserCircleIcon,
 } from '@heroicons/react/24/solid';
 import {
@@ -72,9 +73,36 @@ export const MyPage = () => {
       <div css={containerCss}>
         <div css={sectionCss}>
           <div css={lineCss}></div>
-          <Typography color="grey" scale="400" size={0.625} weight={500}>
+          <Typography color="grey" scale="400" size={0.875} weight={500}>
             방탈출 설정
           </Typography>
+          <ManageInfo
+            icon={
+              <Icon color="light" size={1.25}>
+                <TicketIcon />
+              </Icon>
+            }
+            children="파티"
+            url="/mypage/profile"
+          />
+          <ManageInfo
+            icon={
+              <Icon color="light" size={1.25}>
+                <ChatBubbleLeftRightIcon />
+              </Icon>
+            }
+            children="채팅방"
+            url="/mypage/profile"
+          />
+          <ManageInfo
+            icon={
+              <Icon color="light" size={1.25}>
+                <CalendarDaysIcon />
+              </Icon>
+            }
+            children="테마 기록"
+            url="/mypage/profile"
+          />
           <div css={manageInfoContainerCss}>
             <ManageInfo
               icon={
@@ -83,40 +111,13 @@ export const MyPage = () => {
                 </Icon>
               }
               children="내가 쓴 리뷰"
-              url="/member/mypage/profile"
-            />
-            <ManageInfo
-              icon={
-                <Icon color="light" size={1.25}>
-                  <CalendarDaysIcon />
-                </Icon>
-              }
-              children="테마 기록"
-              url="/member/mypage/profile"
-            />
-            <ManageInfo
-              icon={
-                <Icon color="light" size={1.25}>
-                  <TicketIcon />
-                </Icon>
-              }
-              children="파티"
-              url="/member/mypage/profile"
-            />
-            <ManageInfo
-              icon={
-                <Icon color="light" size={1.25}>
-                  <ChatBubbleLeftRightIcon />
-                </Icon>
-              }
-              children="채팅방"
-              url="/member/mypage/profile"
+              url="/mypage/profile"
             />
           </div>
         </div>
         <div css={sectionCss}>
           <div css={lineCss}></div>
-          <Typography color="grey" scale="400" size={0.625} weight={500}>
+          <Typography color="grey" scale="400" size={0.875} weight={500}>
             사용자 설정
           </Typography>
           <ManageInfo
@@ -126,7 +127,7 @@ export const MyPage = () => {
               </Icon>
             }
             children="내 정보 관리"
-            url="/member/mypage/profile"
+            url="/mypage/profile"
           />
           <ManageInfo
             icon={
@@ -135,12 +136,21 @@ export const MyPage = () => {
               </Icon>
             }
             children="프로필 편집"
-            url="/member/mypage/profile/edit"
+            url="/mypage/profile/edit"
+          />
+          <ManageInfo
+            icon={
+              <Icon color="light" size={1.25}>
+                <HashtagIcon />
+              </Icon>
+            }
+            children="해시태그 편집"
+            url="/mypage/profile/edit"
           />
         </div>
         <div css={sectionCss}>
           <div css={lineCss}></div>
-          <Typography color="grey" scale="400" size={0.625} weight={500}>
+          <Typography color="grey" scale="400" size={0.875} weight={500}>
             기타
           </Typography>
           <ManageInfo
@@ -150,7 +160,7 @@ export const MyPage = () => {
               </Icon>
             }
             children="로그아웃"
-            url="/member/mypage/profile"
+            url="/mypage/profile"
           />
           <ManageInfo
             icon={
@@ -159,7 +169,7 @@ export const MyPage = () => {
               </Icon>
             }
             children="회원 탈퇴"
-            url="/member/mypage/profile"
+            url="/mypage/profile"
           />
         </div>
       </div>

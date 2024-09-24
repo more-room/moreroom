@@ -38,7 +38,7 @@ export const updateUserInfo = (
 };
 
 // 회원정보 해시태그 수정
-export const updateNickname = (hashtagIdList: number[]) => {
+export const updateHashtag = (hashtagIdList: number[]) => {
   return api({
     url: '/api/auth/member/hashtag',
     method: 'patch',

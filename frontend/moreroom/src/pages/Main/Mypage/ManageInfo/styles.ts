@@ -4,3 +4,7 @@ export const containerCss = css`
   display: flex;
   gap: 0.625rem;
 `
+
+export const contentCss = css`
+
+`

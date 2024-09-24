@@ -16,12 +16,26 @@ import { useHashtagStore } from '../../../../stores/mypageStore';
 import { styled, TextField } from '@mui/material';
 import { useModal } from '../../../../hooks/useModal';
 import { containerCss, nicknameCss } from './styles';
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
+import { updateHashtag } from '../../../../apis/mypageApi';
+import { Chip } from '../../../../components/Chip';
 
 export const EditProfile = () => {
   const nav = useNavigate();
   const [nickname, setNickname] = useState('');
   const { selectedHashtags, toggleHashtag } = useHashtagStore();
   const modal = useModal();
+
+  const { mutate } = useMutation({
+    mutationFn: async (hashtaglist: number[]) => await updateHashtag(hashtaglist),
+    onSuccess: () => {
+      console.log('변경 성공')
+      nav('/mypage');
+    },
+    onError: () => {
+      alert('오류가 발생하였습니다.');
+    },
+  });
 
   const handleHashtagClick = (tagId: number) => {
     toggleHashtag(tagId);
@@ -94,7 +108,7 @@ export const EditProfile = () => {
       <div css={containerCss}>
         <UserCircleIcon css={profileCss} />
         <div css={manageInfoContainerCss}>
-          <div css ={nicknameCss}>
+          <div css={nicknameCss}>
             <InputTextField
               css={textFieldCss}
               id="standard-basic"
@@ -124,15 +138,13 @@ export const EditProfile = () => {
               hashtags
                 .filter((tag) => selectedHashtags.includes(tag.id))
                 .map((tag) => (
-                  <FilterChip
+                  <Chip
                     key={tag.id}
                     color="primary"
-                    size={0.875}
-                    selected
-                    onHandleClick={() => handleHashtagClick(tag.id)}
+                    fontSize={0.875}
                   >
                     {tag.label}
-                  </FilterChip>
+                  </Chip>
                 ))
             ) : (
               <Typography color="grey" size={0.875}>
@@ -147,6 +159,16 @@ export const EditProfile = () => {
             handler={openHashtagModal}
           >
             해시태그 선택
+          </Button>
+          <Button
+          // position: 'absolute', bottom: '0' 
+            style={{ marginTop: '1rem'}}
+            color="primary"
+            variant="contained"
+            fullwidth
+            handler={()=>mutate(selectedHashtags)}
+          >
+            완료
           </Button>
         </div>
       </div>

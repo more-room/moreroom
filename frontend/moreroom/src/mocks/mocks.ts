@@ -246,6 +246,7 @@ mock.onGet('/api/auth/member/mypage').reply((config) => {
 });
 
 mock.onPatch('/api/auth/member/hashtag').reply((config) => {
+  console.log(config.data)
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve([

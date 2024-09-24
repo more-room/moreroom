@@ -22,9 +22,9 @@ function App() {
         <Route path="/login" element={<Login />} />
         {/* <Route path="/chating" element={<Chating />} /> */}
         
-        <Route path="/member/mypage" element={<MyPage />} />
-        <Route path="/member/mypage/profile" element={<Profile />} />
-        <Route path="/member/mypage/profile/edit" element={<EditProfile />} />
+        <Route path="/mypage" element={<MyPage />} />
+        <Route path="/mypage/profile" element={<Profile />} />
+        <Route path="/mypage/profile/edit" element={<EditProfile />} />
       </Routes>
       {modalStore.isOpen && (
         <Modal height={modalStore.height}>{modalStore.contents}</Modal>

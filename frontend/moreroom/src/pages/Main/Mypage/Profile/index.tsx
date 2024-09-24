@@ -21,14 +21,15 @@ import { Typography } from '../../../../components/Typography';
 import { ManageInfo } from '../ManageInfo';
 import { Icon } from '../../../../components/Icon';
 import { useNavigate } from 'react-router-dom';
-import { useQueries, useSuspenseQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { getUserInfo } from '../../../../apis/mypageApi';
+import { useHashtagStore } from '../../../../stores/mypageStore';
+import { Chip } from '../../../../components/Chip';
 
 export const Profile = () => {
-  // const userProfileStore = use
   const nav = useNavigate();
+  const { selectedHashtags, toggleHashtag } = useHashtagStore();
   const { data, error, isFetching } = useSuspenseQuery({
-    // 객체 구조 분해 할당
     queryKey: ['profile'],
     queryFn: async () => await getUserInfo(),
   });
@@ -51,6 +52,21 @@ export const Profile = () => {
       return '여성';
     }
   };
+
+  const hashtags = [
+    { id: 30, label: '리더쉽' },
+    { id: 31, label: '쫄보' },
+    { id: 32, label: '공포면역' },
+    { id: 33, label: '고수예요' },
+    { id: 34, label: '초보예요' },
+    { id: 35, label: '활동적이에요' },
+    { id: 36, label: '눈치가 빨라요' },
+    { id: 37, label: '꼼꼼해요' },
+    { id: 38, label: '적극적이에요' },
+    { id: 39, label: '분석적이에요' },
+    { id: 40, label: '스토리를 좋아해요' },
+    { id: 41, label: '분위기 메이커' },
+  ];
 
   return (
     <div>
@@ -102,7 +118,7 @@ export const Profile = () => {
                 <KeyIcon />
               </Icon>
             }
-            children={data.data.clearRoom}
+            children={data.data.clearRoom + '방'}
           />
           <ManageInfo
             icon={
@@ -110,7 +126,17 @@ export const Profile = () => {
                 <Square3Stack3DIcon />
               </Icon>
             }
-            children={genreNames}
+            chips={
+              data?.data?.genreList && data.data.genreList.length > 0
+                ? data.data.genreList.map(
+                    (genre: { id: number; name: string }) => (
+                      <Chip key={genre.id} color="primary" fontSize={0.875}>
+                        {genre.name}
+                      </Chip>
+                    ),
+                  )
+                : undefined
+            }
           />
           <ManageInfo
             icon={
@@ -118,7 +144,17 @@ export const Profile = () => {
                 <HashtagIcon />
               </Icon>
             }
-            children="해시 태그"
+            chips={
+              selectedHashtags.length > 0
+                ? hashtags
+                    .filter((tag) => selectedHashtags.includes(tag.id))
+                    .map((tag) => (
+                      <Chip key={tag.id} color="primary" fontSize={0.875}>
+                        {tag.label}
+                      </Chip>
+                    ))
+                : undefined
+            }
           />
         </div>
       </div>
