@@ -122,5 +122,5 @@ def generate_and_insert_party_requests(num_requests):
     insert_party_request_data_to_db(party_request_data)
 
 # 1000개의 파티 요청 데이터 생성 및 DB에 삽입
-num_requests = 1000
+num_requests = 1500
 generate_and_insert_party_requests(num_requests)
