@@ -184,7 +184,7 @@ public class MemberController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/hashtag")
+    @PatchMapping("/hashtag")
     public ResponseEntity<Member> hashtagChange(@RequestBody HashtagDTO hashtagDTO) {
         memberService.hashtagChange(hashtagDTO);
         return new ResponseEntity<>(HttpStatus.OK);
