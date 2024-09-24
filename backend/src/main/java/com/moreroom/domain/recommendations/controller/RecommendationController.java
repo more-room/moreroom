@@ -30,4 +30,32 @@ public class RecommendationController {
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
+
+    @GetMapping("similar-themes")
+    public ResponseEntity<ThemeListResponseDto> getSimilarThemes() {
+        long memberId = findMemberService.findCurrentMember();
+        ThemeListResponseDto themeListResponseDto = recommendationService.getSimilarThemes(
+            memberId);
+        if (themeListResponseDto != null) {
+            System.out.println("themeListResponseDto = " + themeListResponseDto);
+            return new ResponseEntity<>(themeListResponseDto,
+                HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("demographics-themes")
+    public ResponseEntity<ThemeListResponseDto> getDemographicsThemes() {
+        long memberId = findMemberService.findCurrentMember();
+        ThemeListResponseDto themeListResponseDto = recommendationService.getDemographicsThemes(
+            memberId);
+        if (themeListResponseDto != null) {
+            System.out.println("themeListResponseDto = " + themeListResponseDto);
+            return new ResponseEntity<>(themeListResponseDto,
+                HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
 }

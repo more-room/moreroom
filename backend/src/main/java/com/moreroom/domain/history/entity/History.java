@@ -56,5 +56,5 @@ public class History extends BaseEntity {
     @Column(nullable = false)
     @Builder.Default
     private boolean successFlag = false;
-
+    private LocalDateTime playDate;
 }

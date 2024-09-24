@@ -238,7 +238,7 @@ public class ThemeQueryRepository extends QuerydslRepositoryCustom {
         List<Tuple> results = jpaQueryFactory
             .select(theme, cafe, region.regionId,
                 review.count(), review.score.avg(), genre.genreName
-//               , history.isNotNull().coalesce(false)
+                , history.isNotNull().coalesce(false)
             )
             .from(theme)
             .leftJoin(cafe).on(cafe.cafeId.eq(theme.cafe.cafeId))
@@ -246,10 +246,11 @@ public class ThemeQueryRepository extends QuerydslRepositoryCustom {
             .leftJoin(themeGenreMapping).on(themeGenreMapping.theme.themeId.eq(theme.themeId))
             .leftJoin(genre).on(genre.genreId.eq(themeGenreMapping.genre.genreId))
             .leftJoin(review).on(review.theme.themeId.eq(theme.themeId))
-//            .leftJoin(history).on(history.member.memberId.eq(memberId), history.theme.themeId.eq(theme.themeId))
+            .leftJoin(history)
+            .on(history.member.memberId.eq(memberId), history.theme.themeId.eq(theme.themeId))
             .where(theme.themeId.in(themeIds))
             .groupBy(theme.themeId, cafe.cafeId, region.regionId, genre.genreName
-//                , history
+                , history
             )
             .orderBy(theme.themeId.asc())
             .fetch();
@@ -264,7 +265,7 @@ public class ThemeQueryRepository extends QuerydslRepositoryCustom {
             Long reviewCount = tuple.get(3, Long.class);
             Double avgScore = tuple.get(4, Double.class);
             String genreName = tuple.get(5, String.class);
-//            Boolean playFlag = tuple.get(6, Boolean.class);
+            Boolean playFlag = tuple.get(6, Boolean.class);
 
             // DTO 생성 및 업데이트
             ThemeListComponentDto themeDto = themeMap.computeIfAbsent(theme.getThemeId(),
@@ -282,9 +283,9 @@ public class ThemeQueryRepository extends QuerydslRepositoryCustom {
                         .brandName(cafe.getBrand() != null ? cafe.getBrand().getBrandName() : null)
                         .cafeId(cafe.getCafeId())
                         .build())
-//                .member(ThemeMemberResponseDto.builder()
-//                    .playFlag(playFlag)
-//                    .build())
+                    .member(ThemeMemberResponseDto.builder()
+                        .playFlag(playFlag)
+                        .build())
                     .build());
 
             // 리뷰 정보 업데이트
