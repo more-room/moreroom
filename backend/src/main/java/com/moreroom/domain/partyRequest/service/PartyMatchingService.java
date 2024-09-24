@@ -172,8 +172,6 @@ public class PartyMatchingService {
     for (Member member : partyMemberList) {
       PartyRequest partyRequest = partyRequestRepository.findByThemeIdandMemberId( //쿼리 실행
           theme.getThemeId(), member.getMemberId());
-
-      System.out.println(partyRequest);
       // 메세지 전송
       simpMessagingtemplate.convertAndSendToUser(
           member.getEmail(),
