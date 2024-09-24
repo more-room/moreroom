@@ -2,89 +2,128 @@ import { css } from '@emotion/react';
 import { Colors } from '../../styles/globalStyle';
 
 export const container = css`
-  max-width: 640px;
+  max-width: 22.5rem; /* 360px를 rem 단위로 변경 (360px / 16px = 22.5rem) */
   margin: 0 auto;
-  padding: 10px;
+  padding: 0.625rem; /* 10px을 rem 단위로 변경 */
+  padding-left: 1rem;  /* 왼쪽에 여백 추가 */
+  padding-right: 1rem; /* 오른쪽에 여백 추가 */
   background-color: ${Colors['grey']['900']}; /* 배경 색 설정 */
   min-height: 100vh; /* 화면을 채우도록 설정 */
 `;
 
+export const cardcontainer = css`
+  width: 100%;  /* 카드의 너비를 전체 컨테이너에 맞추기 */
+  margin-bottom: 0.75rem; /* 카드 간격 줄이기 */
+`;
+
 export const themeCard = css`
+  position: relative;
   display: flex;
-  align-items: center; /* 아이템을 위쪽으로 맞춰 정렬 */
-  background-color: ${Colors['grey']['800']}; /* 카드 배경 색 */
-  border-radius: 8px;
-  padding: 10px;
-  margin-bottom: 2rem;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-  width: 95%; /* 카드가 전체 폭을 차지하도록 설정 */
+  flex-direction: row; /* 가로 정렬 */
+  align-items: center;
+  background-color: ${Colors['grey']['800']};
+  border-radius: 0.3rem;
+  padding: 0.625rem;
+  margin-bottom: 1rem;
+  width: 94%; /* 카드가 화면 크기에 맞게 조절되도록 */
+  height: auto;
+  max-width: 22.5rem; /* 최대 너비를 360px에 맞춤 */
+  flex-shrink: 0; 
 `;
 
 export const posterImage = css`
-
-  width: 40%; 
-  min-width: 140px;
+  width: 25%; 
+  min-width: 95px;
   height: auto;
-  border-radius: 8px;
+  border-radius: 0.5rem;
   object-fit: cover;
-  margin-right: 1rem; /* 이미지와 텍스트 사이 여백을 줄임 */
+  margin-right: 0.7rem; /* 10px을 rem 단위로 변경 */
+  flex-shrink: 0; /* 이미지가 줄어들지 않도록 설정 */
 `;
 
 export const cardContent = css`
-  width: 35%;
-  min-width: 130px;
-  height: auto;
-  
-  color: ${Colors['grey']['300']}; /* 텍스트 색 */
+  flex-grow: 1;
+  color: ${Colors['grey']['300']};
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-size: 0.75rem; /* 기본 글씨 크기를 14px로 설정 (rem 단위) */
+`;
+
+export const roomname = css`
+  margin: 0.4rem 0;
+  font-size: 1rem; /* 기본 폰트 크기를 줄임 */
 `;
 
 export const themeTitle = css`
-  
+  color: ${Colors['light']['100']};
+  font-size: 0.7rem; /* 제목 크기를 줄임 */
   font-weight: bold;
-  margin-bottom: 2px; /* h3과 h4 사이의 간격을 줄임 */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
 `;
 
 export const themeDetails = css`
-  margin-top: 4px; /* 위쪽 간격 줄이기 */
-  color: ${Colors['grey']['500']}; /* 서브 텍스트 색 */
- 
+  color: ${Colors['grey']['500']};
+  flex-shrink: 0; /* 줄어듦 */
+
   p {
-    margin: 0.125rem 0; /* 각 줄 간격을 최소화 */
+    margin: 0.125rem 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 0.75rem; /* 텍스트 크기를 작게 설정 */
   }
 `;
 
 export const filterContainer = css`
   display: flex;
-  justify-content: flex-start;
-  gap: 10px;
-  margin-bottom: 20px; /* 필터 버튼 아래 여백 */
+  gap: 0.5rem;
+  margin-bottom: 1rem; /* 필터 버튼과 카드 사이 여백 */
+`;
+
+export const chipstyle = css`
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  font-size: 0.75rem; /* 칩 텍스트 크기 줄이기 */
+  padding: 0.25rem 0.35rem !important;
+`;
+
+export const ellipsisIconWrapper = css`
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 10;
+`;
+
+export const iconcolors = css`
+  color: ${Colors['primary']['A200']};
+`;
+
+export const iconcolors2 = css`
+  color: ${Colors['light']['200']};
 `;
 
 export const filterButton = (isSelected: boolean) => css`
-  padding: 8px 16px;
+  padding: 0.25rem 0.5rem;
   border-radius: 0.5rem;
-  border: ${isSelected ? '1px solid #e040fb' : 'none'}; /* 선택 시 테두리 추가 */
-  background-color: ${isSelected ? 'transparent' : Colors['grey']['700']}; /* 선택되지 않았을 때 배경색 */
-  color: ${isSelected ? Colors['grey']['300'] : Colors['grey']['300']};
+  border: ${isSelected ? '1px solid #e040fb' : 'none'};
+  background-color: ${isSelected ? 'transparent' : Colors['grey']['700']};
+  color: ${Colors['grey']['300']};
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 0.8rem;
   display: flex;
   align-items: center;
+  
 
   &:hover {
     background-color: ${Colors['primary']['800']};
   }
 
   svg {
-    color: ${isSelected ? Colors['primary']['500'] : Colors['grey']['300']}; /* 아이콘 색상 변경 */
+    color: ${isSelected ? Colors['primary']['500'] : Colors['grey']['300']};
   }
 `;
-export const iconcolors = css`
-  color: ${Colors['primary']['A200']};
-`
-export const chipstyle = css`
-  display: flex;
-    gap: 0.5rem; /* Chip 사이에 여백 추가 */
-    margin-top: 1rem; /* 위쪽과 여백 추가 */
-    
-`
