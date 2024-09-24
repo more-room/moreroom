@@ -1,6 +1,7 @@
 package com.moreroom.domain.party.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.moreroom.domain.party.dto.PartyMessageLogsDto;
 import com.moreroom.domain.party.dto.PartyRequestAcceptDto;
 import com.moreroom.domain.party.service.MessageService;
 import com.moreroom.domain.party.service.PartyService;
@@ -43,10 +44,13 @@ public class PartyController {
 
   @GetMapping("/chatLogs")
   public ResponseEntity<?> getChattingList(
-      @RequestParam Long partyId, @RequestParam String startId, @RequestParam Integer pageSize
-  ) {
+      @RequestParam Long partyId,
+      @RequestParam(required = false) String lastMessageId,
+      @RequestParam(defaultValue = "10") int pageSize) throws JsonProcessingException {
 
-    return new ResponseEntity<>(HttpStatus.OK);
+    PartyMessageLogsDto messageLogs = messageService.getMessageLogs(partyId, lastMessageId,
+        pageSize);
+    return new ResponseEntity<>(messageLogs, HttpStatus.OK);
   }
 
 }

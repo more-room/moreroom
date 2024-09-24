@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PartyMessageRepository extends MongoRepository<PartyMessage, String> {
   List<PartyMessage> findByPartyIdAndIdLessThanOrderByIdDesc(Long partyId, String id, Pageable pageable);
-  List<PartyMessage> findByPartyIdOrderByIdDesc(Long partyId, String id);
+  List<PartyMessage> findByPartyIdOrderByIdDesc(Long partyId, Pageable pageable);
 }
