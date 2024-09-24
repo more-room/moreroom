@@ -66,7 +66,7 @@ export interface IThemeCommon {
   playtime: number;
   genreList: string[];
   review: IThemeReview;
-  member: {
+  member?: {
     playFlag: boolean;
   };
 }
@@ -101,4 +101,9 @@ export interface IThemeDetailItem extends IThemeCommon {
 /* 테마 상세 조회 */
 export interface IThemeDetail {
   theme: IThemeDetailItem;
+}
+
+/* 테마 추천 조회 */
+export interface IThemeRecommendList {
+  themeList: IThemeListItem[];
 }

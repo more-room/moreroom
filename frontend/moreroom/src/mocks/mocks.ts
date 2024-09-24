@@ -180,3 +180,454 @@ mock.onGet('/api/info/brand').reply((config) => {
     }, 100);
   });
 });
+
+//========================== recommend
+mock.onGet('/api/recommendations/similar-user-themes').reply((config) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([
+        200,
+        {
+          themeList: [
+            {
+              themeId: 1,
+              title: 'Heaven',
+              poster: '/posters/heaven.png',
+              playtime: 80,
+              genreList: ['스토리', '드라마'],
+              regionId: '111000000',
+              review: {
+                count: 10,
+                score: 4.5,
+              },
+              cafe: {
+                cafeId: 34,
+                brandName: '넥스트 에디션',
+                branchName: '건대 2호점',
+                cafeName: '강남점',
+                address: '주소',
+              },
+              member: {
+                playFlag: true,
+              },
+            },
+            {
+              themeId: 2,
+              title: '지옥',
+              poster: '/posters/지옥.png',
+              playtime: 80,
+              genreList: ['스토리', '드라마'],
+              regionId: '111000000',
+              review: {
+                count: 10,
+                score: 3.5,
+              },
+              cafe: {
+                cafeId: 34,
+                brandName: '플레이더월드',
+                branchName: '강남점',
+                cafeName: '제로월드 강남점',
+                address: '주소',
+              },
+              member: {
+                playFlag: true,
+              },
+            },
+            {
+              themeId: 3,
+              title: 'Bad Rob Bad',
+              poster: '/posters/badrobbad.png',
+              playtime: 80,
+              genreList: ['스토리', '드라마'],
+              regionId: '111000000',
+              review: {
+                count: 10,
+                score: 2.5,
+              },
+              cafe: {
+                cafeId: 34,
+                brandName: '비트포비아',
+                branchName: '홍대던전점',
+                cafeName: '제로월드 강남점',
+                address: '주소',
+              },
+              member: {
+                playFlag: true,
+              },
+            },
+            {
+              themeId: 4,
+              title: 'LAST',
+              poster: '/posters/last.png',
+              playtime: 80,
+              genreList: ['스토리', '드라마'],
+              regionId: '111000000',
+              review: {
+                count: 10,
+                score: 5.0,
+              },
+              cafe: {
+                cafeId: 34,
+                brandName: '황금열쇠',
+                branchName: '대구 동성로점',
+                cafeName: '제로월드 강남점',
+                address: '주소',
+              },
+              member: {
+                playFlag: true,
+              },
+            },
+            {
+              themeId: 5,
+              title: '필그림',
+              poster: '/posters/필그림.png',
+              playtime: 80,
+              genreList: ['스토리', '드라마'],
+              regionId: '111000000',
+              review: {
+                count: 10,
+                score: 4.0,
+              },
+              cafe: {
+                cafeId: 34,
+                brandName: '포인트나인',
+                branchName: '건대점',
+                cafeName: '제로월드 강남점',
+                address: '주소',
+              },
+              member: {
+                playFlag: true,
+              },
+            },
+          ],
+        },
+      ]);
+    }, 500);
+  });
+});
+
+mock.onGet('/api/recommendations/similar-themes').reply((config) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([
+        200,
+        {
+          themeList: [
+            {
+              themeId: 1,
+              title: 'Heaven',
+              poster: '/posters/heaven.png',
+              playtime: 80,
+              genreList: ['스토리', '드라마'],
+              regionId: '111000000',
+              review: {
+                count: 10,
+                score: 4.5,
+              },
+              cafe: {
+                cafeId: 34,
+                brandName: '넥스트 에디션',
+                branchName: '건대 2호점',
+                cafeName: '강남점',
+                address: '주소',
+              },
+              member: {
+                playFlag: true,
+              },
+            },
+            {
+              themeId: 2,
+              title: '지옥',
+              poster: '/posters/지옥.png',
+              playtime: 80,
+              genreList: ['스토리', '드라마'],
+              regionId: '111000000',
+              review: {
+                count: 10,
+                score: 3.5,
+              },
+              cafe: {
+                cafeId: 34,
+                brandName: '플레이더월드',
+                branchName: '강남점',
+                cafeName: '제로월드 강남점',
+                address: '주소',
+              },
+              member: {
+                playFlag: true,
+              },
+            },
+            {
+              themeId: 3,
+              title: 'Bad Rob Bad',
+              poster: '/posters/badrobbad.png',
+              playtime: 80,
+              genreList: ['스토리', '드라마'],
+              regionId: '111000000',
+              review: {
+                count: 10,
+                score: 2.5,
+              },
+              cafe: {
+                cafeId: 34,
+                brandName: '비트포비아',
+                branchName: '홍대던전점',
+                cafeName: '제로월드 강남점',
+                address: '주소',
+              },
+              member: {
+                playFlag: true,
+              },
+            },
+            {
+              themeId: 4,
+              title: 'LAST',
+              poster: '/posters/last.png',
+              playtime: 80,
+              genreList: ['스토리', '드라마'],
+              regionId: '111000000',
+              review: {
+                count: 10,
+                score: 5.0,
+              },
+              cafe: {
+                cafeId: 34,
+                brandName: '황금열쇠',
+                branchName: '대구 동성로점',
+                cafeName: '제로월드 강남점',
+                address: '주소',
+              },
+              member: {
+                playFlag: true,
+              },
+            },
+            {
+              themeId: 5,
+              title: '필그림',
+              poster: '/posters/필그림.png',
+              playtime: 80,
+              genreList: ['스토리', '드라마'],
+              regionId: '111000000',
+              review: {
+                count: 10,
+                score: 4.0,
+              },
+              cafe: {
+                cafeId: 34,
+                brandName: '포인트나인',
+                branchName: '건대점',
+                cafeName: '제로월드 강남점',
+                address: '주소',
+              },
+              member: {
+                playFlag: true,
+              },
+            },
+          ],
+        },
+      ]);
+    }, 500);
+  });
+});
+
+mock.onGet('/api/recommendations/demographics-themes').reply((config) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([
+        200,
+        {
+          themeList: [
+            {
+              themeId: 1,
+              title: 'Heaven',
+              poster: '/posters/heaven.png',
+              playtime: 80,
+              genreList: ['스토리', '드라마'],
+              regionId: '111000000',
+              review: {
+                count: 10,
+                score: 4.5,
+              },
+              cafe: {
+                cafeId: 34,
+                brandName: '넥스트 에디션',
+                branchName: '건대 2호점',
+                cafeName: '강남점',
+                address: '주소',
+              },
+              member: {
+                playFlag: true,
+              },
+            },
+            {
+              themeId: 2,
+              title: '지옥',
+              poster: '/posters/지옥.png',
+              playtime: 80,
+              genreList: ['스토리', '드라마'],
+              regionId: '111000000',
+              review: {
+                count: 10,
+                score: 3.5,
+              },
+              cafe: {
+                cafeId: 34,
+                brandName: '플레이더월드',
+                branchName: '강남점',
+                cafeName: '제로월드 강남점',
+                address: '주소',
+              },
+              member: {
+                playFlag: true,
+              },
+            },
+            {
+              themeId: 3,
+              title: 'Bad Rob Bad',
+              poster: '/posters/badrobbad.png',
+              playtime: 80,
+              genreList: ['스토리', '드라마'],
+              regionId: '111000000',
+              review: {
+                count: 10,
+                score: 2.5,
+              },
+              cafe: {
+                cafeId: 34,
+                brandName: '비트포비아',
+                branchName: '홍대던전점',
+                cafeName: '제로월드 강남점',
+                address: '주소',
+              },
+              member: {
+                playFlag: true,
+              },
+            },
+            {
+              themeId: 4,
+              title: 'LAST',
+              poster: '/posters/last.png',
+              playtime: 80,
+              genreList: ['스토리', '드라마'],
+              regionId: '111000000',
+              review: {
+                count: 10,
+                score: 5.0,
+              },
+              cafe: {
+                cafeId: 34,
+                brandName: '황금열쇠',
+                branchName: '대구 동성로점',
+                cafeName: '제로월드 강남점',
+                address: '주소',
+              },
+              member: {
+                playFlag: true,
+              },
+            },
+            {
+              themeId: 5,
+              title: '필그림',
+              poster: '/posters/필그림.png',
+              playtime: 80,
+              genreList: ['스토리', '드라마'],
+              regionId: '111000000',
+              review: {
+                count: 10,
+                score: 4.0,
+              },
+              cafe: {
+                cafeId: 34,
+                brandName: '포인트나인',
+                branchName: '건대점',
+                cafeName: '제로월드 강남점',
+                address: '주소',
+              },
+              member: {
+                playFlag: true,
+              },
+            },
+          ],
+        },
+      ]);
+    }, 500);
+  });
+});
+
+// ============mypage
+mock.onGet('/api/auth/member').reply((config) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([
+        200,
+        {
+          email: 'ssafy123@ssafy.com',
+          password: 'ssafy123',
+          nickname: 'D206탈출왕',
+          gender: 'M',
+          birth: '1998-07-20',
+          regionId: 'D206',
+          genreList: [
+            {
+              id: 1,
+              name: '스토리',
+            },
+            {
+              id: 2,
+              name: '판타지',
+            },
+          ],
+          clearRoom: 10,
+        },
+      ]);
+    }, 100);
+  });
+});
+
+mock.onGet('/api/auth/member/mypage').reply((config) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([
+        200,
+        {
+          nickname: '닉네임',
+          genreList: [
+            {
+              id: 1,
+              name: '스토리',
+            },
+            {
+              id: 2,
+              name: '판타지',
+            },
+          ],
+          hashtagList: [
+            {
+              id: 1,
+              name: '뉴비',
+            },
+            {
+              id: 2,
+              name: '리더십',
+            },
+          ],
+          photo: '프로필사진주소',
+        },
+      ]);
+    }, 100);
+  });
+});
+
+mock.onPatch('/api/auth/member/hashtag').reply((config) => {
+  console.log(config.data)
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([
+        200,
+        {
+          hashtagIdList: [1, 2],
+        },
+      ]);
+    }, 100);
+  });
+});
