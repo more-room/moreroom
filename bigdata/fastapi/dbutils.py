@@ -7,15 +7,16 @@ import json
 def mongo_connect():
     with open('config.json', encoding='utf-8') as config_file:
         config = json.load(config_file)
-        client = MongoClient(host=config['mongo_host'], port=config['mongo_port'])
+        mongo_uri = f"mongodb://{config['mongo_user']}:{config['mongo_pw']}@{config['mongo_host']}:{config['mongo_port']}/"
+        client = MongoClient(mongo_uri)
         return client 
 
 def mongo_disconnect(client):
     client.close()
 
 def mongo_get_collection(client, db_name, col_name):
-    db = client[db_name]
-    collection = db[col_name]
+    db = client["d206"]
+    collection = db[db_name+"_"+col_name]
 
     return collection
 
@@ -41,7 +42,7 @@ def mongo_save_with_update(collection, data):
 ## -------------- mysql 
 
 def mysql_connect():
-    with open('config.json') as config_file:
+    with open('config.json', encoding="utf-8") as config_file:
         config = json.load(config_file)
 
         connection = pymysql.connect(
