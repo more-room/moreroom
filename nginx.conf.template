@@ -52,9 +52,9 @@ http  {
         }
 
         # HTTP를 HTTPS로 리다이렉트
-        #location / {
-        #    return 301 https://$host$request_uri;
-        #}
+        location / {
+            return 301 https://$host$request_uri;
+        }
     }
 
     #server {
