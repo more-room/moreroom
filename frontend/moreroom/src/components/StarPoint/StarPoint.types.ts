@@ -5,5 +5,6 @@ export interface StarPointProps extends React.ComponentProps<'div'> {
   children: ReactNode;
   color?: Palette;
   scale?: ColorScale;
-  size?: number;
+  iconSize?: number;
+  numberSize?: number;
 }

@@ -3,6 +3,9 @@ import { ColorScale, Palette } from '../../types/globalStyleTypes';
 import { Colors, MainColors } from '../../styles/globalStyle';
 
 export const base = (bgColor?: Palette, bgColorScale?: ColorScale) => css`
+  position: sticky;
+  top: 0;
+
   display: flex;
   align-items: center;
   width: 100%;
