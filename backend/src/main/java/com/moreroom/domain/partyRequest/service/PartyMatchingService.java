@@ -79,8 +79,8 @@ public class PartyMatchingService {
     return members;
   }
 
-//  @Scheduled(cron = "0 0 18 * * *", zone = "Asia/Seoul")
-//  @Scheduled(fixedRate = 3600000, initialDelay = 10000)
+  @Scheduled(cron = "0 0 18 * * *", zone = "Asia/Seoul")
+  @Scheduled(fixedRate = 3600000, initialDelay = 10000)
   @Transactional
   public void partyMatchingAndRequest() throws JsonProcessingException {
     log.info("스케줄러 동작함");
@@ -112,6 +112,7 @@ public class PartyMatchingService {
       setPartyAcceptRecordMap(uuid, memberIdList); // redis에 accept 현황판 저장
       sendPartyNotification(partyMembers, themeId, uuid); //알림 보내기
     }
+    log.info("파티 매칭 완료");
   }
 
   // 2. 각 member의 파티요청의 UUID 필드에 레디스용 UUID 만들어 저장
