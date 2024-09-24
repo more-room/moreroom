@@ -41,7 +41,7 @@ export const MainThemeFetch = () => {
       />
       <ThemeList
         title="20대 남성이 많이 한 테마"
-        themes={preferQuery.data.data}
+        themes={baseQuery.data.data}
       />
     </div>
   );
