@@ -2,12 +2,15 @@ import { css, SerializedStyles } from '@emotion/react';
 import { FontWeight, Palette } from '../../types/globalStyleTypes';
 import ColorStyle from '../../styles/colorStyle';
 import { MenuTabVariant } from './MenuTab.types';
+import { Colors } from '../../styles/globalStyle';
 
 export const containerCss = (border: number, variant: MenuTabVariant) => css`
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: ${variant === 'contained' ? '#eee' : 'transparent'};
+  background-color: ${variant === 'contained'
+    ? Colors['grey']['800']
+    : 'transparent'};
   border-radius: ${border}rem;
   position: relative;
   border-bottom: ${variant === 'contained' ? '' : '0.125rem solid #eee'};
@@ -25,14 +28,12 @@ export const activeCss = (activeIndex: number, tabCount: number) => css`
   transition: all 300ms;
 `;
 
-
 export const variantCss: Record<
   MenuTabVariant,
   (color: Palette, tabCount: number) => SerializedStyles
 > = {
   contained: (color: Palette, tabCount: number) => css`
     background-color: ${ColorStyle[color].main};
-    box-shadow: 0 0.125rem 0.125rem #ccc;
     width: calc(${100 / tabCount}% - 0.625rem);
   `,
   outlined: (color: Palette, tabCount: number) => css`
@@ -56,7 +57,7 @@ export const inactiveCss = (
   width: ${100 / tabCount}%;
   background: none;
   border: none;
-  padding: 0.625rem;
+  padding: 0.5rem;
   z-index: 2;
   font-size: ${fontSize}rem;
   font-weight: ${fontWeight};
@@ -65,7 +66,7 @@ export const inactiveCss = (
     : isActive
       ? ColorStyle[color].main
       : '#eee'};
-  
+
   :enabled {
     :active {
       background-color: transparent;
