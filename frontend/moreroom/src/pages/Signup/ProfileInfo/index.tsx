@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React from 'react';
+import React, { useState } from 'react';
 import { TopBar } from '../../../components/TopBar';
 import { useNavigate } from 'react-router-dom';
 import { Progress } from '../../../components/Progress';
@@ -9,9 +9,42 @@ import { chipItemCss, containerCss, filterCss } from './styles';
 import { CssTextField } from '../AccountInfo';
 import { Button } from '../../../components/Button';
 import { btnCss } from '../AccountInfo/styles';
+import { useModal } from '../../../hooks/useModal';
+import { ThemeFilters } from '../../../modals/theme/ThemeFilters';
+import { useSignUpStore } from '../../../stores/signupStore';
+import { useSearchThemesStore } from '../../../stores/themeStore';
 
 export const ProfileInfo = () => {
   const nav = useNavigate();
+  const [gender, setGender] = useState<'M' | 'F' | undefined>(undefined);
+  const [birthYear, setBirthYear] = useState<string>('');
+  const [birthMonth, setBirthMonth] = useState<string>('');
+  const [birthDay, setBirthDay] = useState<string>('');
+  const modal = useModal();
+  const { setSignUpData } = useSignUpStore();
+  const searchThemesStore = useSearchThemesStore();
+
+  const handleSignUp = () => {
+    console.log('이건 뜨지롱');
+    
+    // 생년월일을 'yyyy-mm-dd' 형식으로 변환
+    const birthDate = `${birthYear}-${birthMonth.padStart(2, '0')}-${birthDay.padStart(2, '0')}`;
+
+    // 회원가입 요청을 보내기 전에 store에 저장된 모든 정보를 사용
+    setSignUpData({ 
+      gender, 
+      regionId: searchThemesStore.filters.region, 
+      birth: birthDate // 생년월일 추가
+    });
+
+    // 현재 스토어에 저장된 데이터를 가져옴
+    const curdata = useSignUpStore.getState();
+    console.log('현재 데이터:', curdata);
+
+    // 다음 페이지로 이동
+    nav('/signup/genreinfo');
+  };
+
   return (
     <div>
       <TopBar>
@@ -31,7 +64,8 @@ export const ProfileInfo = () => {
             css={chipItemCss}
             color="primary"
             size={1}
-            onHandleClick={() => {}}
+            selected={gender === 'M'}
+            onHandleClick={() => setGender('M')}
           >
             남성
           </FilterChip>
@@ -39,7 +73,8 @@ export const ProfileInfo = () => {
             css={chipItemCss}
             color="primary"
             size={1}
-            onHandleClick={() => {}}
+            selected={gender === 'F'}
+            onHandleClick={() => setGender('F')}
           >
             여성
           </FilterChip>
@@ -51,29 +86,23 @@ export const ProfileInfo = () => {
           <CssTextField
             fullWidth
             label="YYYY"
-            id="custom-css-outlined-input"
-            // value={code}
-            // onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            //   setCode(e.target.value);
-            // }}
+            id="year-input"
+            value={birthYear}
+            onChange={(e) => setBirthYear(e.target.value)}
           />
           <CssTextField
             fullWidth
             label="MM"
-            id="custom-css-outlined-input"
-            // value={code}
-            // onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            //   setCode(e.target.value);
-            // }}
+            id="month-input"
+            value={birthMonth}
+            onChange={(e) => setBirthMonth(e.target.value)}
           />
           <CssTextField
             fullWidth
             label="DD"
-            id="custom-css-outlined-input"
-            // value={code}
-            // onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            //   setCode(e.target.value);
-            // }}
+            id="day-input"
+            value={birthDay}
+            onChange={(e) => setBirthDay(e.target.value)}
           />
         </div>
         <Typography color="light" scale="400" size={1} weight={500}>
@@ -84,7 +113,7 @@ export const ProfileInfo = () => {
             css={chipItemCss}
             color="primary"
             size={1}
-            onHandleClick={() => {}}
+            onHandleClick={() => modal.show(<ThemeFilters type={'region'} />)}
           >
             선택안함
           </FilterChip>
@@ -97,7 +126,7 @@ export const ProfileInfo = () => {
           rounded={0.5}
           scale="A200"
           variant="contained"
-          handler={() => nav('/signup/genreinfo')}
+          handler={handleSignUp}
         >
           다음으로
         </Button>

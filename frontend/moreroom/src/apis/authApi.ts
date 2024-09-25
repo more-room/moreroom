@@ -5,7 +5,7 @@ export const userSignup = (
   password: string,
   passwordCheck: string,
   nickname: string,
-  gender: string,
+  gender: 'M'|'F'|undefined,
   birth: string,
   genreIdList: number[],
   regionId: string,
