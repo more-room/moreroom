@@ -2,8 +2,7 @@
 import React from 'react';
 import { TopBar } from '../../../components/TopBar';
 import { container } from './styles';
-import { SearchTitle } from './SearchTitle';
-// import { SearchList } from './SearchList';
+import { SearchName } from './SearchName';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import {
   useCafePageStore,
@@ -11,6 +10,7 @@ import {
   useSearchNameStore,
 } from '../../../stores/cafeStore';
 import { getCafeNames } from '../../../apis/cafeApi';
+import { SearchList } from './SearchList';
 
 export const CafeList = () => {
   const cafePageStore = useCafePageStore();
@@ -53,8 +53,8 @@ export const CafeList = () => {
         />
         <TopBar.Right icon={<MagnifyingGlassIcon />} handler={onTitleHandler} />
       </TopBar>
-      {cafePageStore.type === 'search' && <SearchTitle />}
-      {/*cafePageStore.type === 'default' && <SearchList />*/}
+      {cafePageStore.type === 'search' && <SearchName />}
+      {cafePageStore.type === 'default' && <SearchList />}
     </div>
   );
 };

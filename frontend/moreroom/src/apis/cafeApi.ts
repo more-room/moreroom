@@ -21,7 +21,7 @@ export const getCafeNames = (cafeName: string) => {
 
 /* 카페 목록 검색 */
 export const getCafes = (filters: ISearchCafesRequestParameter) => {
-  return api.get<ICafeList>('/api/theme', {
+  return api.get<ICafeList>('/api/cafe', {
     params: filters,
   });
 };
