@@ -38,7 +38,7 @@ export interface ICafeThemeList {
 }
 
 /* 카페 정보 - 테마 상세 조회용 */
-export interface ICafeThemeDetail extends ICafeCommon {
+export interface ICafeThemeDetail extends Omit<ICafeCommon, 'cafeName'> {
   brandName: string;
   branchName: string;
   tel: string;

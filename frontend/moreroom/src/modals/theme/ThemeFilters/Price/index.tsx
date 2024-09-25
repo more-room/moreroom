@@ -4,13 +4,11 @@ import { container, range } from './styles';
 import { Typography } from '../../../../components/Typography';
 import Slider from '@mui/material/Slider';
 import { useSearchThemesStore } from '../../../../stores/themeStore';
+import { addComma } from '../../../../utils/priceUtils';
 
 export const Price = () => {
   const searchThemesStore = useSearchThemesStore();
   const [price, setPrice] = useState<number>(30000);
-
-  const addComma = (price: number) =>
-    price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
   return (
     <div css={container}>
