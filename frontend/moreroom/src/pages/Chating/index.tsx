@@ -46,36 +46,9 @@ export const Chating = () => {
     console.log(`선택된 파티 ID: ${partyId}`);
     setRoomId(partyId);  // 선택된 파티 ID 설정
     navigate(`/chatingroom/${partyId}`);  // 채팅방으로 이동
-    // connectWebSocket(partyId);  // WebSocket 연결 시도
+    
   };
 
-  // WebSocket 연결 설정 함수
-  // const connectWebSocket = (roomId: number) => {
-  //   // 기존 연결이 있을 경우 먼저 해제
-  //   if (client.current) {
-  //     client.current.deactivate();
-  //   }
-
-  //   // 새로운 WebSocket 연결
-  //   client.current = new StompJs.Client({
-  //     brokerURL: 'wss://j11d206.p.ssafy.io/api/ws',  // WebSocket 서버 URL
-  //     onConnect: (frame) => {
-  //       console.log('소켓 연결 성공:', frame);
-
-  //       // 채팅방 구독
-  //       client.current?.subscribe(`/user/queue/message/${roomId}`, (message) => {
-  //         const body = JSON.parse(message.body);
-  //         console.log('수신된 메시지:', body);
-  //         // 메시지 처리 로직을 여기에 작성
-  //       });
-  //     },
-  //     onStompError: (error) => {
-  //       console.error('소켓 연결 실패:', error);
-  //     },
-  //   });
-
-  //   client.current.activate();  // WebSocket 연결 시작
-  // };
 
   const handleFilterChange = (filter: string) => {
     setSelectedFilter(filter);
@@ -118,7 +91,7 @@ export const Chating = () => {
                 <div css={themeDetails}>
                   <p>
                     <MapPinIcon css={iconcolors} style={{ width: '1rem', marginRight: '0.25rem' }} />
-                    {party.cafeName}
+                    {party.theme.cafe.cafeName}
                   </p>
                   <p>
                     <ClockIcon css={iconcolors} style={{ width: '1rem', marginRight: '0.25rem' }} />

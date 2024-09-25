@@ -6,9 +6,18 @@ export interface IHashtag {
 }
 
 export interface ITheme {
+  themeId: number
   poster: string;
   title: string;
   maxPeople: number;
+  regionId: string;
+  playtime: number;
+  genreList: string[];
+  review: {
+    count: number;
+    score: number;
+  };
+  cafe: ICafe
 }
 export interface IParty {
   partyId: number;
@@ -19,8 +28,15 @@ export interface IParty {
   memberCount: string;
   maxMember: string;
   hashtags: IHashtag[];
+  cafe: ICafe
 }
-
+export interface ICafe {
+  cafeId: number;
+  brandName: string;
+  branchName: string;
+  cafeName: string;
+  address: string;
+}
 export interface IPartyResponse {
   content: IParty[];
   pageable: any; // 다른 데이터들도 추가적으로 필요할 수 있음

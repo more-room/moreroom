@@ -644,11 +644,24 @@ mock.onGet('/api/party').reply((config) => {
               partyId: 1,
               roomName: '헐 같이해요',
               theme: {
+                themeId: 1,
                 poster: '/posters/badrobbad.png',
-                title: 'BadRobBad',
-                maxPeople: 5,
+                title: 'Bad Rob Bad',
+                playtime: 80,
+                genreList: ['스토리', '드라마'],
+                regionId: '111000000',
+                review: {
+                  count: 10,
+                  score: 4.5,
+                },
+                cafe: {
+                  cafeId: 34,
+                  brandName: '제로월드',
+                  branchName: '강남점',
+                  cafeName: '제로월드 강남점',
+                  address: '주소',
+                },
               },
-              cafeName: '이스케이프룸 성수점',
               date: '2024-10-24 18:00',
               memberCount: '2',
               maxMember: '3',
@@ -663,11 +676,24 @@ mock.onGet('/api/party').reply((config) => {
               partyId: 2,
               roomName: '멤버 급구요',
               theme: {
+                themeId: 2,
                 poster: '/posters/heaven.png',
                 title: 'Heaven',
-                maxPeople: 5,
+                playtime: 80,
+                genreList: ['공포', '미스터리', '추리'],
+                regionId: '111000001',
+                review: {
+                  count: 127,
+                  score: 4.7,
+                },
+                cafe: {
+                  cafeId: 35,
+                  brandName: '넥스트 에디션',
+                  branchName: '건대2호점',
+                  cafeName: '넥스트 에디션 - 건대2호점',
+                  address: '서울특별시 광진구 화양동 123-45',
+                },
               },
-              cafeName: '제로월드 강남점',
               date: '2024-10-24 17:30',
               memberCount: '1',
               maxMember: '5',
@@ -682,11 +708,24 @@ mock.onGet('/api/party').reply((config) => {
               partyId: 3,
               roomName: '뉴비만 오세요',
               theme: {
+                themeId: 3,
                 poster: '/posters/지옥.png',
                 title: '지옥',
-                maxPeople: 5,
+                playtime: 80,
+                genreList: ['공포', '스릴러'],
+                regionId: '111000002',
+                review: {
+                  count: 50,
+                  score: 4.2,
+                },
+                cafe: {
+                  cafeId: 36,
+                  brandName: '황금열쇠',
+                  branchName: '동성로점',
+                  cafeName: '황금열쇠 동성로점',
+                  address: '대구광역시 중구 동성로 567',
+                },
               },
-              cafeName: '황금열쇠 동성로점',
               date: '2024-10-24 17:00',
               memberCount: '3',
               maxMember: '5',
@@ -725,6 +764,6 @@ mock.onGet('/api/party').reply((config) => {
           empty: false,
         },
       ]);
-    }, 100); 
+    }, 100);
   });
 });
