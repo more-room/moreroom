@@ -28,7 +28,7 @@ public class RegionInfoService {
                 RegionInfoParentDto parent = map.getOrDefault(r.getRegionId(),
                     new RegionInfoParentDto());
                 parent.setRegionId(r.getRegionId());
-                parent.setRegionName(r.getRegionName());
+                parent.setRegionName(r.getRegionNickname());
                 map.put(r.getRegionId(), parent);
             } else {
                 RegionInfoParentDto parent = map.getOrDefault(r.getParentRegionId(),
