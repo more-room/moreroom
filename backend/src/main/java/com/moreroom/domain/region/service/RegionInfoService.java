@@ -41,7 +41,6 @@ public class RegionInfoService {
                 map.put(r.getParentRegionId(), parent);
             }
         }
-        System.out.println("map = " + map);
         return RegionInfoResponseDto.toDto(map);
     }
 
