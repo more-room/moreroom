@@ -688,6 +688,32 @@ mock.onGet('/api/cafe/theme/1').reply((config) => {
   });
 });
 
+mock.onGet('/api/cafe/search').reply((config) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([
+        200,
+        {
+          cafeList: [
+            {
+              cafeId: 1,
+              cafeName: '황금열쇠 더킹점',
+            },
+            {
+              cafeId: 2,
+              cafeName: '서울 이스케이프 룸',
+            },
+            {
+              cafeId: 3,
+              cafeName: '머더파커',
+            },
+          ],
+        },
+      ]);
+    }, 100);
+  });
+});
+
 // ============review
 mock.onGet('/api/review').reply((config) => {
   return new Promise((resolve) => {
