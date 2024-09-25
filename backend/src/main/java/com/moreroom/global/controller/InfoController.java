@@ -6,6 +6,9 @@ import com.moreroom.domain.brand.service.BrandInfoService;
 import com.moreroom.domain.genre.dto.response.GenreInfoResponseDto;
 import com.moreroom.domain.genre.exception.GenreNotFoundException;
 import com.moreroom.domain.genre.service.GenreInfoService;
+import com.moreroom.domain.hashtagGroup.dto.response.HashtagGroupResponseDto;
+import com.moreroom.domain.hashtagGroup.exception.HashtagGroupNotFoundException;
+import com.moreroom.domain.hashtagGroup.service.HashtagGroupInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +25,7 @@ public class InfoController {
 
     private final GenreInfoService genreInfoService;
     private final BrandInfoService brandInfoService;
+    private final HashtagGroupInfoService hashtagGroupInfoService;
 
 
     @GetMapping("/genre")
@@ -41,5 +45,14 @@ public class InfoController {
             throw new BrandNotFoundException();
         }
         return new ResponseEntity<>(brandInfoResponseDto, HttpStatus.OK);
+    }
+
+    @GetMapping("/hashtaggroup")
+    public ResponseEntity<HashtagGroupResponseDto> getHashtagGroupList() {
+        HashtagGroupResponseDto hashtagGroupResponseDto = hashtagGroupInfoService.getHashtagGroupList();
+        if (hashtagGroupResponseDto == null) {
+            throw new HashtagGroupNotFoundException();
+        }
+        return new ResponseEntity<>(hashtagGroupResponseDto, HttpStatus.OK);
     }
 }
