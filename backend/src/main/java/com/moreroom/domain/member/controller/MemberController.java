@@ -189,7 +189,7 @@ public class MemberController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("/out")
+    @DeleteMapping("")
     public ResponseEntity<Member> deleteMember() {
         memberService.deleteMember();
 
