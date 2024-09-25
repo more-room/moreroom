@@ -4,13 +4,17 @@ import com.moreroom.domain.mapping.party.entity.PartyHashtagId;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import java.util.Objects;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @Embeddable
+@AllArgsConstructor
+@NoArgsConstructor
 public class PartyRequestHashtagId {
     @Column(name = "partyRequestId")
     private Long partyRequestId;
     @Column(name = "hashtagId")
-    private Long hashtagId;
+    private Integer hashtagId;
 
     @Override
     public boolean equals(Object o) {
