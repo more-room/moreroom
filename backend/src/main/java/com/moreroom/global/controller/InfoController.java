@@ -12,6 +12,9 @@ import com.moreroom.domain.hashtag.service.HashtagInfoService;
 import com.moreroom.domain.hashtagGroup.dto.response.HashtagGroupResponseDto;
 import com.moreroom.domain.hashtagGroup.exception.HashtagGroupNotFoundException;
 import com.moreroom.domain.hashtagGroup.service.HashtagGroupInfoService;
+import com.moreroom.domain.region.dto.response.RegionInfoResponseDto;
+import com.moreroom.domain.region.exception.RegionNotFoundException;
+import com.moreroom.domain.region.service.RegionInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +34,7 @@ public class InfoController {
     private final BrandInfoService brandInfoService;
     private final HashtagInfoService hashtagInfoService;
     private final HashtagGroupInfoService hashtagGroupInfoService;
+    private final RegionInfoService regionInfoService;
 
 
     @GetMapping("/genre")
@@ -69,5 +73,14 @@ public class InfoController {
             throw new HashtagGroupNotFoundException();
         }
         return new ResponseEntity<>(hashtagGroupResponseDto, HttpStatus.OK);
+    }
+
+    @GetMapping("/region")
+    public ResponseEntity<RegionInfoResponseDto> getRegionList() {
+        RegionInfoResponseDto regionInfoResponseDto = regionInfoService.getRegionList();
+        if (regionInfoResponseDto == null) {
+            throw new RegionNotFoundException();
+        }
+        return new ResponseEntity<>(regionInfoResponseDto, HttpStatus.OK);
     }
 }
