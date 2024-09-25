@@ -54,9 +54,7 @@ public class ThemeController {
     @GetMapping("/search")
     public ResponseEntity<ThemeSearchTitleResponseDto> getThemesByTitle(
         @RequestParam(required = false) String title) {
-        System.out.println("ThemeController.getThemesByTitle");
         long memberId = findMemberService.findCurrentMember();
-        System.out.println("title = " + title);
         ThemeSearchTitleResponseDto themeSearchTitleResponseDto = themeService.findThemesByTitle(
             title);
         if (themeSearchTitleResponseDto == null) {

@@ -80,8 +80,6 @@ public class QuerydslRepositoryCustom {
                 default -> throw new IllegalArgumentException("Unsupported operator: " + operator);
             };
 
-            System.out.println("expression = " + expression);
-
             return expression;
         } catch (Exception e) {
             log.error("Exception occurred: " + e.getMessage());
