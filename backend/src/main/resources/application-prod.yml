@@ -47,9 +47,19 @@ spring:
     port: 5672
     host: rabbitmq
 
+  fastAPI:
+    URL: ${FAST_API_URL}
+
 server:
   servlet:
     session:
+      cookie:
+        http-only: true
+        path: /
+        secure: true
+        same-site: none
+        max-age: 86400 # 하루
+        domain: ${SERVER_DOMAIN}
       timeout: 90m
     context-path: /${CONTEXT_PATH}
   port: ${BACKEND_PORT}
