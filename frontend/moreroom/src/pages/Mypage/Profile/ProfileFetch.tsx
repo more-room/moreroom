@@ -22,7 +22,7 @@ import { ManageInfo } from '../ManageInfo';
 import { Icon } from '../../../components/Icon';
 import { useNavigate } from 'react-router-dom';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { getUserInfo } from '../../../apis/mypageApi';
+import { getMyInfo } from '../../../apis/mypageApi';
 import { useHashtagStore } from '../../../stores/mypageStore';
 import { Chip } from '../../../components/Chip';
 import { Ihashtags } from '../../../types/mypageTypes';
@@ -32,13 +32,19 @@ export const ProfileFetch = () => {
   const { selectedHashtags } = useHashtagStore();
   const hashtags = Ihashtags;
   const { data, error, isFetching } = useSuspenseQuery({
-    queryKey: ['profile'],
-    queryFn: async () => await getUserInfo(),
+    queryKey: ['myinfo'],
+    queryFn: async () => await getMyInfo(),
   });
-
+  if (data) {
+    console.log(data);
+  }
   if (error && !isFetching) {
     throw error;
   }
+  const ProfileQuey = useSuspenseQuery({
+    queryKey: ['profile'],
+    queryFn: async () => await getMyInfo(),
+  });
 
   const genderhandler = (gender: string) => {
     if (gender === 'M') {
@@ -64,7 +70,7 @@ export const ProfileFetch = () => {
             {data.data.nickname}
           </Typography>
           <Typography color="grey" scale="500" size={0.75} weight={700}>
-            경상북도 구미시
+            {data.data.regionId}
           </Typography>
         </div>
         <div css={manageInfoContainerCss}>
@@ -74,7 +80,14 @@ export const ProfileFetch = () => {
                 <CakeIcon />
               </Icon>
             }
-            children={data.data.birth}
+            children={
+              data.data.birth[0] +
+              '년 ' +
+              data.data.birth[1] +
+              '월 ' +
+              data.data.birth[2] +
+              '일'
+            }
           />
           <ManageInfo
             icon={
