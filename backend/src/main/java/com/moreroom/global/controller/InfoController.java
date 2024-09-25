@@ -1,14 +1,17 @@
 package com.moreroom.global.controller;
 
 import com.moreroom.domain.brand.dto.response.BrandInfoResponseDto;
+import com.moreroom.domain.brand.exception.BrandNotFoundException;
 import com.moreroom.domain.brand.service.BrandInfoService;
 import com.moreroom.domain.genre.dto.response.GenreInfoResponseDto;
+import com.moreroom.domain.genre.exception.GenreNotFoundException;
 import com.moreroom.domain.genre.service.GenreInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -24,18 +27,19 @@ public class InfoController {
     @GetMapping("/genre")
     public ResponseEntity<GenreInfoResponseDto> getGenreList() {
         GenreInfoResponseDto genreInfoResponseDto = genreInfoService.getGenreList();
-        if (genreInfoResponseDto != null) {
-            return new ResponseEntity<>(genreInfoResponseDto, HttpStatus.OK);
+        if (genreInfoResponseDto == null) {
+            throw new GenreNotFoundException();
         }
-        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(genreInfoResponseDto, HttpStatus.OK);
     }
 
     @GetMapping("/brand")
-    public ResponseEntity<?> getBrandList() {
-        BrandInfoResponseDto brandInfoResponseDto = brandInfoService.getBrandList();
-        if (brandInfoResponseDto != null) {
-            return new ResponseEntity<>(brandInfoResponseDto, HttpStatus.OK);
+    public ResponseEntity<BrandInfoResponseDto> getBrandList(
+        @RequestParam(required = false) String search) {
+        BrandInfoResponseDto brandInfoResponseDto = brandInfoService.getBrandList(search);
+        if (brandInfoResponseDto == null) {
+            throw new BrandNotFoundException();
         }
-        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(brandInfoResponseDto, HttpStatus.OK);
     }
 }

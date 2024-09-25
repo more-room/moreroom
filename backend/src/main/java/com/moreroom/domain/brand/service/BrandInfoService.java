@@ -1,7 +1,7 @@
 package com.moreroom.domain.brand.service;
 
 import com.moreroom.domain.brand.dto.response.BrandInfoResponseDto;
-import com.moreroom.domain.brand.repository.BrandRepository;
+import com.moreroom.domain.brand.repository.BrandQueryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -11,9 +11,10 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class BrandInfoService {
 
-    private final BrandRepository brandRepository;
+    private final BrandQueryRepository brandQueryRepository;
 
-    public BrandInfoResponseDto getBrandList() {
-        return BrandInfoResponseDto.toDto(brandRepository.findAll());
+    public BrandInfoResponseDto getBrandList(String keyword) {
+        return BrandInfoResponseDto.toDto(
+            brandQueryRepository.findAllByBrandNameOrderByCafeCountDesc(keyword));
     }
 }
