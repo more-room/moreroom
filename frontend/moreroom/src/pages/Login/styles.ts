@@ -46,19 +46,30 @@ export const formStyles = css`
 
   .custom-textfield .MuiOutlinedInput-root {
     width: 100%;
+
+    &::placeholder {
+      color: ${Colors['grey']['300']}; /* 플레이스홀더 색상 변경 */
+      opacity: 1; /* Firefox에서는 기본값이 낮게 설정되어 있으므로 명시적으로 설정 */
+    }
+
     fieldset {
-      border-color: ${Colors['grey']['500']};
-      color: ${Colors['grey']['500']};
+      border-color: ${Colors['grey']['300']};
+      color: ${Colors['grey']['300']};
     }
     &:hover fieldset {
-      border-color: ${Colors['grey']['500']};
+      border-color: ${Colors['grey']['300']};
     }
     &.Mui-focused fieldset {
-      border-color: ${Colors['grey']['500']};
+      border-color: ${Colors['grey']['300']};
+    }
+    & label {
+      color: ${Colors['grey']['300']};
     }
     input {
-      color: ${Colors['grey']['500']};
+      color: ${Colors['grey']['300']};
     }
+      
+    
     margin-bottom: 2rem;
   }
 `;
@@ -85,4 +96,9 @@ export const buttonStyles = css`
 
 export const iconcolors = css`
   color: ${Colors['primary']['500']};
+`
+
+export const textcolors = css`
+  color: ${Colors['grey']['700']};
+
 `

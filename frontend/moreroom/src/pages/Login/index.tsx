@@ -6,7 +6,7 @@ import IconButton from '@mui/material/IconButton';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import CloseIcon from '@mui/icons-material/Close';
-import { formStyles, buttonStyles, imgCss, loginpagecontainer, iconcolors } from "./styles";
+import { formStyles, buttonStyles, imgCss, loginpagecontainer, iconcolors, textcolors } from "./styles";
 import { Button } from "../../components/Button"; 
 import { useLoginStore } from "../../stores/loginStore";
 import { UserLogin } from "../../apis/loginApi";  // 로그인 API 호출 함수
@@ -75,6 +75,9 @@ export const Login = () => {
           }}
           error={emailError}  // 이메일 오류 상태에 따라 빨간 테두리 표시
           helperText={emailError ? "잘못된 e-mail 유형입니다." : ""}
+          InputLabelProps={{
+            style: { color:'grey' }  // placeholder 색상 변경
+          }}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -103,6 +106,9 @@ export const Login = () => {
           }}
           error={passwordError}  // 비밀번호 오류 상태에 따라 빨간 테두리 표시
           helperText={passwordError ? "영문 소문자, 숫자 포함 8글자 이상 작성해주세요." : ""}
+          InputLabelProps={{
+            style: { color:'grey' }  // placeholder 색상 변경
+          }}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -136,11 +142,11 @@ export const Login = () => {
         </Button>
       </div>
 
-      <p>
+      <p css={textcolors}>
         <a  href="/" css={iconcolors} >비밀번호</a>&nbsp;찾기
       </p>
 
-      <p>
+      <p css={textcolors}>
         아직 계정이 없으신가요?-&nbsp;
           <a href="/" css={iconcolors}>회원가입</a>
         &nbsp;하러가기

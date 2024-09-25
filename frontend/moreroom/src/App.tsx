@@ -29,6 +29,8 @@ function App() {
         <Route path="/mypage/profile" element={<Profile />} />
         <Route path="/mypage/profile/edit" element={<EditProfile />} />
         <Route path="/mypage/hashtag/edit" element={<EditHashTag />} />
+        <Route path="/chating" element={<Chating />} />
+        
       </Routes>
       {modalStore.isOpen && (
         <Modal height={modalStore.height}>{modalStore.contents}</Modal>

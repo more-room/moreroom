@@ -14,6 +14,9 @@ import re
 ### 다른 파일 import 
 
 from dbutils import mongo_connect, mongo_get_collection, mongo_save_with_delete, mongo_save_with_update, mongo_disconnect
+from data_center import get_genre_names
+from file_utils import save_logs
+
 
 
 ### ------------ 최근 방문한 테마와 비슷한 테마 
@@ -77,7 +80,7 @@ def get_gen_similarity(tg_df):
     # ##### 장르 유사도
     similarity_genre = cosine_similarity(encoded_genres)
 
-    return similarity_genre 
+    return similarity_genre, grouped_genres 
 
 
 
@@ -124,14 +127,14 @@ def get_des_similarity(theme_df):
 
 
 # CB 유사도 
-def get_CB_similarity(theme_df, tg_df, normal_per=0.6, genre_per=0.2, dis_per=0.2):
+def get_CB_similarity(theme_df, tg_df, normal_per=0.7, genre_per=0.15, dis_per=0.15):
     similarity_normal = get_meta_similarity(theme_df)
-    similarity_genre = get_gen_similarity(tg_df)
+    similarity_genre, grouped_genres = get_gen_similarity(tg_df)
     similarity_dis = get_des_similarity(theme_df)
     # ##### 최종 유사도
     cb_similarity = similarity_normal*normal_per + similarity_genre*genre_per + similarity_dis*dis_per
 
-    return cb_similarity
+    return cb_similarity, similarity_normal, similarity_genre, grouped_genres, similarity_dis
 
 
 # #### 4. 유저 평점 기반 유사도 계산
@@ -145,12 +148,12 @@ def get_review_similarity(review_df):
     # 유사도 계산
     similarity_review = cosine_similarity(review_pivot_df)
 
-    return similarity_review 
+    return similarity_review
 
 
 def get_CFB_similarity(review_df):
     cfb_similarity = get_review_similarity(review_df)
-    return cfb_similarity 
+    return cfb_similarity
 
 
 
@@ -158,14 +161,13 @@ def get_CFB_similarity(review_df):
 
 # #### 5. CB, CFB 종합하여 통합 모델 완성 
 # - CB 필터링 모델과 CFB 필터링 모델을 결합하여 최종 유사도를 계산한다
-
 def get_hybrid_similarity(theme_df, tg_df, review_df, cb_per=0.9, cfb_per=0.1):
-    cb_similarity = get_CB_similarity(theme_df, tg_df)
+    cb_similarity, similarity_normal, similarity_genre, grouped_genres, similarity_dis = get_CB_similarity(theme_df, tg_df)
     cfb_similarity = get_CFB_similarity(review_df)
 
     hybrid_similarity = cb_per*cb_similarity + cfb_per*cfb_similarity 
 
-    return hybrid_similarity 
+    return hybrid_similarity, similarity_normal, similarity_genre, grouped_genres, similarity_dis, cfb_similarity
 
 
 
@@ -199,15 +201,48 @@ def save_data(result):
         mongo_disconnect(client)
 
 
+# #### 8. 로그 출력
+def save_log(theme_df, tg_df, review_df, result, similarity_normal, similarity_genre, grouped_genres, similarity_dis, similarity_review, N=10):
+    target_theme_index = 393
+    # 대상 테마 정보 출력
+    theme_title = theme_df.loc[target_theme_index, 'title']
+    target_info = (
+        f"대상 => ID: {theme_df.loc[target_theme_index, 'themeId']}, 제목: {theme_title}\n"
+        f"{theme_df.loc[target_theme_index, 'description']}\n"
+        f"장르: {get_genre_names(grouped_genres.loc[target_theme_index, 'genreId'])}\n\n\n"
+    )
+    
 
+    # 상위 10개의 유사한 항목 출력
+    target_info += (f"================ 유사 테마 상위 10개 ==============\n")
+
+    for i in range(N):
+        id = result[target_theme_index]['similarThemes'][i]
+        sim = result[target_theme_index]['similarThemesSim'][i]
+        index = theme_df.loc[theme_df['themeId'] == id].index[0]
+        theme_title = theme_df.iloc[index]['title']
+        target_info += (
+            f"=================== {i+1}번째 =====================\n"
+            f"ID: {theme_df.iloc[index]['themeId']}, 제목: {theme_title}, 유사도: {sim} \n"
+            f"메타데이터 유사도: {similarity_normal[index][target_theme_index]}\n"
+            f"장르 유사도: {similarity_genre[index][target_theme_index]}\n"
+            f"줄거리 유사도: {similarity_dis[index][target_theme_index]}\n"
+            f"평점 유사도: {similarity_review[index][target_theme_index]}\n"
+            f"--------------------------------------------------\n"
+            f"줄거리: {theme_df.iloc[index]['description']}\n"
+            f"장르: {get_genre_names(grouped_genres.loc[index, 'genreId'])}\n\n\n"
+        )                  
+
+    save_logs('C:/SSAFY/3_특화프로젝트/data/logs/', "st", target_info)
 
 
 # 메인 로직 
 def get_recent_similar_theme():
     theme_df, tg_df, review_df = load_local_data('C:/SSAFY/3_특화프로젝트/data/')
-    hybrid_model = get_hybrid_similarity(theme_df, tg_df, review_df)
+    hybrid_model, similarity_normal, similarity_genre, grouped_genres, similarity_dis, similarity_review = get_hybrid_similarity(theme_df, tg_df, review_df)
     result = extract_total_similar_theme(theme_df, hybrid_model) 
     save_data(result)
+    save_log(theme_df, tg_df, review_df, result, similarity_normal, similarity_genre, grouped_genres, similarity_dis, similarity_review)
     # print(result)
     
 

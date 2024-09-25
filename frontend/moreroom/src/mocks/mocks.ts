@@ -730,3 +730,100 @@ mock.onGet('/api/review').reply((config) => {
     }, 500);
   });
 });
+
+//========================== chatList mock
+mock.onGet('/api/party').reply((config) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([
+        200,
+        {
+          content: [
+            {
+              partyId: 1,
+              roomName: '헐 같이해요',
+              theme: {
+                poster: '/posters/badrobbad.png',
+                title: 'BadRobBad',
+                maxPeople: 5,
+              },
+              cafeName: '이스케이프룸 성수점',
+              date: '2024-10-24 18:00',
+              memberCount: '2',
+              maxMember: '3',
+              hashtags: [
+                {
+                  hashtagId: 4,
+                  hashtagName: '즐겨요',
+                },
+              ],
+            },
+            {
+              partyId: 2,
+              roomName: '멤버 급구요',
+              theme: {
+                poster: '/posters/heaven.png',
+                title: 'Heaven',
+                maxPeople: 5,
+              },
+              cafeName: '제로월드 강남점',
+              date: '2024-10-24 17:30',
+              memberCount: '1',
+              maxMember: '5',
+              hashtags: [
+                {
+                  hashtagId: 3,
+                  hashtagName: '신나는',
+                },
+              ],
+            },
+            {
+              partyId: 3,
+              roomName: '뉴비만 오세요',
+              theme: {
+                poster: '/posters/지옥.png',
+                title: '지옥',
+                maxPeople: 5,
+              },
+              cafeName: '황금열쇠 동성로점',
+              date: '2024-10-24 17:00',
+              memberCount: '3',
+              maxMember: '5',
+              hashtags: [
+                {
+                  hashtagId: 1,
+                  hashtagName: '초보환영',
+                },
+              ],
+            },
+          ],
+          pageable: {
+            pageNumber: 0,
+            pageSize: 5,
+            sort: {
+              empty: false,
+              sorted: true,
+              unsorted: false,
+            },
+            offset: 0,
+            paged: true,
+            unpaged: false,
+          },
+          last: true,
+          totalPages: 1,
+          totalElements: 3,
+          first: true,
+          size: 5,
+          number: 0,
+          sort: {
+            empty: false,
+            sorted: true,
+            unsorted: false,
+          },
+          numberOfElements: 3,
+          empty: false,
+        },
+      ]);
+    }, 100);
+  });
+});
