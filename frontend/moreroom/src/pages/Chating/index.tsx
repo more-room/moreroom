@@ -28,7 +28,7 @@ import { getPartyList } from "../../apis/chatApi"; // getPartyList 함수 임포
 import { MapPinIcon, ClockIcon, UserGroupIcon, EllipsisHorizontalCircleIcon, BellIcon } from '@heroicons/react/24/solid';
 import { Chip } from "../../components/Chip";
 import { Typography } from "../../components/Typography";
-import { IParty } from '../../stores/chatingStore' // IParty 타입 임포트
+import { IParty } from '../../types/chatingTypes' // IParty 타입 임포트
 import { Colors } from "../../styles/globalStyle";
 
 export const Chating = () => {
