@@ -91,7 +91,7 @@ public class WebSocketInterceptor implements ChannelInterceptor {
     if (info == null) {
       Member member = memberRepository.findByEmail(email)
           .orElseThrow(MemberNotFoundException::new);
-      info = new RedisUserInfo(member.getMemberId(), member.getNickname(),
+      info = new RedisUserInfo(member.getMemberId(), member.getEmail(), member.getNickname(),
           member.getPhoto());
       redisUtil.saveRedisUserInfo(key, info, 7200);
     }

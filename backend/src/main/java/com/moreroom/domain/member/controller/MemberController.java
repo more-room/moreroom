@@ -67,11 +67,11 @@ public class MemberController {
             // 쿠키 정보 저장
             Cookie idCookie = new Cookie("memberId",
                 String.valueOf(findMemberService.findCurrentMember()));
-//            idCookie.setHttpOnly(true);
-//            idCookie.setSecure(true);
-            idCookie.setMaxAge(60 * 60 * 24 * 7);
+            idCookie.setHttpOnly(true);
+            idCookie.setSecure(true);
+            idCookie.setMaxAge(60 * 60 * 24);
             idCookie.setPath("/");
-//            idCookie.setDomain("localhost");
+            idCookie.setDomain("j11d206.p.ssafy.io");
             response.addCookie(idCookie);
 
             // 인증된 후 세션에 해당 인증 정보 저장
@@ -184,7 +184,7 @@ public class MemberController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/hashtag")
+    @PatchMapping("/hashtag")
     public ResponseEntity<Member> hashtagChange(@RequestBody HashtagDTO hashtagDTO) {
         memberService.hashtagChange(hashtagDTO);
         return new ResponseEntity<>(HttpStatus.OK);

@@ -1,7 +1,6 @@
 package com.moreroom.domain.partyRequest.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.moreroom.domain.cafe.entity.Cafe;
 import com.moreroom.domain.member.entity.Member;
 import com.moreroom.domain.member.exception.MemberNotFoundException;
 import com.moreroom.domain.member.repository.MemberRepository;
@@ -13,19 +12,28 @@ import com.moreroom.domain.theme.entity.Theme;
 import com.moreroom.domain.theme.repository.ThemeRepository;
 import com.moreroom.global.dto.SocketNotificationDto;
 import com.moreroom.global.util.RedisUtil;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Slf4j
 public class PartyMatchingService {
@@ -35,36 +43,75 @@ public class PartyMatchingService {
   private final RedisUtil redisUtil;
   private final SimpMessagingTemplate simpMessagingtemplate;
   private final ThemeRepository themeRepository;
+  private final RestTemplate restTemplate;
+
+  private final String fastAPI_URL;
+
+  // FastAPI의 여러 파티 매칭 결과를 가져오는 메서드
+  private List<Map<String, Object>> getBatchPartyMatchingResultFromFastAPI() {
+    try {
+      HttpHeaders headers = new HttpHeaders();
+      HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
+
+      // FastAPI에서 매칭 결과 리스트를 받아옴
+      ResponseEntity<List> response = restTemplate.exchange(
+          fastAPI_URL, HttpMethod.POST, requestEntity, List.class);
+
+      if (response.getStatusCode().is2xxSuccessful()) {
+        return response.getBody();
+      } else {
+        log.error("FastAPI 요청 실패: " +response.getStatusCode());
+        return Collections.emptyList();
+      }
+    } catch (RestClientException e) {
+      log.error("FastAPI로부터 응답을 받는 중 오류 발생", e);
+      return Collections.emptyList();
+    }
+  }
+
+  // FastAPI에서 받은 partyMemberIds로 Member 엔티티 리스트를 가져오는 메서드
+  private List<Member> getPartyMembersFromIds(List<Integer> memberIds) {
+    List<Member> members = new ArrayList<>();
+    for (Integer memberId : memberIds) {
+      Member member = memberRepository.findById(Long.valueOf(memberId)).orElseThrow(MemberNotFoundException::new);
+      members.add(member);
+    }
+    return members;
+  }
 
 //  @Scheduled(cron = "0 0 18 * * *", zone = "Asia/Seoul")
 //  @Scheduled(fixedRate = 3600000, initialDelay = 10000)
   @Transactional
   public void partyMatchingAndRequest() throws JsonProcessingException {
     log.info("스케줄러 동작함");
-    //TODO 파티매칭 로직 넣기 -> themeId와 MemberList를 줘야 한다.
-    List<Member> partyMembers = getPartyMembers(); //임시
-    Integer themeId = 10;
-    List<Long> memberIdList = partyMembers.stream()
-        .map(Member::getMemberId)
-        .toList();
+    List<Map<String, Object>> batchMatchingResults = getBatchPartyMatchingResultFromFastAPI();
 
-    String uuid = setUuidToRequest(memberIdList, themeId); //partyRequest의 uuid 필드에 uuid 저장
-    setPartyAcceptRecordMap(uuid, memberIdList); //redis에 accept 현황판 저장
-    sendPartyNotification(partyMembers, themeId, uuid); //알림 보내기
-  }
+    if (batchMatchingResults == null || batchMatchingResults.isEmpty()) {
+      log.error("FastAPI로부터 매칭 결과를 받지 못했습니다.");
+      return;
+    }
 
+    // 각 파티 매칭 결과에 대해 처리
+    for (Map<String, Object> matchingResult : batchMatchingResults) {
+      Integer themeId = (Integer) matchingResult.get("theme_id");
+      List<Integer> partyMemberIds = (List<Integer>) matchingResult.get("party_members");
 
-  // 1. 파티 매칭 결과 : 유저 3명 데려오기 -> 임시로 구현함. 이후에 파티 매칭 로직 완성되면 거기에서 받아와야 함
-  // 개발용 임시 정보 : 각각 memberId 2002, 2003, 2004 / themeId : 10인 partyRequest
-  // partyRequest: 각각 1001, 1002, 1003
-  public List<Member> getPartyMembers() {
-    Member member1 = memberRepository.findByEmail("pingu1@ssafy.com")
-        .orElseThrow(MemberNotFoundException::new);
-    Member member2 = memberRepository.findByEmail("pingu2@ssafy.com")
-        .orElseThrow(MemberNotFoundException::new);
-    Member member3 = memberRepository.findByEmail("pingu3@ssafy.com")
-        .orElseThrow(MemberNotFoundException::new);
-    return Arrays.asList(member1, member2, member3);
+      if (partyMemberIds == null || partyMemberIds.size() < 3) {
+        continue;
+      }
+
+      // FastAPI 결과에서 멤버 ID 리스트를 가져와서 Member 엔티티 리스트를 가져옴
+      List<Member> partyMembers = getPartyMembersFromIds(partyMemberIds);
+
+      // 파티 매칭 UUID 생성 및 처리
+      List<Long> memberIdList = partyMembers.stream()
+          .map(Member::getMemberId)
+          .toList();
+
+      String uuid = setUuidToRequest(memberIdList, themeId); // partyRequest의 uuid 필드에 uuid 저장
+      setPartyAcceptRecordMap(uuid, memberIdList); // redis에 accept 현황판 저장
+      sendPartyNotification(partyMembers, themeId, uuid); //알림 보내기
+    }
   }
 
   // 2. 각 member의 파티요청의 UUID 필드에 레디스용 UUID 만들어 저장
@@ -107,7 +154,7 @@ public class PartyMatchingService {
     for (Member member : partyMemberList) {
       PartyRequest partyRequest = partyRequestRepository.findByThemeIdandMemberId( //쿼리 실행
           theme.getThemeId(), member.getMemberId());
-      //메세지 전송
+      // 메세지 전송
       simpMessagingtemplate.convertAndSendToUser(
           member.getEmail(),
           "/queue/message",
@@ -133,7 +180,7 @@ public class PartyMatchingService {
       return null; //expired되었다면 null 반환
     }
 
-    //expired되지 않은 경우
+    // expired되지 않은 경우
     if (accept) {
       //레디스 작업
       //처음 수락했다면 해당 멤버를 master로 설정

@@ -1,15 +1,16 @@
-package com.moreroom.global.dto;
+package com.moreroom.domain.party.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class RedisUserInfo {
-  private Long memberId;
-  private String email;
+@Builder
+public class MessageConvertDto {
   private String nickname;
   private String photo;
+  private String message;
 }
