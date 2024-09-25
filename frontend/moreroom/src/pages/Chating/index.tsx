@@ -4,6 +4,7 @@ import { TopBar } from "../../components/TopBar";
 import { BottomBar } from "../../components/BottomBar";
 import {
   container,
+  topbarcolor,
   themeCard,
   cardContent,
   posterImage,
@@ -28,6 +29,7 @@ import { MapPinIcon, ClockIcon, UserGroupIcon, EllipsisHorizontalCircleIcon, Bel
 import { Chip } from "../../components/Chip";
 import { Typography } from "../../components/Typography";
 import { IParty } from '../../stores/chatingStore' // IParty 타입 임포트
+import { Colors } from "../../styles/globalStyle";
 
 export const Chating = () => {
   const [selectedFilter, setSelectedFilter] = useState('속한 파티'); // 필터 상태 ('속한 파티' or '일반 파티')
@@ -67,7 +69,7 @@ export const Chating = () => {
   }
   return (
     <div css={container}>
-      <TopBar>
+      <TopBar css={topbarcolor}>
         <TopBar.Title type="default" defaultValue="파티 목록" />
       </TopBar>
 

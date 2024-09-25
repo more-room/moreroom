@@ -7,7 +7,7 @@ export const container = css`
   padding: 0.625rem; /* 10px을 rem 단위로 변경 */
   padding-left: 1rem;  /* 왼쪽에 여백 추가 */
   padding-right: 1rem; /* 오른쪽에 여백 추가 */
-  background-color: ${Colors['grey']['900']}; /* 배경 색 설정 */
+  background-color: #313131; /* 배경 색 설정 */
   min-height: 100vh; /* 화면을 채우도록 설정 */
 `;
 
@@ -16,12 +16,17 @@ export const cardcontainer = css`
   margin-bottom: 0.75rem; /* 카드 간격 줄이기 */
 `;
 
+export const topbarcolor = css`
+  background-color: #313131;
+
+`
+
 export const themeCard = css`
   position: relative;
   display: flex;
   flex-direction: row; /* 가로 정렬 */
   align-items: center;
-  background-color: ${Colors['grey']['800']};
+  background-color: #212121;
   border-radius: 0.3rem;
   padding: 0.625rem;
   margin-bottom: 1rem;
@@ -57,12 +62,13 @@ export const roomname = css`
 
 export const themeTitle = css`
   color: ${Colors['light']['100']};
-  font-size: 0.7rem; /* 제목 크기를 줄임 */
+  font-size: 0.8rem; 
   font-weight: bold;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   margin: 0;
+  margin-bottom: 0.3rem;
 `;
 
 export const themeDetails = css`
