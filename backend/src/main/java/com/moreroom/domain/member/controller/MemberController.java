@@ -75,7 +75,9 @@ public class MemberController {
             idCookie.setSecure(true);
             idCookie.setMaxAge(60 * 60 * 24);
             idCookie.setPath("/");
-            idCookie.setDomain("j11d206.p.ssafy.io");
+            idCookie.setDomain("localhost");
+            // 개발 환경 연결시 아래 코드로 수정
+//            idCookie.setDomain("j11d206.p.ssafy.io");
             response.addCookie(idCookie);
 
             // 인증된 후 세션에 해당 인증 정보 저장
