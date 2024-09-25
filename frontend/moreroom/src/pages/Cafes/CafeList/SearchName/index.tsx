@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
-import { titleContainer } from './styles';
+import { nameContainer } from './styles';
 import { LabeledTypography } from '../../../../components/LabeledTypography';
 import {
   useCafePageStore,
@@ -8,7 +8,7 @@ import {
   useSearchNameStore,
 } from '../../../../stores/cafeStore';
 
-export const SearchTitle = () => {
+export const SearchName = () => {
   const cafePageStore = useCafePageStore();
   const searchNameStore = useSearchNameStore();
   const searchCafesStore = useSearchCafesStore();
@@ -23,7 +23,7 @@ export const SearchTitle = () => {
   };
 
   return (
-    <div css={titleContainer}>
+    <div css={nameContainer}>
       {searchNameStore.results.cafeList.map((result) => {
         return (
           <LabeledTypography
