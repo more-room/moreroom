@@ -32,3 +32,16 @@ export const getDays = (year: number, month: number) => {
 
   return result;
 };
+
+export const getDateDiff = (date: string) => {
+  const today = dayjs();
+  const inputDate = dayjs(date);
+
+  const dayDiff = today.diff(inputDate, 'day');
+  const monthDiff = today.diff(inputDate, 'month');
+  const yearDiff = today.diff(inputDate, 'year');
+
+  if (dayDiff <= 30) return dayDiff + '일 전';
+  else if (monthDiff <= 12) return monthDiff + '달 전';
+  else return yearDiff + '년 전';
+};

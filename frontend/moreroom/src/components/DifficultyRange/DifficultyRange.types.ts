@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 
 export type TDiffilcultyDir = 'row' | 'col';
-export type TDifficultySize = 'sm' | 'md' | 'lg';
+export type TDifficultySize = 'xs' | 'sm' | 'md' | 'lg';
 export type TDifficultySizeInfo = Record<
   TDifficultySize,
   Record<string, number>
@@ -24,6 +24,11 @@ export const difficultyArray = [
 ];
 
 export const difficultySize: TDifficultySizeInfo = {
+  xs: {
+    long: 1,
+    short: 0.5,
+    gap: 0.125,
+  },
   sm: {
     long: 1.75,
     short: 0.625,

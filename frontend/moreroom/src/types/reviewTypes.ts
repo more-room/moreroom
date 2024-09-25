@@ -3,3 +3,35 @@ export interface IThemeReview {
   count: number;
   score: number;
 }
+
+/* 내부 리뷰 조회 - 요청 파라미터 */
+export interface IReviewListRequestParameter {
+  themeId: number;
+  pageNumber: number;
+  pageSize?: number;
+  sortOrder?: string;
+  sortBy?: string;
+}
+
+/* 내부 리뷰 조회 - 아이템 */
+export interface IReviewListItem {
+  reviewId: number;
+  member: {
+    memberId: number;
+    memberName: string;
+    memberProfile: string;
+  };
+  content: string;
+  score: number;
+  thumbsUp: number;
+  updatedAt: string;
+}
+
+/* 내부 리뷰 조회 */
+export interface IReviewList {
+  content: IReviewListItem[];
+  pageNumber: number;
+  pageSize: number;
+  totalPage: number;
+  totalElements: number;
+}
