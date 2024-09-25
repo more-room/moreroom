@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export const api = axios.create({
   baseURL:
-    process.env.NODE_ENV === 'development' ? '' : 'https://j11d206.p.ssafy.io',
+    process.env.NODE_ENV === 'development' ? 'https://j11d206.p.ssafy.io' : 'https://j11d206.p.ssafy.io',
   headers: {
     'Content-Type': 'application/json',
   },

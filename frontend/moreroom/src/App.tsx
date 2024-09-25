@@ -11,6 +11,8 @@ import { MyPage } from './pages/Mypage';
 import { Profile } from './pages/Mypage/Profile';
 import { EditProfile } from './pages/Mypage/EditProfile';
 import { EditHashTag } from './pages/Mypage/EditHashTag';
+import { ChatingRoom } from './pages/Chating/Chatingroom';
+import { Roomdetail } from './pages/Chating/Chatingroom/Roomdetail'
 
 function App() {
   const modalStore = useModalStore();
@@ -21,13 +23,16 @@ function App() {
         <Route path="/" element={<Main />} />
         <Route path="/themes" element={<ThemeList />} />
         <Route path="/login" element={<Login />} />
-        {/* <Route path="/chating" element={<Chating />} /> */}
+    
 
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/mypage/profile" element={<Profile />} />
         <Route path="/mypage/profile/edit" element={<EditProfile />} />
         <Route path="/mypage/hashtag/edit" element={<EditHashTag />} />
         <Route path="/chating" element={<Chating />} />
+        <Route path="/chatingroom/:partyId" element={<ChatingRoom />} />
+        <Route path="/roomdetail/:partyId" element={<Roomdetail />} />
+      
         
       </Routes>
       {modalStore.isOpen && (

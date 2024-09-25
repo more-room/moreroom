@@ -1,90 +1,104 @@
 /** @jsxImportSource @emotion/react */
-import React, { useState, useEffect } from "react";
-import { TopBar } from "../../components/TopBar";
-import { BottomBar } from "../../components/BottomBar";
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import * as StompJs from '@stomp/stompjs';  // STOMP.js 사용
+import { getPartyList } from "../../apis/chatApi";  // 파티 목록을 가져오는 API 호출
+import { useSearchPartiesStore } from "../../stores/chatingStore";  // zustand store 사용
+import { IParty } from '../../types/chatingTypes';  // 타입 정의
+import { TopBar } from '../../components/TopBar';
+import { BottomBar } from '../../components/BottomBar';
 import {
-  container,
-  topbarcolor,
-  themeCard,
-  cardContent,
-  posterImage,
-  themeDetails,
-  themeTitle,
-  filterButton,
-  filterContainer,
-  iconcolors,
-  chipstyle,
-  iconcolors2,
-  cardcontainer,
-  ellipsisIconWrapper, // 오른쪽 상단 아이콘을 위한 스타일
-  roomname,
-  bottombarcss
-} from "./styles"; // 스타일 파일
-
-import { useSearchPartiesStore } from "../../stores/chatingStore"; // zustand store
-import { getPartyList } from "../../apis/chatApi"; // getPartyList 함수 임포트
+  container, topbarcolor, themeCard, cardContent, posterImage, themeDetails,
+  themeTitle, filterButton, filterContainer, iconcolors, chipstyle, iconcolors2,
+  cardcontainer, ellipsisIconWrapper, roomname, bottombarcss
+} from './styles';  // 스타일 정의
 
 // 아이콘 임포트
 import { MapPinIcon, ClockIcon, UserGroupIcon, EllipsisHorizontalCircleIcon, BellIcon } from '@heroicons/react/24/solid';
 import { Chip } from "../../components/Chip";
 import { Typography } from "../../components/Typography";
-import { IParty } from '../../types/chatingTypes' // IParty 타입 임포트
-import { Colors } from "../../styles/globalStyle";
 
 export const Chating = () => {
-  const [selectedFilter, setSelectedFilter] = useState('속한 파티'); // 필터 상태 ('속한 파티' or '일반 파티')
-  const searchPartiesStore = useSearchPartiesStore(); // 파티 목록 store
+  const [selectedFilter, setSelectedFilter] = useState('속한 파티');
+  const searchPartiesStore = useSearchPartiesStore();
+  const navigate = useNavigate();
+  const client = useRef<StompJs.Client | null>(null);  // WebSocket client
+  const [roomId, setRoomId] = useState<number | null>(null);  // 현재 채팅방 ID
 
   useEffect(() => {
     const fetchPartyList = async () => {
       try {
-        const response = await getPartyList(); // API 호출
-        const data = response.data;
-
-        searchPartiesStore.setResults(data); // 파티 데이터를 store에 저장
+        const response = await getPartyList();
+        searchPartiesStore.setResults(response.data);
       } catch (error) {
         console.error("파티 목록을 불러오는 중 오류가 발생했습니다:", error);
       }
     };
 
     fetchPartyList();
-  }, [selectedFilter, searchPartiesStore]); // selectedFilter가 변경될 때마다 fetch
+  }, [searchPartiesStore]);
 
-  // 데이터에서 카드 필터링
+  // 파티 목록 가져오기
   const partyList: IParty[] = searchPartiesStore.results?.content || [];
 
-  // 필터링 로직을 아이콘 렌더링 단계에서 처리
-  const isIconTypeMatched = (iconType: 'ellipsis' | 'group') => {
-    if (selectedFilter === '일반 파티') {
-      return iconType === 'ellipsis'; // 일반 파티는 'ellipsis' 아이콘만 허용
-    }
-    if (selectedFilter === '속한 파티') {
-      return iconType === 'group'; // 속한 파티는 'group' 아이콘만 허용
-    }
-    return false;
+  // 파티 클릭 시 채팅방으로 이동하고 WebSocket 연결
+  const handlePartyClick = (partyId: number) => {
+    console.log(`선택된 파티 ID: ${partyId}`);
+    setRoomId(partyId);  // 선택된 파티 ID 설정
+    navigate(`/chatingroom/${partyId}`);  // 채팅방으로 이동
+    // connectWebSocket(partyId);  // WebSocket 연결 시도
   };
 
-  const handlechange = () => {
-    console.log('1')
-  }
+  // WebSocket 연결 설정 함수
+  // const connectWebSocket = (roomId: number) => {
+  //   // 기존 연결이 있을 경우 먼저 해제
+  //   if (client.current) {
+  //     client.current.deactivate();
+  //   }
+
+  //   // 새로운 WebSocket 연결
+  //   client.current = new StompJs.Client({
+  //     brokerURL: 'wss://j11d206.p.ssafy.io/api/ws',  // WebSocket 서버 URL
+  //     onConnect: (frame) => {
+  //       console.log('소켓 연결 성공:', frame);
+
+  //       // 채팅방 구독
+  //       client.current?.subscribe(`/user/queue/message/${roomId}`, (message) => {
+  //         const body = JSON.parse(message.body);
+  //         console.log('수신된 메시지:', body);
+  //         // 메시지 처리 로직을 여기에 작성
+  //       });
+  //     },
+  //     onStompError: (error) => {
+  //       console.error('소켓 연결 실패:', error);
+  //     },
+  //   });
+
+  //   client.current.activate();  // WebSocket 연결 시작
+  // };
+
+  const handleFilterChange = (filter: string) => {
+    setSelectedFilter(filter);
+  };
+
   return (
     <div css={container}>
       <TopBar css={topbarcolor}>
-        <TopBar.Title type="default" defaultValue="파티 목록" />
+        <TopBar.Title type="default" defaultValue="파티 목록" title='채팅방 리스트 조회' />
       </TopBar>
 
       {/* 필터 버튼 추가 */}
       <div css={filterContainer}>
         <button
           css={filterButton(selectedFilter === '속한 파티')}
-          onClick={() => setSelectedFilter('속한 파티')}
+          onClick={() => handleFilterChange('속한 파티')}
         >
           <UserGroupIcon css={iconcolors} style={{ width: '1rem', marginRight: '0.25rem' }} />
           <Typography color="light" weight={600} size={0.9}>속한 파티</Typography>
         </button>
         <button
           css={filterButton(selectedFilter === '일반 파티')}
-          onClick={() => setSelectedFilter('일반 파티')}
+          onClick={() => handleFilterChange('일반 파티')}
         >
           <EllipsisHorizontalCircleIcon css={iconcolors2} style={{ width: '1rem', marginRight: '0.25rem' }} />
           <Typography color="light" weight={600} size={0.9}>일반 파티</Typography>
@@ -94,21 +108,9 @@ export const Chating = () => {
       {/* 필터된 파티만 렌더링 */}
       <div css={cardcontainer}>
         {partyList.length > 0 ? (
-          partyList.slice(0, 4).map((party: IParty, idx: number) => (
-            <div key={idx} css={themeCard}>
-              {/* 일반 파티일 때 'ellipsis' 아이콘 렌더링 */}
-              {isIconTypeMatched('ellipsis') && (
-                <div css={ellipsisIconWrapper}>
-                  <EllipsisHorizontalCircleIcon css={iconcolors2} style={{ width: '1.5rem' }} />
-                </div>
-              )}
-              {/* 속한 파티일 때 'group' 아이콘 렌더링 */}
-              {isIconTypeMatched('group') && (
-                <div css={ellipsisIconWrapper}>
-                  <UserGroupIcon css={iconcolors} style={{ width: '1.5rem' }} />
-                </div>
-              )}
-
+          partyList.map((party: IParty, idx: number) => (
+            <div key={idx} css={themeCard} onClick={() => handlePartyClick(party.partyId)}>
+              {/* 파티 이미지 및 정보 렌더링 */}
               <img src={party.theme.poster} alt="포스터 이미지" css={posterImage} />
               <div css={cardContent}>
                 <h2 css={roomname}>{party.roomName}</h2>
@@ -126,8 +128,7 @@ export const Chating = () => {
                     <UserGroupIcon css={iconcolors} style={{ width: '1rem', marginRight: '0.25rem' }} />
                     {party.memberCount}/{party.maxMember} 명 참여
                   </p>
-                  
-                  <div >
+                  <div>
                     {party.hashtags.map((tag) => (
                       <Chip css={chipstyle} border={0.6} fontSize={0.7} key={tag.hashtagId}>{tag.hashtagName}</Chip>
                     ))}
@@ -140,11 +141,12 @@ export const Chating = () => {
           <div>파티 목록이 없습니다.</div>
         )}
       </div>
+
       <BottomBar css={bottombarcss}
         icons={[<BellIcon />, <BellIcon />, <BellIcon />]}
         menus={['메뉴1', '메뉴2', '메뉴3']}
-        onHandleChange={handlechange}>
-      </BottomBar>
+        onHandleChange={() => console.log('바텀바 선택됨')}
+      />
     </div>
   );
 };
