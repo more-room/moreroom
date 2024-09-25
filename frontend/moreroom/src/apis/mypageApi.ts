@@ -43,7 +43,7 @@ export const updateHashtag = (hashtagIdList: number[]) => {
     url: '/api/auth/member/hashtag',
     method: 'patch',
     data: {
-      hashtagIdList: hashtagIdList,
+      hashtagList: hashtagIdList,
     },
   });
 };

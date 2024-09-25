@@ -13,6 +13,7 @@ import { EditProfile } from './pages/Mypage/EditProfile';
 import { EditHashTag } from './pages/Mypage/EditHashTag';
 import { Party } from './pages/Party';
 import { RegisterParty } from './pages/Party/RegisterParty';
+import { AddTheme } from './pages/Party/AddTheme';
 
 function App() {
   const modalStore = useModalStore();
@@ -27,6 +28,7 @@ function App() {
 
         <Route path="/party" element={<Party />} />
         <Route path="/party/register" element={<RegisterParty />} />
+        <Route path="/party/addtheme" element={<AddTheme />} />
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/mypage/profile" element={<Profile />} />
         <Route path="/mypage/profile/edit" element={<EditProfile />} />

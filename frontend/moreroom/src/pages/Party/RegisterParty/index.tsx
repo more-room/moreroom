@@ -12,6 +12,7 @@ import {
 } from '../../../types/partyTypes';
 import { FilterChip } from '../../../components/FilterChip';
 import { Button } from '../../../components/Button';
+import { AddTheme } from '../AddTheme';
 
 export const RegisterParty = () => {
   const [selectedMyHashtags, setSelectedMyHashtags] = useState<number[]>([]);
@@ -66,7 +67,7 @@ export const RegisterParty = () => {
           backHandler={() => nav(-1)}
         />
       </TopBar>
-      <div css={themesCss} onClick={()=>nav('/themes')}>
+      <div css={themesCss} onClick={()=>nav('/party/addtheme')}>
         <Typography color="light" size={1} weight={400}>
           여기를 눌러 테마를 선택해주세요!
         </Typography>
