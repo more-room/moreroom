@@ -24,7 +24,9 @@ public class CafeService {
 
 
     public CafeListResponseDto findCafes(CafeListRequestDto c) {
-        List<Tuple> tuples = cafeRepository.findCafes("%" + c.getCafeName() + "%", c.getBrandId(),
+//        System.out.println("\"%\" + c.getCafeName() + \"%\" = " + "%" + c.getCafeName() + "%");
+        List<Tuple> tuples = cafeRepository.findCafes(
+            c.getCafeName() == null ? null : ("%" + c.getCafeName() + "%"), c.getBrandId(),
             c.getRegion());
         List<CafeListComponentDto> cafeList = new ArrayList<>();
 
