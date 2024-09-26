@@ -1,3 +1,9 @@
+/*  기록 목록 조회 - 요청 파라미터 */
+export interface IHistoryListRequestParameter {
+  startDate: string;
+  endDate: string;
+}
+
 /* 기록 목록 조회 - 아이템 */
 export interface IHistoryCard {
   historyId: number;

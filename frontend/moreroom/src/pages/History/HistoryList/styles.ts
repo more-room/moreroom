@@ -15,4 +15,5 @@ export const list = css`
   flex-direction: column;
   row-gap: 1rem;
   margin-top: 1rem;
+  overflow-y: scroll;
 `;

@@ -2,13 +2,10 @@
 import React, { Suspense } from 'react';
 import { container } from './styles';
 import { TopBar } from '../../../components/TopBar';
-import { useCalendarStore } from '../../../stores/calendarStore';
 import { ErrorBoundary } from 'react-error-boundary';
 import { HistoryListFetch } from './HistoryListFetch';
 
 export const HistoryList = () => {
-  const calendarType = useCalendarStore((state) => state.bodyType);
-
   return (
     <div css={container}>
       <TopBar>
