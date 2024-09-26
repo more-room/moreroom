@@ -731,6 +731,8 @@ mock.onGet('/api/cafe').reply((config) => {
               latitude: 35.8664273,
               longitude: 128.5969341,
               themeCount: 1,
+              themePoster: '/posters/last.png',
+              reviewCount: 127,
             },
             {
               cafeId: 2,
@@ -741,6 +743,8 @@ mock.onGet('/api/cafe').reply((config) => {
               latitude: 37.2650820552658,
               longitude: 127.031792506338,
               themeCount: 1,
+              themePoster: '/posters/last.png',
+              reviewCount: 127,
             },
             {
               cafeId: 3,
@@ -751,6 +755,8 @@ mock.onGet('/api/cafe').reply((config) => {
               latitude: 35.1472632517458,
               longitude: 126.914468175904,
               themeCount: 1,
+              themePoster: '/posters/heaven.png',
+              reviewCount: 127,
             },
             {
               cafeId: 4,
@@ -761,6 +767,8 @@ mock.onGet('/api/cafe').reply((config) => {
               latitude: 35.1607306391844,
               longitude: 129.16247111338,
               themeCount: 1,
+              themePoster: '/posters/지옥.png',
+              reviewCount: 127,
             },
             {
               cafeId: 5,
@@ -771,6 +779,8 @@ mock.onGet('/api/cafe').reply((config) => {
               latitude: 36.3518799225033,
               longitude: 127.376208175404,
               themeCount: 1,
+              themePoster: '/posters/필그림.png',
+              reviewCount: 127,
             },
             {
               cafeId: 6,
@@ -781,6 +791,8 @@ mock.onGet('/api/cafe').reply((config) => {
               latitude: 37.3474662797341,
               longitude: 127.931838140374,
               themeCount: 1,
+              themePoster: '/posters/badrobbad.png',
+              reviewCount: 127,
             },
           ],
         },

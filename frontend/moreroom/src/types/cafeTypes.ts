@@ -35,7 +35,7 @@ export interface ISearchCafesRequestParameter {
 export interface ICafeCommon {
   cafeId: number;
   brandId: number;
-  regionId: number;
+  regionId: string;
   address: string;
   cafeName: string;
   latitude: number;
@@ -44,6 +44,8 @@ export interface ICafeCommon {
 
 /* 카페 목록 조회 - 아이템 */
 export interface ICafeListItem extends ICafeCommon {
+  themePoster: string;
+  reviewCount: number;
   themeCount: number;
 }
 
