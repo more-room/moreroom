@@ -42,3 +42,11 @@ export const exitbutton = css`
   font-size: 1rem;
   
 `
+
+export const wait = css`
+  color: #ffffff;
+  background-color: ${Colors['grey']['900']};
+  text-align: center;
+  padding: 5rem;
+  margin: 1rem;
+`

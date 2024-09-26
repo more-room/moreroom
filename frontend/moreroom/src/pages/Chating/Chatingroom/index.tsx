@@ -28,6 +28,7 @@ export const ChatingRoom = () => {
   const navigate = useNavigate();
   const searchPartiesStore = useSearchPartiesStore();
   const partyList: IParty[] = searchPartiesStore.results?.content || [];
+  const nav = useNavigate();
 
   useEffect(() => {
     if (partyList.length === 0) {
@@ -76,11 +77,12 @@ export const ChatingRoom = () => {
   if (!selectedParty) {
     return <div>해당 파티가 없습니다.</div>;
   }
+  
 
   return (
     <div>
       <TopBar css={topbarcolor}>
-        <TopBar.Title type="default" defaultValue="파티 목록" title={selectedParty.roomName} />
+        <TopBar.Title type="default" defaultValue="파티 목록" title={selectedParty.roomName} backHandler={() => nav(-1)} />
         {/* 오른쪽에 설정 아이콘 추가 */}
         <Icon size={1.5} color="grey" onClick={goToRoomDetail} style={{ cursor: 'pointer', marginLeft: 'auto' }}>
           <CogIcon />
@@ -103,7 +105,7 @@ export const ChatingRoom = () => {
       {/* 공지사항 내용 */}
       {showNotice && (
         <div css={noticedetail}>
-          <p>공지사항: 28일 4시 반 대구요</p>
+          <p>공지사항: 28일 4시 반 대구요-api 연결하기</p>
         </div>
       )}
 

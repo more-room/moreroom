@@ -24,6 +24,7 @@ export const Chating = () => {
   const navigate = useNavigate();
   const client = useRef<StompJs.Client | null>(null);  // WebSocket client
   const [roomId, setRoomId] = useState<number | null>(null);  // 현재 채팅방 ID
+  
 
   useEffect(() => {
     const fetchPartyList = async () => {
@@ -54,11 +55,22 @@ export const Chating = () => {
     setSelectedFilter(filter);
   };
 
+  
+  const nav = useNavigate();
+  
   return (
+    <>
+      <div>
+        <TopBar css={topbarcolor} >
+          <TopBar.Title 
+          type="default" 
+          defaultValue="파티 목록" 
+          title='채팅방 리스트 조회' 
+          backHandler={() => nav(-1)}/>
+        </TopBar>
+      </div>
+
     <div css={container}>
-      <TopBar css={topbarcolor}>
-        <TopBar.Title type="default" defaultValue="파티 목록" title='채팅방 리스트 조회' />
-      </TopBar>
 
       {/* 필터 버튼 추가 */}
       <div css={filterContainer}>
@@ -121,5 +133,6 @@ export const Chating = () => {
         onHandleChange={() => console.log('바텀바 선택됨')}
       />
     </div>
+    </>
   );
 };

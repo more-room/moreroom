@@ -1,12 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { TopBar } from "../../../../components/TopBar";
 import { IParty } from "../../../../types/chatingTypes";
 import { useSearchPartiesStore } from "../../../../stores/chatingStore";
 import { getPartyList } from "../../../../apis/chatApi"; // 파티 목록 API 호출
 import { ThemeItem } from "../../../../components/ThemeItem"; // ThemeItem 컴포넌트 임포트
-import { titletext, textcolor, infobox, buttoncss, hr, exitbutton } from "./styles";
+import { titletext, textcolor, infobox, buttoncss, hr, exitbutton, wait} from "./styles";
 import { InfoBox } from "../../../../components/InfoBox";
 import { UserIcon } from "@heroicons/react/24/solid";
 import { Button } from "../../../../components/Button";
@@ -17,7 +17,7 @@ export const Roomdetail = () => {
   const searchPartiesStore = useSearchPartiesStore();
   const [isLoading, setIsLoading] = useState(true); // 로딩 상태 관리
   const partyList: IParty[] = searchPartiesStore.results?.content || [];
-
+  const nav = useNavigate();
   
   const [isClicked, setIsClicked] = useState(false);
   const [buttonText, setButtonText] = useState("채팅방 공개");
@@ -68,7 +68,7 @@ export const Roomdetail = () => {
   return (
     <div>
       <TopBar>
-        <TopBar.Title type="default" defaultValue="파티 목록" title="채팅방 설정" />
+        <TopBar.Title type="default" defaultValue="파티 목록" title="채팅방 설정" backHandler={() => nav(-1)}/>
       </TopBar>
       <div css={titletext}>{selectedParty.roomName}</div>
       
@@ -99,7 +99,7 @@ export const Roomdetail = () => {
         <hr css={hr}></hr>
       </div>
       <div css={textcolor}>파티원</div>
-
+      <div css={wait}>파티원 목록 자리</div>
       <div css={buttoncss}>
         <Button 
           css={exitbutton}
