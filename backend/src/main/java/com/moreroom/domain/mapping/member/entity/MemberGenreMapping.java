@@ -27,7 +27,7 @@ public class MemberGenreMapping {
 
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "hashtagId")
+    @JoinColumn(name = "genreId")
     private Genre genre;
 
     protected MemberGenreMapping() {

@@ -75,12 +75,7 @@ public class MailService {
                 "인증번호는 " + authNumber + "입니다." +
                 "<br>" +
                 "인증번호를 제대로 입력해주세요."; //이메일 내용 삽입
-        if (memberRepository.findByEmail(email).isPresent()) {
-            mailSend(setFrom, email, title, content);
-        }
-        else {
-            throw new MemberNotFoundException();
-        }
+        mailSend(setFrom, email, title, content);
     }
 
     //mail을 어디서 보내는지, 어디로 보내는지 , 인증 번호를 html 형식으로 어떻게 보내는지 작성합니다.

@@ -11,6 +11,7 @@ import { MyPage } from './pages/Mypage';
 import { Profile } from './pages/Mypage/Profile';
 import { EditProfile } from './pages/Mypage/EditProfile';
 import { EditHashTag } from './pages/Mypage/EditHashTag';
+import { ThemeDetail } from './pages/Themes/ThemeDetail';
 import { ChatingRoom } from './pages/Chating/Chatingroom';
 import { Roomdetail } from './pages/Chating/Chatingroom/Roomdetail'
 
@@ -22,6 +23,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Main />} />
         <Route path="/themes" element={<ThemeList />} />
+        <Route path="/theme/detail" element={<ThemeDetail />} />
         <Route path="/login" element={<Login />} />
     
 
