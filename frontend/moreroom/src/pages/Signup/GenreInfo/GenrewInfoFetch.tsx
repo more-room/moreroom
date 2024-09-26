@@ -16,13 +16,12 @@ import { userSignup } from '../../../apis/authApi';
 
 export const GenreInfoFetch = () => {
   const nav = useNavigate();
+  const { genreIdList, setSignUpData } = useSignUpStore();
   const genreQuery = useSuspenseQuery({
     queryKey: ['genre'],
     queryFn: async () => await getGenres(),
   });
 
-  // 스토어에서 genreIdList 가져오기
-  const { genreIdList, setSignUpData } = useSignUpStore();
 
   // 장르 선택 상태 관리
   const [selectedGenres, setSelectedGenres] =
@@ -38,11 +37,8 @@ export const GenreInfoFetch = () => {
   };
 
   const handleNext = async () => {
-    // 선택된 장르 ID 리스트를 스토어에 저장
     setSignUpData({ genreIdList: selectedGenres });
 
-    // 전체 데이터로 회원가입 API 요청하는 로직 추가
-    // 예시로 fetch를 사용하였으나, 실제 API 요청 함수로 대체 필요
     const {
       email,
       password,
@@ -64,8 +60,6 @@ export const GenreInfoFetch = () => {
       regionId,
     });
 
-    // API 요청 코드 추가
-    // 예: await signUpApi(signUpData);
     try {
       const res = await userSignup(
         email,
@@ -78,7 +72,7 @@ export const GenreInfoFetch = () => {
         regionId,
       );
       console.log(res);
-      nav('/signup/done'); // 다음 페이지로 이동
+      nav('/signup/done');
     } catch (err) {
       console.log(err);
     }
@@ -109,7 +103,7 @@ export const GenreInfoFetch = () => {
               color="primary"
               size={0.875}
               onHandleClick={() => handleGenreSelect(genre.genreId)}
-              selected={selectedGenres.includes(genre.genreId)} // 선택된 장르 상태 적용
+              selected={selectedGenres.includes(genre.genreId)} 
             >
               {genre.genreName}
             </FilterChip>
@@ -124,7 +118,7 @@ export const GenreInfoFetch = () => {
           rounded={0.5}
           scale="A200"
           variant="contained"
-          handler={handleNext} // 다음으로 이동할 때 처리
+          handler={handleNext} 
         >
           다음으로
         </Button>

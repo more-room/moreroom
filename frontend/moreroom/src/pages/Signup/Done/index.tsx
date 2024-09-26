@@ -39,16 +39,16 @@ export const Done = () => {
           </Typography>
         </div>
         <div>
-          <Typography color="grey" scale={'500'} size={0.875} weight={200}>
+          <Typography color="grey" scale={'500'} size={1} weight={400}>
             지금 바로 몰¿룸?을 통해서
           </Typography>
-          <Typography color="grey" scale={'500'} size={0.875} weight={200}>
+          <Typography color="grey" scale={'500'} size={1} weight={400}>
             방탈출 테마 추천 및 파티 매칭을 경험해보세요!
           </Typography>
         </div>
         <div>
           <Button
-            style={{ margin: '2rem 0' }}
+            style={{ margin: '2rem 0' , fontSize:'1.2rem'}}
             fullwidth
             color="primary"
             rounded={0.5}

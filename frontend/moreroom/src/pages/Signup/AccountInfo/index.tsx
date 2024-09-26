@@ -116,7 +116,7 @@ export const AccountInfo = () => {
             id="custom-css-outlined-input"
             placeholder="abc@gmail.com"
             value={email}
-            onChange={(e) => {
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               setEmail(e.target.value);
             }}
           />
@@ -163,7 +163,7 @@ export const AccountInfo = () => {
           id="custom-css-outlined-input"
           placeholder="영문, 숫자 포함 8글자 이상"
           value={password}
-          onChange={(e) => {
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             setPassword(e.target.value);
           }}
         />
@@ -175,7 +175,7 @@ export const AccountInfo = () => {
           id="custom-css-outlined-input"
           placeholder="영문, 숫자 포함 8글자 이상"
           value={checkPassword}
-          onChange={(e) => {
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             setCheckPassword(e.target.value);
           }}
         />
@@ -188,7 +188,7 @@ export const AccountInfo = () => {
             id="custom-css-outlined-input"
             placeholder="한글, 영어, 숫자 상관없이 2~7글자"
             value={nickname}
-            onChange={(e) => {
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               setNickname(e.target.value);
             }}
           />

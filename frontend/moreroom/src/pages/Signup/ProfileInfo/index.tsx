@@ -13,6 +13,10 @@ import { useModal } from '../../../hooks/useModal';
 import { ThemeFilters } from '../../../modals/theme/ThemeFilters';
 import { useSignUpStore } from '../../../stores/signupStore';
 import { useSearchThemesStore } from '../../../stores/themeStore';
+import { Selectedtheme } from '../../../modals/mypage/Selectedtheme';
+import { useQueries, useQuery } from '@tanstack/react-query';
+import { getRegions } from '../../../apis/infoApi';
+import { IRegionCommon, IRegionItem } from '../../../types/infoTypes';
 
 export const ProfileInfo = () => {
   const nav = useNavigate();
@@ -23,18 +27,22 @@ export const ProfileInfo = () => {
   const modal = useModal();
   const { setSignUpData } = useSignUpStore();
   const searchThemesStore = useSearchThemesStore();
+  const regionQuery = useQuery({
+    queryKey: ['region'],
+    queryFn: async () => await getRegions(),
+  });
 
   const handleSignUp = () => {
     console.log('이건 뜨지롱');
-    
+
     // 생년월일을 'yyyy-mm-dd' 형식으로 변환
     const birthDate = `${birthYear}-${birthMonth.padStart(2, '0')}-${birthDay.padStart(2, '0')}`;
 
     // 회원가입 요청을 보내기 전에 store에 저장된 모든 정보를 사용
-    setSignUpData({ 
-      gender, 
-      regionId: searchThemesStore.filters.region, 
-      birth: birthDate // 생년월일 추가
+    setSignUpData({
+      gender,
+      regionId: searchThemesStore.filters.region,
+      birth: birthDate, // 생년월일 추가
     });
 
     // 현재 스토어에 저장된 데이터를 가져옴
@@ -44,6 +52,37 @@ export const ProfileInfo = () => {
     // 다음 페이지로 이동
     nav('/signup/genreinfo');
   };
+
+  const getText = () => {
+    let str = '';
+    regionQuery.data?.data.regions.forEach((region: IRegionItem) => {
+      if (region.regionId === searchThemesStore.filters.region) {
+        // 시/도만 선택된 경우
+        str += region.regionName;
+      } else {
+        region.cities.forEach((city: IRegionCommon) => {
+          if (city.regionId === searchThemesStore.filters.region) {
+            // 시/도와 시/군/구를 모두 연결하여 표시
+            str += `${region.regionName} ${city.regionName}`;
+          }
+        });
+      }
+    });
+    return str || '선택안함'; // str이 빈 문자열이면 '선택안함' 반환
+  };
+  
+  <div css={filterCss}>
+    <FilterChip
+      css={chipItemCss}
+      color="primary"
+      size={1}
+      selected={getText() !== '선택안함'}
+      onHandleClick={() => modal.show(<Selectedtheme />)}
+    >
+      {getText()}
+    </FilterChip>
+  </div>
+  
 
   return (
     <div>
@@ -113,9 +152,10 @@ export const ProfileInfo = () => {
             css={chipItemCss}
             color="primary"
             size={1}
-            onHandleClick={() => modal.show(<ThemeFilters type={'region'} />)}
+            selected={getText() !== '선택안함' }
+            onHandleClick={() => modal.show(<Selectedtheme />)}
           >
-            선택안함
+            {getText()}
           </FilterChip>
         </div>
         <Button
