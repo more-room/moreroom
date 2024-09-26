@@ -16,5 +16,5 @@ public class PartyRequestDto {
   private StatusDto status;
   private ThemeDto theme;
   private String createdAt;
-  private List<HashtagDTO> hashtagList;
+  private List<HashTagsDto> hashtagList;
 }

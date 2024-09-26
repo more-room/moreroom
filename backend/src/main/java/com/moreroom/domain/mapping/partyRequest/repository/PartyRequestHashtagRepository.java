@@ -12,8 +12,8 @@ import org.springframework.stereotype.Repository;
 public interface PartyRequestHashtagRepository extends JpaRepository<PartyRequestHashtagMapping, PartyRequestHashtagId> {
 
   @Modifying
-  @Query("delete from PartyRequestHashtagMapping m where m.id.partyRequestId = :partyRequestId")
-  int deleteAllByPartyRequestId(@Param("partyRequestId") Long partyRequestId);
+  @Query("delete from PartyRequestHashtagMapping m where m.partyRequest.partyRequestId = :partyRequestId")
+  void deleteAllByPartyRequestId(@Param("partyRequestId") Long partyRequestId);
 
 
 }

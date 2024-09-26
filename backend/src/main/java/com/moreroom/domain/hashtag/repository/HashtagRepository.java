@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface HashtagRepository extends JpaRepository<Hashtag, Integer> {
     Hashtag findByHashtagId(Integer hashtagId);
-    List<Hashtag> findAllByIdIn(List<Integer> hashtagId);
+    List<Hashtag> findAllByHashtagIdIn(List<Integer> hashtagId);
 }

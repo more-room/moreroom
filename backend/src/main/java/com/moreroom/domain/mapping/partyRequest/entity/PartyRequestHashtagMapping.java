@@ -13,6 +13,7 @@ import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,27 +25,20 @@ import lombok.ToString;
 @Builder
 @AllArgsConstructor
 @ToString(callSuper = true)
-//@IdClass(PartyRequestHashtagMapping.class)
+@Table(name = "requesthashtagmapping")
+@IdClass(PartyRequestHashtagId.class)
 public class PartyRequestHashtagMapping {
 
-    @EmbeddedId
-    private PartyRequestHashtagId id;
-
+    @Id
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("partyRequestId")
     @JoinColumn(name = "partyRequestId")
     private PartyRequest partyRequest;
 
+    @Id
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("hashtagId")
     @JoinColumn(name = "hashtagId")
     private Hashtag hashtag;
 
     protected PartyRequestHashtagMapping() {
-    }
-
-    public static PartyRequestHashtagMapping create(Long partyRequestId, Integer hashtagId) {
-        PartyRequestHashtagId id = new PartyRequestHashtagId(partyRequestId, hashtagId);
-        return PartyRequestHashtagMapping.builder().id(id).build();
     }
 }

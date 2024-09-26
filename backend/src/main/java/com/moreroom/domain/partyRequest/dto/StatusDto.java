@@ -14,4 +14,8 @@ public class StatusDto {
   private int statusId;
   private String statusName;
   private List<MemberDto> members;
+
+  public void setMemberInfo(List<MemberDto> members) {
+    this.members = members;
+  }
 }

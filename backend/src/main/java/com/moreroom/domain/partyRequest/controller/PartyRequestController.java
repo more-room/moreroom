@@ -34,13 +34,14 @@ public class PartyRequestController {
   private final FindMemberService findMemberService;
   private final PartyRequestService partyRequestService;
 
-  //나중에 하기
+  //파티요청 목록 조회
   @GetMapping("")
   public ResponseEntity<?> getMyPartyRequest() {
     Long currentMemberId = findMemberService.findCurrentMember();
+    List<PartyRequestDto> partyRequestList = partyRequestService.getPartyRequestList(currentMemberId);
 
     Map<String, List<PartyRequestDto>> response = new HashMap<>();
-    response.put("requestList", null);
+    response.put("requestList", partyRequestList);
     return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
