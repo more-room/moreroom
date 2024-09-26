@@ -8,8 +8,10 @@ import {
 import { IThemeList, IThemeListItem } from '../../../../../types/themeTypes';
 import { ThemeItem } from '../../../../../components/ThemeItem';
 import { listContainer } from './styles';
+import { useNavigate } from 'react-router-dom';
 
 export const SearchResults = () => {
+  const nav = useNavigate();
   const searchThemeStore = useSearchThemesStore();
   const searchTitleStore = useSearchTitleStore();
   const divRef = useRef<HTMLDivElement>(null);
@@ -93,7 +95,14 @@ export const SearchResults = () => {
     <div ref={divRef} css={listContainer}>
       {themeQuery?.content?.themeList.map(
         (theme: IThemeListItem, idx: number) => (
-          <ThemeItem key={idx} theme={theme} pattern={searchTitleStore.title} />
+          <ThemeItem
+            key={idx}
+            theme={theme}
+            pattern={searchTitleStore.title}
+            onClick={() =>
+              nav('/theme/detail', { state: { themeId: theme.themeId } })
+            }
+          />
         ),
       )}
     </div>

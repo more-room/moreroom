@@ -2,6 +2,8 @@ package com.moreroom.domain.theme.controller;
 
 import com.moreroom.domain.theme.dto.request.ThemeListRequestDto;
 import com.moreroom.domain.theme.dto.response.ThemeDetailResponseDto;
+import com.moreroom.domain.theme.dto.response.ThemeSearchTitleResponseDto;
+import com.moreroom.domain.theme.exception.ThemeNotFoundException;
 import com.moreroom.domain.theme.service.ThemeService;
 import com.moreroom.global.dto.PageResponseDto;
 import com.moreroom.global.util.FindMemberService;
@@ -11,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -27,13 +30,12 @@ public class ThemeController {
         long memberId = findMemberService.findCurrentMember();
         ThemeDetailResponseDto themeDetailResponseDto = themeService.findThemeById(themeId,
             memberId);
-        if (themeDetailResponseDto != null) {
-            System.out.println("themeDetailResponseDto = " + themeDetailResponseDto);
-            return new ResponseEntity<>(themeDetailResponseDto,
-                HttpStatus.OK);
-        }
 
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if (themeDetailResponseDto == null) {
+            throw new ThemeNotFoundException();
+        }
+        return new ResponseEntity<>(themeDetailResponseDto,
+            HttpStatus.OK);
     }
 
     @GetMapping()
@@ -42,11 +44,22 @@ public class ThemeController {
         long memberId = findMemberService.findCurrentMember();
         themeListRequestDto.setDefaults();
         PageResponseDto pageResponseDto = themeService.findThemes(themeListRequestDto, memberId);
-        if (pageResponseDto != null) {
-            System.out.println("pageResponseDto = " + pageResponseDto);
-            return new ResponseEntity<>(pageResponseDto,
-                HttpStatus.OK);
+        if (pageResponseDto == null) {
+            throw new ThemeNotFoundException();
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(pageResponseDto,
+            HttpStatus.OK);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<ThemeSearchTitleResponseDto> getThemesByTitle(
+        @RequestParam(required = false) String title) {
+        long memberId = findMemberService.findCurrentMember();
+        ThemeSearchTitleResponseDto themeSearchTitleResponseDto = themeService.findThemesByTitle(
+            title);
+        if (themeSearchTitleResponseDto == null) {
+            throw new ThemeNotFoundException();
+        }
+        return new ResponseEntity<>(themeSearchTitleResponseDto, HttpStatus.OK);
     }
 }
