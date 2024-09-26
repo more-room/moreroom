@@ -14,7 +14,7 @@ import { styled, TextField } from '@mui/material';
 import { containerCss, nicknameCss } from './styles';
 import { useMutation } from '@tanstack/react-query';
 import { updateHashtag, updateUserInfo } from '../../../apis/mypageApi';
-import { isemail } from '../../../apis/authApi';
+import { isNickname } from '../../../apis/authApi';
 
 export const EditProfile = () => {
   const nav = useNavigate();
@@ -45,9 +45,9 @@ export const EditProfile = () => {
     },
   });
 
-  const isEmailed = async () => {
+  const isNicknamed = async () => {
     try {
-      const response = await isemail(nickname);
+      const response = await isNickname(nickname);
       setNamemsg('사용 가능한 닉네임입니다.');
       console.log(response);
     } catch (err) {
@@ -125,13 +125,13 @@ export const EditProfile = () => {
         <UserCircleIcon css={profileCss} />
         <div css={manageInfoContainerCss}>
           <div css={nicknameCss}>
-            <InputTextField
+            {/* <InputTextField
               css={textFieldCss}
               id="standard-basic"
               label="닉네임"
               variant="standard"
               value={nickname}
-            />
+            /> */}
             <InputTextField
               css={textFieldCss}
               id="standard-basic"
@@ -149,7 +149,7 @@ export const EditProfile = () => {
               rounded={0.5}
               scale="A200"
               variant="contained"
-              handler={() => isEmailed()}
+              handler={() => isNicknamed()}
             >
               중복 확인
             </Button>

@@ -81,12 +81,7 @@ export const ProfileFetch = () => {
               </Icon>
             }
             children={
-              data.data.birth[0] +
-              '년 ' +
-              data.data.birth[1] +
-              '월 ' +
-              data.data.birth[2] +
-              '일'
+              data.data.birth
             }
           />
           <ManageInfo

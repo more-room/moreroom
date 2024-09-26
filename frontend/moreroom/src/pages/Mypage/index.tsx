@@ -5,6 +5,7 @@ import {
   ArchiveBoxXMarkIcon,
   ArrowRightStartOnRectangleIcon,
   HashtagIcon,
+  KeyIcon,
   UserCircleIcon,
 } from '@heroicons/react/24/solid';
 import {
@@ -151,6 +152,15 @@ export const MyPage = () => {
             }
             children="프로필 편집"
             url="/mypage/profile/edit"
+          />
+          <ManageInfo
+            icon={
+              <Icon color="light" size={1.25}>
+                <KeyIcon />
+              </Icon>
+            }
+            children="비밀번호 변경"
+            url="/mypage/password/edit"
           />
         </div>
         <div css={sectionCss}>

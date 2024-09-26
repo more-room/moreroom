@@ -18,6 +18,8 @@ import { ProfileInfo } from './pages/Signup/ProfileInfo';
 import { GenreInfo } from './pages/Signup/GenreInfo';
 import { CafeList } from './pages/Cafes/CafeList';
 import { CafeDetail } from './pages/Cafes/CafeDetail';
+import { EditPassword } from './pages/Mypage/EditPassword';
+import { Password } from './pages/Mypage/EditPassword/Password';
 
 function App() {
   const modalStore = useModalStore();
@@ -41,6 +43,8 @@ function App() {
         <Route path="/mypage/profile" element={<Profile />} />
         <Route path="/mypage/profile/edit" element={<EditProfile />} />
         <Route path="/mypage/hashtag/edit" element={<EditHashTag />} />
+        <Route path="/mypage/password/edit" element={<EditPassword />} />
+        <Route path="/mypage/password/edit2" element={<Password />} />
         <Route path="/chating" element={<Chating />} />
       </Routes>
       {modalStore.isOpen && (
