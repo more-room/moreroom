@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -26,5 +27,6 @@ public class MemberUpdateRequestDTO {
     @DateTimeFormat(pattern = "YYYY-MM-DD")
     private LocalDate birth;
     private String regionId;
+    private List<Integer> genreIdList;
     private Integer clearRoom;
 }

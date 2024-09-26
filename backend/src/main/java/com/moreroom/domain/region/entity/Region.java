@@ -28,4 +28,6 @@ public class Region {
     private String parentRegionId;
     @Column(length = 100)
     private String parentRegionName;
+    @Column(length = 50)
+    private String regionNickname;
 }

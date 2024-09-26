@@ -32,7 +32,7 @@ export const Brand = () => {
       searchThemesStore.setFilters(after);
     } else {
       const after = { ...searchThemesStore.filters };
-      delete after.people;
+      delete after.brandId;
       searchThemesStore.setFilters(after);
     }
   };

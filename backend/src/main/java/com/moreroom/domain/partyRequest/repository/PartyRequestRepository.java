@@ -1,9 +1,11 @@
 package com.moreroom.domain.partyRequest.repository;
 
 import com.moreroom.domain.member.entity.Member;
+import com.moreroom.domain.partyRequest.entity.MatchingStatus;
 import com.moreroom.domain.partyRequest.entity.PartyRequest;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -21,4 +23,8 @@ public interface PartyRequestRepository extends JpaRepository<PartyRequest, Long
 
   @Query("select pr from PartyRequest pr where pr.member.memberId = :memberId")
   List<PartyRequest> findAllByMemberId(@Param("memberId") Long memberId);
+
+  @Modifying
+  @Query("update PartyRequest pr set pr.matchingStatus = :status where pr.partyRequestId = :id")
+  int updatePartyRequestStatus(@Param("status") MatchingStatus status, @Param("id") Long partyRequestId);
 }

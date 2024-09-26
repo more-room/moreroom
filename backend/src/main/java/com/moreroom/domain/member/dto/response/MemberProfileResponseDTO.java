@@ -1,25 +1,28 @@
 package com.moreroom.domain.member.dto.response;
 
+import com.moreroom.domain.genre.dto.response.GenreResponseDTO;
 import com.moreroom.domain.hashtag.dto.response.HashtagResponseDTO;
-import com.moreroom.domain.hashtag.entity.Hashtag;
-import com.moreroom.domain.mapping.member.entity.MemberHashtagMapping;
 import com.moreroom.domain.member.entity.Member;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
 public class MemberProfileResponseDTO {
-    // todo 장르, 해시태그 매핑
     private String nickname;
     private String photo;
+    private List<String> genreList;
     private List<HashtagResponseDTO> hashtagList;
 
-    public static MemberProfileResponseDTO toDTO(Member member, List<HashtagResponseDTO> hashtagList) {
+    public static MemberProfileResponseDTO toDTO(Member member, List<GenreResponseDTO> genreList, List<HashtagResponseDTO> hashtagList) {
         return MemberProfileResponseDTO.builder()
             .nickname(member.getNickname())
             .photo(member.getPhoto())
+            .genreList(genreList.stream()
+                .map(GenreResponseDTO::getGenreName)
+                .collect(Collectors.toList()))
             .hashtagList(hashtagList)
             .build();
     }

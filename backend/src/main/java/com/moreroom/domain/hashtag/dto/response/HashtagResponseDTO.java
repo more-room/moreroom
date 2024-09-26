@@ -11,13 +11,11 @@ import lombok.Setter;
 public class HashtagResponseDTO {
     private Integer hashtagId;
     private String hashtagName;
-    private String hashtagGroupName;
 
     public static HashtagResponseDTO toDTO(Hashtag hashtag) {
         return HashtagResponseDTO.builder()
             .hashtagId(hashtag.getHashtagId())
             .hashtagName(hashtag.getHashtagName())
-            .hashtagGroupName(hashtag.getHashtagGroup().getHashtagGroupName())
             .build();
     }
 }

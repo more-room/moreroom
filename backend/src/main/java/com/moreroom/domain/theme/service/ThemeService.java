@@ -6,6 +6,7 @@ import com.moreroom.domain.mapping.theme.repository.ThemeGenreMappingRepository;
 import com.moreroom.domain.review.repository.ReviewRepository;
 import com.moreroom.domain.theme.dto.request.ThemeListRequestDto;
 import com.moreroom.domain.theme.dto.response.ThemeDetailResponseDto;
+import com.moreroom.domain.theme.dto.response.ThemeSearchTitleResponseDto;
 import com.moreroom.domain.theme.repository.ThemeQueryRepository;
 import com.moreroom.domain.theme.repository.ThemeRepository;
 import com.moreroom.global.dto.PageResponseDto;
@@ -69,5 +70,14 @@ public class ThemeService {
             pageRequest, memberId);
 
         return pageResponseDto;
+    }
+
+    @Transactional(readOnly = true)
+    public ThemeSearchTitleResponseDto findThemesByTitle(String title) {
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        ThemeSearchTitleResponseDto themeSearchTitleResponseDto = themeQueryRepository.findAllByTitle(
+            title, pageRequest);
+
+        return themeSearchTitleResponseDto;
     }
 }
