@@ -18,4 +18,7 @@ public class CafeListComponentDto {
     private Float longitude;
     private Integer themeCount;
 
+    private Integer reviewCount;
+    private String themePoster;
+
 }

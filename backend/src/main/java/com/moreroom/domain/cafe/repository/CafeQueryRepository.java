@@ -23,13 +23,13 @@ import com.moreroom.domain.theme.entity.Theme;
 import com.moreroom.global.repository.QuerydslRepositoryCustom;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
@@ -45,41 +45,67 @@ public class CafeQueryRepository extends QuerydslRepositoryCustom {
 
     public CafeListResponseDto findCafes(CafeListRequestDto c) {
         // 1. 카페 데이터 조회
-        List<Tuple> results = jpaQueryFactory
-            .select(cafe.cafeId,
-                cafe.brand.brandId,
-                cafe.region.regionId,
+        String cafeName = c.getCafeName();
+        List<Integer> brandIds = c.getBrandId();
+        String regionId = c.getRegion();
+
+        BooleanExpression nameCondition = cafeName == null ? null : cafe.cafeName.like(cafeName);
+        BooleanExpression brandCondition =
+            brandIds == null || brandIds.isEmpty() ? null : cafe.brand.brandId.in(brandIds);
+        BooleanExpression regionCondition =
+            regionId == null ? null : cafe.region.regionId.eq(regionId);
+
+        List<Tuple> list = jpaQueryFactory
+            .select(cafe.cafeId, theme.poster)
+            .from(theme)
+            .leftJoin(review).on(theme.themeId.eq(review.theme.themeId))
+            .where(theme.cafe.cafeId.eq(cafe.cafeId))
+            .groupBy(theme.themeId)
+            .orderBy(review.reviewId.count().desc())
+            .limit(1)
+            .fetch();
+
+        List<CafeListComponentDto> results = jpaQueryFactory
+            .select(Projections.constructor(CafeListComponentDto.class,
+                cafe.cafeId,
+                cafe.brand.brandId.as("brandId"),
+                cafe.region.regionId.as("regionId"),
                 cafe.address,
                 cafe.cafeName,
                 cafe.latitude,
                 cafe.longitude,
-                theme.themeId.count())
+                theme.themeId.countDistinct().intValue().as("themeCount"),
+                review.reviewId.count().intValue().as("reviewCount"),
+                JPAExpressions.select(theme.poster)
+                    .from(theme)
+                    .leftJoin(review).on(theme.themeId.eq(review.theme.themeId))
+                    .where(theme.cafe.cafeId.eq(cafe.cafeId))
+                    .groupBy(theme.themeId)
+                    .having(review.reviewId.count().eq(
+                            JPAExpressions.select(theme.themeId.count())
+                                .from(review)
+                                .leftJoin(theme).on(theme.themeId.eq(review.theme.themeId))
+                                .where(theme.cafe.cafeId.eq(cafe.cafeId))
+                                .groupBy(theme.themeId)
+                                .orderBy(review.reviewId.count().desc())
+                                .limit(1)
+                        )
+                    )
+            ))
             .from(cafe)
             .leftJoin(theme).on(cafe.cafeId.eq(theme.cafe.cafeId))
-            .where(ce(c.getCafeName(), "cafeName", "like"),
-                c.getBrandId() == null || c.getBrandId().isEmpty() ? null
-                    : cafe.brand.brandId.in(c.getBrandId()),
-                c.getRegion() == null ? null : cafe.region.regionId.eq(c.getRegion()),
-                cafe.openFlag.eq(true))
-            .groupBy(cafe)
+            .leftJoin(review).on(theme.themeId.eq(review.theme.themeId))
+            .where(nameCondition, brandCondition
+                , regionCondition, cafe.openFlag.isTrue()
+            )
+            .groupBy(cafe.cafeId)
             .fetch();
 
         // 2. Dto로 변환
-        List<CafeListComponentDto> cafeList = results.stream()
-            .map(tuple -> new CafeListComponentDto(
-                tuple.get(cafe.cafeId),
-                tuple.get(cafe.brand.brandId),
-                tuple.get(cafe.region.regionId),
-                tuple.get(cafe.address),
-                tuple.get(cafe.cafeName),
-                tuple.get(cafe.latitude),
-                tuple.get(cafe.longitude),
-                tuple.get(theme.themeId.count()).intValue() // count 값 처리
-            ))
-            .collect(Collectors.toList());
+
 
         return CafeListResponseDto.builder()
-            .cafeList(cafeList)
+            .cafeList(results)
             .build();
     }
 
