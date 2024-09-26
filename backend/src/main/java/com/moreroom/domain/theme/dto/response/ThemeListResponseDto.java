@@ -1,5 +1,6 @@
 package com.moreroom.domain.theme.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,6 +16,7 @@ public class ThemeListResponseDto {
     @Builder
     @Getter
     @Setter
+    @JsonInclude(JsonInclude.Include.NON_NULL) // null 제외
     public static class ThemeListComponentDto {
         private Integer themeId;
         private String title;
