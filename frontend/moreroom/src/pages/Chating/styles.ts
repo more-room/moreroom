@@ -2,8 +2,8 @@ import { css } from '@emotion/react';
 import { Colors } from '../../styles/globalStyle';
 
 export const container = css`
-  max-width: 22.5rem; /* 360px를 rem 단위로 변경 (360px / 16px = 22.5rem) */
-  margin: 0 auto;
+  /* max-width: 22.5rem; 360px를 rem 단위로 변경 (360px / 16px = 22.5rem) */
+  margin: 0 0;
   padding: 0.625rem; /* 10px을 rem 단위로 변경 */
   padding-left: 1rem;  /* 왼쪽에 여백 추가 */
   padding-right: 1rem; /* 오른쪽에 여백 추가 */
@@ -12,16 +12,16 @@ export const container = css`
 `;
 
 export const cardcontainer = css`
-  width: 100%;  /* 카드의 너비를 전체 컨테이너에 맞추기 */
+  width: 100%;  
   margin-bottom: 0.75rem; /* 카드 간격 줄이기 */
 `;
 
 export const topbarcolor = css`
   background-color: #313131;
-
 `
 
 export const themeCard = css`
+  
   position: relative;
   display: flex;
   flex-direction: row; /* 가로 정렬 */
@@ -30,9 +30,9 @@ export const themeCard = css`
   border-radius: 0.3rem;
   padding: 0.625rem;
   margin-bottom: 1rem;
-  width: 94%; /* 카드가 화면 크기에 맞게 조절되도록 */
+  width: 94%;
   height: auto;
-  max-width: 22.5rem; /* 최대 너비를 360px에 맞춤 */
+  max-width: 50rem; 
   flex-shrink: 0; 
 `;
 
@@ -88,6 +88,7 @@ export const filterContainer = css`
   display: flex;
   gap: 0.5rem;
   margin-bottom: 1rem; /* 필터 버튼과 카드 사이 여백 */
+  margin-top: 0.5rem;
 `;
 
 export const chipstyle = css`
@@ -141,7 +142,7 @@ export const bottombarcss = css`
   left: 0;
   right: 0;
   width: 100%;  /* 바텀바의 너비를 전체 화면에 맞춤 */
-  max-width: 22.5rem; /* 컨테이너와 동일한 최대 너비 */
+  /* max-width: 22.5rem; 컨테이너와 동일한 최대 너비 */
   margin: 0 auto; /* 중앙 정렬 */
   background-color: ${Colors['grey']['900']}; /* 바텀바 배경색 */
   z-index: 1000; /* 다른 요소 위에 위치 */
