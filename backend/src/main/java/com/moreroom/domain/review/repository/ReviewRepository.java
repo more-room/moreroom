@@ -11,4 +11,8 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     List<Review> findAllByThemeThemeId(Integer themeId);
 
     Page<Review> findAllByThemeThemeId(Integer themeId, Pageable pageable);
+
+    List<Review> findAllByMemberMemberId(Long memberId);
+
+    Page<Review> findAllByMemberMemberId(Long memberId, Pageable pageable);
 }

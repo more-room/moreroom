@@ -40,4 +40,16 @@ public class ReviewController {
 
         return new ResponseEntity<>(reviewList, HttpStatus.OK);
     }
+
+    @GetMapping("/member")
+    public ResponseEntity<PageResponseDto> reviewListByMine(
+        @RequestParam(name = "pageNumber", required = false, defaultValue = "0") Integer pageNumber,
+        @RequestParam(name = "pageSize", required = false, defaultValue = "10") Integer pageSize,
+        @RequestParam(name = "sortOrder", required = false, defaultValue = "desc") String sortOrder,
+        @RequestParam(name = "sortBy", required = false, defaultValue = "date") String sortBy) {
+
+        PageResponseDto reviewList = reviewService.findAllByMine(pageNumber, pageSize);
+
+        return new ResponseEntity<>(reviewList, HttpStatus.OK);
+    }
 }

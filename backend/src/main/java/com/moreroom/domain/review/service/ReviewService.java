@@ -1,11 +1,16 @@
 package com.moreroom.domain.review.service;
 
+import com.moreroom.domain.genre.entity.Genre;
+import com.moreroom.domain.mapping.theme.entity.ThemeGenreMapping;
+import com.moreroom.domain.mapping.theme.repository.ThemeGenreMappingRepository;
 import com.moreroom.domain.member.entity.Member;
 import com.moreroom.domain.member.repository.MemberRepository;
 import com.moreroom.domain.review.dto.request.ReviewRequestDTO;
+import com.moreroom.domain.review.dto.response.ReviewMyPageResponseDTO;
 import com.moreroom.domain.review.dto.response.ReviewResponseDTO;
 import com.moreroom.domain.review.entity.Review;
 import com.moreroom.domain.review.repository.ReviewRepository;
+import com.moreroom.domain.theme.entity.Theme;
 import com.moreroom.domain.theme.repository.ThemeRepository;
 import com.moreroom.global.dto.PageResponseDto;
 import com.moreroom.global.util.FindMemberService;
@@ -24,6 +29,7 @@ public class ReviewService {
     private final FindMemberService findMemberService;
     private final MemberRepository memberRepository;
     private final ThemeRepository themeRepository;
+    private final ThemeGenreMappingRepository themeGenreMappingRepository;
 
     public void save(ReviewRequestDTO reviewRequestDTO) {
 
@@ -53,6 +59,40 @@ public class ReviewService {
 
         return PageResponseDto.builder()
             .content(reviewResponseDTOList)
+            .pageNumber(pageNumber)
+            .pageSize(pageSize)
+            .totalElements(reviewList.getTotalElements())
+            .totalPage((long) Math.ceil((double) reviewList.getTotalElements() / pageSize))
+            .build();
+    }
+
+    public PageResponseDto findAllByMine(int pageNumber, int pageSize) {
+
+        Long memberId = findMemberService.findCurrentMember();
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
+        Page<Review> reviewList = reviewRepository.findAllByMemberMemberId(memberId, pageable);
+
+        List<Review> reviews = reviewRepository.findAllByMemberMemberId(memberId);
+
+        List<ReviewMyPageResponseDTO> reviewMyPageResponseDTOList = reviews.stream()
+            .map(review -> {
+                Theme theme = review.getTheme();
+
+                List<String> genreNameList = themeGenreMappingRepository.findAllByThemeThemeId(
+                        theme.getThemeId())
+                    .stream()
+                    .map(ThemeGenreMapping::getGenre)
+                    .map(Genre::getGenreName)
+                    .toList();
+
+                return ReviewMyPageResponseDTO.toDTO(review, genreNameList);
+            })
+            .toList();
+
+        return PageResponseDto.builder()
+            .content(reviewMyPageResponseDTOList)
             .pageNumber(pageNumber)
             .pageSize(pageSize)
             .totalElements(reviewList.getTotalElements())
