@@ -1,13 +1,17 @@
 package com.moreroom.domain.review.controller;
 
 import com.moreroom.domain.review.dto.request.ReviewRequestDTO;
+import com.moreroom.domain.review.dto.request.ReviewUpdateRequestDTO;
 import com.moreroom.domain.review.entity.Review;
 import com.moreroom.domain.review.service.ReviewService;
 import com.moreroom.global.dto.PageResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,5 +55,20 @@ public class ReviewController {
         PageResponseDto reviewList = reviewService.findAllByMine(pageNumber, pageSize);
 
         return new ResponseEntity<>(reviewList, HttpStatus.OK);
+    }
+
+    @PatchMapping("/{reviewId}")
+    public ResponseEntity<Review> updateReview(@PathVariable("reviewId") Long reviewId,
+        @RequestBody ReviewUpdateRequestDTO reviewUpdateRequestDTO) {
+
+        reviewService.update(reviewId, reviewUpdateRequestDTO);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{reviewId}")
+    public ResponseEntity<Review> deleteReview(@PathVariable("reviewId") Long reviewId) {
+        reviewService.delete(reviewId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

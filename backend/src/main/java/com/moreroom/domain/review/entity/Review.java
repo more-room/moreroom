@@ -1,6 +1,7 @@
 package com.moreroom.domain.review.entity;
 
 import com.moreroom.domain.member.entity.Member;
+import com.moreroom.domain.review.dto.request.ReviewUpdateRequestDTO;
 import com.moreroom.domain.theme.entity.Theme;
 import com.moreroom.global.entity.BaseEntity;
 import jakarta.persistence.Column;
@@ -45,4 +46,10 @@ public class Review extends BaseEntity {
     private boolean delFlag = false;
     @Builder.Default
     private Integer thumbsUp = 0;
+
+
+    public void updateReview(ReviewUpdateRequestDTO reviewUpdateRequestDTO) {
+        this.content = reviewUpdateRequestDTO.getContent();
+        this.score = reviewUpdateRequestDTO.getScore();
+    }
 }
