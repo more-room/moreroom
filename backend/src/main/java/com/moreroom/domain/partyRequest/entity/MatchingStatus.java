@@ -10,8 +10,18 @@ public enum MatchingStatus {
     수락 후 기다리는 중
     해당 요청 비활성화
      */
-    NOT_MATCHED,
-    MATCHED,
-    PENDING,
-    DISABLED
+    NOT_MATCHED(0),
+    MATCHED(1),
+    PENDING(2),
+    DISABLED(3);
+
+    private final int id;
+
+    MatchingStatus(int id) {
+        this.id = id;
+    }
+
+    public int id() {
+        return id;
+    }
 }
