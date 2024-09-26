@@ -1,10 +1,10 @@
 package com.moreroom.domain.cafe.controller;
 
+import com.moreroom.domain.cafe.dto.Response.CafeDetailResponseDto;
 import com.moreroom.domain.cafe.dto.Response.CafeListResponseDto;
 import com.moreroom.domain.cafe.dto.Response.CafeSearchNameResponseDto;
 import com.moreroom.domain.cafe.dto.Response.CafeThemeDetailResponseDto;
 import com.moreroom.domain.cafe.dto.request.CafeListRequestDto;
-import com.moreroom.domain.cafe.entity.Cafe;
 import com.moreroom.domain.cafe.exception.CafeNotFoundException;
 import com.moreroom.domain.cafe.service.CafeService;
 import com.moreroom.global.util.FindMemberService;
@@ -38,13 +38,21 @@ public class CafeController {
     }
 
     @GetMapping("/{cafeId}")
-    public ResponseEntity<Cafe> cafeDetail() {
+    public ResponseEntity<CafeDetailResponseDto> cafeDetail(
+        @PathVariable(name = "cafeId") Integer cafeId) {
+        long memberId = findMemberService.findCurrentMember();
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        CafeDetailResponseDto cafeDetailResponseDto = cafeService.findCafeByCafeId(cafeId,
+            memberId);
+        if (cafeDetailResponseDto == null) {
+            throw new CafeNotFoundException();
+        }
+        return new ResponseEntity<>(cafeDetailResponseDto, HttpStatus.OK);
     }
 
     @GetMapping("/theme/{themeId}")
-    public ResponseEntity<?> getCafeDetailByTheme(@PathVariable(name = "themeId") Integer themeId) {
+    public ResponseEntity<CafeThemeDetailResponseDto> getCafeDetailByTheme(
+        @PathVariable(name = "themeId") Integer themeId) {
         long memberId = findMemberService.findCurrentMember();
 
         CafeThemeDetailResponseDto cafeThemeDetailResponseDto = cafeService.findCafeByThemeId(

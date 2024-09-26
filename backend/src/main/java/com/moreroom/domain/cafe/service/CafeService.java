@@ -1,5 +1,6 @@
 package com.moreroom.domain.cafe.service;
 
+import com.moreroom.domain.cafe.dto.Response.CafeDetailResponseDto;
 import com.moreroom.domain.cafe.dto.Response.CafeListResponseDto;
 import com.moreroom.domain.cafe.dto.Response.CafeSearchNameResponseDto;
 import com.moreroom.domain.cafe.dto.Response.CafeThemeDetailResponseDto;
@@ -20,6 +21,10 @@ public class CafeService {
 
     public CafeListResponseDto findCafes(CafeListRequestDto cafeListRequestDto) {
         return cafeQueryRepository.findCafes(cafeListRequestDto);
+    }
+
+    public CafeDetailResponseDto findCafeByCafeId(Integer cafeId, Long memberId) {
+        return cafeQueryRepository.findCafeByCafeId(cafeId, memberId);
     }
 
     public CafeThemeDetailResponseDto findCafeByThemeId(Integer themeId) {
