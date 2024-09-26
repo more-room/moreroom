@@ -21,6 +21,7 @@ import { CafeDetail } from './pages/Cafes/CafeDetail';
 import { ChatingRoom } from './pages/Chating/Chatingroom';
 import { Roomdetail } from './pages/Chating/Chatingroom/Roomdetail';
 import { HistoryList } from './pages/History/HistoryList';
+import { HistoryDetail } from './pages/History/HistoryDetail';
 
 function App() {
   const modalStore = useModalStore();
@@ -48,6 +49,7 @@ function App() {
         <Route path="/roomdetail/:partyId" element={<Roomdetail />} />
 
         <Route path="/history" element={<HistoryList />} />
+        <Route path="/history/detail/:historyId" element={<HistoryDetail />} />
       </Routes>
       {modalStore.isOpen && (
         <Modal height={modalStore.height}>{modalStore.contents}</Modal>
