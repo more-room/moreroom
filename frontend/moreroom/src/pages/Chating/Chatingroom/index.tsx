@@ -109,6 +109,22 @@ export const ChatingRoom = () => {
         </div>
       )}
 
+       {/* 입력 폼 */}
+       <div css={inputBar}>
+        <input
+          type="text"
+          value={chat}
+          placeholder="채팅 내용"
+          css={input}
+          onChange={(e) => setChat(e.target.value)}
+          onKeyDown={(ev) => {
+            if (ev.key === 'Enter') {
+              sendChat();
+            }
+          }}
+        />
+        <ArrowUpCircleIcon css={sendBtn} onClick={sendChat} />
+      </div>
       {/* 파티 상세 정보 */}
     </div>
   );
