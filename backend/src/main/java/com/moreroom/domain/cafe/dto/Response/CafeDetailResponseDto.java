@@ -18,5 +18,6 @@ public class CafeDetailResponseDto {
     private String link;
     private Float latitude;
     private Float longitude;
+    private Boolean openFlag;
     private List<ThemeListComponentDto> themeList;
 }

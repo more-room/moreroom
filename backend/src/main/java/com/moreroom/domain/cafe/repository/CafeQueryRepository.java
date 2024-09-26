@@ -59,7 +59,8 @@ public class CafeQueryRepository extends QuerydslRepositoryCustom {
             .where(ce(c.getCafeName(), "cafeName", "like"),
                 c.getBrandId() == null || c.getBrandId().isEmpty() ? null
                     : cafe.brand.brandId.in(c.getBrandId()),
-                c.getRegion() == null ? null : cafe.region.regionId.eq(c.getRegion()))
+                c.getRegion() == null ? null : cafe.region.regionId.eq(c.getRegion()),
+                cafe.openFlag.eq(true))
             .groupBy(cafe)
             .fetch();
 
@@ -142,14 +143,15 @@ public class CafeQueryRepository extends QuerydslRepositoryCustom {
 
         CafeDetailResponseDto cafeDetailResponseDto = CafeDetailResponseDto.builder()
             .cafeId(result.getCafeId())
-            .brandId(result.getBrand().getBrandId())
-            .regionId(result.getRegion().getRegionId())
+            .brandId(result.getBrand() == null ? null : result.getBrand().getBrandId())
+            .regionId(result.getRegion() == null ? null : result.getRegion().getRegionId())
             .address(result.getAddress())
             .cafeName(result.getCafeName())
             .tel(result.getTel())
             .link(result.getLink())
             .latitude(result.getLatitude())
             .longitude(result.getLongitude())
+            .openFlag(result.isOpenFlag())
             .themeList(new ArrayList<>(themeMap.values()))
             .build();
 
@@ -183,7 +185,8 @@ public class CafeQueryRepository extends QuerydslRepositoryCustom {
             )
             .from(cafe)
             .where(
-                ce(keyword, "cafeName", "like")
+                ce(keyword, "cafeName", "like"),
+                cafe.openFlag.eq(true)
             )
             .offset((long) pageRequest.getPageNumber() * pageRequest.getPageSize())
             .limit(pageRequest.getPageSize())
