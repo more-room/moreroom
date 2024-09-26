@@ -16,11 +16,15 @@ import com.moreroom.domain.theme.dto.response.ThemeListResponseDto;
 import com.moreroom.domain.theme.dto.response.ThemeListResponseDto.ThemeListComponentDto;
 import com.moreroom.domain.theme.dto.response.ThemeMemberResponseDto;
 import com.moreroom.domain.theme.dto.response.ThemeReviewResponseDto;
+import com.moreroom.domain.theme.dto.response.ThemeSearchTitleResponseDto;
+import com.moreroom.domain.theme.dto.response.ThemeSearchTitleResponseDto.ThemeSearchTitleComponentResponseDto;
 import com.moreroom.domain.theme.entity.Theme;
 import com.moreroom.domain.theme.exception.ThemeNotFoundException;
 import com.moreroom.global.dto.PageResponseDto;
 import com.moreroom.global.repository.QuerydslRepositoryCustom;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -307,4 +311,22 @@ public class ThemeQueryRepository extends QuerydslRepositoryCustom {
         return themeListResponseDto;
     }
 
+    public ThemeSearchTitleResponseDto findAllByTitle(String keyword, PageRequest pageRequest) {
+        List<ThemeSearchTitleComponentResponseDto> list = jpaQueryFactory
+            .select(Projections.constructor(ThemeSearchTitleComponentResponseDto.class,
+                Expressions.numberTemplate(Integer.class, "MIN({0})", theme.themeId), // 첫번째 ID
+                theme.title))
+            .from(theme)
+            .where(
+                ce(keyword, "title", "like")
+            )
+            .groupBy(theme.title)
+            .offset((long) pageRequest.getPageNumber() * pageRequest.getPageSize())
+            .limit(pageRequest.getPageSize())
+            .fetch();
+
+        return ThemeSearchTitleResponseDto.builder()
+            .themeList(list)
+            .build();
+    }
 }

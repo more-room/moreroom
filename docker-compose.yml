@@ -25,6 +25,8 @@ services:
             - BACKEND_PORT=${BACKEND_PORT}
             - SERVER_NAME=${SERVER_NAME}
             - CONTEXT_PATH=${CONTEXT_PATH}
+            - REACT_APP_API_BASE_URL=${REACT_APP_API_BASE_URL}
+            - REACT_APP_KAKAOMAP_KEY=${REACT_APP_KAKAOMAP_KEY}
             - TZ=Asia/Seoul
         volumes:
             - /home/ubuntu/data/certbot/conf:/etc/letsencrypt

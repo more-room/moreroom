@@ -77,6 +77,39 @@ mock.onGet('/api/theme').reply((config) => {
   });
 });
 
+mock.onGet('/api/theme/1').reply((config) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([
+        200,
+        {
+          theme: {
+            themeId: 1,
+            poster: '/posters/last.png',
+            title: 'LAST',
+            playtime: 60,
+            minPeople: 2,
+            maxPeople: 4,
+            level: 3,
+            price: 22000,
+            description:
+              '이것은 방탈출 설명입니다. 이것은 방탈출 설명입니다. 이것은 방탈출 설명입니다. 이것은 방탈출 설명입니다. 이것은 방탈출 설명입니다. 이것은 방탈출 설명입니다. 이것은 방탈출 설명입니다. 이것은 방탈출 설명입니다. 이것은 방탈출 설명입니다. 이것은 방탈출 설명입니다.',
+            memberLevel: 3,
+            review: {
+              count: 10,
+              score: 4.5,
+            },
+            genreList: ['스토리', '드라마'],
+            member: {
+              playFlag: true,
+            },
+          },
+        },
+      ]);
+    }, 500);
+  });
+});
+
 //========================== info
 mock.onGet('/api/info/region').reply((config) => {
   return new Promise((resolve) => {
@@ -619,7 +652,7 @@ mock.onGet('/api/auth/member/mypage').reply((config) => {
 });
 
 mock.onPatch('/api/auth/member/hashtag').reply((config) => {
-  console.log(config.data)
+  console.log(config.data);
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve([
@@ -629,6 +662,72 @@ mock.onPatch('/api/auth/member/hashtag').reply((config) => {
         },
       ]);
     }, 100);
+  });
+});
+
+// ============cafe
+mock.onGet('/api/cafe/theme/1').reply((config) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([
+        200,
+        {
+          cafeId: 1,
+          regionId: 'D206',
+          address: '대구 중구 동성로6길 36',
+          brandId: 1,
+          brandName: '황금열쇠', // 브랜드 없을 경우 null
+          branchName: '동성로점',
+          tel: '053-252-4645',
+          link: 'http://황금열쇠.com',
+          latitude: 37.3,
+          longitude: 128.39393,
+        },
+      ]);
+    }, 500);
+  });
+});
+
+// ============review
+mock.onGet('/api/review').reply((config) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([
+        200,
+        {
+          content: [
+            {
+              reviewId: 4,
+              member: {
+                memberId: 1,
+                memberName: '유저명',
+                memberProfile: '/profiles/profile4.png',
+              },
+              content: '리뷰 1의 내용입니다.',
+              score: 3,
+              thumbsUp: 5,
+              updatedAt: '2022-08-30 15:40',
+            },
+            {
+              reviewId: 4,
+              member: {
+                memberId: 1,
+                memberName: '유저명',
+                memberProfile: '프로필.jpg',
+              },
+              content: '내용',
+              score: 3,
+              thumbsUp: 5,
+              updatedAt: '2024-07-30 15:40',
+            },
+          ],
+          pageNumber: 0,
+          pageSize: 10,
+          totalPage: 10,
+          totalElements: 99,
+        },
+      ]);
+    }, 500);
   });
 });
 
@@ -725,6 +824,6 @@ mock.onGet('/api/party').reply((config) => {
           empty: false,
         },
       ]);
-    }, 100); 
+    }, 100);
   });
 });
