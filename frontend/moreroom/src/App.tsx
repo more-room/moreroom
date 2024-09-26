@@ -13,6 +13,7 @@ import { EditProfile } from './pages/Mypage/EditProfile';
 import { EditHashTag } from './pages/Mypage/EditHashTag';
 import { ThemeDetail } from './pages/Themes/ThemeDetail';
 import { CafeList } from './pages/Cafes/CafeList';
+import { CafeDetail } from './pages/Cafes/CafeDetail';
 
 function App() {
   const modalStore = useModalStore();
@@ -24,6 +25,7 @@ function App() {
         <Route path="/themes" element={<ThemeList />} />
         <Route path="/theme/detail" element={<ThemeDetail />} />
         <Route path="/cafes" element={<CafeList />} />
+        <Route path="/cafe/detail" element={<CafeDetail />} />
         <Route path="/login" element={<Login />} />
         {/* <Route path="/chating" element={<Chating />} /> */}
 

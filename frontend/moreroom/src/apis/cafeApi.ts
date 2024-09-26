@@ -28,5 +28,5 @@ export const getCafes = (filters: ISearchCafesRequestParameter) => {
 
 /* 카페 상세 조회 */
 export const getCafeDetail = (cafeId: number) => {
-  return api.get<ICafeDetail>(`/api/theme/${cafeId}`);
+  return api.get<ICafeDetail>(`/api/cafe/${cafeId}`);
 };

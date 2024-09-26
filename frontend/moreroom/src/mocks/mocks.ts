@@ -801,6 +801,128 @@ mock.onGet('/api/cafe').reply((config) => {
   });
 });
 
+mock.onGet('/api/cafe/1').reply((config) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([
+        200,
+        {
+          cafeId: 1,
+          brandId: 1,
+          regionId: 'D206',
+          address: '대구 중구 ~~',
+          cafeName: '황금열쇠 더킹점',
+          tel: '010-0000-0000',
+          link: '링크주소',
+          latitude: 35.8664273,
+          longitude: 128.5969341,
+          openFlag: true,
+          themeList: [
+            {
+              title: 'LAST',
+              playtime: 80,
+              genreList: ['스토리', '드라마'],
+              review: {
+                count: 10,
+                score: 4.5,
+              },
+              poster: '/posters/last.png',
+              themeId: 1,
+              member: {
+                playFlag: true,
+              },
+            },
+            {
+              title: 'LAST2',
+              playtime: 80,
+              genreList: ['스토리', '드라마'],
+              review: {
+                count: 10,
+                score: 4.5,
+              },
+              poster: '/posters/last.png',
+              themeId: 2,
+              member: {
+                playFlag: true,
+              },
+            },
+            {
+              title: 'LAST3',
+              playtime: 80,
+              genreList: ['스토리', '드라마'],
+              review: {
+                count: 10,
+                score: 4.5,
+              },
+              poster: '/posters/last.png',
+              themeId: 3,
+              member: {
+                playFlag: true,
+              },
+            },
+            {
+              title: 'LAST4',
+              playtime: 80,
+              genreList: ['스토리', '드라마'],
+              review: {
+                count: 10,
+                score: 4.5,
+              },
+              poster: '/posters/last.png',
+              themeId: 4,
+              member: {
+                playFlag: true,
+              },
+            },
+            {
+              title: 'LAST5',
+              playtime: 80,
+              genreList: ['스토리', '드라마'],
+              review: {
+                count: 10,
+                score: 4.5,
+              },
+              poster: '/posters/last.png',
+              themeId: 5,
+              member: {
+                playFlag: true,
+              },
+            },
+            {
+              title: 'LAST6',
+              playtime: 80,
+              genreList: ['스토리', '드라마'],
+              review: {
+                count: 10,
+                score: 4.5,
+              },
+              poster: '/posters/last.png',
+              themeId: 6,
+              member: {
+                playFlag: true,
+              },
+            },
+            {
+              title: 'LAST7',
+              playtime: 80,
+              genreList: ['스토리', '드라마'],
+              review: {
+                count: 10,
+                score: 4.5,
+              },
+              poster: '/posters/last.png',
+              themeId: 7,
+              member: {
+                playFlag: true,
+              },
+            },
+          ],
+        },
+      ]);
+    }, 500);
+  });
+});
+
 // ============review
 mock.onGet('/api/review').reply((config) => {
   return new Promise((resolve) => {
