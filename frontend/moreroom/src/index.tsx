@@ -16,7 +16,7 @@ const kakaoMapScript = document.createElement('script');
 kakaoMapScript.type = 'text/javascript';
 kakaoMapScript.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.REACT_APP_KAKAOMAP_KEY}&libraries=services,clusterer`;
 kakaoMapScript.async = true;
-document.head.appendChild(kakaoMapScript);
+// document.head.appendChild(kakaoMapScript);
 
 const queryClient = new QueryClient();
 
