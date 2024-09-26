@@ -10,6 +10,10 @@ export const titletext = css`
   font-size: 1.2rem;
   font-weight: 500;
 `
+export const topbarcolor = css`
+  background-color: #313131;
+
+`
 export const textcolor = css`
   color: ${Colors['light']['100']};
   margin: 1rem;

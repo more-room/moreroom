@@ -6,7 +6,7 @@ import { IParty } from "../../../../types/chatingTypes";
 import { useSearchPartiesStore } from "../../../../stores/chatingStore";
 import { getPartyList } from "../../../../apis/chatApi"; // 파티 목록 API 호출
 import { ThemeItem } from "../../../../components/ThemeItem"; // ThemeItem 컴포넌트 임포트
-import { titletext, textcolor, infobox, buttoncss, hr, exitbutton, wait} from "./styles";
+import { titletext, topbarcolor, textcolor, infobox, buttoncss, hr, exitbutton, wait} from "./styles";
 import { InfoBox } from "../../../../components/InfoBox";
 import { UserIcon } from "@heroicons/react/24/solid";
 import { Button } from "../../../../components/Button";
@@ -67,7 +67,7 @@ export const Roomdetail = () => {
 
   return (
     <div>
-      <TopBar>
+      <TopBar css={topbarcolor} >
         <TopBar.Title type="default" defaultValue="파티 목록" title="채팅방 설정" backHandler={() => nav(-1)}/>
       </TopBar>
       <div css={titletext}>{selectedParty.roomName}</div>
