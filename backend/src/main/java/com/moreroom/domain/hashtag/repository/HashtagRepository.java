@@ -10,4 +10,5 @@ public interface HashtagRepository extends JpaRepository<Hashtag, Integer> {
     Hashtag findByHashtagId(Integer hashtagId);
 
     List<Hashtag> findAllByHashtagGroupHashtagGroupId(Integer groupId);
+    List<Hashtag> findAllByHashtagIdIn(List<Integer> hashtagId);
 }

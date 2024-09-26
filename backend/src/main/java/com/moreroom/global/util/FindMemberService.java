@@ -29,4 +29,10 @@ public class FindMemberService {
         String email = principal.getName();
         return memberRepository.findByEmail(email).orElseThrow(MemberNotFoundException::new);
     }
+
+    public Member findCurrentMemberObject() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return memberRepository.findByEmail(email).orElseThrow(MemberNotFoundException::new);
+    }
+
 }

@@ -6,7 +6,9 @@ import com.moreroom.domain.mapping.member.entity.MemberHashtagId;
 import com.moreroom.domain.mapping.member.entity.MemberHashtagMapping;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface MemberHashtagMappingRepository extends JpaRepository<MemberHashtagMapping, MemberHashtagId> {
 
     List<MemberHashtagMapping> findByMember(Member member);
