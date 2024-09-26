@@ -71,4 +71,12 @@ public class ReviewController {
         reviewService.delete(reviewId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @PatchMapping("/thumbsUp/{reviewId}")
+    public ResponseEntity<Review> thumbsUpReview(@PathVariable("reviewId") Long reviewId) {
+
+        reviewService.like(reviewId);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

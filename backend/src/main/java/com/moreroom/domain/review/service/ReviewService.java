@@ -1,6 +1,8 @@
 package com.moreroom.domain.review.service;
 
 import com.moreroom.domain.genre.entity.Genre;
+import com.moreroom.domain.mapping.member.entity.MemberReviewMapping;
+import com.moreroom.domain.mapping.member.repository.MemberReviewMappingRepository;
 import com.moreroom.domain.mapping.theme.entity.ThemeGenreMapping;
 import com.moreroom.domain.mapping.theme.repository.ThemeGenreMappingRepository;
 import com.moreroom.domain.member.entity.Member;
@@ -33,6 +35,7 @@ public class ReviewService {
     private final MemberRepository memberRepository;
     private final ThemeRepository themeRepository;
     private final ThemeGenreMappingRepository themeGenreMappingRepository;
+    private final MemberReviewMappingRepository memberReviewMappingRepository;
 
     @Transactional
     public void save(ReviewRequestDTO reviewRequestDTO) {
@@ -120,7 +123,39 @@ public class ReviewService {
         if (reviewRepository.findById(reviewId).isPresent()) {
             Review review = reviewRepository.findById(reviewId).get();
 
-            reviewRepository.delete(review);
+            review.deleteReview();
+        } else {
+            throw new ReviewNotFoundException();
+        }
+    }
+
+    @Transactional
+    public void like(Long reviewId) {
+        Member member = memberRepository.getReferenceById(findMemberService.findCurrentMember());
+
+        if (reviewRepository.findById(reviewId).isPresent()) {
+            Review review = reviewRepository.findById(reviewId).get();
+
+            if (memberReviewMappingRepository.existsMemberReviewMappingByMemberAndReview(member,
+                review)) {
+
+                MemberReviewMapping memberReviewMapping = memberReviewMappingRepository.findByMemberAndReview(
+                    member, review);
+
+                memberReviewMappingRepository.delete(memberReviewMapping);
+
+                review.unlikeReview();
+
+            } else {
+                MemberReviewMapping memberReviewMapping = MemberReviewMapping.builder()
+                    .member(member)
+                    .review(review)
+                    .build();
+
+                memberReviewMappingRepository.save(memberReviewMapping);
+
+                review.likeReview();
+            }
         } else {
             throw new ReviewNotFoundException();
         }

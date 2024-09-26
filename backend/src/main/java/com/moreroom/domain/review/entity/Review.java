@@ -52,4 +52,16 @@ public class Review extends BaseEntity {
         this.content = reviewUpdateRequestDTO.getContent();
         this.score = reviewUpdateRequestDTO.getScore();
     }
+
+    public void deleteReview() {
+        this.delFlag = true;
+    }
+
+    public void likeReview() {
+        this.thumbsUp += 1;
+    }
+
+    public void unlikeReview() {
+        this.thumbsUp -= 1;
+    }
 }
