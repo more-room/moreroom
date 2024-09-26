@@ -10,7 +10,7 @@ import lombok.Data;
 public class CafeResponseDTO {
 
     private Integer cafeId;
-    private Integer BrandId;
+    private Integer brandId;
     private String regionId;
     private String address;
     private String cafeName;

@@ -1,6 +1,7 @@
 package com.moreroom.domain.cafe.controller;
 
 import com.moreroom.domain.cafe.dto.Response.CafeSearchNameResponseDto;
+import com.moreroom.domain.cafe.dto.Response.CafeThemeDetailResponseDto;
 import com.moreroom.domain.cafe.entity.Cafe;
 import com.moreroom.domain.cafe.exception.CafeNotFoundException;
 import com.moreroom.domain.cafe.service.CafeService;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,6 +27,18 @@ public class CafeController {
     public ResponseEntity<Cafe> cafeDetail() {
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/theme/{themeId}")
+    public ResponseEntity<?> getCafeDetailByTheme(@PathVariable(name = "themeId") Integer themeId) {
+        long memberId = findMemberService.findCurrentMember();
+
+        CafeThemeDetailResponseDto cafeThemeDetailResponseDto = cafeService.findCafeByThemeId(
+            themeId);
+        if (cafeThemeDetailResponseDto == null) {
+            throw new CafeNotFoundException();
+        }
+        return new ResponseEntity<>(cafeThemeDetailResponseDto, HttpStatus.OK);
     }
 
     @GetMapping("/search")

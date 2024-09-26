@@ -1,6 +1,7 @@
 package com.moreroom.domain.cafe.service;
 
 import com.moreroom.domain.cafe.dto.Response.CafeSearchNameResponseDto;
+import com.moreroom.domain.cafe.dto.Response.CafeThemeDetailResponseDto;
 import com.moreroom.domain.cafe.repository.CafeQueryRepository;
 import com.moreroom.domain.cafe.repository.CafeRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,10 @@ public class CafeService {
 
     private final CafeRepository cafeRepository;
     private final CafeQueryRepository cafeQueryRepository;
+
+    public CafeThemeDetailResponseDto findCafeByThemeId(Integer themeId) {
+        return cafeQueryRepository.findByThemeId(themeId);
+    }
 
     public CafeSearchNameResponseDto findCafeByName(String name) {
         PageRequest pageRequest = PageRequest.of(0, 10);
