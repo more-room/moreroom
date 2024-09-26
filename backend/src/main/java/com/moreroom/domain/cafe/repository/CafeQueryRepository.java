@@ -4,9 +4,12 @@ import static com.moreroom.domain.brand.entity.QBrand.brand;
 import static com.moreroom.domain.cafe.entity.QCafe.cafe;
 import static com.moreroom.domain.theme.entity.QTheme.theme;
 
+import com.moreroom.domain.cafe.dto.Response.CafeListComponentDto;
+import com.moreroom.domain.cafe.dto.Response.CafeListResponseDto;
 import com.moreroom.domain.cafe.dto.Response.CafeSearchNameResponseDto;
 import com.moreroom.domain.cafe.dto.Response.CafeSearchNameResponseDto.CafeSearchNameComponentDto;
 import com.moreroom.domain.cafe.dto.Response.CafeThemeDetailResponseDto;
+import com.moreroom.domain.cafe.dto.request.CafeListRequestDto;
 import com.moreroom.domain.cafe.entity.Cafe;
 import com.moreroom.global.repository.QuerydslRepositoryCustom;
 import com.querydsl.core.Tuple;
@@ -25,6 +28,25 @@ public class CafeQueryRepository extends QuerydslRepositoryCustom {
     public CafeQueryRepository(JPAQueryFactory jpaQueryFactory) {
         super(cafe);
         this.jpaQueryFactory = jpaQueryFactory;
+    }
+
+    public CafeListResponseDto findCafes(CafeListRequestDto c) {
+        List<CafeListComponentDto> results = jpaQueryFactory
+            .select(Projections.constructor(CafeListComponentDto.class,
+                cafe.cafeId, cafe.brand.brandId, cafe.region.regionId, cafe.address,
+                cafe.cafeName, cafe.latitude, cafe.latitude, theme.themeId.count().intValue()))
+            .from(cafe)
+            .leftJoin(theme).on(cafe.cafeId.eq(theme.cafe.cafeId))
+            .where(ce(c.getCafeName(), "cafeName", "like"),
+                c.getBrandId() == null || c.getBrandId().isEmpty() ? null
+                    : cafe.brand.brandId.in(c.getBrandId()),
+                c.getRegion() == null ? null : cafe.region.regionId.eq(c.getRegion()))
+            .groupBy(cafe)
+            .fetch();
+
+        return CafeListResponseDto.builder()
+            .cafeList(results)
+            .build();
     }
 
     public CafeThemeDetailResponseDto findByThemeId(Integer themeId) {

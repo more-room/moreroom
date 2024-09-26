@@ -1,7 +1,9 @@
 package com.moreroom.domain.cafe.controller;
 
+import com.moreroom.domain.cafe.dto.Response.CafeListResponseDto;
 import com.moreroom.domain.cafe.dto.Response.CafeSearchNameResponseDto;
 import com.moreroom.domain.cafe.dto.Response.CafeThemeDetailResponseDto;
+import com.moreroom.domain.cafe.dto.request.CafeListRequestDto;
 import com.moreroom.domain.cafe.entity.Cafe;
 import com.moreroom.domain.cafe.exception.CafeNotFoundException;
 import com.moreroom.domain.cafe.service.CafeService;
@@ -22,6 +24,18 @@ public class CafeController {
 
     private final FindMemberService findMemberService;
     private final CafeService cafeService;
+
+    @GetMapping()
+    public ResponseEntity<CafeListResponseDto> getCafesByFilter(
+        CafeListRequestDto cafeListRequestDto
+    ) {
+        long memberId = findMemberService.findCurrentMember();
+        CafeListResponseDto cafeListResponseDto = cafeService.findCafes(cafeListRequestDto);
+        if (cafeListResponseDto == null) {
+            throw new CafeNotFoundException();
+        }
+        return new ResponseEntity<>(cafeListResponseDto, HttpStatus.OK);
+    }
 
     @GetMapping("/{cafeId}")
     public ResponseEntity<Cafe> cafeDetail() {
