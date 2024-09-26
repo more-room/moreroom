@@ -19,7 +19,7 @@ export const Review = () => {
         <div>별점 컴포넌트 불러오기</div>
         <div>리뷰 작성 박스</div>
 
-        <div>작성 완료 제출</div>
+        <div>작성 완료 제출..</div>
     </div>
   )
 }
