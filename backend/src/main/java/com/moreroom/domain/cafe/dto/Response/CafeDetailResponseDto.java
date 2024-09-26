@@ -1,13 +1,13 @@
 package com.moreroom.domain.cafe.dto.Response;
 
-import com.moreroom.domain.theme.entity.Theme;
+import com.moreroom.domain.theme.dto.response.ThemeListResponseDto.ThemeListComponentDto;
 import java.util.List;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
-@Data
 @Builder
-public class CafeResponseDTO {
+@Getter
+public class CafeDetailResponseDto {
 
     private Integer cafeId;
     private Integer brandId;
@@ -18,6 +18,6 @@ public class CafeResponseDTO {
     private String link;
     private Float latitude;
     private Float longitude;
-    private List<Theme> themeList;
-
+    private Boolean openFlag;
+    private List<ThemeListComponentDto> themeList;
 }

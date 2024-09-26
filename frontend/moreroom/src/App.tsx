@@ -16,6 +16,8 @@ import { ThemeDetail } from './pages/Themes/ThemeDetail';
 import { Done } from './pages/Signup/Done';
 import { ProfileInfo } from './pages/Signup/ProfileInfo';
 import { GenreInfo } from './pages/Signup/GenreInfo';
+import { CafeList } from './pages/Cafes/CafeList';
+import { CafeDetail } from './pages/Cafes/CafeDetail';
 import { ChatingRoom } from './pages/Chating/Chatingroom';
 import { Roomdetail } from './pages/Chating/Chatingroom/Roomdetail'
 
@@ -32,6 +34,8 @@ function App() {
         <Route path="/signup/profileinfo" element={<ProfileInfo />} />
         <Route path="/signup/genreinfo" element={<GenreInfo />} />
         <Route path="/signup/done" element={<Done />} />
+        <Route path="/cafes" element={<CafeList />} />
+        <Route path="/cafe/detail" element={<CafeDetail />} />
         <Route path="/login" element={<Login />} />
     
 

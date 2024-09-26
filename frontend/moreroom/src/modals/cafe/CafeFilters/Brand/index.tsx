@@ -1,13 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { container, input, inputContainer, items } from './styles';
-import { Icon } from '../../../../components/Icon';
 import { XMarkIcon } from '@heroicons/react/24/solid';
 import { useSuspenseQuery } from '@tanstack/react-query';
+import { useSearchCafesStore } from '../../../../stores/cafeStore';
 import { getBrands } from '../../../../apis/infoApi';
 import { IBrandCommon } from '../../../../types/infoTypes';
-import { Item } from '../Item';
-import { useSearchThemesStore } from '../../../../stores/themeStore';
+import { Icon } from '../../../../components/Icon';
+import { Item } from '../../../theme/ThemeFilters/Item';
 
 export const Brand = () => {
   const brandQuery = useSuspenseQuery({
@@ -19,7 +19,7 @@ export const Brand = () => {
     throw brandQuery.error;
   }
 
-  const searchThemesStore = useSearchThemesStore();
+  const searchCafesStore = useSearchCafesStore();
   const inputRef = useRef<HTMLInputElement>(null);
   const [keyword, setKeyword] = useState<string>('');
   const [brands, setBrands] = useState<IBrandCommon[]>([]);
@@ -28,12 +28,12 @@ export const Brand = () => {
     setKeyword(e.target.value);
   const handleFilter = (isAdd: boolean, brandId: number) => {
     if (isAdd) {
-      const after = { ...searchThemesStore.filters, brandId: brandId };
-      searchThemesStore.setFilters(after);
+      const after = { ...searchCafesStore.filters, brandId: brandId };
+      searchCafesStore.setFilters(after);
     } else {
-      const after = { ...searchThemesStore.filters };
+      const after = { ...searchCafesStore.filters };
       delete after.brandId;
-      searchThemesStore.setFilters(after);
+      searchCafesStore.setFilters(after);
     }
   };
 
@@ -73,10 +73,10 @@ export const Brand = () => {
           <Item
             key={brand.brandId}
             item={brand.brandName}
-            selected={searchThemesStore.filters.brandId === brand.brandId}
+            selected={searchCafesStore.filters.brandId === brand.brandId}
             handler={() => {
               handleFilter(
-                !(brand.brandId === searchThemesStore.filters.brandId),
+                !(brand.brandId === searchCafesStore.filters.brandId),
                 brand.brandId,
               );
             }}
