@@ -16,6 +16,8 @@ import { ThemeDetail } from './pages/Themes/ThemeDetail';
 import { Done } from './pages/Signup/Done';
 import { ProfileInfo } from './pages/Signup/ProfileInfo';
 import { GenreInfo } from './pages/Signup/GenreInfo';
+import { CafeList } from './pages/Cafes/CafeList';
+import { CafeDetail } from './pages/Cafes/CafeDetail';
 
 function App() {
   const modalStore = useModalStore();
@@ -30,6 +32,8 @@ function App() {
         <Route path="/signup/profileinfo" element={<ProfileInfo />} />
         <Route path="/signup/genreinfo" element={<GenreInfo />} />
         <Route path="/signup/done" element={<Done />} />
+        <Route path="/cafes" element={<CafeList />} />
+        <Route path="/cafe/detail" element={<CafeDetail />} />
         <Route path="/login" element={<Login />} />
         {/* <Route path="/chating" element={<Chating />} /> */}
 
@@ -38,7 +42,6 @@ function App() {
         <Route path="/mypage/profile/edit" element={<EditProfile />} />
         <Route path="/mypage/hashtag/edit" element={<EditHashTag />} />
         <Route path="/chating" element={<Chating />} />
-        
       </Routes>
       {modalStore.isOpen && (
         <Modal height={modalStore.height}>{modalStore.contents}</Modal>

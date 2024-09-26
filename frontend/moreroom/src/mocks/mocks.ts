@@ -1,6 +1,7 @@
 import AxiosMockAdapter from 'axios-mock-adapter';
 import { api } from '../apis/interceptors';
 import { IThemeList, IThemeListItem } from '../types/themeTypes';
+import { ICafeListItem } from '../types/cafeTypes';
 
 export const mock = new AxiosMockAdapter(api);
 
@@ -682,6 +683,240 @@ mock.onGet('/api/cafe/theme/1').reply((config) => {
           link: 'http://황금열쇠.com',
           latitude: 37.3,
           longitude: 128.39393,
+        },
+      ]);
+    }, 500);
+  });
+});
+
+mock.onGet('/api/cafe/search').reply((config) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([
+        200,
+        {
+          cafeList: [
+            {
+              cafeId: 1,
+              cafeName: '황금열쇠 더킹점',
+            },
+            {
+              cafeId: 2,
+              cafeName: '서울 이스케이프 룸',
+            },
+            {
+              cafeId: 3,
+              cafeName: '머더파커',
+            },
+          ],
+        },
+      ]);
+    }, 100);
+  });
+});
+
+mock.onGet('/api/cafe').reply((config) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([
+        200,
+        {
+          cafeList: [
+            {
+              cafeId: 1,
+              brandId: 1,
+              regionId: '1',
+              address: '주소 1입니다',
+              cafeName: '1번 카페입니다',
+              latitude: 35.8664273,
+              longitude: 128.5969341,
+              themeCount: 1,
+              themePoster: '/posters/last.png',
+              reviewCount: 127,
+            },
+            {
+              cafeId: 2,
+              brandId: 1,
+              regionId: '1',
+              address: '주소 2입니다',
+              cafeName: '2번 카페입니다',
+              latitude: 37.2650820552658,
+              longitude: 127.031792506338,
+              themeCount: 1,
+              themePoster: '/posters/last.png',
+              reviewCount: 127,
+            },
+            {
+              cafeId: 3,
+              brandId: 1,
+              regionId: '1',
+              address: '주소 3입니다',
+              cafeName: '3번 카페입니다',
+              latitude: 35.1472632517458,
+              longitude: 126.914468175904,
+              themeCount: 1,
+              themePoster: '/posters/heaven.png',
+              reviewCount: 127,
+            },
+            {
+              cafeId: 4,
+              brandId: 1,
+              regionId: '1',
+              address: '주소 4입니다',
+              cafeName: '4번 카페입니다',
+              latitude: 35.1607306391844,
+              longitude: 129.16247111338,
+              themeCount: 1,
+              themePoster: '/posters/지옥.png',
+              reviewCount: 127,
+            },
+            {
+              cafeId: 5,
+              brandId: 1,
+              regionId: '1',
+              address: '주소 5입니다',
+              cafeName: '5번 카페입니다',
+              latitude: 36.3518799225033,
+              longitude: 127.376208175404,
+              themeCount: 1,
+              themePoster: '/posters/필그림.png',
+              reviewCount: 127,
+            },
+            {
+              cafeId: 6,
+              brandId: 1,
+              regionId: '1',
+              address: '주소 6입니다',
+              cafeName: '6번 카페입니다',
+              latitude: 37.3474662797341,
+              longitude: 127.931838140374,
+              themeCount: 1,
+              themePoster: '/posters/badrobbad.png',
+              reviewCount: 127,
+            },
+          ],
+        },
+      ]);
+    }, 500);
+  });
+});
+
+mock.onGet('/api/cafe/1').reply((config) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([
+        200,
+        {
+          cafeId: 1,
+          brandId: 1,
+          regionId: 'D206',
+          address: '대구 중구 ~~',
+          cafeName: '황금열쇠 더킹점',
+          tel: '010-0000-0000',
+          link: '링크주소',
+          latitude: 35.8664273,
+          longitude: 128.5969341,
+          openFlag: true,
+          themeList: [
+            {
+              title: 'LAST',
+              playtime: 80,
+              genreList: ['스토리', '드라마'],
+              review: {
+                count: 10,
+                score: 4.5,
+              },
+              poster: '/posters/last.png',
+              themeId: 1,
+              member: {
+                playFlag: true,
+              },
+            },
+            {
+              title: 'LAST2',
+              playtime: 80,
+              genreList: ['스토리', '드라마'],
+              review: {
+                count: 10,
+                score: 4.5,
+              },
+              poster: '/posters/last.png',
+              themeId: 2,
+              member: {
+                playFlag: true,
+              },
+            },
+            {
+              title: 'LAST3',
+              playtime: 80,
+              genreList: ['스토리', '드라마'],
+              review: {
+                count: 10,
+                score: 4.5,
+              },
+              poster: '/posters/last.png',
+              themeId: 3,
+              member: {
+                playFlag: true,
+              },
+            },
+            {
+              title: 'LAST4',
+              playtime: 80,
+              genreList: ['스토리', '드라마'],
+              review: {
+                count: 10,
+                score: 4.5,
+              },
+              poster: '/posters/last.png',
+              themeId: 4,
+              member: {
+                playFlag: true,
+              },
+            },
+            {
+              title: 'LAST5',
+              playtime: 80,
+              genreList: ['스토리', '드라마'],
+              review: {
+                count: 10,
+                score: 4.5,
+              },
+              poster: '/posters/last.png',
+              themeId: 5,
+              member: {
+                playFlag: true,
+              },
+            },
+            {
+              title: 'LAST6',
+              playtime: 80,
+              genreList: ['스토리', '드라마'],
+              review: {
+                count: 10,
+                score: 4.5,
+              },
+              poster: '/posters/last.png',
+              themeId: 6,
+              member: {
+                playFlag: true,
+              },
+            },
+            {
+              title: 'LAST7',
+              playtime: 80,
+              genreList: ['스토리', '드라마'],
+              review: {
+                count: 10,
+                score: 4.5,
+              },
+              poster: '/posters/last.png',
+              themeId: 7,
+              member: {
+                playFlag: true,
+              },
+            },
+          ],
         },
       ]);
     }, 500);
