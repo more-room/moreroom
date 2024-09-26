@@ -22,17 +22,15 @@ export const GenreInfoFetch = () => {
     queryFn: async () => await getGenres(),
   });
 
-
-  // 장르 선택 상태 관리
   const [selectedGenres, setSelectedGenres] =
     React.useState<number[]>(genreIdList);
 
   const handleGenreSelect = (genreId: number) => {
     setSelectedGenres((prev) => {
       if (prev.includes(genreId)) {
-        return prev.filter((id) => id !== genreId); // 이미 선택된 장르면 해제
+        return prev.filter((id) => id !== genreId);
       }
-      return [...prev, genreId]; // 선택되지 않은 장르면 추가
+      return [...prev, genreId];
     });
   };
 
@@ -49,6 +47,7 @@ export const GenreInfoFetch = () => {
       genreIdList,
       regionId,
     } = useSignUpStore.getState();
+
     console.log('회원가입 데이터:', {
       email,
       password,
@@ -103,7 +102,7 @@ export const GenreInfoFetch = () => {
               color="primary"
               size={0.875}
               onHandleClick={() => handleGenreSelect(genre.genreId)}
-              selected={selectedGenres.includes(genre.genreId)} 
+              selected={selectedGenres.includes(genre.genreId)}
             >
               {genre.genreName}
             </FilterChip>
@@ -118,7 +117,7 @@ export const GenreInfoFetch = () => {
           rounded={0.5}
           scale="A200"
           variant="contained"
-          handler={handleNext} 
+          handler={handleNext}
         >
           다음으로
         </Button>
