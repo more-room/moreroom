@@ -978,11 +978,24 @@ mock.onGet('/api/party').reply((config) => {
               partyId: 1,
               roomName: '헐 같이해요',
               theme: {
+                themeId: 1,
                 poster: '/posters/badrobbad.png',
-                title: 'BadRobBad',
-                maxPeople: 5,
+                title: 'Bad Rob Bad',
+                playtime: 80,
+                genreList: ['스토리', '드라마'],
+                regionId: '111000000',
+                review: {
+                  count: 10,
+                  score: 4.5,
+                },
+                cafe: {
+                  cafeId: 34,
+                  brandName: '제로월드',
+                  branchName: '강남점',
+                  cafeName: '제로월드 강남점',
+                  address: '주소',
+                },
               },
-              cafeName: '이스케이프룸 성수점',
               date: '2024-10-24 18:00',
               memberCount: '2',
               maxMember: '3',
@@ -997,11 +1010,24 @@ mock.onGet('/api/party').reply((config) => {
               partyId: 2,
               roomName: '멤버 급구요',
               theme: {
+                themeId: 2,
                 poster: '/posters/heaven.png',
                 title: 'Heaven',
-                maxPeople: 5,
+                playtime: 80,
+                genreList: ['공포', '미스터리', '추리'],
+                regionId: '111000001',
+                review: {
+                  count: 127,
+                  score: 4.7,
+                },
+                cafe: {
+                  cafeId: 35,
+                  brandName: '넥스트 에디션',
+                  branchName: '건대2호점',
+                  cafeName: '넥스트 에디션 - 건대2호점',
+                  address: '서울특별시 광진구 화양동 123-45',
+                },
               },
-              cafeName: '제로월드 강남점',
               date: '2024-10-24 17:30',
               memberCount: '1',
               maxMember: '5',
@@ -1016,11 +1042,24 @@ mock.onGet('/api/party').reply((config) => {
               partyId: 3,
               roomName: '뉴비만 오세요',
               theme: {
+                themeId: 3,
                 poster: '/posters/지옥.png',
                 title: '지옥',
-                maxPeople: 5,
+                playtime: 80,
+                genreList: ['공포', '스릴러'],
+                regionId: '111000002',
+                review: {
+                  count: 50,
+                  score: 4.2,
+                },
+                cafe: {
+                  cafeId: 36,
+                  brandName: '황금열쇠',
+                  branchName: '동성로점',
+                  cafeName: '황금열쇠 동성로점',
+                  address: '대구광역시 중구 동성로 567',
+                },
               },
-              cafeName: '황금열쇠 동성로점',
               date: '2024-10-24 17:00',
               memberCount: '3',
               maxMember: '5',
@@ -1060,5 +1099,110 @@ mock.onGet('/api/party').reply((config) => {
         },
       ]);
     }, 100);
+  });
+});
+
+//=============history
+mock.onGet('/api/history').reply((config) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([
+        200,
+        {
+          historyList: [
+            {
+              historyId: 1,
+              theme: {
+                themeId: 1,
+                title: '냥탐정 셜록 캣',
+                cafeName: '황금열쇠 더킹점',
+                poster: '/posters/냥탐정셜록캣.png',
+              },
+              date: '2024-08-17 15:00',
+              memberPlayTime: 2848,
+              hintCount: 2,
+              updatedAt: '2024-07-30 15:40',
+            },
+            {
+              historyId: 2,
+              theme: {
+                themeId: 2,
+                title: 'Heaven',
+                cafeName: '황금열쇠 더킹점',
+                poster: '/posters/heaven.png',
+              },
+              date: '2024-09-22 15:00',
+              memberPlayTime: 2848,
+              hintCount: 3,
+              updatedAt: '2024-07-30 15:40',
+            },
+            {
+              historyId: 3,
+              theme: {
+                themeId: 3,
+                title: '지옥',
+                cafeName: '황금열쇠 더킹점',
+                poster: '/posters/지옥.png',
+              },
+              date: '2024-09-13 15:00',
+              memberPlayTime: 2848,
+              hintCount: 5,
+              updatedAt: '2024-07-30 15:40',
+            },
+            {
+              historyId: 4,
+              theme: {
+                themeId: 4,
+                title: '필그림',
+                cafeName: '황금열쇠 더킹점',
+                poster: '/posters/필그림.png',
+              },
+              date: '2024-09-26 15:00',
+              memberPlayTime: 2848,
+              hintCount: 1,
+              updatedAt: '2024-07-30 15:40',
+            },
+            {
+              historyId: 5,
+              theme: {
+                themeId: 5,
+                title: 'LAST',
+                cafeName: '황금열쇠 더킹점',
+                poster: '/posters/last.png',
+              },
+              date: '2024-09-01 15:00',
+              memberPlayTime: 2848,
+              hintCount: 0,
+              updatedAt: '2024-07-30 15:40',
+            },
+          ],
+        },
+      ]);
+    }, 500);
+  });
+});
+
+mock.onGet('/api/history/1').reply((config) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([
+        200,
+        {
+          historyId: 1,
+          themeId: 1,
+          date: '2024-09-30 14:00',
+          hintCount: 3,
+          content:
+            '진짜 너무 재미있어서 또 가고 싶어요 진짜로 정말로요. 진짜 너무 재미있어서 또 가고 싶어요 진짜로 정말로요. 진짜 너무 재미있어서 또 가고 싶어요 진짜로 정말로요. 진짜 너무 재미있어서 또 가고 싶어요 진짜로 정말로요. 진짜 너무 재미있어서 또 가고 싶어요 진짜로 정말로요.',
+          memberLevel: 3,
+          memberPlayTime: 2700,
+          players: 3,
+          price: 20000,
+          successFlag: true,
+          updatedAt: '2024-07-30 15:40',
+          cafeName: '황금열쇠 더킹점',
+        },
+      ]);
+    }, 500);
   });
 });

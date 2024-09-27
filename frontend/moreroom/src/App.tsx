@@ -18,6 +18,10 @@ import { ProfileInfo } from './pages/Signup/ProfileInfo';
 import { GenreInfo } from './pages/Signup/GenreInfo';
 import { CafeList } from './pages/Cafes/CafeList';
 import { CafeDetail } from './pages/Cafes/CafeDetail';
+import { ChatingRoom } from './pages/Chating/Chatingroom';
+import { Roomdetail } from './pages/Chating/Chatingroom/Roomdetail';
+import { HistoryList } from './pages/History/HistoryList';
+import { HistoryDetail } from './pages/History/HistoryDetail';
 import { EditPassword } from './pages/Mypage/EditPassword';
 import { Password } from './pages/Mypage/EditPassword/Password';
 import { FindPwd } from './pages/Login/FindPwd';
@@ -51,6 +55,11 @@ function App() {
         <Route path="/mypage/password/edit" element={<EditPassword />} />
         <Route path="/mypage/password/edit2" element={<Password />} />
         <Route path="/chating" element={<Chating />} />
+        <Route path="/chatingroom/:partyId" element={<ChatingRoom />} />
+        <Route path="/roomdetail/:partyId" element={<Roomdetail />} />
+
+        <Route path="/history" element={<HistoryList />} />
+        <Route path="/history/detail/:historyId" element={<HistoryDetail />} />
       </Routes>
       {modalStore.isOpen && (
         <Modal height={modalStore.height}>{modalStore.contents}</Modal>

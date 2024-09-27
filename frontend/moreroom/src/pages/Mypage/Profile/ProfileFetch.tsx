@@ -31,6 +31,7 @@ export const ProfileFetch = () => {
   const nav = useNavigate();
   const { selectedHashtags } = useHashtagStore();
   const hashtags = Ihashtags;
+  
   const { data, error, isFetching } = useSuspenseQuery({
     queryKey: ['myinfo'],
     queryFn: async () => await getMyInfo(),

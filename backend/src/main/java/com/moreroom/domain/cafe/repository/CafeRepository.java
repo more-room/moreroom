@@ -29,7 +29,7 @@ public interface CafeRepository extends JpaRepository<Cafe, Integer> {
             FROM Cafe c
             LEFT JOIN Theme t ON c.cafeId = t.cafe.cafeId
             LEFT JOIN Review r ON t.themeId = r.theme.themeId
-            WHERE c.cafeName LIKE :cafeName
+            WHERE (:cafeName IS NULL OR c.cafeName LIKE :cafeName)
                   AND (:brandIds IS NULL OR c.brand.brandId IN (:brandIds))
                   AND (:regionId IS NULL OR c.region.regionId = :regionId)
                   AND c.openFlag = true

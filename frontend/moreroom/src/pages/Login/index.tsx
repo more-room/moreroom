@@ -12,6 +12,7 @@ import { useLoginStore } from "../../stores/loginStore";
 import { UserLogin } from "../../apis/loginApi";  // 로그인 API 호출 함수
 import { useNavigate } from 'react-router-dom';
 
+
 export const Login = () => {
   const { email, password, emailError, passwordError, setEmail, setPassword, validateEmail, validatePassword, resetFields } = useLoginStore();
   const [showPassword, setShowPassword] = useState(false); // 비밀번호 보기/숨기기 상태
@@ -25,37 +26,41 @@ export const Login = () => {
   const handleClearEmail = () => setEmail('');
 
   // 로그인 처리
-  const handleLogin = async () => {
-    // 이메일 및 비밀번호 형식 검사
-    validateEmail();
-    validatePassword();
+const handleLogin = async () => {
+  // 이메일 및 비밀번호 형식 검사
+  validateEmail();
+  validatePassword();
 
-    if (!emailError && !passwordError && email && password) {
-      try {
-        console.log("API 호출 시작");
-        // 로그인 API 호출
-        const response = await UserLogin(email, password);
-        console.log("API 응답:", response);
+  if (!emailError && !passwordError && email && password) {
+    try {
+      console.log("API 호출 시작");
+      // 로그인 API 호출
+      const response = await UserLogin(email, password);
+      console.log("API 응답:", response);
 
-        if (response.status === 200) {
-          // 세션 스토리지에 토큰 저장
-          sessionStorage.setItem('sessionToken', response.data.token);
+      if (response.status === 200) {
+        // 세션 스토리지에 토큰 저장
+        sessionStorage.setItem('sessionToken', response.data.token);
+        
+        
 
-          // 로그인 성공 후 홈으로 리다이렉트
-          navigate('/');
-          resetFields();  // 로그인 후 필드 초기화
-        } else {
-          throw new Error("로그인 실패");
-        }
-      } catch (err) {
-        console.log("로그인 오류:", err);
-        setLoginError('이메일 또는 비밀번호가 잘못되었습니다.');
+        // 로그인 성공 후 홈으로 리다이렉트
+        navigate('/');
+        resetFields();  // 로그인 후 필드 초기화
+      } else {
+        throw new Error("로그인 실패");
       }
-    } else {
-      setLoginError('이메일 또는 비밀번호 형식 오류');
+    } catch (err) {
+      console.log("로그인 오류:", err);
+      setLoginError('이메일 또는 비밀번호가 잘못되었습니다.');
     }
-  };
+  } else {
+    setLoginError('이메일 또는 비밀번호 형식 오류');
+  }
+};
 
+
+  
   return (
     <div css={loginpagecontainer}>
       <div css={imgCss}>
