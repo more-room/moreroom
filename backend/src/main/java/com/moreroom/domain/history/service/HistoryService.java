@@ -1,10 +1,12 @@
 package com.moreroom.domain.history.service;
 
 import com.moreroom.domain.history.dto.request.HistoryRequestDto;
+import com.moreroom.domain.history.dto.request.HistoryUpdateRequestDto;
 import com.moreroom.domain.history.dto.response.HistoryListResponseDto;
 import com.moreroom.domain.history.dto.response.HistoryListResponseDto.HistoryListComponentDto;
 import com.moreroom.domain.history.entity.History;
 import com.moreroom.domain.history.exception.HistoryInvalidParameterException;
+import com.moreroom.domain.history.exception.HistoryNotFoundException;
 import com.moreroom.domain.history.repository.HistoryQueryRepository;
 import com.moreroom.domain.history.repository.HistoryRepository;
 import com.moreroom.domain.member.entity.Member;
@@ -67,7 +69,31 @@ public class HistoryService {
         } catch (DataIntegrityViolationException e) {
             throw new HistoryInvalidParameterException();
         }
+        return true;
+    }
 
+
+    @Transactional
+    public Boolean updateHistory(Long memberId, Long historyId,
+        HistoryUpdateRequestDto historyUpdateRequestDto) {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime playDate = StringUtil.stringToDate(historyUpdateRequestDto.getDate());
+
+        History history = historyRepository.findByHistoryIdAndMemberMemberId(historyId, memberId)
+            .orElseThrow(
+                HistoryNotFoundException::new);
+
+        history.changeHistory(
+            historyUpdateRequestDto.getMemberPlayTime(),
+            historyUpdateRequestDto.getPrice(),
+            historyUpdateRequestDto.getHintCount(),
+            historyUpdateRequestDto.getContent(),
+            historyUpdateRequestDto.getMemberLevel(),
+            historyUpdateRequestDto.getPlayers(),
+            historyUpdateRequestDto.getSuccessFlag(),
+            playDate,
+            now
+        );
         return true;
     }
 

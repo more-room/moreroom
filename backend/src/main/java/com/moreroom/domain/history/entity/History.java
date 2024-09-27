@@ -57,4 +57,19 @@ public class History extends BaseEntity {
     @Builder.Default
     private boolean successFlag = false;
     private LocalDateTime playDate;
+
+
+    public void changeHistory(Integer memberPlayTime, Integer price, Integer hintCount,
+        String content, Float memberLevel, Integer players, Boolean successFlag,
+        LocalDateTime playDate, LocalDateTime updatedAt) {
+        this.memberPlayTime = memberPlayTime;
+        this.price = price;
+        this.hintCount = hintCount;
+        this.content = content;
+        this.memberLevel = memberLevel;
+        this.players = players;
+        this.successFlag = successFlag;
+        this.playDate = playDate;
+        this.updatedAt = updatedAt;
+    }
 }
