@@ -1,4 +1,4 @@
-package com.moreroom.domain.history.dto;
+package com.moreroom.domain.history.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.List;
@@ -27,6 +27,10 @@ public class HistoryListResponseDto {
         private Integer players;
         private Boolean successFlag;
         private HistoryListThemeDto theme;
+        private Integer themeId;
+        private Integer price;
+        private String cafeName;
+
 
         @Builder
         @Getter

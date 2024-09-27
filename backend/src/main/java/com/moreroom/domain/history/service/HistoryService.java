@@ -1,6 +1,8 @@
 package com.moreroom.domain.history.service;
 
-import com.moreroom.domain.history.dto.HistoryListResponseDto;
+import com.moreroom.domain.history.dto.request.HistoryRequestDto;
+import com.moreroom.domain.history.dto.response.HistoryListResponseDto;
+import com.moreroom.domain.history.dto.response.HistoryListResponseDto.HistoryListComponentDto;
 import com.moreroom.domain.history.repository.HistoryQueryRepository;
 import com.moreroom.domain.history.repository.HistoryRepository;
 import com.moreroom.global.util.StringUtil;
@@ -18,6 +20,14 @@ public class HistoryService {
         String endDate) {
         return historyQueryRepository.findHistoriesByDate(memberId,
             StringUtil.stringToDate(startDate), StringUtil.stringToDate(endDate));
+    }
+
+    public HistoryListComponentDto findHistoryDetail(Long memberId, Long historyId) {
+        return historyQueryRepository.findHistoryDetail(memberId, historyId);
+    }
+
+    public Boolean saveHistory(Long memberId, HistoryRequestDto historyRequestDto) {
+        return false;
     }
 
 }
