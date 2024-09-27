@@ -5,14 +5,16 @@ import static com.moreroom.domain.history.entity.QHistory.history;
 import static com.moreroom.domain.theme.entity.QTheme.theme;
 
 import com.moreroom.domain.cafe.entity.Cafe;
-import com.moreroom.domain.history.dto.HistoryListResponseDto;
-import com.moreroom.domain.history.dto.HistoryListResponseDto.HistoryListComponentDto;
-import com.moreroom.domain.history.dto.HistoryListResponseDto.HistoryListComponentDto.HistoryListThemeDto;
+import com.moreroom.domain.history.dto.response.HistoryListResponseDto;
+import com.moreroom.domain.history.dto.response.HistoryListResponseDto.HistoryListComponentDto;
+import com.moreroom.domain.history.dto.response.HistoryListResponseDto.HistoryListComponentDto.HistoryListThemeDto;
 import com.moreroom.domain.history.entity.History;
+import com.moreroom.domain.history.exception.HistoryNotFoundException;
 import com.moreroom.domain.theme.entity.Theme;
 import com.moreroom.global.repository.QuerydslRepositoryCustom;
 import com.moreroom.global.util.StringUtil;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -29,6 +31,8 @@ public class HistoryQueryRepository extends QuerydslRepositoryCustom {
         this.jpaQueryFactory = jpaQueryFactory;
     }
 
+    BooleanExpression notDelete = history.delFlag.eq(false);
+
     public HistoryListResponseDto findHistoriesByDate(Long memberId, LocalDateTime startDate,
         LocalDateTime endDate) {
         List<Tuple> results = jpaQueryFactory
@@ -41,7 +45,8 @@ public class HistoryQueryRepository extends QuerydslRepositoryCustom {
             .where(
                 history.member.memberId.eq(memberId),
                 startDate == null ? null : history.playDate.after(startDate),
-                endDate == null ? null : history.playDate.before(endDate)
+                endDate == null ? null : history.playDate.before(endDate),
+                notDelete
             )
             .fetch();
 
@@ -71,6 +76,46 @@ public class HistoryQueryRepository extends QuerydslRepositoryCustom {
 
         return HistoryListResponseDto.builder()
             .historyList(list)
+            .build();
+    }
+
+
+    public HistoryListComponentDto findHistoryDetail(Long memberId, Long historyId) {
+        Tuple t = jpaQueryFactory
+            .select(
+                history, cafe
+            )
+            .from(history)
+            .leftJoin(cafe).on(history.theme.cafe.cafeId.eq(cafe.cafeId))
+            .where(
+                history.historyId.eq(historyId),
+                history.member.memberId.eq(memberId),
+                notDelete
+            )
+            .fetchFirst();
+
+        if (t == null) {
+            throw new HistoryNotFoundException();
+        }
+
+        History h = t.get(0, History.class);
+        Cafe c = t.get(1, Cafe.class);
+
+        assert h != null;
+        assert c != null;
+        return HistoryListComponentDto.builder()
+            .historyId(h.getHistoryId())
+            .themeId(h.getTheme().getThemeId())
+            .date(StringUtil.dateToString(h.getPlayDate()))
+            .hintCount(h.getHintCount())
+            .content(h.getContent())
+            .memberLevel(h.getMemberLevel())
+            .memberPlayTime(h.getMemberPlayTime())
+            .players(h.getPlayers())
+            .price(h.getPrice())
+            .successFlag(h.isSuccessFlag())
+            .updatedAt(StringUtil.dateToString(h.getUpdatedAt()))
+            .cafeName(c.getCafeName())
             .build();
     }
 }
