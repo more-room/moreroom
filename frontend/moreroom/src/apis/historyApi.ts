@@ -23,5 +23,10 @@ export const addHistory = (data: IHistoryWrite) => {
 
 /* 기록 수정 */
 export const editHistory = (data: IHistoryWrite, historyId: number) => {
-  return api.patch(`/api/history/${historyId}`);
+  return api.patch(`/api/history/${historyId}`, data);
+};
+
+/* 기록 삭제 */
+export const delHistory = (historyId: number) => {
+  return api.delete(`/api/history/${historyId}`);
 };

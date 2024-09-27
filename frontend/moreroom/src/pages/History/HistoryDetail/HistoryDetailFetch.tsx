@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
-import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import React, { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getHistoryDetail } from '../../../apis/historyApi';
+import { delHistory, getHistoryDetail } from '../../../apis/historyApi';
 import { getThemeDetail } from '../../../apis/themeApi';
 import { container, poster, row } from './styles';
 import { TopBar } from '../../../components/TopBar';
@@ -26,6 +26,12 @@ export const HistoryDetailFetch = () => {
     queryFn: async () => await getThemeDetail(historyQuery.data.data.themeId),
     enabled: false,
   });
+  const { mutate } = useMutation({
+    mutationFn: async () => await delHistory(historyQuery.data.data.historyId),
+    onSuccess: () => nav('/history'),
+    onError: () => alert('오류 발생'),
+  });
+
   const handleEdit = () => {
     historyWriteStore.setContent(historyQuery.data.data.content);
     historyWriteStore.setDate(historyQuery.data.data.date);
@@ -74,7 +80,7 @@ export const HistoryDetailFetch = () => {
         <Button
           color="danger"
           rounded={0.5}
-          handler={() => console.log('remove')}
+          handler={() => mutate()}
           style={{ padding: '0.5rem 2rem' }}
         >
           <Typography color="light" weight={600} size={0.875}>

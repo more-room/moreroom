@@ -1223,3 +1223,11 @@ mock.onPatch('/api/history/1').reply((config) => {
     }, 500);
   });
 });
+
+mock.onDelete('/api/history/1').reply((config) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([200]);
+    }, 500);
+  });
+});
