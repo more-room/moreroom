@@ -13,6 +13,7 @@ import { Typography } from '../../../components/Typography';
 import { useMutation } from '@tanstack/react-query';
 import { addHistory, editHistory } from '../../../apis/historyApi';
 import { IHistoryWrite } from '../../../types/historyTypes';
+import dayjs from 'dayjs';
 
 export const HistoryWrite = () => {
   const nav = useNavigate();
@@ -51,7 +52,7 @@ export const HistoryWrite = () => {
     setHistoryInfo({
       themeId: historyWriteStore.themeId,
       content: historyWriteStore.content,
-      date: historyWriteStore.date,
+      date: dayjs(historyWriteStore.date).format('YYYY-MM-DD HH:mm'),
       hintCount: historyWriteStore.hintCount,
       memberLevel: historyWriteStore.memberLevel,
       memberPlayTime: historyWriteStore.memberPlayTime,

@@ -29,8 +29,13 @@ export const HistoryInfo = () => {
   const handleHide = () => setLevelEl(() => null);
 
   const getSelected = (type: keyof IHistoryWrite) => {
-    if (historyWriteStore[type]) return true;
-    else return false;
+    if (type === 'successFlag') {
+      if (!Object.keys(historyWriteStore).includes('successFlag')) return false;
+      else return true;
+    } else {
+      if (historyWriteStore[type]) return true;
+      else return false;
+    }
   };
   const getText = (type: keyof IHistoryWrite) => {
     let str = '';
@@ -75,10 +80,11 @@ export const HistoryInfo = () => {
             <FilterChip
               size={0.75}
               rounded={true}
-              selected={getSelected('successFlag')}
+              selected={Object.keys(historyWriteStore).includes('successFlag')}
               onHandleClick={() =>
                 modal.show(<HistoryTypes type="successFlag" />)
               }
+              color={historyWriteStore.successFlag ? 'secondary' : 'danger'}
             >
               {getText('successFlag')}
             </FilterChip>
@@ -148,6 +154,7 @@ export const HistoryInfo = () => {
             <DifficultyRange
               difficulty={historyWriteStore.memberLevel}
               size="xs"
+              onClick={() => modal.show(<HistoryTypes type="memberLevel" />)}
             />
             <div
               style={{

@@ -7,11 +7,19 @@ import dayjs from 'dayjs';
 
 export const Date = () => {
   const historyWriteStore = useHistoryWriteStore();
-  const [year, setYear] = useState<number>(dayjs().year());
-  const [month, setMonth] = useState<number>(dayjs().month() + 1);
-  const [day, setDay] = useState<number>(dayjs().date());
-  const [hour, setHour] = useState<number>(dayjs().hour());
-  const [minute, setMinute] = useState<number>(dayjs().minute());
+  const [year, setYear] = useState<number>(
+    dayjs(historyWriteStore.date).year(),
+  );
+  const [month, setMonth] = useState<number>(
+    dayjs(historyWriteStore.date).month() + 1,
+  );
+  const [day, setDay] = useState<number>(dayjs(historyWriteStore.date).date());
+  const [hour, setHour] = useState<number>(
+    dayjs(historyWriteStore.date).hour(),
+  );
+  const [minute, setMinute] = useState<number>(
+    dayjs(historyWriteStore.date).minute(),
+  );
 
   useEffect(() => {
     if (historyWriteStore.date) {

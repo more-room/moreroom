@@ -6,15 +6,16 @@ import { Typography } from '../../../../components/Typography';
 
 export const MemberPlayTime = () => {
   const historyWriteStore = useHistoryWriteStore();
-  const [minute, setMinute] = useState<number>(0);
-  const [second, setSecond] = useState<number>(0);
-
-  useEffect(() => {
-    if (historyWriteStore.memberPlayTime) {
-      setMinute(Math.floor(historyWriteStore.memberPlayTime / 60));
-      setSecond(historyWriteStore.memberPlayTime % 60);
-    }
-  }, []);
+  const [minute, setMinute] = useState<number>(
+    historyWriteStore.memberPlayTime
+      ? Math.floor(historyWriteStore.memberPlayTime / 60)
+      : 0,
+  );
+  const [second, setSecond] = useState<number>(
+    historyWriteStore.memberPlayTime
+      ? historyWriteStore.memberPlayTime % 60
+      : 0,
+  );
 
   useEffect(() => {
     historyWriteStore.setMemberPlayTime(minute * 60 + second);
