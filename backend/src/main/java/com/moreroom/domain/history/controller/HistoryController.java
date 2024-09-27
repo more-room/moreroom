@@ -1,7 +1,9 @@
 package com.moreroom.domain.history.controller;
 
+import com.moreroom.domain.history.dto.request.HistoryRequestDto;
 import com.moreroom.domain.history.dto.response.HistoryListResponseDto;
 import com.moreroom.domain.history.dto.response.HistoryListResponseDto.HistoryListComponentDto;
+import com.moreroom.domain.history.exception.HistoryInvalidParameterException;
 import com.moreroom.domain.history.exception.HistoryNotFoundException;
 import com.moreroom.domain.history.service.HistoryService;
 import com.moreroom.global.util.FindMemberService;
@@ -10,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,6 +48,16 @@ public class HistoryController {
             throw new HistoryNotFoundException();
         }
         return new ResponseEntity<>(historyListComponentDto, HttpStatus.OK);
+    }
+
+    @PostMapping()
+    public ResponseEntity<?> saveHistory(@RequestBody HistoryRequestDto historyRequestDto) {
+        long memberId = findMemberService.findCurrentMember();
+        boolean f = historyService.saveHistory(memberId, historyRequestDto);
+        if (!f) {
+            throw new HistoryInvalidParameterException();
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }
