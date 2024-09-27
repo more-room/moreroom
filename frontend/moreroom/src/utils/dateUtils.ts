@@ -1,4 +1,5 @@
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
+import { IHistoryCard } from '../types/historyTypes';
 
 export const heads = ['일', '월', '화', '수', '목', '금', '토'];
 
@@ -44,4 +45,18 @@ export const getDateDiff = (date: string) => {
   if (dayDiff <= 30) return dayDiff + '일 전';
   else if (monthDiff <= 12) return monthDiff + '달 전';
   else return yearDiff + '년 전';
+};
+
+export const getHasContents = (contents: IHistoryCard[], date: Dayjs) => {
+  let result = false;
+  contents.forEach((content: IHistoryCard) => {
+    if (dayjs(content.date).format('YYYY-MM-DD') === date.format('YYYY-MM-DD'))
+      result = true;
+  });
+  return result;
+};
+
+export const getSelected = (date: Dayjs, store: Dayjs) => {
+  if (date.format('YYYY-MM-DD') === store.format('YYYY-MM-DD')) return true;
+  else return false;
 };

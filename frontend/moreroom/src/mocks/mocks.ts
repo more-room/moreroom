@@ -1101,3 +1101,108 @@ mock.onGet('/api/party').reply((config) => {
     }, 100);
   });
 });
+
+//=============history
+mock.onGet('/api/history').reply((config) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([
+        200,
+        {
+          historyList: [
+            {
+              historyId: 1,
+              theme: {
+                themeId: 1,
+                title: '냥탐정 셜록 캣',
+                cafeName: '황금열쇠 더킹점',
+                poster: '/posters/냥탐정셜록캣.png',
+              },
+              date: '2024-08-17 15:00',
+              memberPlayTime: 2848,
+              hintCount: 2,
+              updatedAt: '2024-07-30 15:40',
+            },
+            {
+              historyId: 2,
+              theme: {
+                themeId: 2,
+                title: 'Heaven',
+                cafeName: '황금열쇠 더킹점',
+                poster: '/posters/heaven.png',
+              },
+              date: '2024-09-22 15:00',
+              memberPlayTime: 2848,
+              hintCount: 3,
+              updatedAt: '2024-07-30 15:40',
+            },
+            {
+              historyId: 3,
+              theme: {
+                themeId: 3,
+                title: '지옥',
+                cafeName: '황금열쇠 더킹점',
+                poster: '/posters/지옥.png',
+              },
+              date: '2024-09-13 15:00',
+              memberPlayTime: 2848,
+              hintCount: 5,
+              updatedAt: '2024-07-30 15:40',
+            },
+            {
+              historyId: 4,
+              theme: {
+                themeId: 4,
+                title: '필그림',
+                cafeName: '황금열쇠 더킹점',
+                poster: '/posters/필그림.png',
+              },
+              date: '2024-09-26 15:00',
+              memberPlayTime: 2848,
+              hintCount: 1,
+              updatedAt: '2024-07-30 15:40',
+            },
+            {
+              historyId: 5,
+              theme: {
+                themeId: 5,
+                title: 'LAST',
+                cafeName: '황금열쇠 더킹점',
+                poster: '/posters/last.png',
+              },
+              date: '2024-09-01 15:00',
+              memberPlayTime: 2848,
+              hintCount: 0,
+              updatedAt: '2024-07-30 15:40',
+            },
+          ],
+        },
+      ]);
+    }, 500);
+  });
+});
+
+mock.onGet('/api/history/1').reply((config) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([
+        200,
+        {
+          historyId: 1,
+          themeId: 1,
+          date: '2024-09-30 14:00',
+          hintCount: 3,
+          content:
+            '진짜 너무 재미있어서 또 가고 싶어요 진짜로 정말로요. 진짜 너무 재미있어서 또 가고 싶어요 진짜로 정말로요. 진짜 너무 재미있어서 또 가고 싶어요 진짜로 정말로요. 진짜 너무 재미있어서 또 가고 싶어요 진짜로 정말로요. 진짜 너무 재미있어서 또 가고 싶어요 진짜로 정말로요.',
+          memberLevel: 3,
+          memberPlayTime: 2700,
+          players: 3,
+          price: 20000,
+          successFlag: true,
+          updatedAt: '2024-07-30 15:40',
+          cafeName: '황금열쇠 더킹점',
+        },
+      ]);
+    }, 500);
+  });
+});
