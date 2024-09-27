@@ -21,6 +21,7 @@ export const Header = ({ children, ...props }: HeaderProps) => {
     } else {
       store.setCurMonth(store.curMonth - 1);
     }
+    store.setSelected(undefined);
   };
 
   const nextHandler = () => {
@@ -32,6 +33,7 @@ export const Header = ({ children, ...props }: HeaderProps) => {
     } else {
       store.setCurMonth(store.curMonth + 1);
     }
+    store.setSelected(undefined);
   };
 
   return (

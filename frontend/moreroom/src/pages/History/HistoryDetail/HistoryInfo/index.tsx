@@ -51,7 +51,8 @@ export const HistoryInfo = ({ history }: HistoryInfoProps) => {
         </div>
         <div css={item}>
           <Typography color="light" weight={400} size={0.875}>
-            {history.memberPlayTime / 60}분 {history.memberPlayTime % 60}초
+            {Math.floor(history.memberPlayTime / 60)}분{' '}
+            {history.memberPlayTime % 60}초
           </Typography>
           <Typography color="grey" weight={400} size={0.75}>
             탈출 소요 시간

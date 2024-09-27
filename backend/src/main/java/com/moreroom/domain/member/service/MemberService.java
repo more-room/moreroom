@@ -53,11 +53,12 @@ public class MemberService {
             throw new MemberPasswordNotMatchedException();
         }
 
-        if (memberRepository.existsByEmail(memberSignupRequestDTO.getEmail())) {
+        if (memberRepository.existsByEmailAndDelFlagFalse(memberSignupRequestDTO.getEmail())) {
             throw new MemberExistsEmailException();
         }
 
-        if (memberRepository.existsByNickname(memberSignupRequestDTO.getNickname())) {
+        if (memberRepository.existsByNicknameAndDelFlagFalse(
+            memberSignupRequestDTO.getNickname())) {
             throw new MemberExistsNicknameException();
         }
 
@@ -175,12 +176,12 @@ public class MemberService {
 
     public Boolean checkExistEmail(String email) {
 
-        return memberRepository.existsByEmail(email);
+        return memberRepository.existsByEmailAndDelFlagFalse(email);
     }
 
     public Boolean checkExistNickname(String nickname) {
 
-        return memberRepository.existsByNickname(nickname);
+        return memberRepository.existsByNicknameAndDelFlagFalse(nickname);
     }
 
     @Transactional

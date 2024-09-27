@@ -20,14 +20,14 @@ public class MemberSignupRequestDTO {
     private String email;
     @NotNull(message = "비밀번호를 입력해주세요.")
     @Pattern(
-        regexp = "^(?=.*[a-z])(?=.*\\d)[a-zA-Z\\d]{8,}$",
-        message = "비밀번호는 소문자와 숫자를 각각 최소 하나 이상 포함하고, 8자리 이상이어야 합니다."
+        regexp = "^(?=.*[a-zA-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$",
+        message = "비밀번호는 문자와 숫자를 각각 최소 하나 이상 포함하고, 8자리 이상이어야 합니다."
     )
     private String password;
     @NotNull(message = "비밀번호를 입력해주세요.")
     @Pattern(
-        regexp = "^(?=.*[a-z])(?=.*\\d)[a-zA-Z\\d]{8,}$",
-        message = "비밀번호는 소문자와 숫자를 각각 최소 하나 이상 포함하고, 8자리 이상이어야 합니다."
+        regexp = "^(?=.*[a-zA-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$",
+        message = "비밀번호는 문자와 숫자를 각각 최소 하나 이상 포함하고, 8자리 이상이어야 합니다."
     )
     private String passwordCheck;
     @NotNull(message = "닉네임을 입력해주세요")

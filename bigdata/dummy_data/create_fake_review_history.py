@@ -329,7 +329,7 @@ def generate_history_data(num_records, member_ids, theme_data, review_data):
         max_players = theme_info['maxPlayer']
 
         # memberPlayTime은 테마의 playTime에서 -30분에서 +10분 사이로 랜덤 설정
-        member_play_time = max(random.randint(playtime - 30, playtime + 10), 15)
+        member_play_time = max(random.randint(playtime - 30, playtime + 10), 15) * 60
         
         # players는 maxPlayer 이하로 설정
         players = random.randint(1, max_players)
@@ -346,8 +346,9 @@ def generate_history_data(num_records, member_ids, theme_data, review_data):
         content = generate_diary_content()
         
         # 리뷰가 있는 경우 기록의 리뷰ID 설정
-        review_id = fetch_review_id(member_id, theme_id)
-        
+        # review_id = fetch_review_id(member_id, theme_id)
+        review_id = None
+
         # 생성일, 수정일은 현재 연도 내의 무작위 시간 (updatedAt은 createdAt보다 이후)
         created_at = fake.date_time_this_year()
         updated_at = created_at + timedelta(minutes=random.randint(10, 1000))
@@ -401,6 +402,7 @@ def insert_history_data_to_db(history_records):
                 history['created_at'], history['updated_at'], history['del_flag'], history['players'], 
                 history['success_flag']
             ))
+            print("데이터 삽입")
         
         # 변경사항 커밋
         connection.commit()
@@ -427,8 +429,8 @@ def generate_and_insert_data():
     member_ids = fetch_member_ids()
 
     # 리뷰와 기록 데이터 개수 설정
-    num_reviews = 10000  # 10000개의 리뷰 생성
-    num_histories = 12000  # 12000개의 기록 생성 (리뷰가 없는 경우도 포함)
+    num_reviews = 0  # 10000개의 리뷰 생성
+    num_histories = 50000  # 12000개의 기록 생성 (리뷰가 없는 경우도 포함)
 
     if member_ids and theme_data:
         # 리뷰 데이터를 먼저 생성 및 삽입

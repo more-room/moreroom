@@ -44,4 +44,15 @@ public class Party extends BaseEntity {
     private boolean addFlag = false;
     @Column(length = 300)
     private String notice;
+
+    public void setNotice(String notice) {
+        this.notice = notice;
+    }
+
+    public void setSettings(String roomName, LocalDateTime date, boolean addFlag, int maxMember) {
+        this.roomName = roomName;
+        this.date = date;
+        this.addFlag = addFlag;
+        this.maxMember = maxMember;
+    }
 }

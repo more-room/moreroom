@@ -45,9 +45,10 @@ public class HistoryQueryRepository extends QuerydslRepositoryCustom {
             .where(
                 history.member.memberId.eq(memberId),
                 startDate == null ? null : history.playDate.after(startDate),
-                endDate == null ? null : history.playDate.before(endDate),
+                endDate == null ? null : history.playDate.before(endDate.plusDays(1)),
                 notDelete
             )
+            .orderBy(history.playDate.asc())
             .fetch();
 
         List<HistoryListComponentDto> list = new ArrayList<>();
