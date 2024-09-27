@@ -22,7 +22,7 @@ export const Chating = () => {
   const [selectedFilter, setSelectedFilter] = useState('속한 파티');
   const searchPartiesStore = useSearchPartiesStore();
   const navigate = useNavigate();
-  const client = useRef<StompJs.Client | null>(null);  // WebSocket client
+  // const client = useRef<StompJs.Client | null>(null);  // WebSocket client
   const [roomId, setRoomId] = useState<number | null>(null);  // 현재 채팅방 ID
   
 

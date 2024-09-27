@@ -948,10 +948,10 @@ mock.onGet('/api/review').reply((config) => {
               member: {
                 memberId: 1,
                 memberName: '유저명',
-                memberProfile: '프로필.jpg',
+                memberProfile: '/profiles/profile2.png',
               },
               content: '내용',
-              score: 3,
+              score: 5,
               thumbsUp: 5,
               updatedAt: '2024-07-30 15:40',
             },

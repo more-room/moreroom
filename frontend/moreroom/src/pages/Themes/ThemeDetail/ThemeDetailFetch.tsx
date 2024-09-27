@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
 import { useSuspenseQueries } from '@tanstack/react-query';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { getThemeDetail } from '../../../apis/themeApi';
 import { getCafeForTheme } from '../../../apis/cafeApi';
 import { getReviewForTheme } from '../../../apis/reviewApi';
@@ -15,6 +15,8 @@ import { ThemeCafe } from './ThemeCafe';
 
 export const ThemeDetailFetch = () => {
   const loc = useLocation();
+  const navigate = useNavigate();
+
   const [themeQuery, cafeQuery, reviewQuery] = useSuspenseQueries({
     queries: [
       {
@@ -49,6 +51,20 @@ export const ThemeDetailFetch = () => {
     }
   });
 
+  
+  const themeId = themeQuery.data.data.theme.themeId;
+  const title = themeQuery.data.data.theme.title;
+  const playtime = themeQuery.data.data.theme.playtime;
+  const genreList = themeQuery.data.data.theme.genreList;
+  const review = themeQuery.data.data.theme.review;
+  const poster = themeQuery.data.data.theme.poster
+  const regionId = cafeQuery.data.data.regionId
+  const cafeId = cafeQuery.data.data.cafeId
+  const brandName = cafeQuery.data.data.brandName
+  const branchName = cafeQuery.data.data.branchName
+  const address = cafeQuery.data.data.address
+  
+
   return (
     <div css={container}>
       <TopBar style={{ position: 'absolute' }}>
@@ -76,6 +92,7 @@ export const ThemeDetailFetch = () => {
       <ThemeReview
         review={reviewQuery.data.data.content[0]}
         cafe={cafeQuery.data.data}
+        onClickReview={() => navigate('/review', { state: { themeId, title, playtime, genreList, review, poster, regionId, cafeId, brandName, branchName, address } })}
       />
       <ThemeCafe cafe={cafeQuery.data.data} />
     </div>

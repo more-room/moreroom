@@ -48,11 +48,12 @@ export const RoomdetailFetch = () => {
   // 선택한 파티 찾기
   const selectedParty = partyQuery.data.data.content.find(party => party.partyId === Number(partyId));
 
-
+  
   // 해당 파티가 없는 경우 예외 처리
   if (!selectedParty || !selectedParty.theme) {
     return <div>해당 파티의 상세정보가 없습니다.</div>;
   }
+
 
   return (
     <div>
