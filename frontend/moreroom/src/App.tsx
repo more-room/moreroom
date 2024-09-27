@@ -20,6 +20,9 @@ import { CafeList } from './pages/Cafes/CafeList';
 import { CafeDetail } from './pages/Cafes/CafeDetail';
 import { EditPassword } from './pages/Mypage/EditPassword';
 import { Password } from './pages/Mypage/EditPassword/Password';
+import { FindPwd } from './pages/Login/FindPwd';
+import { DraftsOutlined } from '@mui/icons-material';
+import { PwdDone } from './pages/Login/FindPwd/Done';
 
 function App() {
   const modalStore = useModalStore();
@@ -37,6 +40,8 @@ function App() {
         <Route path="/cafes" element={<CafeList />} />
         <Route path="/cafe/detail" element={<CafeDetail />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/find/password" element={<FindPwd />} />
+        <Route path="/find/password/done" element={<PwdDone />} />
         {/* <Route path="/chating" element={<Chating />} /> */}
 
         <Route path="/mypage" element={<MyPage />} />

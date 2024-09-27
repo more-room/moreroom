@@ -47,3 +47,15 @@ export const updateHashtag = (hashtagList: number[]) => {
     },
   });
 };
+
+// 회원정보 - 비밀번호 변경(최종 변경)
+export const pwdChange = (newPassword: string, newPasswordCheck: string) => {
+  return api({
+    url: '/api/auth/member/password-change',
+    method: 'post',
+    data: {
+      newPassword: newPassword,
+      newPasswordCheck: newPasswordCheck,
+    },
+  });
+};
