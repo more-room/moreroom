@@ -65,10 +65,12 @@ public class MemberService {
             .email(memberSignupRequestDTO.getEmail())
             .password(passwordEncoder.encode(memberSignupRequestDTO.getPassword()))
             .nickname(memberSignupRequestDTO.getNickname())
-            .gender(memberSignupRequestDTO.getGender())
+            .gender(!memberSignupRequestDTO.getGender().equals("M"))
             .region(regionRepository.getReferenceById(memberSignupRequestDTO.getRegionId()))
             .birth(memberSignupRequestDTO.getBirth())
             .build();
+
+        memberRepository.save(member);
 
         List<Integer> genreIdList = memberSignupRequestDTO.getGenreIdList();
 
@@ -80,7 +82,6 @@ public class MemberService {
 
             memberGenreMappingRepository.save(memberGenreMapping);
         }
-        memberRepository.save(member);
     }
 
     public MemberResponseDTO getMemberInformation() {
