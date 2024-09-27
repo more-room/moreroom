@@ -12,4 +12,6 @@ public interface HistoryRepository extends JpaRepository<History, Long> {
     List<History> findAllByMemberMemberIdAndThemeThemeId(Long memberId, Integer themeId);
 
     Optional<History> findTop1ByMemberMemberIdOrderByPlayDateDesc(Long memberId);
+
+
 }
