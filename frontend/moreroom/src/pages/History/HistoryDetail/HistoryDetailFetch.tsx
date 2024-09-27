@@ -11,10 +11,12 @@ import { HistoryInfo } from './HistoryInfo';
 import { HistoryMemo } from './HistoryMemo';
 import { Button } from '../../../components/Button';
 import { Typography } from '../../../components/Typography';
+import { useHistoryWriteStore } from '../../../stores/historyStore';
 
 export const HistoryDetailFetch = () => {
   const nav = useNavigate();
   const params = useParams();
+  const historyWriteStore = useHistoryWriteStore();
   const historyQuery = useSuspenseQuery({
     queryKey: ['history-detail'],
     queryFn: async () => await getHistoryDetail(Number(params.historyId)),
@@ -24,6 +26,18 @@ export const HistoryDetailFetch = () => {
     queryFn: async () => await getThemeDetail(historyQuery.data.data.themeId),
     enabled: false,
   });
+  const handleEdit = () => {
+    historyWriteStore.setContent(historyQuery.data.data.content);
+    historyWriteStore.setDate(historyQuery.data.data.date);
+    historyWriteStore.setHintCount(historyQuery.data.data.hintCount);
+    historyWriteStore.setMemberLevel(historyQuery.data.data.memberLevel);
+    historyWriteStore.setMemberPlayTime(historyQuery.data.data.memberPlayTime);
+    historyWriteStore.setPlayers(historyQuery.data.data.players);
+    historyWriteStore.setPrice(historyQuery.data.data.price);
+    historyWriteStore.setSuccessFlag(historyQuery.data.data.successFlag);
+    historyWriteStore.setThemeId(1);
+    nav(`/history/edit/${historyQuery.data.data.historyId}`);
+  };
 
   useEffect(() => {
     themeQuery.refetch();
@@ -50,7 +64,7 @@ export const HistoryDetailFetch = () => {
       <div css={row}>
         <Button
           rounded={0.5}
-          handler={() => console.log('edit')}
+          handler={() => handleEdit()}
           style={{ padding: '0.5rem 2rem' }}
         >
           <Typography color="light" weight={600} size={0.875}>

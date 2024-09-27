@@ -20,3 +20,8 @@ export const getHistoryDetail = (historyId: number) => {
 export const addHistory = (data: IHistoryWrite) => {
   return api.post('/api/history', data);
 };
+
+/* 기록 수정 */
+export const editHistory = (data: IHistoryWrite, historyId: number) => {
+  return api.patch(`/api/history/${historyId}`);
+};
