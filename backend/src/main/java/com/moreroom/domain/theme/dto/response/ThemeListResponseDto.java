@@ -27,5 +27,13 @@ public class ThemeListResponseDto {
         private ThemeReviewResponseDto review;
         private ThemeCafeResponseDto cafe;
         private ThemeMemberResponseDto member;
+
+        public void setGenreList(List<String> genreList) {
+            this.genreList = genreList;
+        }
+
+        public void setReview(ThemeReviewResponseDto review) {
+            this.review = review;
+        }
     }
 }

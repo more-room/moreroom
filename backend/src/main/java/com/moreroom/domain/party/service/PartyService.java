@@ -4,10 +4,13 @@ import com.moreroom.domain.mapping.member.repository.MemberPartyMappingRepositor
 import com.moreroom.domain.member.entity.Member;
 import com.moreroom.domain.member.exception.MemberNotFoundException;
 import com.moreroom.domain.member.repository.MemberRepository;
+import com.moreroom.domain.party.dto.ChatroomListDto;
+import com.moreroom.domain.party.dto.PartyInfoDto;
 import com.moreroom.domain.party.entity.Party;
 import com.moreroom.domain.party.exception.PartyFullException;
 import com.moreroom.domain.party.exception.PartyNotFoundException;
 import com.moreroom.domain.party.exception.PartyNotRecruitingException;
+import com.moreroom.domain.party.repository.PartyQueryRepository;
 import com.moreroom.domain.party.repository.PartyRepository;
 import com.moreroom.domain.partyRequest.entity.PartyRequest;
 import com.moreroom.domain.partyRequest.repository.PartyRequestRepository;
@@ -37,6 +40,7 @@ public class PartyService {
   private final MemberPartyMappingRepository memberPartyMappingRepository;
   private final SimpMessagingTemplate simpMessagingtemplate;
   private final PartyRequestRepository partyRequestRepository;
+  private final PartyQueryRepository partyQueryRepository;
 
   //파티 만들고 유저 참가시키기
   @Transactional
@@ -135,6 +139,18 @@ public class PartyService {
     MemberPartyMapping memberParty = memberPartyMappingRepository.findByMemberAndParty(member, party).orElse(null);
     if (memberParty == null) return;
     memberPartyMappingRepository.delete(memberParty);
+  }
+
+  //모든 파티 조회
+  public ChatroomListDto getAllPartyList(Member member, Long lastPartyId, int pageSize) {
+    ChatroomListDto allPartyList = partyQueryRepository.getAllPartyListByMemberId(member.getMemberId(), false, lastPartyId, pageSize);
+    return allPartyList;
+  }
+
+  //멤버 파티 조회
+  public ChatroomListDto getMyPartyList(Member member, Long lastPartyId, int pageSize) {
+    ChatroomListDto myPartyInfoList = partyQueryRepository.getAllPartyListByMemberId(member.getMemberId(), true, lastPartyId, pageSize);
+    return myPartyInfoList;
   }
 
 
