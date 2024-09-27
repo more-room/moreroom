@@ -79,7 +79,8 @@ public class HistoryService {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime playDate = StringUtil.stringToDate(historyUpdateRequestDto.getDate());
 
-        History history = historyRepository.findByHistoryIdAndMemberMemberId(historyId, memberId)
+        History history = historyRepository.findByHistoryIdAndMemberMemberIdAndDelFlagIsFalse(
+                historyId, memberId)
             .orElseThrow(
                 HistoryNotFoundException::new);
 
@@ -95,6 +96,13 @@ public class HistoryService {
             now
         );
         return true;
+    }
+
+    @Transactional
+    public void deleteHistory(Long memberId, Long historyId) {
+        History history = historyRepository.findByHistoryIdAndMemberMemberIdAndDelFlagIsFalse(
+            historyId, memberId).orElseThrow(HistoryNotFoundException::new);
+        history.deleteHistory();
     }
 
 }

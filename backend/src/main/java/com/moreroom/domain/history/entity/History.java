@@ -72,4 +72,8 @@ public class History extends BaseEntity {
         this.playDate = playDate;
         this.updatedAt = updatedAt;
     }
+
+    public void deleteHistory() {
+        this.delFlag = true;
+    }
 }

@@ -44,7 +44,8 @@ public class RecommendationService {
 
     public ThemeListResponseDto getSimilarThemes(long memberId) {
         // 1. 마지막 방문 테마 조회
-        History history = historyRepository.findTop1ByMemberMemberIdOrderByPlayDateDesc(memberId)
+        History history = historyRepository.findTop1ByMemberMemberIdAndDelFlagIsFalseOrderByPlayDateDesc(
+                memberId)
             .orElseThrow(
                 HistoryNotFoundException::new);
         Integer themeId = history.getTheme().getThemeId();

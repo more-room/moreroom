@@ -14,6 +14,7 @@ import com.moreroom.domain.theme.entity.Theme;
 import com.moreroom.global.repository.QuerydslRepositoryCustom;
 import com.moreroom.global.util.StringUtil;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -30,6 +31,8 @@ public class HistoryQueryRepository extends QuerydslRepositoryCustom {
         this.jpaQueryFactory = jpaQueryFactory;
     }
 
+    BooleanExpression notDelete = history.delFlag.eq(false);
+
     public HistoryListResponseDto findHistoriesByDate(Long memberId, LocalDateTime startDate,
         LocalDateTime endDate) {
         List<Tuple> results = jpaQueryFactory
@@ -42,7 +45,8 @@ public class HistoryQueryRepository extends QuerydslRepositoryCustom {
             .where(
                 history.member.memberId.eq(memberId),
                 startDate == null ? null : history.playDate.after(startDate),
-                endDate == null ? null : history.playDate.before(endDate)
+                endDate == null ? null : history.playDate.before(endDate),
+                notDelete
             )
             .fetch();
 
@@ -85,7 +89,8 @@ public class HistoryQueryRepository extends QuerydslRepositoryCustom {
             .leftJoin(cafe).on(history.theme.cafe.cafeId.eq(cafe.cafeId))
             .where(
                 history.historyId.eq(historyId),
-                history.member.memberId.eq(memberId)
+                history.member.memberId.eq(memberId),
+                notDelete
             )
             .fetchFirst();
 
