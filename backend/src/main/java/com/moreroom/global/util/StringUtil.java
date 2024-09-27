@@ -22,14 +22,20 @@ public class StringUtil {
             return null;
         }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
         LocalDateTime localDateTime = null;
 
         try {
             LocalDate localDate = LocalDate.parse(date, formatter);
             localDateTime = localDate.atStartOfDay(); // 자정으로 설정
         } catch (DateTimeParseException e) {
-            System.out.println("날짜 형식이 잘못되었습니다: " + e.getMessage());
-            return null;
+            try {
+                localDateTime = LocalDateTime.parse(date, dateTimeFormatter);
+            } catch (DateTimeParseException ex) {
+                System.out.println("날짜 형식이 잘못되었습니다: " + ex.getMessage());
+                return null;
+            }
         }
 
         return localDateTime;
