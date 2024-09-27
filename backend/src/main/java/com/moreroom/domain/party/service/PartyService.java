@@ -5,8 +5,12 @@ import com.moreroom.domain.member.entity.Member;
 import com.moreroom.domain.member.exception.MemberNotFoundException;
 import com.moreroom.domain.member.repository.MemberRepository;
 import com.moreroom.domain.party.dto.ChatroomListDto;
+import com.moreroom.domain.party.dto.ChatroomSettingDto;
+import com.moreroom.domain.party.dto.NoticeDto;
 import com.moreroom.domain.party.dto.PartyInfoDto;
 import com.moreroom.domain.party.entity.Party;
+import com.moreroom.domain.party.exception.InputValidationException;
+import com.moreroom.domain.party.exception.NotPartyMasterException;
 import com.moreroom.domain.party.exception.PartyFullException;
 import com.moreroom.domain.party.exception.PartyNotFoundException;
 import com.moreroom.domain.party.exception.PartyNotRecruitingException;
@@ -17,10 +21,13 @@ import com.moreroom.domain.partyRequest.repository.PartyRequestRepository;
 import com.moreroom.domain.theme.entity.Theme;
 import com.moreroom.domain.theme.repository.ThemeRepository;
 import com.moreroom.global.dto.SocketNotificationDto;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -41,6 +48,8 @@ public class PartyService {
   private final SimpMessagingTemplate simpMessagingtemplate;
   private final PartyRequestRepository partyRequestRepository;
   private final PartyQueryRepository partyQueryRepository;
+  private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
 
   //파티 만들고 유저 참가시키기
   @Transactional
@@ -153,5 +162,47 @@ public class PartyService {
     return myPartyInfoList;
   }
 
+  //채팅방 공지사항 등록
+  @Transactional
+  public void updateChatroomNotice(Member member, Long partyId, NoticeDto notice) {
+    Party party = partyRepository.findById(partyId).orElseThrow(PartyNotFoundException::new);
+    validUser(member, party);
+    if (notice.getNotice().length() > 300) {
+      throw new InputValidationException();
+    }
+    party.setNotice(notice.getNotice());
+  }
+
+  // 채팅방 세팅 조회
+  public ChatroomSettingDto getSettingInfo(Long partyId) {
+    Party party = partyRepository.findById(partyId).orElseThrow(PartyNotFoundException::new);
+    String date = party.getDate().format(formatter);
+    return ChatroomSettingDto.builder()
+        .roomName(party.getRoomName())
+        .themeId(party.getTheme().getThemeId())
+        .date(date)
+        .maxMember(party.getMaxMember())
+        .addFlag(party.isAddFlag())
+        .build();
+  }
+
+  // 채팅방 세팅 수정
+  @Transactional
+  public void updateSettingInfo(Long partyId, ChatroomSettingDto dto, Member member) {
+    Party party = partyRepository.findById(partyId).orElseThrow(PartyNotFoundException::new);
+    validUser(member, party);
+    String roomname = dto.getRoomName();
+    LocalDateTime date = LocalDateTime.parse(dto.getDate(), formatter);
+    if (roomname.length() > 50) {
+      throw new InputValidationException();
+    }
+    party.setSettings(roomname, date, dto.isAddFlag(), dto.getMaxMember());
+  }
+
+  private void validUser(Member member, Party party) {
+    if (!Objects.equals(party.getMasterMember().getMemberId(), member.getMemberId())) {
+      throw new NotPartyMasterException();
+    }
+  }
 
 }
