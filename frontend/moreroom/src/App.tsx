@@ -22,6 +22,7 @@ import { ChatingRoom } from './pages/Chating/Chatingroom';
 import { Roomdetail } from './pages/Chating/Chatingroom/Roomdetail';
 import { HistoryList } from './pages/History/HistoryList';
 import { HistoryDetail } from './pages/History/HistoryDetail';
+import { HistoryWrite } from './pages/History/HistoryWrite';
 
 function App() {
   const modalStore = useModalStore();
@@ -50,6 +51,9 @@ function App() {
 
         <Route path="/history" element={<HistoryList />} />
         <Route path="/history/detail/:historyId" element={<HistoryDetail />} />
+        <Route path="/history/write" element={<HistoryWrite />} />
+        <Route path="/history/edit/:historyId" element={<HistoryWrite />} />
+        <Route path="/themes/history" element={<ThemeList />} />
       </Routes>
       {modalStore.isOpen && (
         <Modal height={modalStore.height}>{modalStore.contents}</Modal>
