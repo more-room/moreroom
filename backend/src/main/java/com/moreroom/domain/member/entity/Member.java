@@ -56,7 +56,7 @@ public class Member extends BaseEntity {
 
     public void updateMember(MemberUpdateRequestDTO memberUpdateRequestDTO, Region region) {
         this.nickname = memberUpdateRequestDTO.getNickname();
-        this.gender = memberUpdateRequestDTO.getGender();
+        this.gender = !memberUpdateRequestDTO.getGender().equals("M");
         this.region = region;
         this.birth = memberUpdateRequestDTO.getBirth();
         this.clearRoom = memberUpdateRequestDTO.getClearRoom();
