@@ -43,4 +43,11 @@ public class StringUtil {
 
         return localDateTime;
     }
+
+    public static boolean isParent(String regionId) {
+        if (regionId.length() < 10) {
+            return false;
+        }
+        return regionId.substring(2).equals("00000000");
+    }
 }
