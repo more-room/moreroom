@@ -1,5 +1,6 @@
 package com.moreroom.global.util;
 
+import com.moreroom.global.exception.globalException.DateTimeInvalidException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -12,6 +13,9 @@ public class StringUtil {
     }
 
     public static String dateToString(LocalDateTime date) {
+        if (date == null) {
+            throw new DateTimeInvalidException();
+        }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         String formattedDateTime = date.format(formatter);
         return formattedDateTime;
@@ -19,7 +23,7 @@ public class StringUtil {
 
     public static LocalDateTime stringToDate(String date) {
         if (date == null) {
-            return null;
+            throw new DateTimeInvalidException();
         }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -33,8 +37,7 @@ public class StringUtil {
             try {
                 localDateTime = LocalDateTime.parse(date, dateTimeFormatter);
             } catch (DateTimeParseException ex) {
-                System.out.println("날짜 형식이 잘못되었습니다: " + ex.getMessage());
-                return null;
+                throw new DateTimeInvalidException();
             }
         }
 
