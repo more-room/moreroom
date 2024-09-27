@@ -8,12 +8,15 @@ import {
 import { IThemeList, IThemeListItem } from '../../../../../types/themeTypes';
 import { ThemeItem } from '../../../../../components/ThemeItem';
 import { listContainer } from './styles';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useHistoryWriteStore } from '../../../../../stores/historyStore';
 
 export const SearchResults = () => {
+  const loc = useLocation();
   const nav = useNavigate();
   const searchThemeStore = useSearchThemesStore();
   const searchTitleStore = useSearchTitleStore();
+  const historyWriteStore = useHistoryWriteStore();
   const divRef = useRef<HTMLDivElement>(null);
   const themeQueryRef = useRef<IThemeList | null>(null);
   const [themeQuery, setThemeQuery] = useState<IThemeList>({
@@ -50,6 +53,15 @@ export const SearchResults = () => {
       if (scrollTop + clientHeight >= scrollHeight - 0.5) {
         fetchMoreThemes();
       }
+    }
+  };
+
+  const handleClick = (theme: IThemeListItem) => {
+    if (loc.pathname.split('/').includes('history')) {
+      historyWriteStore.setThemeId(theme.themeId);
+      nav('/history/write');
+    } else {
+      nav('/theme/detail', { state: { themeId: theme.themeId } });
     }
   };
 
@@ -99,9 +111,7 @@ export const SearchResults = () => {
             key={idx}
             theme={theme}
             pattern={searchTitleStore.title}
-            onClick={() =>
-              nav('/theme/detail', { state: { themeId: theme.themeId } })
-            }
+            onClick={() => handleClick(theme)}
           />
         ),
       )}

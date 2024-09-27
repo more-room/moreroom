@@ -10,15 +10,17 @@ import { empty, list } from './styles';
 import dayjs from 'dayjs';
 import { Typography } from '../../../components/Typography';
 import { Button } from '../../../components/Button';
+import { useNavigate } from 'react-router-dom';
 
 export const HistoryListFetch = () => {
+  const nav = useNavigate();
   const calendarStore = useCalendarStore();
   const historyQuery = useSuspenseQuery({
     queryKey: ['history-list'],
     queryFn: async () =>
       await getHistoryList({
-        startDate: `${calendarStore.curYear}-${calendarStore.curMonth}-01`,
-        endDate: `${calendarStore.curYear}-${calendarStore.curMonth}-${dayjs(`${calendarStore.curYear}-${calendarStore.curMonth}-01`).daysInMonth()}`,
+        startDate: `${calendarStore.curYear}-${calendarStore.curMonth.toString().length === 1 ? '0' + calendarStore.curMonth : calendarStore.curMonth}-01`,
+        endDate: `${calendarStore.curYear}-${calendarStore.curMonth.toString().length === 1 ? '0' + calendarStore.curMonth : calendarStore.curMonth}-${dayjs(`${calendarStore.curYear}-${calendarStore.curMonth}-01`).daysInMonth()}`,
       }),
   });
 
@@ -66,7 +68,11 @@ export const HistoryListFetch = () => {
       {history.length ? (
         <div css={list}>
           {history.map((history: IHistoryCard) => (
-            <HistoryCard key={history.historyId} history={history} />
+            <HistoryCard
+              key={history.historyId}
+              history={history}
+              onClick={() => nav(`/history/detail/${history.historyId}`)}
+            />
           ))}
         </div>
       ) : (
@@ -74,7 +80,7 @@ export const HistoryListFetch = () => {
           <Typography color="light" weight={500} size={1.125}>
             등록된 기록이 없습니다
           </Typography>
-          <Button rounded={0.5} handler={() => console.log('it"s add history')}>
+          <Button rounded={0.5} handler={() => nav('/history/write')}>
             <Typography color="light" weight={600} size={0.875}>
               기록 등록하기
             </Typography>

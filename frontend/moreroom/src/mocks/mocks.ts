@@ -1206,3 +1206,12 @@ mock.onGet('/api/history/1').reply((config) => {
     }, 500);
   });
 });
+
+mock.onPost('/api/history').reply((config) => {
+  console.log(config.data);
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([200]);
+    }, 500);
+  });
+});
