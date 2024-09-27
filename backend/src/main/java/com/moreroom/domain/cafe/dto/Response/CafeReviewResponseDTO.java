@@ -15,7 +15,7 @@ public class CafeReviewResponseDTO {
     public static CafeReviewResponseDTO toDTO(Cafe cafe) {
         return CafeReviewResponseDTO.builder()
             .cafeId(cafe.getCafeId())
-            .brandName(cafe.getBrand().getBrandName())
+            .brandName(cafe.getBrand() != null ? cafe.getBrand().getBrandName() : null)
             .branchName(cafe.getBranchName())
             .build();
     }
