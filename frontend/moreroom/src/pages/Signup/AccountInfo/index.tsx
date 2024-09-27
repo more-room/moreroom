@@ -137,6 +137,7 @@ export const AccountInfo = () => {
     try {
       await isNickname(nickname);
     } catch (err) {
+      console.log(err)
       setNicknameError('이미 존재하는 닉네임입니다.');
     }
   };

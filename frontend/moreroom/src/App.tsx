@@ -25,7 +25,6 @@ import { HistoryDetail } from './pages/History/HistoryDetail';
 import { EditPassword } from './pages/Mypage/EditPassword';
 import { Password } from './pages/Mypage/EditPassword/Password';
 import { FindPwd } from './pages/Login/FindPwd';
-import { DraftsOutlined } from '@mui/icons-material';
 import { PwdDone } from './pages/Login/FindPwd/Done';
 
 function App() {
@@ -46,7 +45,6 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/find/password" element={<FindPwd />} />
         <Route path="/find/password/done" element={<PwdDone />} />
-        {/* <Route path="/chating" element={<Chating />} /> */}
 
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/mypage/profile" element={<Profile />} />

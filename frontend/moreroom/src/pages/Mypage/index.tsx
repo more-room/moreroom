@@ -29,8 +29,15 @@ import {
   ChatBubbleLeftRightIcon,
 } from '@heroicons/react/24/solid';
 import { useNavigate } from 'react-router-dom';
+import { UserLogout } from '../../apis/loginApi';
 export const MyPage = () => {
   const nav = useNavigate();
+
+  const handleLogout = async () => {
+    await UserLogout();
+    nav('/login')
+  };
+
   return (
     <div>
       <TopBar>
@@ -175,7 +182,8 @@ export const MyPage = () => {
               </Icon>
             }
             children="로그아웃"
-            url="/mypage/profile"
+            // url="/mypage/profile"
+            onApi = {handleLogout}
           />
           <ManageInfo
             icon={

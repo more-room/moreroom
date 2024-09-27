@@ -32,11 +32,13 @@ export const EmailVerification = () => {
       const response = await isEmail(email);
       console.log(response);
       if (response.data.duplicated === 'False') {
+        setEmailError('존재하지 않는 이메일입니다.');
         console.log('존재하지 않는 이메일입니다.');
-        sendNumber();
+        
       }
     } catch (err) {
       setEmailError('이미 존재하는 이메일입니다.');
+      sendNumber();
     }
   };
 
