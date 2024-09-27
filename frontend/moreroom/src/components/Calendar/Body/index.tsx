@@ -30,16 +30,16 @@ export const Body = ({ contents, children, ...props }: BodyProps) => {
     <div css={base} {...props}>
       <div css={head}>
         {heads.map((head) => (
-          <div css={headBox}>
+          <div key={head} css={headBox}>
             <Typography color="grey" scale="300" size={0.75} weight={600}>
               {head}
             </Typography>
           </div>
         ))}
       </div>
-      {getDays(store.curYear, store.curMonth).map((w) => {
+      {getDays(store.curYear, store.curMonth).map((w, idx: number) => {
         return (
-          <div css={week}>
+          <div key={idx} css={week}>
             {w.map((d) => (
               <Date
                 key={d.date()}

@@ -6,8 +6,10 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import { getHistoryList } from '../../../apis/historyApi';
 import { IHistoryCard } from '../../../types/historyTypes';
 import { HistoryCard } from '../../../components/HistoryCard';
-import { list } from './styles';
+import { empty, list } from './styles';
 import dayjs from 'dayjs';
+import { Typography } from '../../../components/Typography';
+import { Button } from '../../../components/Button';
 
 export const HistoryListFetch = () => {
   const calendarStore = useCalendarStore();
@@ -52,11 +54,33 @@ export const HistoryListFetch = () => {
         {calendarStore.bodyType === 'year' && <Calendar.YearBody />}
         {calendarStore.bodyType === 'month' && <Calendar.MonthBody />}
       </Calendar>
-      <div css={list}>
-        {history.map((history: IHistoryCard) => (
-          <HistoryCard key={history.historyId} history={history} />
-        ))}
-      </div>
+      <Typography
+        color="light"
+        weight={600}
+        style={{ margin: '1rem 0 0 1rem' }}
+      >
+        {calendarStore.selected
+          ? dayjs(calendarStore.selected).format('M월 D일') + '의 기록'
+          : calendarStore.curMonth + '월의 기록'}
+      </Typography>
+      {history.length ? (
+        <div css={list}>
+          {history.map((history: IHistoryCard) => (
+            <HistoryCard key={history.historyId} history={history} />
+          ))}
+        </div>
+      ) : (
+        <div css={empty}>
+          <Typography color="light" weight={500} size={1.125}>
+            등록된 기록이 없습니다
+          </Typography>
+          <Button rounded={0.5} handler={() => console.log('it"s add history')}>
+            <Typography color="light" weight={600} size={0.875}>
+              기록 등록하기
+            </Typography>
+          </Button>
+        </div>
+      )}
     </>
   );
 };
