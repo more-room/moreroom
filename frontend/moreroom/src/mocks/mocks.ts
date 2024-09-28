@@ -939,7 +939,7 @@ mock.onGet('/api/review').reply((config) => {
                 memberProfile: '/profiles/profile4.png',
               },
               content: '리뷰 1의 내용입니다.',
-              score: 3,
+              score: 2,
               thumbsUp: 5,
               updatedAt: '2022-08-30 15:40',
             },

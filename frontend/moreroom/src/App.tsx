@@ -21,6 +21,7 @@ import { CafeDetail } from './pages/Cafes/CafeDetail';
 import { ChatingRoom } from './pages/Chating/Chatingroom';
 import { Roomdetail } from './pages/Chating/Chatingroom/Roomdetail'
 import { Review } from './pages/Review/ReviewRead';
+import { ReviewWrite } from './pages/Review/ReviewWrite';
 
 function App() {
   const modalStore = useModalStore();
@@ -49,6 +50,7 @@ function App() {
         <Route path="/roomdetail/:partyId" element={<Roomdetail />} />
 
         <Route path="/review" element={<Review/>} />
+        <Route path="/review/write" element={<ReviewWrite/>} />
 
 
         

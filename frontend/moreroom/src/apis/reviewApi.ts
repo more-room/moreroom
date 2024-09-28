@@ -5,3 +5,4 @@ import { api } from './interceptors';
 export const getReviewForTheme = (params: IReviewListRequestParameter) => {
   return api.get<IReviewList>('/api/review', { params: params });
 };
+
