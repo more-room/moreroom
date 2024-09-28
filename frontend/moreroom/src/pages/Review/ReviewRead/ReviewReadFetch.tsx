@@ -60,7 +60,7 @@ export const ReviewReadFetch = () => {
       "cafeId": location.state?.cafeId, // number
       "brandName": location.state?.brandName, // string
       "branchName": location.state?.branchName, // string
-      "cafeName": "제로월드 강남점",
+      "cafeName": "",
       "address": location.state?.address, // string
     },
   };
@@ -95,17 +95,16 @@ export const ReviewReadFetch = () => {
     ],
   };
 
-  console.log(reviewQuery.data.data.content);
-
   const allView = () => {
     console.log('리뷰 작성하기');
   };
 
   // 리뷰 작성 페이지로 이동 (테마 정보 함께 전달)
   const reviewWriteMove = () => {
-    console.log('Received themeItem:', themeItem);
+    console.log('페이지에서 넘길 때:', themeItem);
     navigate('/review/write', {
-      state: themeItem // ThemeItem을 state로 전달하여 리뷰 작성 페이지로 이동
+      state: {themeItem
+       }// ThemeItem을 state로 전달하여 리뷰 작성 페이지로 이동
     });
   };
 
@@ -132,7 +131,7 @@ export const ReviewReadFetch = () => {
             </Typography>
           </div>
         </div>
-        <div style={{ width: '50%', height: 'auto', marginLeft: '3rem', marginTop: '1rem'}}> {/* 그래프 크기 조정 */}
+        <div style={{ width: '60%', height: 'auto', marginLeft: '2rem', marginTop: '1rem'}}> {/* 그래프 크기 조정 */}
           <Bar
             data={chartData}
             options={{
