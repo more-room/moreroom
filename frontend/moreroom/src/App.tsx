@@ -10,8 +10,8 @@ import { Chating } from './pages/Chating';
 import { Main } from './pages/Main';
 import { MyPage } from './pages/Mypage';
 import { Profile } from './pages/Mypage/Profile';
-import { EditProfile } from './pages/Mypage/EditProfile';
-import { EditHashTag } from './pages/Mypage/EditHashTag';
+import { EditProfile } from './pages/Mypage/EditUser/EditProfile';
+import { EditHashTag } from './pages/Mypage/EditUser/EditHashTag';
 import { ThemeDetail } from './pages/Themes/ThemeDetail';
 import { CafeList } from './pages/Cafes/CafeList';
 import { CafeDetail } from './pages/Cafes/CafeDetail';
@@ -20,9 +20,10 @@ import { Roomdetail } from './pages/Chating/Chatingroom/Roomdetail';
 import { HistoryList } from './pages/History/HistoryList';
 import { HistoryDetail } from './pages/History/HistoryDetail';
 import { HistoryWrite } from './pages/History/HistoryWrite';
-import { EditPassword } from './pages/Mypage/EditPassword';
+import { EditPassword } from './pages/Mypage/EditUser/EditPassword';
 import { FindPwd } from './pages/Login/FindPwd';
 import { PwdDone } from './pages/Login/FindPwd/PwdDone';
+import { MyReview } from './pages/Mypage/MyReview';
 
 function App() {
   const modalStore = useModalStore();
@@ -45,6 +46,7 @@ function App() {
         <Route path="/mypage/profile/edit" element={<EditProfile />} />
         <Route path="/mypage/hashtag/edit" element={<EditHashTag />} />
         <Route path="/mypage/password/edit" element={<EditPassword />} />
+        <Route path="/mypage/myreview" element={<MyReview />} />
 
         <Route path="/chating" element={<Chating />} />
         <Route path="/chatingroom/:partyId" element={<ChatingRoom />} />

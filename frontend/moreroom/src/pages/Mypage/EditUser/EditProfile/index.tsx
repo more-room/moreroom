@@ -1,9 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import React, { useState } from 'react';
-import { TopBar } from '../../../components/TopBar';
+import { TopBar } from '../../../../components/TopBar';
 import { useNavigate } from 'react-router-dom';
-import { Typography } from '../../../components/Typography';
-import { Button } from '../../../components/Button';
+import { Typography } from '../../../../components/Typography';
+import { Button } from '../../../../components/Button';
 import { UserCircleIcon } from '@heroicons/react/24/solid';
 import { FormHelperText, styled, TextField } from '@mui/material';
 import {
@@ -14,18 +14,22 @@ import {
   filterCss,
 } from './styles';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { getMyInfo, updateHashtag, updateUserInfo } from '../../../apis/mypageApi';
-import { isNickname } from '../../../apis/authApi';
-import { CssTextField } from '../../Signup/AccountInfo';
-import { btnCss, inputCss } from '../../Signup/AccountInfo/styles';
-import { validateNickname } from '../../../utils/validationUtils';
-import { FilterChip } from '../../../components/FilterChip';
-import { getRegions } from '../../../apis/infoApi';
-import { useSearchThemesStore } from '../../../stores/themeStore';
-import { IRegionCommon, IRegionItem } from '../../../types/infoTypes';
-import { useModal } from '../../../hooks/useModal';
-import { Selectedtheme } from '../../../modals/mypage/Selectedtheme';
-import { SelectedGenre } from '../../../modals/mypage/SelectedGenre';
+import {
+  getMyInfo,
+  updateHashtag,
+  updateUserInfo,
+} from '../../../../apis/mypageApi';
+import { isNickname } from '../../../../apis/authApi';
+import { CssTextField } from '../../../Signup/AccountInfo';
+import { btnCss, inputCss } from '../../../Signup/AccountInfo/styles';
+import { validateNickname } from '../../../../utils/validationUtils';
+import { FilterChip } from '../../../../components/FilterChip';
+import { getRegions } from '../../../../apis/infoApi';
+import { useSearchThemesStore } from '../../../../stores/themeStore';
+import { IRegionCommon, IRegionItem } from '../../../../types/infoTypes';
+import { useModal } from '../../../../hooks/useModal';
+import { Selectedtheme } from '../../../../modals/mypage/Selectedtheme';
+import { SelectedGenre } from '../../../../modals/mypage/SelectedGenre';
 
 export const EditProfile = () => {
   const nav = useNavigate();
@@ -38,7 +42,7 @@ export const EditProfile = () => {
   const [birthYear, setBirthYear] = useState<string>('');
   const [birthMonth, setBirthMonth] = useState<string>('');
   const [birthDay, setBirthDay] = useState<string>('');
-  
+
   const regionQuery = useQuery({
     queryKey: ['region'],
     queryFn: async () => await getRegions(),
@@ -48,7 +52,9 @@ export const EditProfile = () => {
     queryKey: ['myinfo'],
     queryFn: async () => await getMyInfo(),
   });
-  const [room, setRoom] = useState<string>(MyInfoQuery?.data?.data.clearRoom || '')
+  const [room, setRoom] = useState<string>(
+    MyInfoQuery?.data?.data.clearRoom || '',
+  );
   const { mutate } = useMutation({
     mutationFn: async ({
       newNickName,
@@ -65,7 +71,14 @@ export const EditProfile = () => {
       clearRoom: number;
       genreIdList: number[]; // genreIdList는 number[]로 설정
     }) =>
-      await updateUserInfo(newNickName, gender, birth, genreIdList, newRegionId, clearRoom),
+      await updateUserInfo(
+        newNickName,
+        gender,
+        birth,
+        genreIdList,
+        newRegionId,
+        clearRoom,
+      ),
     onSuccess: () => {
       console.log('변경 성공');
       nav('/mypage');
@@ -105,14 +118,15 @@ export const EditProfile = () => {
   const handleEdit = async () => {
     // 생년월일을 YYYY-MM-DD 형식으로 변환
     const birth = `${birthYear}-${birthMonth.padStart(2, '0')}-${birthDay.padStart(2, '0')}`;
-  
+
     // 지역 ID를 가져오기
     const newRegionId = searchThemesStore.filters.region || ''; // 기본값을 빈 문자열로 설정
-  
+
     // 장르 ID 리스트를 가져오기
     const genreIdList = searchThemesStore.filters.genreList || []; // 장르가 없을 경우 빈 배열로 설정
-  
-    if (gender) { // gender가 정의된 경우에만 mutate 호출
+
+    if (gender) {
+      // gender가 정의된 경우에만 mutate 호출
       mutate({
         newNickName: nickname,
         gender: gender,
@@ -148,7 +162,7 @@ export const EditProfile = () => {
     const { value } = e.target;
     // 숫자만 허용
     const onlyNumber = value.replace(/[^0-9]/g, '');
-    
+
     // 4자리 이상 입력 후 범위 체크
     if (onlyNumber.length === 4) {
       const year = parseInt(onlyNumber, 10);
@@ -168,12 +182,12 @@ export const EditProfile = () => {
     // 숫자만 허용
     const onlyNumber = value.replace(/[^0-9]/g, '');
     const month = parseInt(onlyNumber, 10);
-    
+
     // 2자리 미만일 때는 그대로 입력
     if (onlyNumber.length <= 2) {
       setBirthMonth(onlyNumber);
     }
-  
+
     // 1~12 범위 제한
     if (onlyNumber.length === 2) {
       if (month < 1) {
@@ -185,18 +199,18 @@ export const EditProfile = () => {
       }
     }
   };
-  
+
   const handleDayChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     // 숫자만 허용
     const onlyNumber = value.replace(/[^0-9]/g, '');
     const day = parseInt(onlyNumber, 10);
-    
+
     // 2자리 미만일 때는 그대로 입력
     if (onlyNumber.length <= 2) {
       setBirthDay(onlyNumber);
     }
-  
+
     // 1~31 범위 제한
     if (onlyNumber.length === 2) {
       if (day < 1) {
@@ -215,8 +229,6 @@ export const EditProfile = () => {
     const onlyNumber = value.replace(/[^0-9]/g, '');
     setRoom(onlyNumber); // 수정된 값으로 상태 업데이트
   };
-
-
 
   return (
     <div>
@@ -348,11 +360,7 @@ export const EditProfile = () => {
               />
             </div>
           </div>
-          <Button
-            rounded={0.5}
-            handler={handleEdit}
-            fullwidth
-          >
+          <Button rounded={0.5} handler={handleEdit} fullwidth>
             수정하기
           </Button>
         </div>

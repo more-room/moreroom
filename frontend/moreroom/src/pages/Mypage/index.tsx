@@ -124,7 +124,7 @@ export const MyPage = () => {
                 </Icon>
               }
               children="내가 쓴 리뷰"
-              url="/mypage/profile"
+              url="/mypage/myreview"
             />
           </div>
         </div>

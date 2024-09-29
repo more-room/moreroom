@@ -1,11 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { TopBar } from '../../../components/TopBar';
+import { TopBar } from '../../../../components/TopBar';
+import { Progress } from '../../../../components/Progress';
+import { Transition } from '../../../../components/common/Transition';
 import { EmailVerification } from './EmailVerification';
-import { Progress } from '../../../components/Progress';
-import { Transition } from '../../../components/common/Transition';
 import { Password } from './Password';
+
 
 export const EditPassword = () => {
   const nav = useNavigate();

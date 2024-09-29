@@ -1,16 +1,16 @@
 /** @jsxImportSource @emotion/react */
 import React, { useState } from 'react';
-import { Typography } from '../../../../components/Typography';
-import { CssTextField } from '../../../Signup/AccountInfo';
+import { Typography } from '../../../../../components/Typography';
+import { CssTextField } from '../../../../Signup/AccountInfo';
 import {
   btnCss,
   containerCss,
   inputCss,
-} from '../../../Signup/AccountInfo/styles';
-import { Button } from '../../../../components/Button';
+} from '../../../../Signup/AccountInfo/styles';
+import { Button } from '../../../../../components/Button';
 import { FormHelperText } from '@mui/material';
-import { isEmail, sendEmail, verifyCode } from '../../../../apis/authApi';
-import { validateEmail } from '../../../../utils/validationUtils';
+import { isEmail, sendEmail, verifyCode } from '../../../../../apis/authApi';
+import { validateEmail } from '../../../../../utils/validationUtils';
 import { codeInputCss, nextStepBtnCss } from './styles';
 
 interface UserDataFormProps {
@@ -40,14 +40,13 @@ export const EmailVerification = ({ onSubmit }: UserDataFormProps) => {
     } catch (err) {
       setEmailError('이미 존재하는 이메일입니다.');
       sendNumber();
-      setStep(1)
+      setStep(1);
     }
   };
 
   const sendNumber = async () => {
     try {
       await sendEmail(email);
-      
     } catch (err) {
       console.log('에러:', err);
     }
@@ -56,7 +55,7 @@ export const EmailVerification = ({ onSubmit }: UserDataFormProps) => {
   const hadleCode = async () => {
     try {
       await verifyCode(email, code);
-      setStep(2)
+      setStep(2);
     } catch (err) {
       console.log(email, code, err);
       setEmailcodeError('인증번호가 일치하지 않습니다.');
@@ -96,7 +95,7 @@ export const EmailVerification = ({ onSubmit }: UserDataFormProps) => {
         <FormHelperText error id="component-error-text">
           {/* {emailError} */}
         </FormHelperText>
-        <div css={[inputCss, codeInputCss(step)]} >
+        <div css={[inputCss, codeInputCss(step)]}>
           <div style={{ flex: '1' }}>
             <CssTextField
               fullWidth

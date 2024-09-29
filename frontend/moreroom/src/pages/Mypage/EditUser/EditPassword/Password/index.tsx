@@ -1,17 +1,17 @@
 /** @jsxImportSource @emotion/react */
 import { FormHelperText } from '@mui/material';
 import React, { useState } from 'react';
-import { Button } from '../../../../components/Button';
+import { Button } from '../../../../../components/Button';
 import {
   btnCss,
   containerCss,
   inputCss,
-} from '../../../Signup/AccountInfo/styles';
-import { CssTextField } from '../../../Signup/AccountInfo';
-import { Typography } from '../../../../components/Typography';
+} from '../../../../Signup/AccountInfo/styles';
+import { CssTextField } from '../../../../Signup/AccountInfo';
+import { Typography } from '../../../../../components/Typography';
 import { useNavigate } from 'react-router-dom';
-import { validatePassword } from '../../../../utils/validationUtils';
-import { pwdChange } from '../../../../apis/mypageApi';
+import { validatePassword } from '../../../../../utils/validationUtils';
+import { pwdChange } from '../../../../../apis/mypageApi';
 
 export const Password = () => {
   const nav = useNavigate();
@@ -24,13 +24,13 @@ export const Password = () => {
   // 비밀번호 유효성 검사
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
-    console.log(password)
+    console.log(password);
     setPasswordError(validatePassword(e.target.value));
   };
 
   const handlePasswordCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCheckPassword(e.target.value);
-    console.log(checkPassword)
+    console.log(checkPassword);
     if (checkPassword.length === 0) {
       setPasswordCheckError('비밀번호를 입력해주세요');
     } else if (password !== checkPassword) {
@@ -41,7 +41,7 @@ export const Password = () => {
   const goPwdCheck = async () => {
     try {
       await pwdChange(password, checkPassword);
-      nav('/mypage')
+      nav('/mypage');
     } catch (err) {
       console.log(err);
     }

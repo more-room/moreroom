@@ -69,3 +69,11 @@ export const pwdChange = (newPassword: string, newPasswordCheck: string) => {
     },
   });
 };
+
+// 마이페이지 프로필 조회
+export const getMyReview = () => {
+  return api({
+    url: '/api/review/member',
+    method: 'get',
+  });
+};
