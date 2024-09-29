@@ -17,6 +17,10 @@ import {
   validatePassword,
 } from '../../../utils/validationUtils';
 
+interface UserDataFormProps {
+  onSubmit: () => void;
+}
+
 export const CssTextField = styled(TextField)({
   '& label': {
     color: '#fff',
@@ -53,7 +57,7 @@ export const CssTextField = styled(TextField)({
     },
 });
 
-export const AccountInfo = () => {
+export const AccountInfo = ({ onSubmit }: UserDataFormProps) => {
   const nav = useNavigate();
   const [email, setEmail] = useState<string>('');
   const [code, setCode] = useState<string>('');
@@ -101,7 +105,8 @@ export const AccountInfo = () => {
     // 현재 스토어에 잘 저장되어있는 지 확인
     const curdata = useSignUpStore.getState();
     console.log('현재 데이터:', curdata);
-    nav('/signup/profileinfo');
+    // nav('/signup/profileinfo');
+    onSubmit()
   };
   const isEmailed = async () => {
     try {

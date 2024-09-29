@@ -4,6 +4,10 @@ import { TopBar } from '../../components/TopBar';
 import { useNavigate } from 'react-router-dom';
 import { Progress } from '../../components/Progress';
 import { AccountInfo } from './AccountInfo';
+import { Transition } from '../../components/common/Transition';
+import { Done } from './Done';
+import { GenreInfo } from './GenreInfo';
+import { ProfileInfo } from './ProfileInfo';
 
 export const Signup = () => {
   const nav = useNavigate();
@@ -17,8 +21,22 @@ export const Signup = () => {
           backHandler={() => nav(-1)}
         />
       </TopBar>
-      <Progress color="primary" max={4} size="md" value={step+1} variant="rounded" />
-      <AccountInfo />
+      <Progress
+        color="primary"
+        max={4}
+        size="md"
+        value={step + 1}
+        variant="rounded"
+      />
+      <Transition
+        data-key={step.toString()}
+        // wrapperCss={{ padding: '20px' }} // 간단한 스타일 적용
+      >
+        <AccountInfo key={0} onSubmit={() => setStep(1)} />
+        <ProfileInfo key={1} onSubmit={() => setStep(2)} />
+        <GenreInfo key={2} onSubmit={() => setStep(3)} />
+        <Done key={3} />
+      </Transition>
     </div>
   );
 };

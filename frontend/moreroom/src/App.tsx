@@ -13,9 +13,6 @@ import { Profile } from './pages/Mypage/Profile';
 import { EditProfile } from './pages/Mypage/EditProfile';
 import { EditHashTag } from './pages/Mypage/EditHashTag';
 import { ThemeDetail } from './pages/Themes/ThemeDetail';
-import { Done } from './pages/Signup/Done';
-import { ProfileInfo } from './pages/Signup/ProfileInfo';
-import { GenreInfo } from './pages/Signup/GenreInfo';
 import { CafeList } from './pages/Cafes/CafeList';
 import { CafeDetail } from './pages/Cafes/CafeDetail';
 import { ChatingRoom } from './pages/Chating/Chatingroom';
@@ -24,9 +21,8 @@ import { HistoryList } from './pages/History/HistoryList';
 import { HistoryDetail } from './pages/History/HistoryDetail';
 import { HistoryWrite } from './pages/History/HistoryWrite';
 import { EditPassword } from './pages/Mypage/EditPassword';
-import { Password } from './pages/Mypage/EditPassword/Password';
 import { FindPwd } from './pages/Login/FindPwd';
-import { PwdDone } from './pages/Login/FindPwd/Done';
+import { PwdDone } from './pages/Login/FindPwd/PwdDone';
 
 function App() {
   const modalStore = useModalStore();
@@ -38,9 +34,6 @@ function App() {
         <Route path="/themes" element={<ThemeList />} />
         <Route path="/theme/detail" element={<ThemeDetail />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/signup/profileinfo" element={<ProfileInfo />} />
-        <Route path="/signup/genreinfo" element={<GenreInfo />} />
-        <Route path="/signup/done" element={<Done />} />
         <Route path="/cafes" element={<CafeList />} />
         <Route path="/cafe/detail" element={<CafeDetail />} />
         <Route path="/login" element={<Login />} />
@@ -52,7 +45,7 @@ function App() {
         <Route path="/mypage/profile/edit" element={<EditProfile />} />
         <Route path="/mypage/hashtag/edit" element={<EditHashTag />} />
         <Route path="/mypage/password/edit" element={<EditPassword />} />
-        <Route path="/mypage/password/edit2" element={<Password />} />
+
         <Route path="/chating" element={<Chating />} />
         <Route path="/chatingroom/:partyId" element={<ChatingRoom />} />
         <Route path="/roomdetail/:partyId" element={<Roomdetail />} />

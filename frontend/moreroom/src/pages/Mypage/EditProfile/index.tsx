@@ -2,29 +2,30 @@
 import React, { useState } from 'react';
 import { TopBar } from '../../../components/TopBar';
 import { useNavigate } from 'react-router-dom';
-import {
-  profileCss,
-  manageInfoContainerCss,
-  textFieldCss,
-} from '../Profile/styles';
 import { Typography } from '../../../components/Typography';
 import { Button } from '../../../components/Button';
 import { UserCircleIcon } from '@heroicons/react/24/solid';
-import { styled, TextField } from '@mui/material';
-import { containerCss, nicknameCss } from './styles';
+import { FormHelperText, styled, TextField } from '@mui/material';
+import {
+  chipItemCss,
+  containerCss,
+  contentCss,
+  nicknameCss,
+  filterCss,
+} from './styles';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { updateHashtag, updateUserInfo } from '../../../apis/mypageApi';
+import { getMyInfo, updateHashtag, updateUserInfo } from '../../../apis/mypageApi';
 import { isNickname } from '../../../apis/authApi';
 import { CssTextField } from '../../Signup/AccountInfo';
 import { btnCss, inputCss } from '../../Signup/AccountInfo/styles';
 import { validateNickname } from '../../../utils/validationUtils';
-import { chipItemCss, filterCss } from '../../Signup/ProfileInfo/styles';
 import { FilterChip } from '../../../components/FilterChip';
 import { getRegions } from '../../../apis/infoApi';
 import { useSearchThemesStore } from '../../../stores/themeStore';
 import { IRegionCommon, IRegionItem } from '../../../types/infoTypes';
 import { useModal } from '../../../hooks/useModal';
 import { Selectedtheme } from '../../../modals/mypage/Selectedtheme';
+import { SelectedGenre } from '../../../modals/mypage/SelectedGenre';
 
 export const EditProfile = () => {
   const nav = useNavigate();
@@ -34,11 +35,20 @@ export const EditProfile = () => {
   const [nicknameError, setNicknameError] = useState<string>('');
   const searchThemesStore = useSearchThemesStore();
   const modal = useModal();
+  const [birthYear, setBirthYear] = useState<string>('');
+  const [birthMonth, setBirthMonth] = useState<string>('');
+  const [birthDay, setBirthDay] = useState<string>('');
+  
   const regionQuery = useQuery({
     queryKey: ['region'],
     queryFn: async () => await getRegions(),
   });
 
+  const MyInfoQuery = useQuery({
+    queryKey: ['myinfo'],
+    queryFn: async () => await getMyInfo(),
+  });
+  const [room, setRoom] = useState<string>(MyInfoQuery?.data?.data.clearRoom || '')
   const { mutate } = useMutation({
     mutationFn: async ({
       newNickName,
@@ -46,14 +56,16 @@ export const EditProfile = () => {
       birth,
       newRegionId,
       clearRoom,
+      genreIdList,
     }: {
       newNickName: string;
-      gender: string;
+      gender: 'M' | 'F'; // 성별은 'M' 또는 'F'만 가능하도록 타입 정의
       birth: string;
-      newRegionId: string;
+      newRegionId: string; // newRegionId의 타입을 string으로 설정
       clearRoom: number;
+      genreIdList: number[]; // genreIdList는 number[]로 설정
     }) =>
-      await updateUserInfo(newNickName, gender, birth, newRegionId, clearRoom),
+      await updateUserInfo(newNickName, gender, birth, genreIdList, newRegionId, clearRoom),
     onSuccess: () => {
       console.log('변경 성공');
       nav('/mypage');
@@ -90,21 +102,28 @@ export const EditProfile = () => {
       setNicknameError('이미 존재하는 닉네임입니다.');
     }
   };
-  const edithandler = (
-    newNickName: string,
-    gender: string,
-    birth: string,
-    newRegionId: string,
-    clearRoom: number,
-  ) => {
-    mutate({
-      newNickName: newNickName,
-      gender: gender,
-      birth: birth,
-      newRegionId: newRegionId,
-      clearRoom: clearRoom,
-    });
-    nav('/mypage');
+  const handleEdit = async () => {
+    // 생년월일을 YYYY-MM-DD 형식으로 변환
+    const birth = `${birthYear}-${birthMonth.padStart(2, '0')}-${birthDay.padStart(2, '0')}`;
+  
+    // 지역 ID를 가져오기
+    const newRegionId = searchThemesStore.filters.region || ''; // 기본값을 빈 문자열로 설정
+  
+    // 장르 ID 리스트를 가져오기
+    const genreIdList = searchThemesStore.filters.genreList || []; // 장르가 없을 경우 빈 배열로 설정
+  
+    if (gender) { // gender가 정의된 경우에만 mutate 호출
+      mutate({
+        newNickName: nickname,
+        gender: gender,
+        birth: birth,
+        newRegionId: newRegionId,
+        clearRoom: parseInt(room) || 0, // 방 수는 숫자로 변환
+        genreIdList: genreIdList,
+      });
+    } else {
+      alert('성별을 선택해 주세요.');
+    }
   };
 
   const getText = () => {
@@ -125,6 +144,80 @@ export const EditProfile = () => {
     return str || '선택안함';
   };
 
+  const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    // 숫자만 허용
+    const onlyNumber = value.replace(/[^0-9]/g, '');
+    
+    // 4자리 이상 입력 후 범위 체크
+    if (onlyNumber.length === 4) {
+      const year = parseInt(onlyNumber, 10);
+      if (year < 1924) {
+        setBirthYear('1924'); // 1924년으로 설정
+      } else if (year > 2024) {
+        setBirthYear('2024'); // 2024년으로 설정
+      } else {
+        setBirthYear(onlyNumber); // 유효한 연도는 그대로 설정
+      }
+    } else {
+      setBirthYear(onlyNumber); // 4자리 미만일 때는 그대로 입력
+    }
+  };
+  const handleMonthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    // 숫자만 허용
+    const onlyNumber = value.replace(/[^0-9]/g, '');
+    const month = parseInt(onlyNumber, 10);
+    
+    // 2자리 미만일 때는 그대로 입력
+    if (onlyNumber.length <= 2) {
+      setBirthMonth(onlyNumber);
+    }
+  
+    // 1~12 범위 제한
+    if (onlyNumber.length === 2) {
+      if (month < 1) {
+        setBirthMonth('01'); // 01로 설정
+      } else if (month > 12) {
+        setBirthMonth('12'); // 12로 설정
+      } else {
+        setBirthMonth(onlyNumber); // 유효한 월은 그대로 설정
+      }
+    }
+  };
+  
+  const handleDayChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    // 숫자만 허용
+    const onlyNumber = value.replace(/[^0-9]/g, '');
+    const day = parseInt(onlyNumber, 10);
+    
+    // 2자리 미만일 때는 그대로 입력
+    if (onlyNumber.length <= 2) {
+      setBirthDay(onlyNumber);
+    }
+  
+    // 1~31 범위 제한
+    if (onlyNumber.length === 2) {
+      if (day < 1) {
+        setBirthDay('01'); // 01로 설정
+      } else if (day > 31) {
+        setBirthDay('31'); // 31로 설정
+      } else {
+        setBirthDay(onlyNumber); // 유효한 일은 그대로 설정
+      }
+    }
+  };
+
+  const handleroom = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    // 숫자만 허용
+    const onlyNumber = value.replace(/[^0-9]/g, '');
+    setRoom(onlyNumber); // 수정된 값으로 상태 업데이트
+  };
+
+
+
   return (
     <div>
       <TopBar>
@@ -135,8 +228,8 @@ export const EditProfile = () => {
         />
       </TopBar>
       <div css={containerCss}>
-        <UserCircleIcon css={profileCss} />
-        <div css={manageInfoContainerCss}>
+        {/* <UserCircleIcon css={profileCss} /> */}
+        <div css={contentCss}>
           <div css={inputCss}>
             <div style={{ flex: '1' }}>
               <CssTextField
@@ -160,8 +253,11 @@ export const EditProfile = () => {
               확인
             </Button>
           </div>
-          <Typography color="light" size={0.5} weight={400}>
-            {namemsg}
+          <FormHelperText error id="component-error-text">
+            {nicknameError}
+          </FormHelperText>
+          <Typography color="light" scale="400" size={1} weight={500}>
+            성별
           </Typography>
           <div css={filterCss}>
             <FilterChip
@@ -184,6 +280,32 @@ export const EditProfile = () => {
             </FilterChip>
           </div>
           <Typography color="light" scale="400" size={1} weight={500}>
+            생년월일
+          </Typography>
+          <div css={filterCss}>
+            <CssTextField
+              fullWidth
+              label="YYYY"
+              id="year-input"
+              value={birthYear}
+              onChange={handleYearChange}
+            />
+            <CssTextField
+              fullWidth
+              label="MM"
+              id="month-input"
+              value={birthMonth}
+              onChange={handleMonthChange}
+            />
+            <CssTextField
+              fullWidth
+              label="DD"
+              id="day-input"
+              value={birthDay}
+              onChange={handleDayChange}
+            />
+          </div>
+          <Typography color="light" scale="400" size={1} weight={500}>
             지역(선택)
           </Typography>
           <div css={filterCss}>
@@ -200,21 +322,35 @@ export const EditProfile = () => {
           <Typography color="light" scale="400" size={1} weight={500}>
             선호하는 장르 선택하기
           </Typography>
-          <Button rounded={0.5} variant="outlined" handler={() => {}} fullwidth>
-            선호하는 장르 수정
-          </Button>
-          <CssTextField
-            fullWidth
-            // error={!!nicknameError}
-            label="클리어방 수"
-            id="custom-css-outlined-input"
-            placeholder="클리어한 방 수를 입력해주세요."
-            value={nickname}
-            onChange={handleNicknameChange}
-          />
+          <div css={filterCss}>
+            <Button
+              style={{ padding: '0.8rem' }}
+              rounded={0.5}
+              fullwidth
+              variant="outlined"
+              handler={() => modal.show(<SelectedGenre />)}
+            >
+              선호하는 장르 수정
+            </Button>
+          </div>
+          <Typography color="light" scale="400" size={1} weight={500}>
+            클리어 방 수
+          </Typography>
+          <div css={filterCss}>
+            <div style={{ flex: '1' }}>
+              <CssTextField
+                fullWidth
+                // error={!!nicknameError}
+                label="클리어 방 수"
+                id="custom-css-outlined-input"
+                value={room}
+                onChange={handleroom}
+              />
+            </div>
+          </div>
           <Button
             rounded={0.5}
-            handler={() => edithandler('D206', 'F', '2000-10-30', '22222', 11)}
+            handler={handleEdit}
             fullwidth
           >
             수정하기

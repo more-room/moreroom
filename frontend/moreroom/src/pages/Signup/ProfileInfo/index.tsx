@@ -17,7 +17,11 @@ import { useQuery } from '@tanstack/react-query';
 import { getRegions } from '../../../apis/infoApi';
 import { IRegionCommon, IRegionItem } from '../../../types/infoTypes';
 
-export const ProfileInfo = () => {
+interface VerificationProps {
+  onSubmit: () => void;
+}
+
+export const ProfileInfo = ({ onSubmit }: VerificationProps) => {
   const nav = useNavigate();
   const [gender, setGender] = useState<'M' | 'F' | undefined>(undefined);
   const [birthYear, setBirthYear] = useState<string>('');
@@ -43,7 +47,8 @@ export const ProfileInfo = () => {
     const curdata = useSignUpStore.getState();
     console.log('현재 데이터:', curdata);
 
-    nav('/signup/genreinfo');
+    // nav('/signup/genreinfo');
+    onSubmit();
   };
 
   const getText = () => {
@@ -78,14 +83,6 @@ export const ProfileInfo = () => {
 
   return (
     <div>
-      <TopBar>
-        <TopBar.Title
-          type="default"
-          title="회원가입"
-          backHandler={() => nav(-1)}
-        />
-      </TopBar>
-      <Progress color="primary" max={4} size="md" value={2} variant="rounded" />
       <div css={containerCss}>
         <Typography color="light" scale="400" size={1} weight={500}>
           성별

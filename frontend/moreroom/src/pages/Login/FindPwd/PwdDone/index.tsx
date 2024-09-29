@@ -10,13 +10,6 @@ export const PwdDone = () => {
   const nav = useNavigate();
   return (
     <>
-      <TopBar>
-        <TopBar.Title
-          type="default"
-          title="비밀번호 찾기"
-          backHandler={() => nav(-1)}
-        />
-      </TopBar>
       <div css={containerCss}>
         <Typography color="light" size={1} weight={500}>
           email로 임시 비밀번호를 발송하였습니다.

@@ -9,8 +9,6 @@ import {
 } from '../../../Signup/AccountInfo/styles';
 import { CssTextField } from '../../../Signup/AccountInfo';
 import { Typography } from '../../../../components/Typography';
-import { TopBar } from '../../../../components/TopBar';
-import { Progress } from '../../../../components/Progress';
 import { useNavigate } from 'react-router-dom';
 import { validatePassword } from '../../../../utils/validationUtils';
 import { pwdChange } from '../../../../apis/mypageApi';
@@ -26,14 +24,16 @@ export const Password = () => {
   // 비밀번호 유효성 검사
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
+    console.log(password)
     setPasswordError(validatePassword(e.target.value));
   };
 
   const handlePasswordCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCheckPassword(e.target.value);
+    console.log(checkPassword)
     if (checkPassword.length === 0) {
       setPasswordCheckError('비밀번호를 입력해주세요');
-    } else if (checkPassword !== password) {
+    } else if (password !== checkPassword) {
       setPasswordCheckError('입력하신 비밀번호랑 일치하지 않습니다.');
     }
   };
@@ -49,15 +49,6 @@ export const Password = () => {
 
   return (
     <>
-      <TopBar>
-        <TopBar.Title
-          type="default"
-          title="비밀번호 변경"
-          backHandler={() => nav(-1)}
-        />
-      </TopBar>
-      <Progress color="primary" max={2} size="md" value={2} variant="rounded" />
-
       <div css={containerCss}>
         <Typography color="light" size={1} weight={500}>
           비밀번호를 입력해주세요.
@@ -91,7 +82,7 @@ export const Password = () => {
           {passwordCheckError}
         </FormHelperText>
         <Button
-          css={btnCss}
+          css={[btnCss]}
           style={{ margin: '2rem 0' }}
           fullwidth
           color="primary"

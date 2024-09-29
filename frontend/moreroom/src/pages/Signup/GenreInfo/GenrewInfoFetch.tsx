@@ -14,7 +14,11 @@ import { Typography } from '../../../components/Typography';
 import { useSignUpStore } from '../../../stores/signupStore';
 import { userSignup } from '../../../apis/authApi';
 
-export const GenreInfoFetch = () => {
+interface VerificationProps {
+  onSubmit: () => void;
+}
+
+export const GenreInfoFetch = ({ onSubmit }: VerificationProps) => {
   const nav = useNavigate();
   const { genreIdList, setSignUpData } = useSignUpStore();
   const genreQuery = useSuspenseQuery({
@@ -71,7 +75,8 @@ export const GenreInfoFetch = () => {
         regionId,
       );
       console.log(res);
-      nav('/signup/done');
+      // nav('/signup/done');
+      onSubmit();
     } catch (err) {
       console.log(err);
     }
@@ -83,14 +88,6 @@ export const GenreInfoFetch = () => {
 
   return (
     <div>
-      <TopBar>
-        <TopBar.Title
-          type="default"
-          title="회원가입"
-          backHandler={() => nav(-1)}
-        />
-      </TopBar>
-      <Progress color="primary" max={4} size="md" value={3} variant="rounded" />
       <div css={containerCss}>
         <Typography color="light" size={1} weight={700}>
           선호 장르(다중 선택 가능)

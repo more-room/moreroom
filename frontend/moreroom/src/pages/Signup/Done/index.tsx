@@ -13,14 +13,6 @@ export const Done = () => {
   const nav = useNavigate();
   return (
     <>
-      <TopBar>
-        <TopBar.Title
-          type="default"
-          title="회원가입"
-          backHandler={() => nav(-1)}
-        />
-      </TopBar>
-      <Progress color="primary" max={4} size="md" value={4} variant="rounded" />
       <div css={containerCss}>
         <Icon color="light" size={5}>
           <CheckCircleIcon />

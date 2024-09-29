@@ -8,6 +8,14 @@ export const getMyInfo = () => {
   });
 };
 
+// 마이페이지 프로필 조회
+export const getMypage = () => {
+  return api({
+    url: '/api/auth/member/mypage',
+    method: 'get',
+  });
+};
+
 // 유저페이지(다른 사람 정보)
 export const getUserInfo = (memberId: number) => {
   return api({
@@ -21,6 +29,7 @@ export const updateUserInfo = (
   newNickname: string,
   gender: string,
   birth: string,
+  genreIdList: number[],
   newRegionId: string,
   clearRoom: number,
 ) => {
@@ -32,6 +41,7 @@ export const updateUserInfo = (
       gender: gender,
       birth: birth,
       regionId: newRegionId,
+      genreIdList: genreIdList,
       clearRoom: clearRoom,
     },
   });
