@@ -25,6 +25,7 @@ import { HistoryDetail } from './pages/History/HistoryDetail';
 import { HistoryWrite } from './pages/History/HistoryWrite';
 import { Party } from './pages/Party';
 import { RegisterParty } from './pages/Party/RegisterParty';
+import { SearchTheme } from './pages/Party/RegisterParty/SearchTheme';
 
 function App() {
   const modalStore = useModalStore();
@@ -45,6 +46,7 @@ function App() {
 
         <Route path="/party" element={<Party />} />
         <Route path="/party/register" element={<RegisterParty />} />
+        <Route path="/party/theme" element={<SearchTheme />} />
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/mypage/profile" element={<Profile />} />
         <Route path="/mypage/profile/edit" element={<EditProfile />} />
