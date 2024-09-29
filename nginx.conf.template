@@ -15,9 +15,31 @@ http  {
     server {
         listen 80;
         server_name ${SERVER_NAME};
+
+        # Let's Encrypt 인증서 발급을 위한 설정
+        location /.well-known/acme-challenge/ {
+            allow all;
+            root /var/www/certbot;
+        }
+
+        # HTTP를 HTTPS로 리다이렉트
+        location / {
+            return 301 https://$host$request_uri;
+        }
+    }
+
+    server {
+        listen 443 ssl;
+        server_name ${SERVER_NAME};
         server_tokens off;
 
+        ssl_certificate /etc/letsencrypt/live/${SERVER_NAME}/fullchain.pem;
+        ssl_certificate_key /etc/letsencrypt/live/${SERVER_NAME}/privkey.pem;
+        include /etc/letsencrypt/options-ssl-nginx.conf;
+        ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+
         # 보안 헤더
+        add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
         add_header X-Content-Type-Options nosniff;
         add_header X-Frame-Options DENY;
         add_header X-XSS-Protection "1; mode=block";
@@ -32,115 +54,23 @@ http  {
             proxy_set_header X-Forwarded-Proto $scheme;
         }
 
-        location /  {
+        # 소켓 설정
+        location /${CONTEXT_PATH}/ws {
+                proxy_pass http://${DOCKER_TAG_BE}:${BACKEND_PORT};
+                proxy_http_version 1.1;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection "upgrade";
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+                proxy_read_timeout 20m;
+        }
+
+        location / {
             root /usr/share/nginx/html;
             index index.html index.htm;
             try_files $uri $uri/ /index.html;
         }
-
-        # 정적 자산 (JS, CSS, 이미지 등)
-        location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg)$ {
-            root /usr/share/nginx/html;
-            expires 5m;  # 5분
-            add_header Cache-Control "public, max-age=300, must-revalidate";
-        }
-
-        # Let's Encrypt 인증서 발급을 위한 설정
-        #location /.well-known/acme-challenge/ {
-        #    allow all;
-        #    root /var/www/certbot;
-        #}
-
-        # HTTP를 HTTPS로 리다이렉트
-        #location / {
-        #    return 301 https://$host$request_uri;
-        #}
     }
-
-    #server {
-    #    listen 443 ssl;
-    #    server_name ${SERVER_NAME};
-    #    server_tokens off;
-
-    #    ssl_certificate /etc/letsencrypt/live/${SERVER_NAME}/fullchain.pem;
-    #    ssl_certificate_key /etc/letsencrypt/live/${SERVER_NAME}/privkey.pem;
-    #    include /etc/letsencrypt/options-ssl-nginx.conf;
-    #    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
-
-        # 보안 헤더
-    #    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
-    #    add_header X-Content-Type-Options nosniff;
-    #    add_header X-Frame-Options DENY;
-    #    add_header X-XSS-Protection "1; mode=block";
-        # add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'";
-    #    add_header Referrer-Policy "no-referrer-when-downgrade";
-
-    #    location /${CONTEXT_PATH}/ {
-    #        proxy_pass http://${DOCKER_TAG_BE}:${BACKEND_PORT};
-    #        proxy_set_header Host $host;
-    #        proxy_set_header X-Real-IP $remote_addr;
-    #        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    #        proxy_set_header X-Forwarded-Proto $scheme;
-    #    }
-
-        # #소켓 설정
-        # location /${CONTEXT_PATH}/ws {
-        #         proxy_pass http://${DOCKER_TAG_BE}:${BACKEND_PORT};
-        #         proxy_http_version 1.1;
-        #         proxy_set_header Upgrade $http_upgrade;
-        #         proxy_set_header Connection "upgrade";
-        #         proxy_set_header Host $host;
-        #         proxy_set_header X-Real-IP $remote_addr;
-        #         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        #         proxy_set_header X-Forwarded-Proto $scheme;
-        #         proxy_read_timeout 20m;
-        # }
-
-        ## 개발용 ####################
-        # HTML (index.html)
-        # location / {
-        #     root /usr/share/nginx/html;
-        #     try_files $uri /index.html;
-        #     expires -1;
-        #     add_header Cache-Control "no-store, no-cache, must-revalidate, proxy-revalidate";
-        # }
-
-        # # 정적 자산 (JS, CSS, 이미지 등)
-        # location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg)$ {
-        #     root /usr/share/nginx/html;
-        #     expires 5m;  # 5분
-        #     add_header Cache-Control "public, max-age=300, must-revalidate";
-        # }
-
-        ## 배포용 ####################
-        # HTML (index.html)
-        #location / {
-        #    root /usr/share/nginx/html;
-        #    try_files $uri /index.html;
-        #    expires -1;
-        #    add_header Cache-Control "no-store, no-cache, must-revalidate, proxy-revalidate";
-        #}
-
-        # 정적 자산 (JS, CSS)
-        #location ~* \.(js|css)$ {
-        #    root /usr/share/nginx/html;
-        #    expires 7d;
-        #    add_header Cache-Control "public, max-age=604800, immutable";
-        #}
-
-        # 이미지 및 아이콘
-        #location ~* \.(png|jpg|jpeg|gif|ico|svg)$ {
-        #    root /usr/share/nginx/html;
-        #    expires 30d;
-        #    add_header Cache-Control "public, max-age=2592000, immutable";
-        #}
-
-        # location /images/ {
-        #     root /usr/share/nginx/html;
-        #     try_files $uri $uri/ =404;
-        #     autoindex off;  # 디렉토리 리스팅 방지
-        #     expires 7d;  # 캐싱 설정
-        #     add_header Cache-Control "public";  # 캐싱 설정
-        # }
-    # }
 }

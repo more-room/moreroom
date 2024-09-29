@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.moreroom.global.dto.RedisUserInfo;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -66,6 +68,23 @@ public class RedisUtil {
             return objectMapper.readValue(infoJson, new TypeReference<>() {});
         }
         return null;
+    }
+
+    // RedisUserInfo list 꺼내기
+    public List<RedisUserInfo> getAllUserInfo(List<String> keys) throws JsonProcessingException {
+        List<String> infoJsonList = redisTemplate.opsForValue().multiGet(keys);
+
+        List<RedisUserInfo> result = new ArrayList<>();
+        if (infoJsonList != null) {
+            for (String s : infoJsonList) {
+                if (s == null) {
+                    result.add(null);
+                } else {
+                    result.add(objectMapper.readValue(s, new TypeReference<>(){}));
+                }
+            }
+        }
+        return result;
     }
 
 }

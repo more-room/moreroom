@@ -9,6 +9,9 @@ import com.moreroom.domain.member.dto.request.PasswordChangeDTO;
 import com.moreroom.domain.member.dto.response.MemberProfileResponseDTO;
 import com.moreroom.domain.member.dto.response.MemberResponseDTO;
 import com.moreroom.domain.member.entity.Member;
+import com.moreroom.domain.member.exception.MemberExistsEmailException;
+import com.moreroom.domain.member.exception.MemberExistsNicknameException;
+import com.moreroom.domain.member.exception.MemberNotFoundException;
 import com.moreroom.domain.member.service.MemberService;
 import com.moreroom.global.util.FindMemberService;
 import jakarta.servlet.http.Cookie;
@@ -25,6 +28,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -67,11 +71,13 @@ public class MemberController {
             // 쿠키 정보 저장
             Cookie idCookie = new Cookie("memberId",
                 String.valueOf(findMemberService.findCurrentMember()));
-//            idCookie.setHttpOnly(true);
-//            idCookie.setSecure(true);
-            idCookie.setMaxAge(60 * 60 * 24 * 7);
+            idCookie.setHttpOnly(true);
+            idCookie.setSecure(true);
+            idCookie.setMaxAge(60 * 60 * 24);
             idCookie.setPath("/");
-//            idCookie.setDomain("localhost");
+            idCookie.setDomain("localhost");
+            // 개발 환경 연결시 아래 코드로 수정
+//            idCookie.setDomain("j11d206.p.ssafy.io");
             response.addCookie(idCookie);
 
             // 인증된 후 세션에 해당 인증 정보 저장
@@ -112,10 +118,9 @@ public class MemberController {
         MemberResponseDTO memberResponseDTO = memberService.getMemberInformation();
 
         if (memberResponseDTO != null) {
-            return new ResponseEntity<>(memberResponseDTO,
-                HttpStatus.OK);
+            return new ResponseEntity<>(memberResponseDTO, HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        throw new MemberNotFoundException();
     }
 
     @GetMapping("/mypage")
@@ -127,7 +132,7 @@ public class MemberController {
             return new ResponseEntity<>(memberProfileResponseDTO,
                 HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        throw new MemberNotFoundException();
     }
 
     @GetMapping("/{memberId}")
@@ -136,11 +141,9 @@ public class MemberController {
         MemberProfileResponseDTO memberProfileResponseDTO = memberService.findByMemberId(memberId);
 
         if (memberProfileResponseDTO != null) {
-            return new ResponseEntity<>(memberProfileResponseDTO,
-                HttpStatus.OK);
+            return new ResponseEntity<>(memberProfileResponseDTO, HttpStatus.OK);
         }
-
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        throw new MemberNotFoundException();
     }
 
     @PatchMapping("")
@@ -155,8 +158,7 @@ public class MemberController {
         Map<String, String> response = new HashMap<>();
 
         if (memberService.checkExistEmail(emailDTO.getEmail()).equals(Boolean.TRUE)) {
-            response.put("duplicated", "True");
-            return new ResponseEntity<>(response, HttpStatus.OK);
+            throw new MemberExistsEmailException();
         }
         else {
             response.put("duplicated", "False");
@@ -169,8 +171,7 @@ public class MemberController {
         Map<String, String> response = new HashMap<>();
 
         if (memberService.checkExistNickname(nicknameDTO.getNickname()).equals(Boolean.TRUE)) {
-            response.put("duplicated", "True");
-            return new ResponseEntity<>(response, HttpStatus.OK);
+            throw new MemberExistsNicknameException();
         } else {
             response.put("duplicated", "False");
             return new ResponseEntity<>(response, HttpStatus.OK);
@@ -184,9 +185,16 @@ public class MemberController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/hashtag")
+    @PatchMapping("/hashtag")
     public ResponseEntity<Member> hashtagChange(@RequestBody HashtagDTO hashtagDTO) {
         memberService.hashtagChange(hashtagDTO);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("")
+    public ResponseEntity<Member> deleteMember() {
+        memberService.deleteMember();
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

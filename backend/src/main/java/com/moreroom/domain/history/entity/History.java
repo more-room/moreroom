@@ -46,7 +46,7 @@ public class History extends BaseEntity {
     private Integer hintCount;
     @Column(length = 2000)
     private String content;
-    private Integer memberLevel;
+    private Float memberLevel;
     @LastModifiedDate
     private LocalDateTime updatedAt;
     @Column(nullable = false)
@@ -57,4 +57,23 @@ public class History extends BaseEntity {
     @Builder.Default
     private boolean successFlag = false;
     private LocalDateTime playDate;
+
+
+    public void changeHistory(Integer memberPlayTime, Integer price, Integer hintCount,
+        String content, Float memberLevel, Integer players, Boolean successFlag,
+        LocalDateTime playDate, LocalDateTime updatedAt) {
+        this.memberPlayTime = memberPlayTime;
+        this.price = price;
+        this.hintCount = hintCount;
+        this.content = content;
+        this.memberLevel = memberLevel;
+        this.players = players;
+        this.successFlag = successFlag;
+        this.playDate = playDate;
+        this.updatedAt = updatedAt;
+    }
+
+    public void deleteHistory() {
+        this.delFlag = true;
+    }
 }

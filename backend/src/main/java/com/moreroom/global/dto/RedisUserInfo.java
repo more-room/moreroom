@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 public class RedisUserInfo {
   private Long memberId;
+  private String email;
   private String nickname;
   private String photo;
 }

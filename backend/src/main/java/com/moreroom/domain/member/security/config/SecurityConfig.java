@@ -40,8 +40,8 @@ public class SecurityConfig {
                     CorsConfiguration config = new CorsConfiguration();
                     config.setAllowedOrigins(
                         Arrays.asList("http://localhost:8080", "http://localhost:8081", "http://localhost:3000",
-                            "https://localhost:443", "http://localhost:80"));
-                    config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE"));
+                            "https://localhost:443", "http://localhost:80", "https://cdiptangshu.github.io", "https://j11d206.p.ssafy.io"));
+                    config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
                     config.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type", "*"));
                     config.setAllowCredentials(true);
                     return config;

@@ -16,11 +16,18 @@ import com.moreroom.domain.theme.dto.response.ThemeListResponseDto;
 import com.moreroom.domain.theme.dto.response.ThemeListResponseDto.ThemeListComponentDto;
 import com.moreroom.domain.theme.dto.response.ThemeMemberResponseDto;
 import com.moreroom.domain.theme.dto.response.ThemeReviewResponseDto;
+import com.moreroom.domain.theme.dto.response.ThemeSearchTitleResponseDto;
+import com.moreroom.domain.theme.dto.response.ThemeSearchTitleResponseDto.ThemeSearchTitleComponentResponseDto;
 import com.moreroom.domain.theme.entity.Theme;
 import com.moreroom.domain.theme.exception.ThemeNotFoundException;
 import com.moreroom.global.dto.PageResponseDto;
 import com.moreroom.global.repository.QuerydslRepositoryCustom;
+import com.moreroom.global.util.StringUtil;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,6 +47,7 @@ public class ThemeQueryRepository extends QuerydslRepositoryCustom {
         super(theme);
         this.jpaQueryFactory = jpaQueryFactory;
     }
+
 
     public ThemeDetailResponseDto findThemeDetailById(Integer themeId, Long memberId) {
         // 1. theme, review, member, genre 정보 함께 조회
@@ -63,7 +71,7 @@ public class ThemeQueryRepository extends QuerydslRepositoryCustom {
         // 2. 결과 처리
         Tuple result = results.get(0);
         Theme themeResult = result.get(theme);
-        long reviewCount = result.get(review.count().coalesce(0L));
+        long reviewCount = result.get(1, Long.class);
         double reviewScore = result.get(review.score.avg().coalesce(0.0));
         boolean playFlag = result.get(history.isNotNull().coalesce(false)) == null ? false
             : result.get(history.isNotNull().coalesce(false));
@@ -84,6 +92,23 @@ public class ThemeQueryRepository extends QuerydslRepositoryCustom {
         Long memberId) {
         // 1. 테마 조회
         // 동적 쿼리를 만들기 위해 boolean Expression 사용
+        BooleanExpression regionCheck =
+            f.getRegion() != null ? StringUtil.isParent(f.getRegion()) ? region.parentRegionId.eq(
+                f.getRegion()) : region.regionId.eq(f.getRegion()) : null;
+        BooleanExpression genreCheck =
+            f.getGenreList() != null ? genre.genreId.in(f.getGenreList()) : null;
+        BooleanExpression brandCheck =
+            f.getBrandId() != null ? cafe.brand.brandId.eq(f.getBrandId()) : null;
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(eq(f.getLevel(), "level"))
+            .and(eq(f.getPlaytime(), "playtime"))
+            .and(ce(f.getPrice(), "price", "loe"))
+            .and(ce(f.getPeople(), "maxPeople", "goe"))
+            .and(ce(f.getPeople(), "minPeople", "loe"))
+            .and(ce(f.getTitle(), "title", "like"))
+            .and(regionCheck)
+            .and(genreCheck)
+            .and(brandCheck);
         // custom expression (ce) 사용
         // (1) 전체 개수 읽기
         List<Integer> idList = jpaQueryFactory
@@ -94,17 +119,7 @@ public class ThemeQueryRepository extends QuerydslRepositoryCustom {
             .leftJoin(themeGenreMapping)
             .on(themeGenreMapping.theme.themeId.eq(theme.themeId)) // 테마와 장르 매핑 조인
             .innerJoin(genre).on(genre.genreId.eq(themeGenreMapping.genre.genreId)) // 장르 테이블 조인
-            .where(eq(f.getLevel(), "level"),
-                eq(f.getPlaytime(), "playtime"),
-                ce(f.getPrice(), "price", "loe"),
-                ce(f.getPeople(), "maxPeople", "goe"),
-                ce(f.getPeople(), "minPeople", "loe"),
-                ce(f.getTitle(), "title", "like"),
-                f.getGenreList() != null ? genre.genreId.in(f.getGenreList()) : null,
-                // genreList가 null이 아닐 때만 필터링
-                f.getRegion() != null ? region.regionId.eq(f.getRegion()) : null, // regionId 조건 추가
-                f.getBrandId() != null ? cafe.brand.brandId.eq(f.getBrandId()) : null
-            )
+            .where(builder)
             .groupBy(theme.themeId)
             .having(
                 f.getGenreList() != null ? genre.genreId.count().eq((long) f.getGenreList().length)
@@ -124,17 +139,7 @@ public class ThemeQueryRepository extends QuerydslRepositoryCustom {
             .innerJoin(genre).on(genre.genreId.eq(themeGenreMapping.genre.genreId)) // 장르 테이블 조인
             .leftJoin(history).on(history.member.memberId.eq(memberId),
                 history.theme.themeId.eq(theme.themeId))
-            .where(eq(f.getLevel(), "level"),
-                eq(f.getPlaytime(), "playtime"),
-                ce(f.getPrice(), "price", "loe"),
-                ce(f.getPeople(), "maxPeople", "goe"),
-                ce(f.getPeople(), "minPeople", "loe"),
-                ce(f.getTitle(), "title", "like"),
-                f.getGenreList() != null ? genre.genreId.in(f.getGenreList()) : null,
-                // genreList가 null이 아닐 때만 필터링
-                f.getRegion() != null ? region.regionId.eq(f.getRegion()) : null, // regionId 조건 추가
-                f.getBrandId() != null ? cafe.brand.brandId.eq(f.getBrandId()) : null
-            )
+            .where(builder)
             .groupBy(theme, history)
             .having(
                 f.getGenreList() != null ? genre.genreId.count().eq((long) f.getGenreList().length)
@@ -307,4 +312,22 @@ public class ThemeQueryRepository extends QuerydslRepositoryCustom {
         return themeListResponseDto;
     }
 
+    public ThemeSearchTitleResponseDto findAllByTitle(String keyword, PageRequest pageRequest) {
+        List<ThemeSearchTitleComponentResponseDto> list = jpaQueryFactory
+            .select(Projections.constructor(ThemeSearchTitleComponentResponseDto.class,
+                Expressions.numberTemplate(Integer.class, "MIN({0})", theme.themeId), // 첫번째 ID
+                theme.title))
+            .from(theme)
+            .where(
+                ce(keyword, "title", "like")
+            )
+            .groupBy(theme.title)
+            .offset((long) pageRequest.getPageNumber() * pageRequest.getPageSize())
+            .limit(pageRequest.getPageSize())
+            .fetch();
+
+        return ThemeSearchTitleResponseDto.builder()
+            .themeList(list)
+            .build();
+    }
 }

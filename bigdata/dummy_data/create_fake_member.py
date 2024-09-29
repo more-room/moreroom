@@ -305,8 +305,14 @@ adjectives = [
     '신선한', '불안한', '의심스러운', '재빠른', '정확한', '예리한', '단순한', '복잡한', '우아한', '우스운',
     '거대한', '희미한', '명확한', '따뜻한', '서늘한', '촉촉한', '축축한', '건조한', '튼튼한', '깨끗한',
     '약한', '부드러운', '강인한', '탄탄한', '단호한', '엄격한', '느긋한', '상냥한', '친절한', '냉정한',
-    '차가운', '겸손한', '사나운', '예민한', '격렬한', '유쾌한', '무뚝뚝한', '깔끔한', '단정한', '화려한'
+    '차가운', '겸손한', '사나운', '예민한', '격렬한', '유쾌한', '무뚝뚝한', '깔끔한', '단정한', '화려한',
+    '자유로운', '무거운', '가벼운', '매력적인', '재미있는', '독특한', '고급스러운', '평범한', '세련된', '청량한',
+    '섬세한', '힘찬', '기운찬', '거침없는', '정열적인', '참신한', '이국적인', '모험적인', '절망적인', '야심찬',
+    '포근한', '신중한', '선명한', '투명한', '그윽한', '황홀한', '끈기있는', '우아한', '활발한', '긴장된',
+    '편안한', '절대적인', '상쾌한', '맑은', '위대한', '강력한', '황홀한', '모험적인', '풍부한', '우스운',
+    '행운의', '침착한', '불행한', '세련된', '따뜻한', '섬세한', '달콤한', '격렬한', '침울한', '독창적인'
 ]
+
 
 nouns = [
     '바람', '하늘', '구름', '산', '바다', '강', '호수', '숲', '나무', '돌', 
@@ -318,16 +324,52 @@ nouns = [
     '거울', '구두', '모자', '옷', '가방', '손', '눈', '코', '입', '귀', 
     '발', '머리', '어깨', '무릎', '팔', '다리', '가슴', '배', '심장', '손목',
     '안경', '목걸이', '팔찌', '반지', '열쇠고리', '고등어', '상어', '돌고래', '물고기', '개구리',
-    '뱀', '코끼리', '말', '나비', '벌', '개미', '공룡', '호수', '산책로', '정글'
+    '뱀', '코끼리', '말', '나비', '벌', '개미', '공룡', '호수', '산책로', '정글',
+    '태양', '별빛', '은하수', '우주', '행성', '소행성', '은하', '천문대', '자전거', '자동차',
+    '트럭', '오토바이', '전철', '열차', '기차', '기차역', '터미널', '지하철', '비행기', '헬리콥터',
+    '로켓', '우주선', '보트', '요트', '잠수함', '산책로', '정원사', '경치', '전망', '하늘길', 
+    '별자리', '태풍', '폭풍', '번개', '자연', '풍경', '자연재해', '폭포', '강물', '계곡', 
+    '산맥', '숲속', '대양', '대륙', '평원', '고원', '사막', '밀림', '정글', '초원'
 ]
+
 
 
 # 중복된 닉네임과 이메일을 방지하기 위해 생성된 닉네임과 이메일을 저장할 집합
 generated_nicknames = set()
 generated_emails = set()
 
-# 장르와 지역 데이터를 정의 (생략 - 동일)
-# adjectives와 nouns 데이터도 동일하게 유지합니다.
+# 기존 DB의 이메일과 닉네임을 미리 가져오는 함수
+def load_existing_data():
+    try:
+        load_dotenv()
+        # MySQL 연결 설정
+        connection = mysql.connector.connect(
+            host = os.getenv('HOST'),
+            user = os.getenv('USER'),  # 데이터베이스 사용자 이름
+            password = os.getenv('PASSWORD'),  # 데이터베이스 비밀번호
+            database = os.getenv('DATABASE'),  # 사용할 데이터베이스 이름
+            port = os.getenv('PORT')
+        )
+        cursor = connection.cursor()
+
+        # 기존 이메일과 닉네임 가져오기
+        cursor.execute("SELECT email, nickname FROM Member")
+        existing_data = cursor.fetchall()
+
+        for email, nickname in existing_data:
+            generated_emails.add(email)
+            generated_nicknames.add(nickname)
+
+        print(f"기존 데이터에서 {len(existing_data)}개의 이메일과 닉네임을 불러왔습니다.")
+        
+    except mysql.connector.Error as error:
+        print(f"데이터 조회 중 오류 발생: {error}")
+
+    finally:
+        if connection.is_connected():
+            cursor.close()
+            connection.close()
+            print("MySQL 연결이 종료되었습니다.")
 
 # 형용사 + 명사로 닉네임 생성 함수 (중복 방지)
 def generate_unique_nickname():
@@ -347,6 +389,7 @@ def generate_unique_email():
             generated_emails.add(email)
             return email
 
+# 유저 데이터 생성 함수
 def generate_user_data(num_users):
     users = []
     
@@ -354,13 +397,13 @@ def generate_user_data(num_users):
         email = generate_unique_email()
         password = f'$2a$10$UfVSjaS3VB9t3jFa08p0l.8kklyyRqt7bnjVdEj4YNW4.EUeHWY3a'  # bcrypt 예시
         nickname = generate_unique_nickname()
-        gender = random.randint(0, 1)  # 0: 여성, 1: 남성
+        gender = random.randint(0, 1)  # 0: 남성, 1: 여성
         region_id, region_name, region_level, parent_region_id, parent_region_name = random.choice(regions)
         birth = fake.date_of_birth(minimum_age=20, maximum_age=40).strftime('%Y-%m-%d')
         clear_room = random.randint(0, 10)
         created_at = fake.date_time_this_year().strftime('%Y-%m-%d %H:%M:%S')
         del_flag = 0
-        photo_url = f"http://example.com/photo{random.randint(1, 1000)}.jpg"
+        photo_url = f"http://example.com/photo{random.randint(1, 10000)}.jpg"
         favorite_genre_id, favorite_genre_name = random.choice(genres)
         
         # 유저 데이터 생성
@@ -383,7 +426,7 @@ def generate_user_data(num_users):
     
     return users
 
-# DB 연결 및 데이터 삽입
+# DB 연결 및 데이터 삽입 함수
 def insert_user_data_to_db(user_data):
     try:
         load_dotenv()
@@ -419,13 +462,13 @@ def insert_user_data_to_db(user_data):
         print(f"데이터 삽입 중 오류 발생: {error}")
 
     finally:
-        # 연결 종료
         if connection.is_connected():
             cursor.close()
             connection.close()
             print("MySQL 연결이 종료되었습니다.")
 
-# 1000개의 유저 데이터 생성 및 DB에 삽입
-num_users = 1000
+# 기존 DB의 이메일과 닉네임을 로드한 후 1만개의 유저 데이터 생성 및 삽입
+load_existing_data()
+num_users = 10000
 user_data = generate_user_data(num_users)
 insert_user_data_to_db(user_data)

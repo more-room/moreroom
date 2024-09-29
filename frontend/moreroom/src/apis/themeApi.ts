@@ -1,6 +1,7 @@
 import {
   ISearchThemesRequestParameter,
   ISearchTitleResponse,
+  IThemeDetail,
   IThemeList,
 } from '../types/themeTypes';
 import { api } from './interceptors';
@@ -17,4 +18,9 @@ export const getThemes = (filters: ISearchThemesRequestParameter) => {
   return api.get<IThemeList>('/api/theme', {
     params: filters,
   });
+};
+
+/* 테마 상세 조회 */
+export const getThemeDetail = (themeId: number) => {
+  return api.get<IThemeDetail>(`/api/theme/${themeId}`);
 };

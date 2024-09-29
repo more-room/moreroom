@@ -1,9 +1,14 @@
 package com.moreroom.domain.member.service;
 
+import com.moreroom.domain.genre.dto.response.GenreResponseDTO;
+import com.moreroom.domain.genre.entity.Genre;
+import com.moreroom.domain.genre.repository.GenreRepository;
 import com.moreroom.domain.hashtag.dto.response.HashtagResponseDTO;
 import com.moreroom.domain.hashtag.entity.Hashtag;
 import com.moreroom.domain.hashtag.repository.HashtagRepository;
+import com.moreroom.domain.mapping.member.entity.MemberGenreMapping;
 import com.moreroom.domain.mapping.member.entity.MemberHashtagMapping;
+import com.moreroom.domain.mapping.member.repository.MemberGenreMappingRepository;
 import com.moreroom.domain.mapping.member.repository.MemberHashtagMappingRepository;
 import com.moreroom.domain.member.dto.request.HashtagDTO;
 import com.moreroom.domain.member.dto.request.MemberSignupRequestDTO;
@@ -38,6 +43,8 @@ public class MemberService {
     private final MemberHashtagMappingRepository memberHashtagMappingRepository;
     private final PasswordEncoder passwordEncoder;
     private final FindMemberService findMemberService;
+    private final MemberGenreMappingRepository memberGenreMappingRepository;
+    private final GenreRepository genreRepository;
 
     @Transactional
     public void signup(MemberSignupRequestDTO memberSignupRequestDTO) {
@@ -46,11 +53,12 @@ public class MemberService {
             throw new MemberPasswordNotMatchedException();
         }
 
-        if (memberRepository.existsByEmail(memberSignupRequestDTO.getEmail())) {
+        if (memberRepository.existsByEmailAndDelFlagFalse(memberSignupRequestDTO.getEmail())) {
             throw new MemberExistsEmailException();
         }
 
-        if (memberRepository.existsByNickname(memberSignupRequestDTO.getNickname())) {
+        if (memberRepository.existsByNicknameAndDelFlagFalse(
+            memberSignupRequestDTO.getNickname())) {
             throw new MemberExistsNicknameException();
         }
 
@@ -58,12 +66,23 @@ public class MemberService {
             .email(memberSignupRequestDTO.getEmail())
             .password(passwordEncoder.encode(memberSignupRequestDTO.getPassword()))
             .nickname(memberSignupRequestDTO.getNickname())
-            .gender(memberSignupRequestDTO.getGender())
+            .gender(!memberSignupRequestDTO.getGender().equals("M"))
             .region(regionRepository.getReferenceById(memberSignupRequestDTO.getRegionId()))
             .birth(memberSignupRequestDTO.getBirth())
             .build();
 
         memberRepository.save(member);
+
+        List<Integer> genreIdList = memberSignupRequestDTO.getGenreIdList();
+
+        for (Integer genreId : genreIdList) {
+            MemberGenreMapping memberGenreMapping = MemberGenreMapping.builder()
+                .member(member)
+                .genre(genreRepository.getReferenceById(genreId))
+                .build();
+
+            memberGenreMappingRepository.save(memberGenreMapping);
+        }
     }
 
     public MemberResponseDTO getMemberInformation() {
@@ -86,7 +105,16 @@ public class MemberService {
             })
             .toList();
 
-        return MemberProfileResponseDTO.toDTO(member, hashtagList);
+        List<MemberGenreMapping> genreMappingList = memberGenreMappingRepository.findByMember(member);
+
+        List<GenreResponseDTO> genreList = genreMappingList.stream()
+            .map(mapping -> {
+                Genre genre = mapping.getGenre();
+                return GenreResponseDTO.toDTO(genre);
+            })
+            .toList();
+
+        return MemberProfileResponseDTO.toDTO(member, genreList, hashtagList);
     }
 
     public MemberProfileResponseDTO findByMemberId(Long memberId) {
@@ -104,7 +132,16 @@ public class MemberService {
                 })
                 .toList();
 
-            return MemberProfileResponseDTO.toDTO(member, hashtagList);
+            List<MemberGenreMapping> genreMappingList = memberGenreMappingRepository.findByMember(member);
+
+            List<GenreResponseDTO> genreList = genreMappingList.stream()
+                .map(mapping -> {
+                    Genre genre = mapping.getGenre();
+                    return GenreResponseDTO.toDTO(genre);
+                })
+                .toList();
+
+            return MemberProfileResponseDTO.toDTO(member, genreList, hashtagList);
         }
         throw new MemberNotFoundException();
     }
@@ -114,17 +151,37 @@ public class MemberService {
 
         Member member = memberRepository.getReferenceById(findMemberService.findCurrentMember());
         Region region = regionRepository.getReferenceById(memberUpdateRequestDTO.getRegionId());
+
         member.updateMember(memberUpdateRequestDTO, region);
+
+        // 회원 정보 업데이트 시 장르 리스트 목록 업데이트(있으면 삭제, 없으면 생성)
+        List<Integer> genreIdList = memberUpdateRequestDTO.getGenreIdList();
+        for (Integer genreId : genreIdList) {
+            Genre genre = genreRepository.getReferenceById(genreId);
+
+            if (memberGenreMappingRepository.existsByMemberAndGenre(member, genre)) {
+                MemberGenreMapping memberGenreMapping = memberGenreMappingRepository.findByMemberAndGenre(member, genre);
+
+                memberGenreMappingRepository.delete(memberGenreMapping);
+            } else {
+                MemberGenreMapping memberGenreMapping = MemberGenreMapping.builder()
+                    .member(member)
+                    .genre(genre)
+                    .build();
+
+                memberGenreMappingRepository.save(memberGenreMapping);
+            }
+        }
     }
 
     public Boolean checkExistEmail(String email) {
 
-        return memberRepository.existsByEmail(email);
+        return memberRepository.existsByEmailAndDelFlagFalse(email);
     }
 
     public Boolean checkExistNickname(String nickname) {
 
-        return memberRepository.existsByNickname(nickname);
+        return memberRepository.existsByNicknameAndDelFlagFalse(nickname);
     }
 
     @Transactional
@@ -160,5 +217,14 @@ public class MemberService {
                 memberHashtagMappingRepository.save(memberHashtagMapping);
             }
         }
+    }
+
+    @Transactional
+    public void deleteMember() {
+        Long memberId = findMemberService.findCurrentMember();
+
+        Member member = memberRepository.getReferenceById(memberId);
+
+        member.deleteMember();
     }
 }

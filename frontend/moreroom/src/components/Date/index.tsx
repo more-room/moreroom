@@ -3,6 +3,7 @@ import React from 'react';
 import { DateProps } from './Date.types';
 import { base, hasContentsCss } from './Date.styles';
 import { Typography } from '../Typography';
+import { useCalendarStore } from '../../stores/calendarStore';
 
 export const Date = ({
   date,

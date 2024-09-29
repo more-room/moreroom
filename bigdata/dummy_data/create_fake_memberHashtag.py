@@ -21,7 +21,7 @@ def fetch_members_and_hashtags():
         cursor = connection.cursor()
 
         # 멤버 가져오기 쿼리 (1000개의 멤버)
-        fetch_members_query = "SELECT memberId FROM Member LIMIT 1000"
+        fetch_members_query = "SELECT memberId FROM Member LIMIT 1300"
         cursor.execute(fetch_members_query)
         members = cursor.fetchall()
 
