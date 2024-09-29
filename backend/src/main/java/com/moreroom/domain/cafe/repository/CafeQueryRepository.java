@@ -130,7 +130,7 @@ public class CafeQueryRepository extends QuerydslRepositoryCustom {
             .leftJoin(genre).on(genre.genreId.eq(themeGenreMapping.genre.genreId))
             .leftJoin(review).on(review.theme.themeId.eq(theme.themeId))
             .leftJoin(playLog)
-            .on(playLog.theme.themeId.eq(theme.themeId), playLog.member.memberId.eq(memberId))
+            .on(playLog.themeId.eq(theme.themeId), playLog.memberId.eq(memberId))
             .where(theme.cafe.cafeId.eq(cafeId))
             .groupBy(theme.themeId, genre.genreName)
             .orderBy(theme.themeId.asc())

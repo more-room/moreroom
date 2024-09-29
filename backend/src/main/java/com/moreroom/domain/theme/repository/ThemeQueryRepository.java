@@ -59,8 +59,8 @@ public class ThemeQueryRepository extends QuerydslRepositoryCustom {
             )
             .from(theme)
             .leftJoin(review).on(review.theme.themeId.eq(themeId))   // 리뷰
-            .leftJoin(playLog).on(playLog.theme.themeId.eq(theme.themeId),
-                playLog.member.memberId.eq(memberId))  // playLog - 플레이 여부 확인
+            .leftJoin(playLog).on(playLog.themeId.eq(theme.themeId),
+                playLog.memberId.eq(memberId))  // playLog - 플레이 여부 확인
             .where(theme.themeId.eq(themeId))
             .groupBy(theme)
             .fetch();
@@ -139,7 +139,7 @@ public class ThemeQueryRepository extends QuerydslRepositoryCustom {
             .on(themeGenreMapping.theme.themeId.eq(theme.themeId)) // 테마와 장르 매핑 조인
             .innerJoin(genre).on(genre.genreId.eq(themeGenreMapping.genre.genreId)) // 장르 테이블 조인
             .leftJoin(playLog)
-            .on(playLog.theme.themeId.eq(theme.themeId), playLog.member.memberId.eq(memberId))
+            .on(playLog.themeId.eq(theme.themeId), playLog.memberId.eq(memberId))
             .where(builder)
             .groupBy(theme)
             .having(
@@ -253,7 +253,7 @@ public class ThemeQueryRepository extends QuerydslRepositoryCustom {
             .leftJoin(genre).on(genre.genreId.eq(themeGenreMapping.genre.genreId))
             .leftJoin(review).on(review.theme.themeId.eq(theme.themeId))
             .leftJoin(playLog)
-            .on(playLog.theme.themeId.eq(theme.themeId), playLog.member.memberId.eq(memberId))
+            .on(playLog.themeId.eq(theme.themeId), playLog.memberId.eq(memberId))
             .where(theme.themeId.in(themeIds))
             .groupBy(theme.themeId, cafe.cafeId, region.regionId, genre.genreName)
             .orderBy(theme.themeId.asc())
