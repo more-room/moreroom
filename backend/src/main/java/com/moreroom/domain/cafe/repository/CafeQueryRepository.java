@@ -3,8 +3,8 @@ package com.moreroom.domain.cafe.repository;
 import static com.moreroom.domain.brand.entity.QBrand.brand;
 import static com.moreroom.domain.cafe.entity.QCafe.cafe;
 import static com.moreroom.domain.genre.entity.QGenre.genre;
-import static com.moreroom.domain.history.entity.QHistory.history;
 import static com.moreroom.domain.mapping.theme.entity.QThemeGenreMapping.themeGenreMapping;
+import static com.moreroom.domain.playLog.entity.QPlayLog.playLog;
 import static com.moreroom.domain.review.entity.QReview.review;
 import static com.moreroom.domain.theme.entity.QTheme.theme;
 
@@ -123,16 +123,16 @@ public class CafeQueryRepository extends QuerydslRepositoryCustom {
         // (2) 테마 정보
         List<Tuple> results = jpaQueryFactory
             .select(theme, review.count(), review.score.avg(), genre.genreName
-                , history.isNotNull().coalesce(false)
+                , playLog.playCount.coalesce(0).gt(0)
             )
             .from(theme)
             .leftJoin(themeGenreMapping).on(themeGenreMapping.theme.themeId.eq(theme.themeId))
             .leftJoin(genre).on(genre.genreId.eq(themeGenreMapping.genre.genreId))
             .leftJoin(review).on(review.theme.themeId.eq(theme.themeId))
-            .leftJoin(history)
-            .on(history.member.memberId.eq(memberId), history.theme.themeId.eq(theme.themeId))
+            .leftJoin(playLog)
+            .on(playLog.theme.themeId.eq(theme.themeId), playLog.member.memberId.eq(memberId))
             .where(theme.cafe.cafeId.eq(cafeId))
-            .groupBy(theme.themeId, genre.genreName, history)
+            .groupBy(theme.themeId, genre.genreName)
             .orderBy(theme.themeId.asc())
             .fetch();
 
