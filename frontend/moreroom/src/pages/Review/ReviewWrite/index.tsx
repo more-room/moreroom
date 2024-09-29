@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { TopBar } from '../../../components/TopBar';
-import { topbarcolor, bottombarcss, ratingcss, themeCardStyles } from './styles';
+import { topbarcolor, bottombarcss, ratingcss, themeCardStyles, btncss } from './styles';
 import { BottomBar } from '../../../components/BottomBar';
 import { BellIcon } from '@heroicons/react/24/solid';
 import { ThemeItem } from '../../../components/ThemeItem';
@@ -11,6 +11,7 @@ import { IThemeItem } from '../../../types/themeTypes';
 import { Rating } from '../../../components/Rating';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import { createReview } from '../../../apis/reviewApi';
 
 export const ReviewWrite = () => {
   const navigate = useNavigate();
@@ -52,6 +53,16 @@ export const ReviewWrite = () => {
 
     console.log('리뷰 제출 데이터:', reviewData);
     // 여기에 API 호출 (예: createReview(reviewData))을 추가하여 데이터 전송
+    createReview(reviewData)
+    .then((response) => {
+      console.log('리뷰 작성 성공:', response.data);
+      // 성공적으로 작성한 경우, 리뷰 리스트 페이지로 이동하거나 피드백을 사용자에게 제공할 수 있습니다.
+      navigate(-1); // 이전 화면으로 돌아가기
+    })
+    .catch((error) => {
+      console.error('리뷰 작성 실패:', error);
+      setErrorMessage("리뷰 작성에 실패했습니다. 다시 시도해주세요.");
+    });
   };
 
   return (
@@ -60,7 +71,7 @@ export const ReviewWrite = () => {
         <TopBar.Title type="default" title="리뷰 작성" backHandler={() => navigate(-1)} />
       </TopBar>
       
-      {/* ThemeItem을 통해 테마 정보를 보여줍니다 */}
+      
       <div css={themeCardStyles}>
         <ThemeItem theme={themeItem} />
       </div>
@@ -76,37 +87,41 @@ export const ReviewWrite = () => {
           onChange={handleRatingChange} // 사용자가 별점을 선택할 때 호출되는 핸들러
         />
       </div>
+      <hr></hr>
 
-      <div style={{ margin: '2rem 0', textAlign: 'left' }}>
-        <TextField
-          id="outlined-multiline-static"
-          label="리뷰"
-          multiline
-          rows={4}
-          placeholder="테마에 대한 후기를 자유롭게 적어주세요." // 설명 추가
-          variant="outlined"
-          fullWidth
-          value={reviewContent}
-          onChange={(e) => setReviewContent(e.target.value)} // 리뷰 내용 업데이트
-          InputLabelProps={{
-            style: { color: '#ffffff' }, // 라벨 색상을 흰색으로 변경
-          }}
-          sx={{
-            backgroundColor: '#333', // 배경 색상 어둡게 설정
-            borderRadius: '5px',
-            '& .MuiOutlinedInput-root': {
-              '& fieldset': {
-                borderColor: '#ffffff', // 외곽선 색상 설정
-              },
-              '&:hover fieldset': {
-                borderColor: '#757271', // 호버 시 외곽선 색상 설정
-              },
+      <div style={{ margin: '2rem 0', textAlign: 'center' }}>
+      <TextField
+        id="outlined-multiline-static"
+        label="리뷰"
+        multiline
+        rows={4}
+        placeholder="테마에 대한 후기를 자유롭게 적어주세요." // 설명 추가
+        variant="outlined"
+        fullWidth={true} // 전체 너비로 설정
+        value={reviewContent}
+        onChange={(e) => setReviewContent(e.target.value)} // 리뷰 내용 업데이트
+        InputLabelProps={{
+          style: { color: '#ffffff' }, // 라벨 색상을 흰색으로 변경
+        }}
+        sx={{
+          backgroundColor: '#333', // 배경 색상 어둡게 설정
+          borderRadius: '5px',
+          width: '90%', // 너비를 90%로 설정하여 적당히 확대
+          margin: '0 auto', // 중앙에 배치되도록 설정
+          '& .MuiOutlinedInput-root': {
+            '& fieldset': {
+              borderColor: '#ffffff', // 외곽선 색상 설정
             },
-            '& .MuiInputBase-input': {
-              color: '#ffffff', // 입력 텍스트 색상 설정
+            '&:hover fieldset': {
+              borderColor: '#757271', // 호버 시 외곽선 색상 설정
             },
-          }}
-        />
+          },
+          '& .MuiInputBase-input': {
+            color: '#ffffff', // 입력 텍스트 색상 설정
+          },
+        }}
+      />
+
       </div>
 
       {errorMessage && (
@@ -115,7 +130,7 @@ export const ReviewWrite = () => {
         </div>
       )}
 
-      <div style={{ margin: '2rem' }}>
+      <div css={btncss} style={{ margin: '2rem' }}>
         <Button
           variant="contained"
           color="secondary"

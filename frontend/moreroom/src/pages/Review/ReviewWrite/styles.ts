@@ -17,7 +17,7 @@ export const bottombarcss = css`
   z-index: 1000; /* 다른 요소 위에 위치 */
   padding: 0.25rem; /* 바텀바 안의 패딩 */
   border-top: 1px solid #ffffff;
-  
+  font-family: 'paperlogy';
 `
 
 export const ratingcss = css`
@@ -40,18 +40,17 @@ export const ratingcss = css`
 export const themeCardStyles = css`
 display: flex;
 align-items: center;
-background-color: #2c2c2e;
-padding: 1rem;
+background-color: #313131;
+padding: 0.5rem;
 margin: 1rem 0;
 border-radius: 10px;
-box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 width: 100%;
 max-width: 600px;
 
 .theme-img {
   flex-shrink: 0;
-  width: 80px;
-  height: 80px;
+  width: 4.5rem;
+  height: 4.5rem;
   border-radius: 5px;
   margin-right: 1rem;
   object-fit: cover;
@@ -70,7 +69,7 @@ max-width: 600px;
 
   .theme-info {
     font-size: 0.875rem;
-    color: #b0b0b0;
+    color: ${Colors['grey']['800']};
   }
 
   .theme-review {
@@ -90,3 +89,7 @@ max-width: 600px;
   }
 }
 `;
+
+export const btncss = css`
+ font-family: 'paperlogy';
+`
