@@ -1,15 +1,17 @@
 package com.moreroom.domain.playLog.entity;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
 import java.io.Serializable;
 import java.util.Objects;
 
+@Embeddable
 public class PlayLogId implements Serializable {
 
     @Column(name = "memberId")
     private Long memberId;
     @Column(name = "themeId")
-    private Long themeId;
+    private Integer themeId;
 
     @Override
     public boolean equals(Object o) {
