@@ -66,3 +66,8 @@ export const isEmail = (email: string) => {
     },
   });
 };
+
+
+export const delUser = () => {
+  return api.delete('/api/auth/member');
+};

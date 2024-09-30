@@ -9,9 +9,10 @@ interface ManageInfoProps {
   children?: React.ReactNode;
   chips?: React.ReactNode;
   url?: string;
+  onApi?: () => void
 }
 
-export const ManageInfo = ({ icon, children, chips, url }: ManageInfoProps) => {
+export const ManageInfo = ({ icon, children, chips, url, onApi }: ManageInfoProps) => {
   const nav = useNavigate();
 
   return (
@@ -24,7 +25,7 @@ export const ManageInfo = ({ icon, children, chips, url }: ManageInfoProps) => {
             scale="400"
             size={1}
             weight={500}
-            onClick={url ? () => nav(url) : undefined}
+            onClick={url ? () => nav(url) : onApi}
           >
             {children}
           </Typography>

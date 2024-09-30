@@ -1,8 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import React, { useState } from 'react';
-import { TopBar } from '../../../components/TopBar';
-import { useNavigate } from 'react-router-dom';
-import { Progress } from '../../../components/Progress';
 import { Typography } from '../../../components/Typography';
 import { FilterChip } from '../../../components/FilterChip';
 import { chipItemCss, containerCss, filterCss } from './styles';
@@ -17,8 +14,11 @@ import { useQuery } from '@tanstack/react-query';
 import { getRegions } from '../../../apis/infoApi';
 import { IRegionCommon, IRegionItem } from '../../../types/infoTypes';
 
-export const ProfileInfo = () => {
-  const nav = useNavigate();
+interface VerificationProps {
+  onSubmit: () => void;
+}
+
+export const ProfileInfo = ({ onSubmit }: VerificationProps) => {
   const [gender, setGender] = useState<'M' | 'F' | undefined>(undefined);
   const [birthYear, setBirthYear] = useState<string>('');
   const [birthMonth, setBirthMonth] = useState<string>('');
@@ -42,8 +42,7 @@ export const ProfileInfo = () => {
 
     const curdata = useSignUpStore.getState();
     console.log('현재 데이터:', curdata);
-
-    nav('/signup/genreinfo');
+    onSubmit();
   };
 
   const getText = () => {
@@ -78,14 +77,6 @@ export const ProfileInfo = () => {
 
   return (
     <div>
-      <TopBar>
-        <TopBar.Title
-          type="default"
-          title="회원가입"
-          backHandler={() => nav(-1)}
-        />
-      </TopBar>
-      <Progress color="primary" max={4} size="md" value={2} variant="rounded" />
       <div css={containerCss}>
         <Typography color="light" scale="400" size={1} weight={500}>
           성별

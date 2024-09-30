@@ -11,6 +11,7 @@ import com.moreroom.domain.history.repository.HistoryQueryRepository;
 import com.moreroom.domain.history.repository.HistoryRepository;
 import com.moreroom.domain.member.entity.Member;
 import com.moreroom.domain.member.repository.MemberRepository;
+import com.moreroom.domain.playLog.service.PlayLogService;
 import com.moreroom.domain.review.repository.ReviewRepository;
 import com.moreroom.domain.theme.entity.Theme;
 import com.moreroom.domain.theme.repository.ThemeRepository;
@@ -30,6 +31,7 @@ public class HistoryService {
     private final MemberRepository memberRepository;
     private final ThemeRepository themeRepository;
     private final ReviewRepository reviewRepository;
+    private final PlayLogService playLogService;
 
     public HistoryListResponseDto findHistoriesByDate(Long memberId, String startDate,
         String endDate) {
@@ -43,11 +45,13 @@ public class HistoryService {
 
     @Transactional
     public Boolean saveHistory(Long memberId, HistoryRequestDto historyRequestDto) {
+        // 1. 삽입할 데이터 생성
         Member member = memberRepository.getReferenceById(memberId); // lazy loading
         Theme theme = themeRepository.getReferenceById(historyRequestDto.getThemeId());
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime playDate = StringUtil.stringToDate(historyRequestDto.getDate());
 
+        // 2. History entity 생성 후 삽입
         History history = History.builder()
             .member(member)
             .theme(theme)
@@ -69,6 +73,9 @@ public class HistoryService {
         } catch (DataIntegrityViolationException e) {
             throw new HistoryInvalidParameterException();
         }
+
+        // 3. playLog 추가
+        playLogService.saveOrIncreasePlayLog(member, theme);
         return true;
     }
 
@@ -100,9 +107,12 @@ public class HistoryService {
 
     @Transactional
     public void deleteHistory(Long memberId, Long historyId) {
+        // 1. history delFlag = true
         History history = historyRepository.findByHistoryIdAndMemberMemberIdAndDelFlagIsFalse(
             historyId, memberId).orElseThrow(HistoryNotFoundException::new);
         history.deleteHistory();
+        // 2. playLog row 삭제
+        playLogService.deleteOrDecreasePlayLog(memberId, history.getTheme().getThemeId());
     }
 
 }

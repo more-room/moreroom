@@ -68,9 +68,14 @@ public class MemberController {
             // 인증 성공 시 SecurityContextHolder에 인증 정보 저장
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
+            Long memberId = findMemberService.findCurrentMember();
+            if (memberService.checkMemberOut(memberId).equals(Boolean.TRUE)) {
+                throw new MemberNotFoundException();
+            }
+
             // 쿠키 정보 저장
             Cookie idCookie = new Cookie("memberId",
-                String.valueOf(findMemberService.findCurrentMember()));
+                String.valueOf(memberId));
             idCookie.setHttpOnly(true);
             idCookie.setSecure(true);
             idCookie.setMaxAge(60 * 60 * 24);
