@@ -33,11 +33,15 @@ def load_local_data_small(path):
 
 def load_mysql_data(n=None):
     connection = mysql_connect()
-    mr_query = "SELECT memberId, themeId, score, reviewId FROM review"
-    mg_query = "SELECT memberId, genreId FROM membergenremapping"
+    member_query = "SELECT memberId FROM member order by memberId"
     if n != None:
-        mr_query += " limit "+str(n)
-        mg_query += " limit "+str(n)
+        member_query += " limit " + str(n)
+    member = mysql_read_all(connection, member_query)
+    member_df = pd.DataFrame(member)
+
+    member_ids_str = ','.join(map(str, member_df['memberId'].tolist()))
+    mr_query = f"SELECT memberId, themeId, score, reviewId FROM review WHERE memberId IN ({member_ids_str})"
+    mg_query = f"SELECT memberId, genreId FROM membergenremapping WHERE memberId IN ({member_ids_str})"
 
     mr = mysql_read_all(connection, mr_query)
     mr_df = pd.DataFrame(mr)
@@ -46,16 +50,18 @@ def load_mysql_data(n=None):
 
     mysql_disconnect(connection)
 
-    return mr_df, mg_df
+    return member_df, mr_df, mg_df
 
 # 1. 사용자 - 장르 행렬 생성 
 # 사용자 - 테마 행렬도 함께 생성
-def get_members_matrix(mr_df, mg_df):
-    mr_matrix = mr_df.pivot_table(index='memberId', columns='themeId', values='score').fillna(0)
-    mg_matrix = mg_df.pivot_table(index='memberId', columns='genreId', aggfunc=lambda x: 1, fill_value=0)
+def get_members_matrix(member_df, mr_df, mg_df):
+    member_list = member_df['memberId'].tolist() 
+    mr_matrix = mr_df.pivot_table(index='memberId', columns='themeId', values='score').reindex(member_list, fill_value=0)
+    mg_matrix = mg_df.pivot_table(index='memberId', columns='genreId', aggfunc=lambda x: 1, fill_value=0).reindex(member_list, fill_value=0)
+    print(mr_matrix)
     # 희소 행렬로 변환 
     sparse_mg_matrix = csr_matrix(mg_matrix)
-    return mr_matrix, sparse_mg_matrix, mg_matrix.index
+    return mr_matrix, sparse_mg_matrix, mr_matrix.index
 
 # 2. 유저별 유사도 계산
 # 자카드 유사도 계산
@@ -63,22 +69,44 @@ def get_members_matrix(mr_df, mg_df):
 def calculate_jaccard_similarity(mg_matrix, mg_index):
     num_users = mg_matrix.shape[0]
     print(num_users)
-    similarity_matrix = pd.DataFrame(index=mg_index, columns=mg_index)
-    
-    for i in range(num_users):
-        member_i = mg_matrix[i].toarray()[0]
-        for j in range(i, num_users):
-            member_j = mg_matrix[j].toarray()[0]
+
+    similarity_matrix = np.zeros((num_users, num_users))
+    # 희소 행렬의 행렬 곱셈을 통해 유사도 계산
+    intersection = mg_matrix.dot(mg_matrix.T).toarray()  # 두 희소 행렬의 교집합
+    row_sum = mg_matrix.sum(axis=1).A1  # 각 사용자의 장르 수
+    union = row_sum[:, None] + row_sum[None, :] - intersection  # 합집합 계산
+
+    with np.errstate(divide='ignore', invalid='ignore'):
+        similarity_matrix = intersection / union  
+        similarity_matrix[np.isnan(similarity_matrix)] = 0  # NaN 값 처리
+    np.fill_diagonal(similarity_matrix, 1)  # 자기 자신과의 유사도는 1로 설정
+
+    # for i in range(num_users):
+    #     member_i = mg_matrix[i].toarray()[0]
+    #     # row_i = mg_matrix[i]
+    #     for j in range(i, num_users):
+    #         member_j = mg_matrix[j].toarray()[0]
+    #         # row_j = mg_matrix[j]
             
-            # 자카드 유사도 계산
-            jaccard_sim = jaccard_score(member_i, member_j)
-            # jaccard_sim = jaccard(member_i, member_j)
-            similarity_matrix.iloc[i, j] = jaccard_sim
-            similarity_matrix.iloc[j, i] = jaccard_sim
-        if i%100 == 0:
-           print(f"end user {i}")
+    #         # 자카드 유사도 계산
+    #         # jaccard_sim = jaccard_score(member_i, member_j)
+    #         jaccard_sim = 1-jaccard(member_i, member_j)
+    #         # 희소 행렬에서 비트 연산을 통해 교집합과 합집합 계산
+    #         # intersection = (row_i.multiply(row_j)).sum()
+    #         # union = row_i.sum() + row_j.sum() - intersection
+            
+    #         # # Jaccard 유사도 계산
+    #         # jaccard_sim = intersection / union if union != 0 else 0
+            
+    #         similarity_matrix.iloc[i, j] = jaccard_sim
+    #         similarity_matrix.iloc[j, i] = jaccard_sim
+    #     if i%100 == 0:
+    #        print(f"end user {i}")
     
-    return similarity_matrix
+    # DataFrame으로 변환하고 인덱스를 mg_index로 설정
+    similarity_df = pd.DataFrame(similarity_matrix, index=mg_index, columns=mg_index)
+    print("calculate jaccard end")
+    return similarity_df
 
 # 3. 테마별 점수의 가중 평균 계산하여 테마 추천 산출
 def extract_member_similar_theme(mr_matrix, similarity_matrix, member_id, N=10):
@@ -89,16 +117,29 @@ def extract_member_similar_theme(mr_matrix, similarity_matrix, member_id, N=10):
     weighted_scores = pd.Series(dtype=np.float64)
     user_rated_themes = mr_matrix.loc[member_id][mr_matrix.loc[member_id] > 0].index
     
-    for other_user in similar_users:
-        sim_score = similarity_matrix.loc[member_id, other_user]
-        other_user_ratings = mr_matrix.loc[other_user]
-        
-        # 사용자가 평가하지 않은 테마에 대한 점수만 가중 평균으로 계산
-        # diffrence - 차집합 함수로 평가되지 않은 테마 추출
-        unrated_themes = other_user_ratings[other_user_ratings.index.difference(user_rated_themes)]
-        weighted_scores = weighted_scores.add(unrated_themes * sim_score, fill_value=0)
+    # 유사도와 평가된 점수를 곱해 한 번에 계산
+    other_user_ratings = mr_matrix.loc[similar_users]
+    similarity_scores = similarity_matrix.loc[member_id, similar_users]
+    
+    # 평가하지 않은 테마에 대한 점수 계산
+    unrated_scores = other_user_ratings.loc[:, other_user_ratings.columns.difference(user_rated_themes)]
+    
+    # 가중 평균 점수 계산
+    weighted_scores = (unrated_scores.values.T * similarity_scores.values).T.sum(axis=0) / np.abs(similarity_scores).sum()
+    
+    # 점수 시리즈로 변환
+    weighted_scores_series = pd.Series(weighted_scores, index=unrated_scores.columns)
 
-    top_N = weighted_scores.sort_values(ascending=False).head(N)
+    # for other_user in similar_users:
+    #     sim_score = similarity_matrix.loc[member_id, other_user]
+    #     other_user_ratings = mr_matrix.loc[other_user]
+        
+    #     # 사용자가 평가하지 않은 테마에 대한 점수만 가중 평균으로 계산
+    #     # diffrence - 차집합 함수로 평가되지 않은 테마 추출
+    #     unrated_themes = other_user_ratings[other_user_ratings.index.difference(user_rated_themes)]
+    #     weighted_scores = weighted_scores.add(unrated_themes * sim_score, fill_value=0)
+
+    top_N = weighted_scores_series.sort_values(ascending=False).head(N)
     return top_N 
 
 
@@ -176,8 +217,9 @@ def save_log(similarity_matrix, result, mg_df, mg_matrix, mg_index, N=10):
 
 def get_similar_member_theme():
     # mr_df, mg_df = load_local_data_small('C:/SSAFY/3_특화프로젝트/data/')
-    mr_df, mg_df = load_local_data('C:/SSAFY/3_특화프로젝트/data/')
-    mr_matrix, mg_matrix, mg_index = get_members_matrix(mr_df, mg_df)
+    # member_df, mr_df, mg_df = load_local_data('C:/SSAFY/3_특화프로젝트/data/')
+    member_df, mr_df, mg_df = load_mysql_data()
+    mr_matrix, mg_matrix, mg_index = get_members_matrix(member_df, mr_df, mg_df)
     similarity_matrix = calculate_jaccard_similarity(mg_matrix, mg_index)
     result = extract_total_similar_theme(mr_matrix, similarity_matrix)
     save_data(result)
