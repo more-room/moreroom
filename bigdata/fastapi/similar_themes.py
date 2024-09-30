@@ -12,7 +12,7 @@ from konlpy.tag import Okt
 import re
 
 ### 다른 파일 import 
-
+from dbutils import mysql_connect, mysql_disconnect, mysql_read_all
 from dbutils import mongo_connect, mongo_get_collection, mongo_save_with_delete, mongo_save_with_update, mongo_disconnect
 from data_center import get_genre_names
 from file_utils import save_logs
@@ -32,6 +32,20 @@ def load_local_data(path):
 
     return theme_df, tg_df, review_df
 
+# ## 서버 데이터 로드
+def load_mysql_data():
+    connection = mysql_connect()
+
+    theme = mysql_read_all(connection, "SELECT t.themeId, t.cafeId, t.poster, t.title, t.playtime, t.minPeople, t.maxPeople, t.level, t.price, t.description, t.problemScore, t.storyScore, t.activityScore, t.fearScore, t.userLevelJb FROM THEME t Left join cafe c on t.cafeId = c.cafeId where c.openFlag = true")
+    theme_df = pd.DataFrame(theme)
+    tg = mysql_read_all(connection, "SELECT themeId, genreId FROM membergenremapping")
+    tg_df = pd.DataFrame(tg)
+    review = mysql_read_all(connection, "SELECT memberId, themeId, score, reviewId FROM review")
+    review_df = pd.DataFrame(review)
+
+    mysql_disconnect(connection)
+
+    return theme_df, tg_df, review_df 
 
 # ### 로직
 # 1. 메타 데이터 기반 유사도 계산 
@@ -233,12 +247,13 @@ def save_log(theme_df, tg_df, review_df, result, similarity_normal, similarity_g
             f"장르: {get_genre_names(grouped_genres.loc[index, 'genreId'])}\n\n\n"
         )                  
 
-    save_logs('C:/SSAFY/3_특화프로젝트/data/logs/', "st", target_info)
+    save_logs('log/', "st", target_info)
 
 
 # 메인 로직 
 def get_recent_similar_theme():
-    theme_df, tg_df, review_df = load_local_data('C:/SSAFY/3_특화프로젝트/data/')
+    # theme_df, tg_df, review_df = load_local_data('C:/SSAFY/3_특화프로젝트/data/')
+    theme_df, tg_df, review_df = load_mysql_data()
     hybrid_model, similarity_normal, similarity_genre, grouped_genres, similarity_dis, similarity_review = get_hybrid_similarity(theme_df, tg_df, review_df)
     result = extract_total_similar_theme(theme_df, hybrid_model) 
     save_data(result)

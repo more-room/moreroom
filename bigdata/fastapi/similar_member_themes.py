@@ -31,9 +31,8 @@ def load_local_data_small(path):
 
     return mr_df, mg_df
 
-def load_mysql_data():
+def load_mysql_data(n=None):
     connection = mysql_connect()
-    
     mr = mysql_read_all(connection, "SELECT memberId, themeId, score, reviewId FROM review")
     mr_df = pd.DataFrame(mr)
     mg = mysql_read_all(connection, "SELECT memberId, genreId FROM membergenremapping")
@@ -165,7 +164,7 @@ def save_log(similarity_matrix, result, mg_df, mg_matrix, mg_index, N=10):
             f"ID: {id}, 가중 선호도: {sim} \n"
         )                  
 
-    save_logs('C:/SSAFY/3_특화프로젝트/data/logs/', "smt", target_info)
+    save_logs('log/', "smt", target_info)
 
     return 
 
