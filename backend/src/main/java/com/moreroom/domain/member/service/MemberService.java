@@ -184,6 +184,16 @@ public class MemberService {
         return memberRepository.existsByNicknameAndDelFlagFalse(nickname);
     }
 
+    public Boolean checkMemberOut(Long memberId) {
+
+        Member member = memberRepository.getReferenceById(memberId);
+
+        if (member.getDelFlag().equals(Boolean.TRUE)) {
+            return Boolean.TRUE;
+        }
+        return Boolean.FALSE;
+    }
+
     @Transactional
     public void passwordChange(PasswordChangeDTO passwordChangeDTO) {
 
