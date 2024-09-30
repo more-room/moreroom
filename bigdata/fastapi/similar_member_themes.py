@@ -33,9 +33,15 @@ def load_local_data_small(path):
 
 def load_mysql_data(n=None):
     connection = mysql_connect()
-    mr = mysql_read_all(connection, "SELECT memberId, themeId, score, reviewId FROM review")
+    mr_query = "SELECT memberId, themeId, score, reviewId FROM review"
+    mg_query = "SELECT memberId, genreId FROM membergenremapping"
+    if n != None:
+        mr_query += " limit "+str(n)
+        mg_query += " limit "+str(n)
+
+    mr = mysql_read_all(connection, mr_query)
     mr_df = pd.DataFrame(mr)
-    mg = mysql_read_all(connection, "SELECT memberId, genreId FROM membergenremapping")
+    mg = mysql_read_all(connection, mg_query)
     mg_df = pd.DataFrame(mg)
 
     mysql_disconnect(connection)
