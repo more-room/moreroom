@@ -16,9 +16,10 @@ export const profileContainer = css`
 `;
 
 export const profile = css`
-  color: white;
-  width: 80px;
-  margin-right: 1rem;
+  width: 3.5rem;
+  height: 3.5rem;
+  margin-right: 0.5rem;
+  border-radius: 5rem;
 `;
 
 export const ChipCss = css`

@@ -7,39 +7,54 @@ import {
   HashtagIcon,
   KeyIcon,
   Square3Stack3DIcon,
-  UserCircleIcon,
   UserIcon,
 } from '@heroicons/react/24/solid';
-import {
-  containerCss,
-  profileCss,
-  userInfoCss,
-  sectionCss,
-  manageInfoContainerCss,
-} from './styles';
+import { containerCss, userInfoCss, manageInfoContainerCss, profileCss } from './styles';
 import { Typography } from '../../../components/Typography';
 import { ManageInfo } from '../ManageInfo';
 import { Icon } from '../../../components/Icon';
 import { useNavigate } from 'react-router-dom';
-import { useSuspenseQuery } from '@tanstack/react-query';
-import { getUserInfo } from '../../../apis/mypageApi';
-import { useHashtagStore } from '../../../stores/mypageStore';
+import { useQueries, useQuery, useSuspenseQuery } from '@tanstack/react-query';
+import { getMyInfo, getMypage } from '../../../apis/mypageApi';
 import { Chip } from '../../../components/Chip';
-import { Ihashtags } from '../../../types/mypageTypes';
+import { getRegions } from '../../../apis/infoApi';
 
 export const ProfileFetch = () => {
   const nav = useNavigate();
-  const { selectedHashtags } = useHashtagStore();
-  const hashtags = Ihashtags;
-  
-  const { data, error, isFetching } = useSuspenseQuery({
-    queryKey: ['profile'],
-    queryFn: async () => await getUserInfo(),
+  const myInfoQuery = useSuspenseQuery({
+    queryKey: ['myinfo'],
+    queryFn: async () => await getMyInfo(),
   });
 
-  if (error && !isFetching) {
-    throw error;
+  const [regionQuery, ProfileQuery] = useQueries({
+    queries: [
+      { queryKey: ['region'], queryFn: async () => await getRegions() },
+      { queryKey: ['profile'], queryFn: async () => await getMypage() },
+    ],
+  });
+
+  if (myInfoQuery.error && !myInfoQuery.isFetching) {
+    throw myInfoQuery.error;
   }
+
+  // 지역코드 지역이름이랑 매치시키기
+  const matchedRegion =
+  myInfoQuery.data && regionQuery.data
+      ? regionQuery.data.data.regions.find(
+          (region) =>
+            region.regionId === myInfoQuery.data.data.regionId ||
+            region.cities?.find(
+              (city) => city.regionId === myInfoQuery.data.data.regionId,
+            ),
+        )
+      : null;
+
+  const regionName =
+    matchedRegion?.regionName ||
+    matchedRegion?.cities?.find(
+      (city) => city.regionId === myInfoQuery.data?.data.regionId,
+    )?.regionName;
+
 
   const genderhandler = (gender: string) => {
     if (gender === 'M') {
@@ -59,13 +74,13 @@ export const ProfileFetch = () => {
         />
       </TopBar>
       <div css={containerCss}>
-        <UserCircleIcon css={profileCss} />
+        <img css= {profileCss} src={ProfileQuery.data?.data.photo} alt="프로필 사진" />
         <div css={userInfoCss}>
           <Typography color="light" size={1.25} weight={700}>
-            {data.data.nickname}
+            {myInfoQuery.data?.data.nickname}
           </Typography>
           <Typography color="grey" scale="500" size={0.75} weight={700}>
-            경상북도 구미시
+            {regionName || 'Unknown Region'}
           </Typography>
         </div>
         <div css={manageInfoContainerCss}>
@@ -75,7 +90,7 @@ export const ProfileFetch = () => {
                 <CakeIcon />
               </Icon>
             }
-            children={data.data.birth}
+            children={myInfoQuery.data?.data.birth}
           />
           <ManageInfo
             icon={
@@ -83,7 +98,7 @@ export const ProfileFetch = () => {
                 <UserIcon />
               </Icon>
             }
-            children={genderhandler(data.data.gender)}
+            children={genderhandler(myInfoQuery.data?.data.gender)}
           />
           <ManageInfo
             icon={
@@ -91,7 +106,7 @@ export const ProfileFetch = () => {
                 <EnvelopeIcon />
               </Icon>
             }
-            children={data.data.email}
+            children={myInfoQuery.data?.data.email}
           />
           <ManageInfo
             icon={
@@ -99,7 +114,7 @@ export const ProfileFetch = () => {
                 <KeyIcon />
               </Icon>
             }
-            children={data.data.clearRoom + '방'}
+            children={myInfoQuery.data?.data.clearRoom + '방'}
           />
           <ManageInfo
             icon={
@@ -108,14 +123,13 @@ export const ProfileFetch = () => {
               </Icon>
             }
             chips={
-              data?.data?.genreList && data.data.genreList.length > 0
-                ? data.data.genreList.map(
-                    (genre: { id: number; name: string }) => (
-                      <Chip key={genre.id} color="primary" fontSize={0.875}>
-                        {genre.name}
-                      </Chip>
-                    ),
-                  )
+              ProfileQuery.data?.data?.genreList &&
+              ProfileQuery.data.data.genreList.length > 0
+                ? ProfileQuery.data.data.genreList.map((genre: string) => (
+                    <Chip key={genre} color="primary" fontSize={0.875}>
+                      {genre}
+                    </Chip>
+                  ))
                 : undefined
             }
           />
@@ -126,14 +140,19 @@ export const ProfileFetch = () => {
               </Icon>
             }
             chips={
-              selectedHashtags.length > 0
-                ? hashtags
-                    .filter((tag) => selectedHashtags.includes(tag.id))
-                    .map((tag) => (
-                      <Chip key={tag.id} color="primary" fontSize={0.875}>
-                        {tag.label}
+              ProfileQuery.data?.data?.hashtagList &&
+              ProfileQuery.data.data.hashtagList.length > 0
+                ? ProfileQuery.data.data.hashtagList.map(
+                    (hashtag: { hashtagId: number; hashtagName: string }) => (
+                      <Chip
+                        key={hashtag.hashtagId}
+                        color="primary"
+                        fontSize={0.875}
+                      >
+                        {hashtag.hashtagName}
                       </Chip>
-                    ))
+                    ),
+                  )
                 : undefined
             }
           />
