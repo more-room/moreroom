@@ -3,7 +3,6 @@ package com.moreroom.domain.member.dto.request;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,7 +22,7 @@ public class MemberUpdateRequestDTO {
         message = "닉네임은 2~7자 사이의 한글, 영문(대소문자 구분 없음), 숫자만 허용됩니다."
     )
     private String nickname;
-    private Boolean gender;
+    private String gender;
     @DateTimeFormat(pattern = "YYYY-MM-DD")
     private LocalDate birth;
     private String regionId;

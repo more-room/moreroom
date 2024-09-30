@@ -19,7 +19,11 @@ import { GenreInfo } from './pages/Signup/GenreInfo';
 import { CafeList } from './pages/Cafes/CafeList';
 import { CafeDetail } from './pages/Cafes/CafeDetail';
 import { ChatingRoom } from './pages/Chating/Chatingroom';
-import { Roomdetail } from './pages/Chating/Chatingroom/Roomdetail'
+import { Roomdetail } from './pages/Chating/Chatingroom/Roomdetail';
+import { HistoryList } from './pages/History/HistoryList';
+import { HistoryDetail } from './pages/History/HistoryDetail';
+import { HistoryWrite } from './pages/History/HistoryWrite';
+
 import { Review } from './pages/Review/ReviewRead';
 import { ReviewWrite } from './pages/Review/ReviewWrite';
 
@@ -39,7 +43,6 @@ function App() {
         <Route path="/cafes" element={<CafeList />} />
         <Route path="/cafe/detail" element={<CafeDetail />} />
         <Route path="/login" element={<Login />} />
-    
 
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/mypage/profile" element={<Profile />} />
@@ -48,6 +51,12 @@ function App() {
         <Route path="/chating" element={<Chating />} />
         <Route path="/chatingroom/:partyId" element={<ChatingRoom />} />
         <Route path="/roomdetail/:partyId" element={<Roomdetail />} />
+
+        <Route path="/history" element={<HistoryList />} />
+        <Route path="/history/detail/:historyId" element={<HistoryDetail />} />
+        <Route path="/history/write" element={<HistoryWrite />} />
+        <Route path="/history/edit/:historyId" element={<HistoryWrite />} />
+        <Route path="/themes/history" element={<ThemeList />} />
 
         <Route path="/review" element={<Review/>} />
         <Route path="/review/write" element={<ReviewWrite/>} />

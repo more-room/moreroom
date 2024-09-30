@@ -4,6 +4,7 @@ import { Colors } from '../../styles/globalStyle';
 
 export const base = (bgColor: Palette, bgColorScale: ColorScale) => css`
   width: 100%;
+  box-sizing: border-box;
   padding: 1rem;
   background-color: ${Colors[bgColor][bgColorScale]};
   display: flex;

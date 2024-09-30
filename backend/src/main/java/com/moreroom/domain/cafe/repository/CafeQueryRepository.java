@@ -21,6 +21,7 @@ import com.moreroom.domain.theme.dto.response.ThemeMemberResponseDto;
 import com.moreroom.domain.theme.dto.response.ThemeReviewResponseDto;
 import com.moreroom.domain.theme.entity.Theme;
 import com.moreroom.global.repository.QuerydslRepositoryCustom;
+import com.moreroom.global.util.StringUtil;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -48,12 +49,13 @@ public class CafeQueryRepository extends QuerydslRepositoryCustom {
         String cafeName = c.getCafeName();
         List<Integer> brandIds = c.getBrandId();
         String regionId = c.getRegion();
-
         BooleanExpression nameCondition = cafeName == null ? null : cafe.cafeName.like(cafeName);
         BooleanExpression brandCondition =
             brandIds == null || brandIds.isEmpty() ? null : cafe.brand.brandId.in(brandIds);
         BooleanExpression regionCondition =
-            regionId == null ? null : cafe.region.regionId.eq(regionId);
+            regionId == null ? null
+                : StringUtil.isParent(regionId) ? cafe.region.parentRegionId.eq(regionId)
+                    : cafe.region.regionId.eq(regionId);
 
         List<Tuple> list = jpaQueryFactory
             .select(cafe.cafeId, theme.poster)

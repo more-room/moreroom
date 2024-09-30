@@ -53,11 +53,12 @@ public class MemberService {
             throw new MemberPasswordNotMatchedException();
         }
 
-        if (memberRepository.existsByEmail(memberSignupRequestDTO.getEmail())) {
+        if (memberRepository.existsByEmailAndDelFlagFalse(memberSignupRequestDTO.getEmail())) {
             throw new MemberExistsEmailException();
         }
 
-        if (memberRepository.existsByNickname(memberSignupRequestDTO.getNickname())) {
+        if (memberRepository.existsByNicknameAndDelFlagFalse(
+            memberSignupRequestDTO.getNickname())) {
             throw new MemberExistsNicknameException();
         }
 
@@ -65,10 +66,12 @@ public class MemberService {
             .email(memberSignupRequestDTO.getEmail())
             .password(passwordEncoder.encode(memberSignupRequestDTO.getPassword()))
             .nickname(memberSignupRequestDTO.getNickname())
-            .gender(memberSignupRequestDTO.getGender())
+            .gender(!memberSignupRequestDTO.getGender().equals("M"))
             .region(regionRepository.getReferenceById(memberSignupRequestDTO.getRegionId()))
             .birth(memberSignupRequestDTO.getBirth())
             .build();
+
+        memberRepository.save(member);
 
         List<Integer> genreIdList = memberSignupRequestDTO.getGenreIdList();
 
@@ -80,7 +83,6 @@ public class MemberService {
 
             memberGenreMappingRepository.save(memberGenreMapping);
         }
-        memberRepository.save(member);
     }
 
     public MemberResponseDTO getMemberInformation() {
@@ -174,12 +176,12 @@ public class MemberService {
 
     public Boolean checkExistEmail(String email) {
 
-        return memberRepository.existsByEmail(email);
+        return memberRepository.existsByEmailAndDelFlagFalse(email);
     }
 
     public Boolean checkExistNickname(String nickname) {
 
-        return memberRepository.existsByNickname(nickname);
+        return memberRepository.existsByNicknameAndDelFlagFalse(nickname);
     }
 
     @Transactional

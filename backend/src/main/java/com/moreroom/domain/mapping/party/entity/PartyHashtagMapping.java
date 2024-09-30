@@ -1,5 +1,6 @@
 package com.moreroom.domain.mapping.party.entity;
 
+import com.moreroom.domain.hashtag.entity.Hashtag;
 import com.moreroom.domain.member.entity.Member;
 import com.moreroom.domain.party.entity.Party;
 import jakarta.persistence.Entity;
@@ -18,12 +19,12 @@ import lombok.ToString;
 @Builder
 @AllArgsConstructor
 @ToString(callSuper = true)
-@IdClass(PartyHashtagMapping.class)
+@IdClass(PartyHashtagId.class)
 public class PartyHashtagMapping {
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "memberId")
-    private Member member;
+    @JoinColumn(name = "hashtagId")
+    private Hashtag hashtag;
 
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
