@@ -3,8 +3,6 @@ import React from 'react';
 import { Typography } from '../../../components/Typography';
 import { Button } from '../../../components/Button';
 import { useNavigate } from 'react-router-dom';
-import { TopBar } from '../../../components/TopBar';
-import { Progress } from '../../../components/Progress';
 import { Icon } from '../../../components/Icon';
 import { CheckCircleIcon } from '@heroicons/react/24/outline';
 import { containerCss } from './styles';
@@ -12,7 +10,6 @@ import { containerCss } from './styles';
 export const Done = () => {
   const nav = useNavigate();
   return (
-    <>
       <div css={containerCss}>
         <Icon color="light" size={5}>
           <CheckCircleIcon />
@@ -45,6 +42,5 @@ export const Done = () => {
           </Button>
         </div>
       </div>
-    </>
   );
 };

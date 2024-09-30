@@ -65,11 +65,11 @@ export const EditProfile = () => {
       genreIdList,
     }: {
       newNickName: string;
-      gender: 'M' | 'F'; // 성별은 'M' 또는 'F'만 가능하도록 타입 정의
+      gender: 'M' | 'F';
       birth: string;
-      newRegionId: string; // newRegionId의 타입을 string으로 설정
+      newRegionId: string;
       clearRoom: number;
-      genreIdList: number[]; // genreIdList는 number[]로 설정
+      genreIdList: number[];
     }) =>
       await updateUserInfo(
         newNickName,

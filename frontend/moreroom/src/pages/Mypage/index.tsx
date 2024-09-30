@@ -18,7 +18,6 @@ import {
   sectionCss,
 } from './styles';
 import { Typography } from '../../components/Typography';
-import { Chip } from '../../components/Chip';
 import { ManageInfo } from './ManageInfo';
 import { UserIcon } from '@heroicons/react/24/solid';
 import { Icon } from '../../components/Icon';
@@ -31,7 +30,6 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { UserLogout } from '../../apis/loginApi';
 import { delUser } from '../../apis/authApi';
-import { Notification } from '../../components/Notification';
 import { useQuery } from '@tanstack/react-query';
 import { getMypage } from '../../apis/mypageApi';
 import { useSignUpStore } from '../../stores/signupStore';
@@ -66,7 +64,7 @@ export const MyPage = () => {
       </TopBar>
       <div css={profileContainer}>
         {/* <UserCircleIcon css={profile} /> */}
-        <img src={ProfileQuery.data?.data.photo} alt="프로필 사진" />
+        <img css={profile} src={ProfileQuery.data?.data.photo} alt="프로필 사진" />
         <div>
           <Typography
             style={{ marginBottom: '0.5rem' }}
@@ -187,7 +185,6 @@ export const MyPage = () => {
               </Icon>
             }
             children="로그아웃"
-            // url="/mypage/profile"
             onApi={handleLogout}
           />
           <ManageInfo
@@ -197,7 +194,6 @@ export const MyPage = () => {
               </Icon>
             }
             children="회원 탈퇴"
-            // url="/mypage/profile"
             onApi={handledelete}
           />
         </div>

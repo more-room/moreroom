@@ -1,4 +1,5 @@
 import { css } from '@emotion/react';
+import { Colors } from '../../../../styles/globalStyle';
 
 export const containerCss = css`
   background-color: #424242;
@@ -7,22 +8,28 @@ export const containerCss = css`
   margin: 1rem 0;
   padding: 1rem;
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+  flex-direction: column;
   box-sizing: border-box;
 `;
 
-export const contentCss = css`
-  flex: 1;
-  margin-right: 1rem;
-  min-width: 0; // 이것이 중요합니다. flexbox 내에서 자식 요소가 축소되도록 합니다.
+export const headerCss = css`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
 `;
 
-export const userInfoCss = css`
+export const leftContentCss = css`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex-grow: 1;
+`;
+
+export const profileCss = css`
   display: flex;
   gap: 0.5rem;
   align-items: center;
-  margin-bottom: 0.5rem;
 
   img {
     width: 2rem;
@@ -32,16 +39,15 @@ export const userInfoCss = css`
 `;
 
 export const themeCss = css`
-  border-left: 3px solid #666;
-  padding-left: 0.4rem;
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
+  padding-left: 0.5rem;
+  border-left: 0.3rem solid ${Colors['grey']['700']};
 `;
 
 export const brandCss = css`
   display: flex;
   gap: 0.2rem;
   margin-top: 0.3rem;
+  align-items: center;
 `;
 
 export const posterCss = css`
@@ -49,10 +55,19 @@ export const posterCss = css`
   height: 5rem;
   flex-shrink: 0;
   overflow: hidden;
+  margin-left: 1rem;
 
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
+`;
+
+export const contentCss = css`
+  width: 100%;
+`;
+
+export const updatedAtCss = css`
+  margin-top: 1rem;
 `;

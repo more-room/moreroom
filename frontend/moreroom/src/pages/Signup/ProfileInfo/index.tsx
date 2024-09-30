@@ -1,8 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import React, { useState } from 'react';
-import { TopBar } from '../../../components/TopBar';
-import { useNavigate } from 'react-router-dom';
-import { Progress } from '../../../components/Progress';
 import { Typography } from '../../../components/Typography';
 import { FilterChip } from '../../../components/FilterChip';
 import { chipItemCss, containerCss, filterCss } from './styles';
@@ -22,7 +19,6 @@ interface VerificationProps {
 }
 
 export const ProfileInfo = ({ onSubmit }: VerificationProps) => {
-  const nav = useNavigate();
   const [gender, setGender] = useState<'M' | 'F' | undefined>(undefined);
   const [birthYear, setBirthYear] = useState<string>('');
   const [birthMonth, setBirthMonth] = useState<string>('');
@@ -46,8 +42,6 @@ export const ProfileInfo = ({ onSubmit }: VerificationProps) => {
 
     const curdata = useSignUpStore.getState();
     console.log('현재 데이터:', curdata);
-
-    // nav('/signup/genreinfo');
     onSubmit();
   };
 

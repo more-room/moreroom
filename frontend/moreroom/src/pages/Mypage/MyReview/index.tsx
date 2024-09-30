@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React, { useState } from 'react';
+import React from 'react';
 import { TopBar } from '../../../components/TopBar';
 import { useNavigate } from 'react-router-dom';
 import { Icon } from '../../../components/Icon';
@@ -9,9 +9,9 @@ import { containerCss, sortCss } from './styles';
 import { useQuery } from '@tanstack/react-query';
 import { getMyReview } from '../../../apis/mypageApi';
 import { ReivewList } from './ReviewList';
-import { ReviewSortFetch } from '../../../modals/mypage/ReviewSort/ReviewSortFetch';
 import { useModal } from '../../../hooks/useModal';
 import { ReviewSort } from '../../../modals/mypage/ReviewSort';
+import { IMyReview } from '../../../types/mypageTypes';
 
 export const MyReview = () => {
   const nav = useNavigate();
@@ -22,7 +22,6 @@ export const MyReview = () => {
   });
 
   console.log(ReviewQuery.data);
-  const [showSortModal, setShowSortModal] = useState(false);
   return (
     <div>
       <TopBar>
@@ -41,9 +40,8 @@ export const MyReview = () => {
           <Typography color="grey" size={1} weight={700} onClick={()=>modal.show(<ReviewSort/>)}>
             작성순
           </Typography>
-          {showSortModal && <ReviewSortFetch />}
         </div>
-        {ReviewQuery.data?.data.content.map((review: any) => (
+        {ReviewQuery.data?.data.content.map((review: IMyReview) => (
           <ReivewList
             key={review.reviewId}
             nickname={review.member.memberName}
@@ -51,6 +49,7 @@ export const MyReview = () => {
             content={review.content}
             score={review.score}
             poster={review.theme.poster}
+            themeId = {review.theme.themeId}
             themeTitle={review.theme.title}
             cafeBrand={review.cafe.brandName}
             cafeBranch={review.cafe.branchName}

@@ -105,7 +105,6 @@ export const AccountInfo = ({ onSubmit }: UserDataFormProps) => {
     // 현재 스토어에 잘 저장되어있는 지 확인
     const curdata = useSignUpStore.getState();
     console.log('현재 데이터:', curdata);
-    // nav('/signup/profileinfo');
     onSubmit()
   };
   const isEmailed = async () => {

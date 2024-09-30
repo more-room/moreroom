@@ -1,8 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
-import { TopBar } from '../../../components/TopBar';
 import { useNavigate } from 'react-router-dom';
-import { Progress } from '../../../components/Progress';
 import { Button } from '../../../components/Button';
 import { btnCss } from '../AccountInfo/styles';
 import { useSuspenseQuery } from '@tanstack/react-query';

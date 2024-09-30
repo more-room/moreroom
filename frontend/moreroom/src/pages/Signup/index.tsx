@@ -30,7 +30,7 @@ export const Signup = () => {
       />
       <Transition
         data-key={step.toString()}
-        // wrapperCss={{ padding: '20px' }} // 간단한 스타일 적용
+        // wrapperCss={{ padding: '20px' }}
       >
         <AccountInfo key={0} onSubmit={() => setStep(1)} />
         <ProfileInfo key={1} onSubmit={() => setStep(2)} />
