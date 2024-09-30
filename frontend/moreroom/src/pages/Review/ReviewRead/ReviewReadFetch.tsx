@@ -1,23 +1,20 @@
 /** @jsxImportSource @emotion/react */
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { HandThumbUpIcon, BellIcon } from '@heroicons/react/24/solid';
 import { TopBar } from '../../../components/TopBar';
-import { cardcontainer, themeCard, topbarcolor, bottombarcss, allViewButton, reviewWrite } from './styles';
+import { cardcontainer, themeCard, topbarcolor, bottombarcss, reviewWrite, allViewButton } from './styles';
 import { getReviewForTheme } from '../../../apis/reviewApi'; // 리뷰 API 가져오기
-import { getPartyList } from '../../../apis/chatApi';
 import { getThemeDetail } from '../../../apis/themeApi';
 import { Typography } from '../../../components/Typography';
 import { Rating } from '../../../components/Rating';
 import { ThemeItem } from '../../../components/ThemeItem';
-import { IThemeDetailItem } from '../../../types/themeTypes';
 import { IThemeItem } from '../../../types/themeTypes';
 import { BottomBar } from '../../../components/BottomBar';
 import { Button } from '../../../components/Button';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
-import { Colors } from '../../../styles/globalStyle';
 
 // ChartJS를 초기화합니다.
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
@@ -27,10 +24,13 @@ export const ReviewReadFetch = () => {
   const location = useLocation();
   const themeId:number = location.state?.themeId; // 불러온 테마 아이디 
 
+  // 페이지에 보여줄 리뷰 수를 관리하는 상태
+  const [visibleReviewCount, setVisibleReviewCount] = useState(3);
+
   // 리뷰 데이터를 가져오는 쿼리
   const reviewQuery = useSuspenseQuery({
     queryKey: ['theme-review', themeId],
-    queryFn: async () => await getReviewForTheme({ themeId, pageNumber: 0 }),
+    queryFn: async () => await getReviewForTheme({ themeId, pageNumber: 0, pageSize: 80, sortOrder: 'desc' })
   });
 
   // 테마 상세 정보를 가져오는 쿼리
@@ -95,20 +95,25 @@ export const ReviewReadFetch = () => {
     ],
   };
 
-  const allView = () => {
-    console.log('리뷰 작성하기');
+  // "더 많은 리뷰 보기" 버튼을 클릭했을 때 더 많은 리뷰를 보여주기 위해 visibleReviewCount 증가
+  const loadMoreReviews = () => {
+    setVisibleReviewCount((prevCount) => {
+      // 더 많은 리뷰가 남아 있는 경우에만 증가
+      if (prevCount + 3 > reviews.length) {
+        return reviews.length; // 남은 모든 리뷰를 보여줍니다.
+      }
+      return prevCount + 3; // 기본적으로 3씩 증가
+    });
   };
 
   // 리뷰 작성 페이지로 이동 (테마 정보 함께 전달)
   const reviewWriteMove = () => {
     console.log('페이지에서 넘길 때:', themeItem);
     navigate('/review/write', {
-      state: {themeItem
-       }// ThemeItem을 state로 전달하여 리뷰 작성 페이지로 이동
+      state: { themeItem }
     });
   };
-
-  
+  console.log(reviewQuery.data.data)
   return (
     <div>
       <TopBar css={topbarcolor}>
@@ -124,14 +129,14 @@ export const ReviewReadFetch = () => {
           <Typography color="light" size={1} weight={700}>
             평균 별점
           </Typography>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', marginTop:'0.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', marginTop: '0.5rem' }}>
             <Rating activeColor="secondary" count={1} value={parseFloat(averageRating)} size={1.5} transparentBackground={true} />
             <Typography color="secondary" size={1} weight={700} style={{ marginLeft: '0.5rem' }}>
               {averageRating}
             </Typography>
           </div>
         </div>
-        <div style={{ width: '60%', height: 'auto', marginLeft: '2rem', marginTop: '1rem'}}> {/* 그래프 크기 조정 */}
+        <div style={{ width: '60%', height: 'auto', marginLeft: '2rem', marginTop: '1rem' }}>
           <Bar
             data={chartData}
             options={{
@@ -145,20 +150,20 @@ export const ReviewReadFetch = () => {
               scales: {
                 x: {
                   grid: {
-                    drawOnChartArea: false, // 그리드 선이 차트 내부에 표시되지 않도록 설정
-                    drawTicks: true, // 눈금을 그리도록 설정
-                    tickLength: 5, // 눈금의 길이를 설정
-                    color: 'rgba(255, 255, 255, 1)', // 눈금의 색상 설정
+                    drawOnChartArea: false,
+                    drawTicks: true,
+                    tickLength: 5,
+                    color: 'rgba(255, 255, 255, 1)',
                   },
                   border: {
-                    color: 'rgba(255, 255, 255, 1)', // 기본 축선의 색상을 흰색으로 설정
+                    color: 'rgba(255, 255, 255, 1)',
                   },
                   ticks: {
                     autoSkip: false,
                     maxRotation: 0,
                     minRotation: 0,
-                    padding: 10, // 축 레이블과 축선 간의 거리 조정
-                    color: 'rgba(255, 255, 255, 1)', // 레이블의 색상을 흰색으로 설정
+                    padding: 10,
+                    color: 'rgba(255, 255, 255, 1)',
                     callback: function (value, index) {
                       if (['0.5', '3.0', '5.0'].includes(chartData.labels[index])) {
                         return chartData.labels[index];
@@ -170,13 +175,13 @@ export const ReviewReadFetch = () => {
                 },
                 y: {
                   grid: {
-                    drawOnChartArea: false, // y축 그리드를 숨깁니다.
+                    drawOnChartArea: false,
                   },
                   border: {
-                    display: false, // y축 경계선을 숨깁니다.
+                    display: false,
                   },
                   ticks: {
-                    display: false, // y축 레이블을 표시하지 않도록 설정합니다.
+                    display: false,
                   },
                 },
               },
@@ -184,14 +189,11 @@ export const ReviewReadFetch = () => {
           />
         </div>
       </div>
-      <div>
-      
-      </div>
+
       {/* 테마 리뷰 리스트 표시 */}
       <div style={{ marginTop: '2rem' }}>
         <div css={cardcontainer}>
-          
-          {reviews.map((review) => (
+          {reviews.slice(0, visibleReviewCount).map((review) => (
             <div key={review.content} css={themeCard} style={{ padding: '0.5rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem' }}>
@@ -219,19 +221,36 @@ export const ReviewReadFetch = () => {
                 </Typography>
               </div>
             </div>
+              
+            
           ))}
           
+          {/* 더 많은 리뷰 보기 버튼 */}
+          {reviews.length > visibleReviewCount && (
+            <Button
+              css={allViewButton}
+              variant="contained"
+              fullwidth={true}
+              rounded={0.4}
+              handler={loadMoreReviews}
+            >
+              더 많은 리뷰 보기
+            </Button>
+          )}
+
           <Button 
-            css={allViewButton}
+            css={reviewWrite}
             variant="contained"
             fullwidth={true}
             rounded={0.4}
+            color='secondary'
             handler={reviewWriteMove}
           >
             리뷰 작성
           </Button>
         </div>
       </div>
+          
       <BottomBar css={bottombarcss} 
         icons={[<BellIcon />, <BellIcon />, <BellIcon />]}
         menus={['메뉴1', '메뉴2', '메뉴3']}

@@ -10,7 +10,8 @@ export const topbarcolor = css`
 export const cardcontainer = css`
   position: relative;
   width: 100%;
-  margin-bottom: 1.5rem;
+  padding-bottom: 8rem;
+  margin-bottom: 2rem;
   display: flex;
   flex-direction: column;
   gap: 1.5rem; /* 카드 간격을 유지하면서 보기 쉽게 만듦 */
@@ -94,13 +95,7 @@ export const bottombarcss = css`
   border-top: 1px solid #ffffff;
   
 `
-export const allViewButton = css`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 80%;
-  margin: 0 10%;
-`
+
 
 export const averageRating = css`
   text-align: left;
@@ -108,10 +103,30 @@ export const averageRating = css`
   margin: 1rem;
 `
 
-export const reviewWrite = css`
+export const allViewButton = css`
+  position: relative; 
+  /* z-index: 1100;  */
+  margin-top: 0.5rem; /* 카드 컨테이너 내에서 여백 추가 */
+  margin-bottom: 1rem; /* 바텀바와의 충분한 여백 추가 */
+  margin-left: auto;
+  margin-right: auto;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 30%;
-  margin: 0 65%;
+  width: 80%;
+  max-width: 500px;
+  /* margin: 0 auto; */
+  background-color: #ff00ff; /* 강조색을 추가하여 보기 쉽게 */
+  padding: 1rem;
+`;
+
+export const reviewWrite = css`
+  position: relative;
+  /* z-index: 1100;  */
+  bottom: 0.2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 80%;
+  margin: 0 10%;
 `

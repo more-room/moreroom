@@ -5,7 +5,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { getThemeDetail } from '../../../apis/themeApi';
 import { getCafeForTheme } from '../../../apis/cafeApi';
 import { getReviewForTheme } from '../../../apis/reviewApi';
-import { container, description, poster } from './styles';
+import { container, description, posters } from './styles';
 import { TopBar } from '../../../components/TopBar';
 import { ThemeInfo } from './ThemeInfo';
 import { ThemePlayInfo } from './ThemePlayInfo';
@@ -23,14 +23,14 @@ export const ThemeDetailFetch = () => {
         queryKey: ['theme-detail'],
         queryFn: async () =>
           await getThemeDetail(
-            process.env.NODE_ENV === 'development' ? 1 : loc.state.themeId,
+            process.env.NODE_ENV === 'development' ? loc.state.themeId : loc.state.themeId,
           ),
       },
       {
         queryKey: ['theme-cafe'],
         queryFn: async () =>
           await getCafeForTheme(
-            process.env.NODE_ENV === 'development' ? 1 : loc.state.themeId,
+            process.env.NODE_ENV === 'development' ? loc.state.themeId : loc.state.themeId,
           ),
       },
       {
@@ -38,7 +38,7 @@ export const ThemeDetailFetch = () => {
         queryFn: async () =>
           await getReviewForTheme({
             themeId:
-              process.env.NODE_ENV === 'development' ? 1 : loc.state.themeId,
+              process.env.NODE_ENV === 'development' ? loc.state.themeId : loc.state.themeId,
             pageNumber: 0,
           }),
       },
@@ -71,7 +71,7 @@ export const ThemeDetailFetch = () => {
         <TopBar.Title type="default" title={themeQuery.data.data.theme.title} />
         <TopBar.Right handler={() => console.log('it"s notification')} />
       </TopBar>
-      <img src={themeQuery.data.data.theme.poster} css={poster} />
+      <img src={themeQuery.data.data.theme.poster} css={posters} />
       <ThemeInfo
         theme={themeQuery.data.data.theme}
         cafe={cafeQuery.data.data}

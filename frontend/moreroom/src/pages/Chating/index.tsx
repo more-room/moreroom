@@ -42,7 +42,7 @@ export const Chating = () => {
   // 파티 목록 가져오기
   const partyList: IParty[] = searchPartiesStore.results?.content || [];
 
-  // 파티 클릭 시 채팅방으로 이동하고 WebSocket 연결
+  
   const handlePartyClick = (partyId: number) => {
     console.log(`선택된 파티 ID: ${partyId}`);
     setRoomId(partyId);  // 선택된 파티 ID 설정
