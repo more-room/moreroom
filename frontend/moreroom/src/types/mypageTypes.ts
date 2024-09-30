@@ -12,3 +12,16 @@ export const Ihashtags = [
   { id: 40, label: '스토리 좋아해요' },
   { id: 41, label: '분위기 메이커' },
 ];
+
+type TGender = 'M' | 'F' | undefined;
+
+export interface ISignUP {
+  email: string;
+  password: string;
+  passwordCheck: string;
+  nickname: string;
+  gender: TGender;
+  birth: string;
+  genreIdList: number[];
+  regionId: string;
+}

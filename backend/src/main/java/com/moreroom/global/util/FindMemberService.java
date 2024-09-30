@@ -17,16 +17,21 @@ public class FindMemberService {
     public Long findCurrentMember() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        if (memberRepository.findByEmail(email).isPresent()) {
-            Member member = memberRepository.findByEmail(email).get();
+        Member member = memberRepository.findByEmail(email)
+            .orElseThrow(MemberNotFoundException::new);
 
-            return member.getMemberId();
-        }
-        throw new MemberNotFoundException();
+        return member.getMemberId();
+
     }
 
     public Member findCurrentMember(Principal principal) {
         String email = principal.getName();
         return memberRepository.findByEmail(email).orElseThrow(MemberNotFoundException::new);
     }
+
+    public Member findCurrentMemberObject() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return memberRepository.findByEmail(email).orElseThrow(MemberNotFoundException::new);
+    }
+
 }

@@ -1,7 +1,6 @@
 package com.moreroom.domain.recommendations.service;
 
 import com.moreroom.domain.history.entity.History;
-import com.moreroom.domain.history.exception.HistoryNotFoundException;
 import com.moreroom.domain.history.repository.HistoryRepository;
 import com.moreroom.domain.member.entity.Member;
 import com.moreroom.domain.member.exception.MemberNotFoundException;
@@ -14,7 +13,9 @@ import com.moreroom.domain.recommendations.repository.SimilarMemberThemeReposito
 import com.moreroom.domain.recommendations.repository.SimilarThemeRepository;
 import com.moreroom.domain.theme.dto.response.ThemeListResponseDto;
 import com.moreroom.domain.theme.repository.ThemeQueryRepository;
+import com.moreroom.global.util.GlobalUtil;
 import java.time.LocalDate;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -44,10 +45,11 @@ public class RecommendationService {
 
     public ThemeListResponseDto getSimilarThemes(long memberId) {
         // 1. 마지막 방문 테마 조회
-        History history = historyRepository.findTop1ByMemberMemberIdOrderByPlayDateDesc(memberId)
-            .orElseThrow(
-                HistoryNotFoundException::new);
-        Integer themeId = history.getTheme().getThemeId();
+        Optional<History> optionalHistory = historyRepository.findTop1ByMemberMemberIdAndDelFlagIsFalseOrderByPlayDateDesc(
+            memberId);
+        Integer themeId = optionalHistory
+            .map(history -> history.getTheme().getThemeId())
+            .orElse(GlobalUtil.getRandomThemeId());
         // 2. 유사 테마 조회 (mongoDB)
         SimilarTheme similarTheme = similarThemeRepository.findByThemeId(themeId);
         // 3. 테마 상세 정보 조회

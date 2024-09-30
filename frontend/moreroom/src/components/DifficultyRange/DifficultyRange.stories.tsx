@@ -50,7 +50,7 @@ export const Primary: Story = {
 
 const difficulties: number[] = [1, 2, 3, 4, 5];
 const dirs: TDiffilcultyDir[] = ['row', 'col'];
-const sizes: TDifficultySize[] = ['sm', 'md', 'lg'];
+const sizes: TDifficultySize[] = ['xs', 'sm', 'md', 'lg'];
 
 export const ClickEvent: Story = {
   args: {

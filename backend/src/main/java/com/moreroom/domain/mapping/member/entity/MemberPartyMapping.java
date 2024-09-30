@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,7 +19,8 @@ import lombok.ToString;
 @Builder
 @AllArgsConstructor
 @ToString(callSuper = true)
-@IdClass(MemberPartyMapping.class)
+@IdClass(MemberPartyId.class)
+@Table(name="memberpartymapping")
 public class MemberPartyMapping {
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
