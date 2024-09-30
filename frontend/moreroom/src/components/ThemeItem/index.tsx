@@ -26,8 +26,20 @@ export const ThemeItem = ({
           <Icon color="primary" size={1}>
             <MapPinIcon />
           </Icon>
-          <Typography color="grey" scale="500" size={0.8125} weight={500}>
-            {theme.cafe.brandName} - {theme.cafe.branchName}
+          <Typography
+            color="grey"
+            scale="500"
+            size={0.8125}
+            weight={500}
+            style={{
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+            }}
+          >
+            {theme.cafe.branchName
+              ? theme.cafe.brandName + ' - ' + theme.cafe.branchName
+              : theme.cafe.cafeName}
           </Typography>
         </div>
         <LabeledTypography
