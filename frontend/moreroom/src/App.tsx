@@ -23,9 +23,11 @@ import { Roomdetail } from './pages/Chating/Chatingroom/Roomdetail';
 import { HistoryList } from './pages/History/HistoryList';
 import { HistoryDetail } from './pages/History/HistoryDetail';
 import { HistoryWrite } from './pages/History/HistoryWrite';
+import { useUserValidation } from './hooks/useUserValidation';
 
 function App() {
   const modalStore = useModalStore();
+  useUserValidation();
 
   return (
     <>
