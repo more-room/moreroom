@@ -14,9 +14,12 @@ export const getThemeTitles = (title: string) => {
 };
 
 /* 테마 목록 검색 */
-export const getThemes = (filters: ISearchThemesRequestParameter) => {
+export const getThemes = (
+  filters: ISearchThemesRequestParameter,
+  pageNumber: number,
+) => {
   return api.get<IThemeList>('/api/theme', {
-    params: filters,
+    params: { ...filters, pageNumber: pageNumber },
   });
 };
 
