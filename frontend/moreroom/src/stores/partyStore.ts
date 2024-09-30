@@ -1,13 +1,12 @@
-import { useState } from 'react';
 import { create } from 'zustand';
 
-// 파티 인터페이스
-
+// 파티 인터페이스 수정
 export interface IParty {
   id: number;
-  myPreference: number[];
-  otherPreference: number[];
-  partyPreference: number[];
+  themeId: number;
+  partyHashtagIdList: number[];
+  myHashtagIdList: number[];
+  yourHashtagIdList: number[];
 }
 
 export interface PartyStore {
@@ -27,4 +26,3 @@ export const usePartyStore = create<PartyStore>((set) => ({
       ),
     })),
 }));
-

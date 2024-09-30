@@ -1,16 +1,14 @@
 /** @jsxImportSource @emotion/react */
 import React, { Suspense } from 'react';
-import { SearchFilters } from '../../Themes/ThemeList/SearchList/SearchFilters';
 import { ErrorBoundary } from 'react-error-boundary';
-import { SearchResults } from '../../Themes/ThemeList/SearchList/SearchResults';
+import { SearchTheme } from '../RegisterParty/SearchTheme';
 
 export const AddTheme = () => {
   return (
     <div>
-      <SearchFilters />
       <ErrorBoundary fallback={<>에러</>}>
         <Suspense fallback={<>로딩중</>}>
-          <SearchResults />
+          <SearchTheme />
         </Suspense>
       </ErrorBoundary>
     </div>
