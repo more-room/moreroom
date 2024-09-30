@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from datetime import datetime
 #------ 외부 파일 임포트
 from similar_themes import get_recent_similar_theme
-from similar_member_themes import get_similar_member_theme 
+from similar_member_themes import get_similar_member_theme, load_mysql_data
 from demographics_themes import get_demographics_theme 
 from pydantic import BaseModel
 from party_recommend import process_party_matching

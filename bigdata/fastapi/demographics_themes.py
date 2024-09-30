@@ -85,7 +85,7 @@ def save_log(result, N=10):
         
         target_info += ("--------------------------------------------------\n")
         
-    save_logs('C:/SSAFY/3_특화프로젝트/data/logs/', "dm", target_info)
+    save_logs('log/', "dm", target_info)
 
 
 def get_demographics_theme():

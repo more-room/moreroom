@@ -31,12 +31,17 @@ def load_local_data_small(path):
 
     return mr_df, mg_df
 
-def load_mysql_data():
+def load_mysql_data(n=None):
     connection = mysql_connect()
-    
-    mr = mysql_read_all(connection, "SELECT memberId, themeId, score, reviewId FROM review")
+    mr_query = "SELECT memberId, themeId, score, reviewId FROM review"
+    mg_query = "SELECT memberId, genreId FROM membergenremapping"
+    if n != None:
+        mr_query += " limit "+str(n)
+        mg_query += " limit "+str(n)
+
+    mr = mysql_read_all(connection, mr_query)
     mr_df = pd.DataFrame(mr)
-    mg = mysql_read_all(connection, "SELECT memberId, genreId FROM membergenremapping")
+    mg = mysql_read_all(connection, mg_query)
     mg_df = pd.DataFrame(mg)
 
     mysql_disconnect(connection)
@@ -165,7 +170,7 @@ def save_log(similarity_matrix, result, mg_df, mg_matrix, mg_index, N=10):
             f"ID: {id}, 가중 선호도: {sim} \n"
         )                  
 
-    save_logs('C:/SSAFY/3_특화프로젝트/data/logs/', "smt", target_info)
+    save_logs('log/', "smt", target_info)
 
     return 
 
