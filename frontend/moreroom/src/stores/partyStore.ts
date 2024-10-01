@@ -1,28 +1,41 @@
 import { create } from 'zustand';
 
-// 파티 인터페이스 수정
+// 파티 데이터 인터페이스
 export interface IParty {
-  id: number;
   themeId: number;
-  partyHashtagIdList: number[];
   myHashtagIdList: number[];
   yourHashtagIdList: number[];
+  partyHashtagIdList: number[];
+  themeTitle: string;
+  poster: string;
+  brandName: string;
+  branchName: string;
 }
 
-export interface PartyStore {
-  parties: IParty[];
-  addParty: (party: IParty) => void;
-  updateParty: (id: number, updatedParty: Partial<IParty>) => void;
+// 파티 액션 인터페이스
+export interface PartyAction {
+  setPartyData: (data: Partial<IParty>) => void;
 }
 
-export const usePartyStore = create<PartyStore>((set) => ({
-  parties: [],
-  addParty: (party) =>
-    set((state) => ({ parties: [...state.parties, party] })),
-  updateParty: (id, updatedParty) =>
+// Zustand 스토어 생성
+export const usePartyStore = create<IParty & PartyAction>()((set) => ({
+  themeId: 0,
+  myHashtagIdList: [],
+  yourHashtagIdList: [],
+  partyHashtagIdList: [],
+  themeTitle: '',
+  poster: '',
+  brandName: '',
+  branchName: '',
+
+  // 입력된 파티 데이터를 업데이트하는 함수
+  setPartyData: (data) =>
     set((state) => ({
-      parties: state.parties.map((party) =>
-        party.id === id ? { ...party, ...updatedParty } : party
-      ),
+      ...state,
+      ...data,
+      // themeId: data.themeId,
+      // myHashtagIdList: data.myHashtagIdList,
+      // yourHashtagIdList: data.yourHashtagIdList,
+      // partyHashtagIdList: data.partyHashtagIdList,
     })),
 }));

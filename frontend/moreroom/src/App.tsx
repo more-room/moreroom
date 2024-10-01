@@ -26,9 +26,7 @@ import { PwdDone } from './pages/Login/FindPwd/PwdDone';
 import { MyReview } from './pages/Mypage/MyReview';
 import { Party } from './pages/Party';
 import { RegisterParty } from './pages/Party/RegisterParty';
-import { SearchTheme } from './pages/Party/RegisterParty/SearchTheme';
-import { AddTheme } from './pages/Party/AddTheme';
-import ThemePage from './pages/Party/RegisterParty/ThemePage';
+import { SectorTheme } from './pages/Party/RegisterParty/SectorTheme';
 
 function App() {
   const modalStore = useModalStore();
@@ -48,9 +46,7 @@ function App() {
 
         <Route path="/party" element={<Party />} />
         <Route path="/party/register" element={<RegisterParty />} />
-        {/* <Route path="/party/theme" element={<SearchTheme />} /> */}
-        {/* <Route path="/party/addtheme" element={<AddTheme />} /> */}
-        <Route path="/party/addtheme" element={<ThemePage />} />
+        <Route path="/party/addtheme" element={<SectorTheme />} />
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/mypage/profile" element={<Profile />} />
         <Route path="/mypage/profile/edit" element={<EditProfile />} />

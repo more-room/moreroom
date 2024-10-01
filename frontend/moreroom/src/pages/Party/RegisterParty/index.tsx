@@ -1,10 +1,10 @@
 /** @jsxImportSource @emotion/react */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TopBar } from '../../../components/TopBar';
 import { useNavigate } from 'react-router-dom';
 import { Typography } from '../../../components/Typography';
 import { containerCss, contentCss, itemCss, themesCss } from './styles';
-import { IParty, usePartyStore } from '../../../stores/partyStore';
+import { usePartyStore } from '../../../stores/partyStore';
 import {
   ImyHashtags,
   Ipartyhastag,
@@ -12,29 +12,51 @@ import {
 } from '../../../types/partyTypes';
 import { FilterChip } from '../../../components/FilterChip';
 import { Button } from '../../../components/Button';
+import { SelectedTheme } from './SectorTheme/SelectedTheme';
+import { addParty } from '../../../apis/partyApi';
 
 export const RegisterParty = () => {
   const [selectedMyHashtagIdList, setSelectedMyHashtagIdList] = useState<number[]>([]);
   const [selectedYourHashtagIdList, setSelectedYourHashtagIdList] = useState<number[]>([]);
   const [selectedPartyHashtagIdList, setSelectedPartyHashtagIdList] = useState<number[]>([]);
-  const [selectedThemeId, setSelectedThemeId] = useState<number | null>(null);
+  const partyStore = usePartyStore();
   const nav = useNavigate();
 
-  const addNewParty = () => {
-    if (selectedThemeId === null) {
-      alert("테마를 선택해주세요!");
-      return;
-    }
+  // 테마 정보 가져오기
+  useEffect(() => {
+    console.log("Current partyStore state:", partyStore);
+  }, [partyStore]);
 
-    const newParty: IParty = {
-      id: Date.now(), // 임시 ID, 실제로는 백엔드에서 생성된 ID를 사용해야 합니다
-      themeId: selectedThemeId,
+  // 선택된 해시태그들을 스토어에 저장
+  useEffect(() => {
+    partyStore.setPartyData({
       myHashtagIdList: selectedMyHashtagIdList,
       yourHashtagIdList: selectedYourHashtagIdList,
       partyHashtagIdList: selectedPartyHashtagIdList,
-    };
-    usePartyStore.getState().addParty(newParty);
-    nav('/party');
+    });
+  }, [selectedMyHashtagIdList, selectedYourHashtagIdList, selectedPartyHashtagIdList]);
+
+  const addNewParty = async () => {
+    if (!partyStore.themeId) {
+      alert('테마를 선택해주세요!');
+      return;
+    }
+
+    console.log('현재 데이터:', partyStore);
+
+    try {
+      const res = await addParty(
+        partyStore.themeId,
+        partyStore.partyHashtagIdList,
+        partyStore.myHashtagIdList,
+        partyStore.yourHashtagIdList,
+      );
+      console.log(res);
+      nav('/party');
+    } catch (err) {
+      console.log(err);
+      alert('파티 등록에 실패했습니다. 다시 시도해주세요.');
+    }
   };
 
   const handleMyHashtagClick = (id: number) => {
@@ -64,11 +86,22 @@ export const RegisterParty = () => {
           backHandler={() => nav(-1)}
         />
       </TopBar>
-      <div css={themesCss} onClick={() => nav('/party/addtheme')}>
-        <Typography color="light" size={1} weight={400}>
-          {selectedThemeId ? '테마가 선택되었습니다!' : '여기를 눌러 테마를 선택해주세요!'}
-        </Typography>
-      </div>
+
+      {partyStore.themeId ? (
+        <SelectedTheme
+          poster={partyStore.poster}
+          themeTitle={partyStore.themeTitle}
+          brandName={partyStore.brandName}
+          branchName={partyStore.branchName}
+        />
+      ) : (
+        <div css={themesCss} onClick={() => nav('/party/addtheme')}>
+          <Typography color="light" size={1} weight={400}>
+            여기를 눌러 테마를 선택해주세요!
+          </Typography>
+        </div>
+      )}
+
       <div css={contentCss}>
         <Typography color="light" size={1} weight={500}>
           희망하는 파티의 성향을 선택해주세요!
@@ -77,9 +110,8 @@ export const RegisterParty = () => {
           {Ipartyhastag.map((tag) => (
             <FilterChip
               key={tag.id}
-              onClick={() => handlePartyHashtagClick(tag.id)}
               selected={selectedPartyHashtagIdList.includes(tag.id)}
-              onHandleClick={() => {}}
+              onHandleClick={() => handlePartyHashtagClick(tag.id)}
             >
               {tag.label}
             </FilterChip>
@@ -92,9 +124,8 @@ export const RegisterParty = () => {
           {ImyHashtags.map((tag) => (
             <FilterChip
               key={tag.id}
-              onClick={() => handleMyHashtagClick(tag.id)}
               selected={selectedMyHashtagIdList.includes(tag.id)}
-              onHandleClick={() => {}}
+              onHandleClick={() => handleMyHashtagClick(tag.id)}
             >
               {tag.label}
             </FilterChip>
@@ -107,9 +138,8 @@ export const RegisterParty = () => {
           {IuserHashtags.map((tag) => (
             <FilterChip
               key={tag.id}
-              onClick={() => handleYourHashtagClick(tag.id)}
               selected={selectedYourHashtagIdList.includes(tag.id)}
-              onHandleClick={() => {}}
+              onHandleClick={() => handleYourHashtagClick(tag.id)}
             >
               {tag.label}
             </FilterChip>
