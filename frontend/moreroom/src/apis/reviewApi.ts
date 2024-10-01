@@ -10,3 +10,8 @@ export const getReviewForTheme = (params: IReviewListRequestParameter) => {
 export const createReview = (data: IReviewCreate) => {
   return api.post('/api/review', data);
 };
+
+/* 리뷰 좋아요 추가/삭제 */
+export const patchThumbsUp = (reviewId: number) => {
+  return api.patch(`/api/review/thumbsup/${reviewId}`);
+};

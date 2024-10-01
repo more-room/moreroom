@@ -43,5 +43,6 @@ export interface IPartyResponse {
   totalElements: number;
   totalPages: number;
   last: boolean;
+  partyList?: IParty[]
 }
 

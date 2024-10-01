@@ -5,7 +5,7 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import { HandThumbUpIcon, BellIcon } from '@heroicons/react/24/solid';
 import { TopBar } from '../../../components/TopBar';
 import { cardcontainer, themeCard, topbarcolor, bottombarcss, reviewWrite, allViewButton } from './styles';
-import { getReviewForTheme } from '../../../apis/reviewApi'; // 리뷰 API 가져오기
+import { getReviewForTheme, patchThumbsUp } from '../../../apis/reviewApi'; // 리뷰 API 가져오기
 import { getThemeDetail } from '../../../apis/themeApi';
 import { Typography } from '../../../components/Typography';
 import { Rating } from '../../../components/Rating';
@@ -30,7 +30,7 @@ export const ReviewReadFetch = () => {
   // 리뷰 데이터를 가져오는 쿼리
   const reviewQuery = useSuspenseQuery({
     queryKey: ['theme-review', themeId],
-    queryFn: async () => await getReviewForTheme({ themeId, pageNumber: 0, pageSize: 80, sortOrder: 'desc' })
+    queryFn: async () => await getReviewForTheme({ themeId, pageNumber: 0, pageSize: 80, sortOrder: 'desc', sortBy: 'updatedAt' })
   });
 
   // 테마 상세 정보를 가져오는 쿼리
@@ -113,6 +113,19 @@ export const ReviewReadFetch = () => {
       state: { themeItem }
     });
   };
+
+    // 좋아요 핸들러 함수 정의
+    const handleThumbsUp = async (reviewId: number) => {
+      console.log('handleThumbsUp called with reviewId:', reviewId); // 확인용 로그
+      try {
+        await patchThumbsUp(reviewId);
+        reviewQuery.refetch(); // 좋아요 반영 후 데이터 다시 불러오기
+      } catch (error) {
+        console.error('좋아요 요청 실패', error);
+      }
+    };
+    
+
   console.log(reviewQuery.data.data)
   return (
     <div>
@@ -212,7 +225,7 @@ export const ReviewReadFetch = () => {
               <div style={{ marginTop: '1rem', display: 'flex', justifyContent: 'space-between' }}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <HandThumbUpIcon style={{ width: '20px', height: '20px', marginRight: '0.5rem' }} />
-                  <Typography color="light" size={0.875} weight={400}>
+                  <Typography color="light" size={0.875} weight={400} onClick={() => handleThumbsUp(review.reviewId)}>
                     {review.thumbsUp}
                   </Typography>
                 </div>
