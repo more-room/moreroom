@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import * as StompJs from '@stomp/stompjs';  // STOMP.js 사용
 import { getMyPartyList, getPartyList } from "../../apis/chatApi";  // 파티 목록을 가져오는 API 호출
 import { useSearchPartiesStore } from "../../stores/chatingStore";  // zustand store 사용
-import { IParty } from '../../types/chatingTypes';  // 타입 정의
+import { IParty} from '../../types/chatingTypes';  // 타입 정의
 import { TopBar } from '../../components/TopBar';
 import { BottomBar } from '../../components/BottomBar';
 import {
@@ -50,8 +50,10 @@ export const ChatingFetch = () => {
 
   // 파티 목록 가져오기
   const partyList: IParty[] = partyListQuery.data.data.partyList || [];
-  // const partyList: IParty[] = searchPartiesStore.results?.content || [];
-  console.log(partyListQuery.data.data.partyList)
+  // const mypartyList: IMyParty[] = myPartyListQuery.data.data.partyList || [];
+
+  console.log('파티 리스트',partyListQuery.data.data.partyList)
+  console.log('쿼리 데이터', partyListQuery.data.data)
 
   // 내가 속한 파티 목록 가져오기
   // const mypartyList: IParty[] = myPartyListQuery.data.data.partyList || [];

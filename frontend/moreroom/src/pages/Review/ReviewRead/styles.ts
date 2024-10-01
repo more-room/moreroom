@@ -3,7 +3,52 @@ import { Colors } from '../../../styles/globalStyle';
 
 // 상단 바의 색상
 export const topbarcolor = css`
+  position: sticky;  /* 스크롤할 때 화면 상단에 고정 */
+  top: 0;            /* 최상단 위치 */
+  z-index: 20;       /* themeItemCss보다 위에 위치하도록 z-index 설정 */
   background-color: #313131;
+  padding: 1rem;
+  
+  /* 박스 그림자와 모서리 둥글게 하여 부드러운 효과 추가 */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.06);
+
+
+  /* 부드러운 전환을 위한 트랜지션 추가 */
+  transition: all 0.3s ease-in-out;
+
+  /* 스크롤되면서 스타일이 변경되는 효과 추가 */
+  &:hover {
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15), 0 3px 6px rgba(0, 0, 0, 0.1);
+    transform: scale(1.02); /* 살짝 커지는 느낌 */
+  }
+`;
+
+export const themeItemCss = css`
+  position: sticky;
+  top: 2.5rem; /* 탑바 아래에 위치하도록 top을 조절 */
+  z-index: 10; /* 탑바 아래에 위치하도록 z-index 설정 */
+  background-color: #313131;
+  padding: 1rem;
+  margin-bottom: 1rem; /* 아래쪽 여백 추가 */
+
+  /* 박스 그림자와 모서리 둥글게 하여 부드러운 효과 추가 */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.06);
+  
+
+  /* 부드러운 전환을 위한 트랜지션 추가 */
+  transition: all 0.3s ease-in-out;
+
+  /* 스크롤되면서 작아지거나 스타일이 변경되는 효과 추가 */
+  &:not(:first-of-type) {
+    transform: scale(0.98); /* 살짝 축소된 느낌 */
+    opacity: 0.9; /* 약간 투명한 느낌 */
+  }
+
+  /* 스크롤이 내려가면서 고정되기 전 점진적인 변화 */
+  &:hover {
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15), 0 3px 6px rgba(0, 0, 0, 0.1);
+    transform: scale(1.02); /* 살짝 커지는 느낌 */
+  }
 `;
 
 // 카드 컨테이너 스타일
@@ -121,12 +166,25 @@ export const allViewButton = css`
 `;
 
 export const reviewWrite = css`
-  position: relative;
-  /* z-index: 1100;  */
-  bottom: 0.2rem;
+  position: fixed; /* 스크롤 시에도 고정된 위치에 */
+  right: 1rem; /* 화면의 오른쪽에서 2rem 떨어진 위치 */
+  bottom: 6rem; /* 바텀바 바로 위에 위치 */
+  width: 3.5rem; /* 버튼의 크기 */
+  height: 3.5rem; /* 버튼의 크기 */
+  border-radius: 50%; /* 원형으로 만들기 */
+  background-color: ${Colors['secondary']['200']}; /* 눈에 띄는 색상 */
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 80%;
-  margin: 0 10%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* 버튼에 입체감을 주기 위한 그림자 */
+  z-index: 1100; /* 다른 요소들보다 앞에 위치하게 설정 */
+  color: #fff; /* 아이콘 색상을 흰색으로 설정 */
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+
+  &:hover {
+    transform: scale(1.1); /* 마우스 호버 시 살짝 커지는 효과 */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* 호버 시 그림자가 강조됨 */
+  }
+
 `

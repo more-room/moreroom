@@ -2,9 +2,9 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { HandThumbUpIcon, BellIcon } from '@heroicons/react/24/solid';
+import { HandThumbUpIcon, BellIcon, PencilIcon } from '@heroicons/react/24/solid';
 import { TopBar } from '../../../components/TopBar';
-import { cardcontainer, themeCard, topbarcolor, bottombarcss, reviewWrite, allViewButton } from './styles';
+import { cardcontainer, themeCard, topbarcolor, bottombarcss, reviewWrite, allViewButton, themeItemCss } from './styles';
 import { getReviewForTheme, patchThumbsUp } from '../../../apis/reviewApi'; // 리뷰 API 가져오기
 import { getThemeDetail } from '../../../apis/themeApi';
 import { Typography } from '../../../components/Typography';
@@ -132,7 +132,7 @@ export const ReviewReadFetch = () => {
       <TopBar css={topbarcolor}>
         <TopBar.Title type="default" title="리뷰 조회" backHandler={() => navigate(-1)} />
       </TopBar>
-      <div>
+      <div css={themeItemCss}>
         <ThemeItem theme={themeItem} />
       </div>
 
@@ -149,7 +149,7 @@ export const ReviewReadFetch = () => {
             </Typography>
           </div>
         </div>
-        <div style={{ width: '60%', height: 'auto', marginLeft: '2rem', marginTop: '1rem' }}>
+        <div style={{ width: '70%', height: 'auto', marginLeft: '0rem', marginTop: '1rem' }}>
           <Bar
             data={chartData}
             options={{
@@ -259,7 +259,7 @@ export const ReviewReadFetch = () => {
             color='secondary'
             handler={reviewWriteMove}
           >
-            리뷰 작성
+            <PencilIcon/>
           </Button>
         </div>
       </div>
