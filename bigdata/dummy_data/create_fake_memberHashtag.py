@@ -21,7 +21,7 @@ def fetch_members_and_hashtags():
         cursor = connection.cursor()
 
         # 멤버 가져오기 쿼리 (1000개의 멤버)
-        fetch_members_query = "SELECT memberId FROM Member LIMIT 1300"
+        fetch_members_query = "SELECT memberId FROM Member"
         cursor.execute(fetch_members_query)
         members = cursor.fetchall()
 
@@ -44,13 +44,13 @@ def fetch_members_and_hashtags():
             print("MySQL 연결이 종료되었습니다.")
 
 
-# 멤버-해시태그 매핑 데이터 생성 (각 멤버당 2~4개의 해시태그, 중복 없음)
+# 멤버-해시태그 매핑 데이터 생성 (각 멤버당 3개의 해시태그, 중복 없음)
 def generate_member_hashtag_mapping_data(members, hashtags):
     member_hashtag_mappings = []
     
     for member in members:
         member_id = member[0]
-        num_hashtags = random.randint(2, 4)  # 각 멤버당 2~4개의 해시태그 할당
+        num_hashtags = 3  # 각 멤버당 3개의 해시태그 할당
         selected_hashtags = random.sample(hashtags, num_hashtags)  # 해시태그 중 중복 없이 랜덤으로 선택
         
         for hashtag in selected_hashtags:
