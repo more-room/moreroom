@@ -11,8 +11,10 @@ export const containerCss = css`
 
 export const profileCss = css`
   color: white;
-  width: 80px;
+  width: 4.375rem;
+  height: 4.375rem;
   margin-bottom: 0.2rem;
+  border-radius: 3rem;
 `;
 
 export const userInfoCss = css`

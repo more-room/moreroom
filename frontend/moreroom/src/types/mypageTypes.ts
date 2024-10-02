@@ -25,3 +25,23 @@ export interface ISignUP {
   genreIdList: number[];
   regionId: string;
 }
+
+export interface IMyReview {
+  reviewId: number;
+  content: string;
+  score: number;
+  member: {
+    memberName: string;
+    memberProfile: string;
+  };
+  theme: {
+    themeId: number;
+    title: string;
+    poster: string;
+  };
+  cafe: {
+    brandName: string;
+    branchName: string;
+  };
+  updatedAt: string;
+}

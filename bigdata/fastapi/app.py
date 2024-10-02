@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from datetime import datetime
 #------ 외부 파일 임포트
 from similar_themes import get_recent_similar_theme
-from similar_member_themes import get_similar_member_theme 
+from similar_member_themes import get_similar_member_theme, load_mysql_data
 from demographics_themes import get_demographics_theme 
 from pydantic import BaseModel
 from party_recommend import process_party_matching
@@ -30,10 +30,13 @@ def similar_themes():
 
 @app.get("/similar_member_themes")
 def similar_member_themes():
+    start_time = datetime.now() 
     get_similar_member_theme()
+    end_time = datetime.now()
     current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    print("operation_time: "+str((end_time-start_time).total_seconds()))
     return {"message": "get_similar_member_theme success",
-            "operation_time": current_time} 
+            "operation_time": (end_time-start_time).total_seconds()} 
 
 @app.get("/demographics_themes")
 def demographics_themes():

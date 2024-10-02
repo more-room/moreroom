@@ -67,6 +67,10 @@ export const isEmail = (email: string) => {
   });
 };
 
+export const delUser = () => {
+  return api.delete('/api/auth/member');
+};
+
 export const sessionValidate = () => {
   return api.get('/api/session');
 };
