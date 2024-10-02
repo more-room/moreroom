@@ -24,9 +24,11 @@ import { EditPassword } from './pages/Mypage/EditUser/EditPassword';
 import { FindPwd } from './pages/Login/FindPwd';
 import { PwdDone } from './pages/Login/FindPwd/PwdDone';
 import { MyReview } from './pages/Mypage/MyReview';
+import { useUserValidation } from './hooks/useUserValidation';
 
 function App() {
   const modalStore = useModalStore();
+  useUserValidation();
 
   return (
     <>

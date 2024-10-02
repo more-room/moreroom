@@ -1,15 +1,16 @@
 /** @jsxImportSource @emotion/react */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { getThemes } from '../../../../../apis/themeApi';
 import {
   useSearchThemesStore,
   useSearchTitleStore,
 } from '../../../../../stores/themeStore';
-import { IThemeList, IThemeListItem } from '../../../../../types/themeTypes';
+import { IThemeListItem } from '../../../../../types/themeTypes';
 import { ThemeItem } from '../../../../../components/ThemeItem';
 import { listContainer } from './styles';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useHistoryWriteStore } from '../../../../../stores/historyStore';
+import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 
 export const SearchResults = () => {
   const loc = useLocation();
@@ -17,32 +18,21 @@ export const SearchResults = () => {
   const searchThemeStore = useSearchThemesStore();
   const searchTitleStore = useSearchTitleStore();
   const historyWriteStore = useHistoryWriteStore();
+  const queryClient = useQueryClient();
   const divRef = useRef<HTMLDivElement>(null);
-  const themeQueryRef = useRef<IThemeList | null>(null);
-  const [themeQuery, setThemeQuery] = useState<IThemeList>({
-    pageNumber: 0,
-    content: { themeList: [] },
+
+  const { data, fetchNextPage } = useInfiniteQuery({
+    queryKey: ['themes'],
+    queryFn: async ({ pageParam }) => {
+      const response = await getThemes(searchThemeStore.filters, pageParam);
+      return response.data;
+    },
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) =>
+      lastPage.pageNumber === lastPage.totalPage
+        ? undefined
+        : lastPage.pageNumber + 1,
   });
-
-  const fetchMoreThemes = () => {
-    const nextPage = themeQueryRef.current?.pageNumber! + 1;
-    const updatedFilters = {
-      ...searchThemeStore.filters,
-      pageNumber: nextPage,
-    };
-
-    getThemes(updatedFilters)
-      .then((res) => {
-        setThemeQuery((prev) => {
-          const pre = { ...prev };
-          res.data.content?.themeList.forEach((v: IThemeListItem) => {
-            pre.content?.themeList.push(v);
-          });
-          return pre;
-        });
-      })
-      .catch((err) => console.log(err));
-  };
 
   const handleScroll = () => {
     if (divRef.current) {
@@ -50,8 +40,8 @@ export const SearchResults = () => {
       const scrollHeight = divRef.current.scrollHeight;
       const clientHeight = divRef.current.clientHeight;
 
-      if (scrollTop + clientHeight >= scrollHeight - 0.5) {
-        fetchMoreThemes();
+      if (scrollTop + clientHeight >= scrollHeight) {
+        fetchNextPage();
       }
     }
   };
@@ -66,16 +56,6 @@ export const SearchResults = () => {
   };
 
   useEffect(() => {
-    themeQueryRef.current = themeQuery;
-  }, [themeQuery]);
-
-  useEffect(() => {
-    getThemes(searchThemeStore.filters)
-      .then((res) => {
-        setThemeQuery(res.data);
-      })
-      .catch((err) => console.log(err));
-
     if (divRef.current) divRef.current.addEventListener('scroll', handleScroll);
     return () => {
       if (divRef.current)
@@ -84,37 +64,28 @@ export const SearchResults = () => {
   }, []);
 
   useEffect(() => {
-    const after = { ...searchThemeStore.filters, pageNumber: 0 };
-    searchThemeStore.setFilters(after);
-
-    getThemes(searchThemeStore.filters)
-      .then((res) => {
-        setThemeQuery(res.data);
-      })
-      .catch((err) => console.log(err));
-  }, [
-    searchThemeStore.filters.brandId,
-    searchThemeStore.filters.genreList,
-    searchThemeStore.filters.level,
-    searchThemeStore.filters.people,
-    searchThemeStore.filters.playtime,
-    searchThemeStore.filters.price,
-    searchThemeStore.filters.region,
-    searchThemeStore.filters.title,
-  ]);
+    queryClient.removeQueries({ queryKey: ['themes'] });
+    fetchNextPage();
+  }, [searchThemeStore.filters]);
 
   return (
-    <div ref={divRef} css={listContainer}>
-      {themeQuery?.content?.themeList.map(
-        (theme: IThemeListItem, idx: number) => (
-          <ThemeItem
-            key={idx}
-            theme={theme}
-            pattern={searchTitleStore.title}
-            onClick={() => handleClick(theme)}
-          />
-        ),
-      )}
-    </div>
+    <>
+      <div ref={divRef} css={listContainer}>
+        {data?.pages.map((page) => (
+          <>
+            {page.content?.themeList.map(
+              (theme: IThemeListItem, idx: number) => (
+                <ThemeItem
+                  key={idx}
+                  theme={theme}
+                  pattern={searchTitleStore.title}
+                  onClick={() => handleClick(theme)}
+                />
+              ),
+            )}
+          </>
+        ))}
+      </div>
+    </>
   );
 };
