@@ -1,75 +1,94 @@
 import * as StompJs from '@stomp/stompjs';
-import { useEffect, useState } from 'react';
-import { IChatList, IChatListItem } from '../types/chatingTypes';
+import { useEffect, useRef, useState } from 'react';
+import { IChatListItem } from '../types/chatingTypes';
+import { getChatList } from '../apis/chatApi';
+import { useQuery } from '@tanstack/react-query';
 
 export const useChat = (partyId: number) => {
   /* 채팅 내역 */
-  const [chatList, setChatList] = useState<IChatList>({ messageList: [] });
-
-  /* 소켓 연결 정보 */
-  const stompClient = new StompJs.Client({
-    brokerURL: process.env.REACT_APP_CHAT_SOCKET,
-    reconnectDelay: 5000,
-    heartbeatIncoming: 4000,
-    heartbeatOutgoing: 4000,
+  const [chatList, setChatList] = useState<IChatListItem[]>([]);
+  const [lastMessageId, setLastMessageId] = useState<string | undefined>(
+    undefined,
+  );
+  const chatQuery = useQuery({
+    queryKey: ['pastchat'],
+    queryFn: async () => await getChatList(Number(partyId), lastMessageId),
+    enabled: false,
   });
+  const stompClient = useRef<StompJs.Client | null>(null);
 
-  /* 채팅 전송 */
-  const sendChat = (msg: string) => {
-    stompClient.publish({
-      destination: process.env.REACT_APP_CHAT_DEST!,
-      body: JSON.stringify({
-        partyId: partyId,
-        message: msg,
-      }),
+  /* 채팅 내역 가져오기 */
+  const getPastChatList = async () => {
+    const response = await chatQuery.refetch();
+    setLastMessageId(response.data?.data.lastMessageId);
+    setChatList((prev) => {
+      const after = response.data
+        ? response.data.data.messageList.reverse()
+        : [];
+      return [...after, ...prev];
     });
   };
 
   /* 채팅 추가 */
   const addChat = (chat: IChatListItem) => {
-    setChatList((prev) => ({
-      ...prev,
-      messageList: [...prev.messageList, chat],
-    }));
+    setChatList((prev) => [...prev, chat]);
   };
 
-  /* 소켓 연결 */
-  stompClient.onConnect = (frame) => {
-    console.log('Connected: ', frame);
-
-    stompClient.subscribe(`/topic/party/${partyId}`, (broadcast) => {
-      console.log('headers', broadcast.headers);
-      console.log('body', JSON.parse(broadcast.body));
-
-      let headers = broadcast.headers;
-      let body = JSON.parse(broadcast.body);
-
-      addChat({
-        messageId: body.messageId,
-        nickname: headers.nickname,
-        photo: headers.photo,
-        message: body.message,
+  /* 채팅 전송 */
+  function sendChat(msg: string) {
+    if (stompClient.current?.active) {
+      stompClient.current?.publish({
+        destination: process.env.REACT_APP_CHAT_DEST!,
+        body: JSON.stringify({
+          partyId: partyId,
+          message: msg,
+        }),
       });
-    });
-  };
+    } else {
+      console.log(stompClient.current?.active);
+    }
+  }
 
-  stompClient.onStompError = (frame) => {
-    console.error('Error: ' + frame.headers['message']);
-    console.error('Error details: ' + frame.body);
-  };
-
-  /* 연결 & 해제 */
   useEffect(() => {
-    stompClient.activate();
+    /* 소켓 연결 정보 */
+    stompClient.current = new StompJs.Client({
+      brokerURL: process.env.REACT_APP_CHAT_SOCKET,
+      reconnectDelay: 5000,
+      heartbeatIncoming: 4000,
+      heartbeatOutgoing: 4000,
+    });
+
+    /* 소켓 연결 */
+    stompClient.current.onConnect = (frame) => {
+      console.log('Connected: ', frame);
+
+      stompClient.current?.subscribe(`/topic/party/${partyId}`, (broadcast) => {
+        console.log('headers', broadcast.headers);
+        console.log('body', JSON.parse(broadcast.body));
+
+        let headers = broadcast.headers;
+        let body = JSON.parse(broadcast.body);
+
+        addChat({
+          messageId: body.messageId,
+          nickname: headers.nickname,
+          photo: headers.photo,
+          message: body.message,
+        });
+      });
+    };
+
+    stompClient.current.onStompError = (frame) => {
+      console.error('Error: ' + frame.headers['message']);
+      console.error('Error details: ' + frame.body);
+    };
+
+    stompClient.current?.activate();
 
     return () => {
-      stompClient.deactivate();
+      stompClient.current?.deactivate();
     };
-  }, []);
+  }, [partyId]);
 
-  useEffect(() => {
-    console.log(chatList.messageList);
-  }, [chatList]);
-
-  return { chatList, sendChat };
+  return { stompClient, chatList, getPastChatList, sendChat };
 };

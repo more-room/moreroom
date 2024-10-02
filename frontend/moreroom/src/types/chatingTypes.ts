@@ -42,7 +42,16 @@ export interface IPartyResponse {
   totalElements: number;
   totalPages: number;
   last: boolean;
-  partyList?: IParty[]
+  partyList?: IParty[];
+}
+
+/* 채팅방 정보 */
+export interface IChatRoomInfo {
+  roomName: string;
+  themeId: number;
+  date: string;
+  maxMember: number;
+  addFlag: boolean;
 }
 
 /* 채팅 내역 - 아이템 */
@@ -56,5 +65,5 @@ export interface IChatListItem {
 /* 채팅 내역 */
 export interface IChatList {
   messageList: IChatListItem[];
-  lastMessageId?: string;
+  lastMessageId: string;
 }
