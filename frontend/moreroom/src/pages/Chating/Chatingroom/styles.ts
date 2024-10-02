@@ -54,6 +54,8 @@ export const input = css`
   padding: 0.5rem;
   font-size: 1rem;
   font-family: "paperlogy";
+  border-top: 1px solid #ffffff;
+  margin: 0.2rem 0;
 `;
 
 export const sendBtn = css`
