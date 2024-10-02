@@ -173,6 +173,12 @@ public class PartyService {
     party.setNotice(notice.getNotice());
   }
 
+  public NoticeDto readChatroomNotice(Long partyId) {
+    Party party = partyRepository.findById(partyId).orElseThrow(PartyNotFoundException::new);
+    return new NoticeDto(party.getNotice());
+  }
+
+
   // 채팅방 세팅 조회
   public ChatroomSettingDto getSettingInfo(Long partyId) {
     Party party = partyRepository.findById(partyId).orElseThrow(PartyNotFoundException::new);
