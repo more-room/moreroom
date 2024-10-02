@@ -21,13 +21,13 @@ import { UserGroupIcon } from '@heroicons/react/24/solid';
 
 interface PartyItemProps {
   party: IParty;
+  handler: () => void;
 }
-
 type Hashtag = {
   hashtagId: number;
   hashtagName: string;
 };
-export const Matched = ({ party }: PartyItemProps) => {
+export const Matched = ({ party, handler }: PartyItemProps) => {
   return (
     <div css={containerCss}>
       <div css={topContentCss}>
@@ -67,7 +67,7 @@ export const Matched = ({ party }: PartyItemProps) => {
           fullwidth
           rounded={0.5}
           variant="contained"
-          handler={() => {}}
+          handler={handler}
         >
           매칭 완료!
         </Button>

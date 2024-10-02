@@ -21,13 +21,14 @@ import { UserGroupIcon } from '@heroicons/react/24/solid';
 
 interface PartyItemProps {
   party: IParty;
+  // handler: () => void;
 }
 
 type Hashtag = {
   hashtagId: number;
   hashtagName: string;
 };
-export const Pending = ({ party }: PartyItemProps) => {
+export const Pending = ({ party}: PartyItemProps) => {
   return (
     <div css={containerCss}>
       <div css={topContentCss}>
@@ -63,11 +64,11 @@ export const Pending = ({ party }: PartyItemProps) => {
         <Button
           style={{ fontSize: '1rem' }}
           color="grey"
-          scale='500'
+          scale="500"
           fullwidth
           rounded={0.5}
           variant="contained"
-          handler={() => {}}
+          handler={()=>{}}
         >
           수락 대기 중
         </Button>

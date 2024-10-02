@@ -20,17 +20,24 @@ api.interceptors.request.use(
   },
 );
 
+const loginReg = /^(\/(login))(\/.*)?$/;
+const signupReg = /^(\/(signup))(\/.*)?$/;
+
 api.interceptors.response.use(
   (response) => {
-    const regex = /^(\/(login|signup))(\/.*)?$/;
-    if (regex.test(window.location.pathname)) {
+    if (loginReg.test(window.location.pathname)) {
       window.location.href = '/';
     }
     return response;
   },
   (error) => {
     if (error.response.status === 400) {
-      window.location.href = '/login';
+      if (
+        !loginReg.test(window.location.pathname) &&
+        !signupReg.test(window.location.pathname)
+      ) {
+        window.location.href = '/login';
+      }
     }
     return Promise.reject(error);
   },
