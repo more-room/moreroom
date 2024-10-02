@@ -21,6 +21,7 @@ import com.moreroom.domain.partyRequest.repository.PartyRequestRepository;
 import com.moreroom.domain.theme.entity.Theme;
 import com.moreroom.domain.theme.repository.ThemeRepository;
 import com.moreroom.global.dto.SocketNotificationDto;
+import com.moreroom.global.util.StringUtil;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -192,7 +193,7 @@ public class PartyService {
     Party party = partyRepository.findById(partyId).orElseThrow(PartyNotFoundException::new);
     validUser(member, party);
     String roomname = dto.getRoomName();
-    LocalDateTime date = LocalDateTime.parse(dto.getDate(), formatter);
+    LocalDateTime date = StringUtil.stringToDate(dto.getDate());
     if (roomname.length() > 50) {
       throw new InputValidationException();
     }
