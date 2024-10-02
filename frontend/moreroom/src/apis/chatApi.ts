@@ -10,3 +10,8 @@ export const getPartyList = () => {
 export const getPartyDetail = (partyId: number) => {
   return api.get<IParty>(`/api/party/${partyId}`);
 };
+
+// 사용자가 가입한 파티 목록을 가져오는 함수
+export const getMyPartyList = () => {
+  return api.get<IPartyResponse>('/api/party/member');
+};

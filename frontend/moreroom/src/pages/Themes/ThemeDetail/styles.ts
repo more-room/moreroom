@@ -6,7 +6,7 @@ export const container = css`
   overflow-y: scroll;
 `;
 
-export const poster = css`
+export const posters = css`
   width: 100%;
   height: 15rem;
   object-fit: cover;
