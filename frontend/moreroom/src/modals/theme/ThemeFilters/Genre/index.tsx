@@ -20,7 +20,7 @@ export const Genre = () => {
   const searchThemesStore = useSearchThemesStore();
 
   const handleFilter = (isAdd: boolean, genreId: number) => {
-    const genres = searchThemesStore.filters.genreList;
+    const genres = [...searchThemesStore.filters.genreList];
     if (isAdd) {
       genres.push(genreId);
     } else {
