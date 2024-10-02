@@ -175,7 +175,8 @@ public class PartyService {
 
   public NoticeDto readChatroomNotice(Long partyId) {
     Party party = partyRepository.findById(partyId).orElseThrow(PartyNotFoundException::new);
-    return new NoticeDto(party.getNotice());
+    String notice = party.getNotice() == null || party.getNotice().equals("") ? null : party.getNotice();
+    return new NoticeDto(notice);
   }
 
 
