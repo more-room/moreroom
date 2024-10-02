@@ -5,7 +5,7 @@ export const userSignup = (
   password: string,
   passwordCheck: string,
   nickname: string,
-  gender: 'M'|'F'|undefined,
+  gender: 'M' | 'F' | undefined,
   birth: string,
   genreIdList: number[],
   regionId: string,
@@ -67,7 +67,10 @@ export const isEmail = (email: string) => {
   });
 };
 
-
 export const delUser = () => {
   return api.delete('/api/auth/member');
+};
+
+export const sessionValidate = () => {
+  return api.get('/api/session');
 };
