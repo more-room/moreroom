@@ -1,15 +1,20 @@
 from pymongo import MongoClient
 import pymysql
 import json
+import os 
+from dotenv import load_dotenv 
 
 ## ------------------ mongoDB 
 
 def mongo_connect():
-    with open('config.json', encoding='utf-8') as config_file:
-        config = json.load(config_file)
-        mongo_uri = f"mongodb://{config['mongo_user']}:{config['mongo_pw']}@{config['mongo_host']}:{config['mongo_port']}/"
-        client = MongoClient(mongo_uri)
-        return client 
+    load_dotenv()
+    config_mongo_user = os.getenv('MONGO_USER')
+    config_mongo_pw = os.getenv('MONGO_PW')
+    config_mongo_host = os.getenv('MONGO_HOST')
+    config_mongo_port = int(os.getenv('MONGO_PORT'))
+    mongo_uri = f"mongodb://{config_mongo_user}:{config_mongo_pw}@{config_mongo_host}:{config_mongo_port}/"
+    client = MongoClient(mongo_uri)
+    return client 
 
 def mongo_disconnect(client):
     client.close()
@@ -42,19 +47,17 @@ def mongo_save_with_update(collection, data):
 ## -------------- mysql 
 
 def mysql_connect():
-    with open('config.json', encoding="utf-8") as config_file:
-        config = json.load(config_file)
+    load_dotenv()
+    connection = pymysql.connect(
+        host= os.getenv('MYSQL_HOST'),
+        port= int(os.getenv('MYSQL_PORT')),
+        user= os.getenv('MYSQL_USER'),
+        password= os.getenv('MYSQL_PW'),
+        database= os.getenv('MYSQL_DB'),
+        cursorclass=pymysql.cursors.DictCursor
+    )
 
-        connection = pymysql.connect(
-            host= config['mysql_host'],
-            port= config['mysql_port'],
-            user= config['mysql_user'],
-            password= config['mysql_pw'],
-            database= config['mysql_db'],
-            cursorclass=pymysql.cursors.DictCursor
-        )
-
-        return connection 
+    return connection 
     
 def mysql_disconnect(connection):
     connection.close() 
