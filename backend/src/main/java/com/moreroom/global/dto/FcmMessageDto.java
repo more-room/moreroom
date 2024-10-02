@@ -78,6 +78,7 @@ public class FcmMessageDto {
   public enum MessageType {
     PARTY_REQUEST,
     CHATROOM_SUBSCRIBE,
-    PARTY_BROKEN
+    PARTY_BROKEN,
+    CHAT_MESSAGE,
   }
 }

@@ -3,10 +3,11 @@ package com.moreroom.global.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;
+import com.moreroom.domain.member.entity.Member;
+import com.moreroom.domain.theme.entity.Theme;
 import com.moreroom.global.dto.FcmMessageDto;
 import com.moreroom.global.dto.FcmMessageDto.Message;
 import com.moreroom.global.dto.FcmMessageDto.Notification;
-import com.moreroom.global.dto.FcmSendDto;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -39,8 +40,7 @@ public class FcmServiceImpl implements FcmService {
     HttpEntity<String> entity = new HttpEntity<>(message, headers);
 
     String API_URL = "<https://fcm.googleapis.com/v1/projects/d206-moreroom/messages:send>";
-    ResponseEntity<String> response = restTemplate.exchange(API_URL, HttpMethod.POST, entity,
-        String.class);
+    ResponseEntity<String> response = restTemplate.exchange(API_URL, HttpMethod.POST, entity, String.class);
 
     System.out.println(response.getStatusCode());
 
@@ -66,6 +66,24 @@ public class FcmServiceImpl implements FcmService {
   private String makeMessage(FcmMessageDto fcmMessageDto) throws JsonProcessingException {
     ObjectMapper om = new ObjectMapper();
     return om.writeValueAsString(fcmMessageDto);
+  }
+
+  public FcmMessageDto makePartyRequestMessage(Member member, String themeTitle, String cafeName, Long partyRequestId, String uuid, Integer themeId) {
+    Notification notification = Notification.builder()
+        .title("파티 매칭 알림")
+        .body("[" + themeTitle + "] 파티가 매칭되었습니다.")
+        .build();
+
+
+
+    return FcmMessageDto.builder()
+        .validateOnly(false)
+        .message(Message.builder()
+            .token("token")
+            .notification(notification)
+//            .data()
+            .build())
+        .build();
   }
 
 }
