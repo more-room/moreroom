@@ -110,6 +110,13 @@ public class PartyController {
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
+  //채팅방 공지사항 조회
+  @GetMapping("/{partyId}/notice")
+  public ResponseEntity<?> readNotice(@PathVariable Long partyId) {
+    NoticeDto notice = partyService.readChatroomNotice(partyId);
+    return new ResponseEntity<>(notice, HttpStatus.OK);
+  }
+
   //채팅방 설정 수정
   @PatchMapping("/{partyId}/settings")
   public ResponseEntity<?> updateChatroomSetting(@PathVariable Long partyId, @RequestBody ChatroomSettingDto dto) {
