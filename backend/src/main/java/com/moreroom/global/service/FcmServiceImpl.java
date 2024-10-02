@@ -25,8 +25,8 @@ import org.springframework.web.client.RestTemplate;
 public class FcmServiceImpl implements FcmService {
 
   @Override
-  public int sendMessageTo(FcmSendDto fcmSendDto) throws IOException {
-    String message = makeMessage(fcmSendDto);
+  public int sendMessageTo(FcmMessageDto fcmMessageDto) throws IOException {
+    String message = makeMessage(fcmMessageDto);
     RestTemplate restTemplate = new RestTemplate();
 
     restTemplate.getMessageConverters()
@@ -63,17 +63,8 @@ public class FcmServiceImpl implements FcmService {
     return googleCredentials.getAccessToken().getTokenValue();
   }
 
-  private String makeMessage(FcmSendDto fcmSendDto) throws JsonProcessingException {
+  private String makeMessage(FcmMessageDto fcmMessageDto) throws JsonProcessingException {
     ObjectMapper om = new ObjectMapper();
-    FcmMessageDto fcmMessageDto = FcmMessageDto.builder()
-        .message(Message.builder()
-            .token(fcmSendDto.getToken())
-            .notification(Notification.builder()
-                .title(fcmSendDto.getTitle())
-                .body(fcmSendDto.getBody())
-                .image(null)
-                .build()
-            ).build()).validateOnly(false).build();
     return om.writeValueAsString(fcmMessageDto);
   }
 
