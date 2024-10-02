@@ -22,7 +22,7 @@ public class ReviewMyPageResponseDTO {
     private MemberReviewResponseDTO member;
     private ThemeMyPageReviewResponseDto theme;
     private CafeReviewResponseDTO cafe;
-    private String updatedAt;
+    private String createdAt;
 
     public static ReviewMyPageResponseDTO toDTO(Review review, List<String> genreNameList) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -39,7 +39,7 @@ public class ReviewMyPageResponseDTO {
             .member(MemberReviewResponseDTO.toDTO(member))
             .theme(ThemeMyPageReviewResponseDto.toDTO(theme, genreNameList))
             .cafe(CafeReviewResponseDTO.toDTO(cafe))
-            .updatedAt(review.getUpdatedAt().format(formatter))
+            .createdAt(review.getCreatedAt().format(formatter))
             .build();
     }
 }
