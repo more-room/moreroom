@@ -11,10 +11,21 @@ export const containerCss = css`
   box-sizing: border-box;
 `;
 
-export const imgCss = css`
-  width: 5rem;
+export const imgCss = (imgErr: boolean) => css`
+  min-width: 5rem;
   height: 6.5rem;
   border-radius: 0.25rem;
+
+  ${imgErr &&
+  css`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    row-gap: 0.25rem;
+    margin-bottom: 0.25rem;
+    background-color: #212121;
+  `}
 `;
 
 export const infoCss = css`
