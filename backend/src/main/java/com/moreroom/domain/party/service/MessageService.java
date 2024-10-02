@@ -35,7 +35,7 @@ public class MessageService {
   private final RedisUtil redisUtil;
   private final MemberRepository memberRepository;
 
-  public void saveMessage(ChatMessageDto message, Principal principal) {
+  public ChatMessageDto saveMessage(ChatMessageDto message, Principal principal) {
     PartyMessage partyMessage = PartyMessage.builder()
         .email(principal.getName())
         .message(message.getMessage())
@@ -43,7 +43,13 @@ public class MessageService {
         .partyId(message.getPartyId())
         .build();
 
-    partyMessageRepository.save(partyMessage);
+    PartyMessage savedMessage = partyMessageRepository.save(partyMessage);
+
+    return ChatMessageDto.builder()
+        .messageId(savedMessage.getId())
+        .partyId(savedMessage.getPartyId())
+        .message(savedMessage.getMessage())
+        .build();
   }
 
   //채팅 내역 불러오기
@@ -107,6 +113,7 @@ public class MessageService {
         .map(m -> {
           RedisUserInfo userInfo = infoMap.get(m.getEmail());
           return MessageConvertDto.builder()
+              .messageId(m.getId())
               .nickname(userInfo.getNickname())
               .photo(userInfo.getPhoto())
               .message(m.getMessage())

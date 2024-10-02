@@ -52,6 +52,7 @@ public class PartyController {
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
+  //채팅 내역 조회
   @GetMapping("/chatLogs")
   public ResponseEntity<?> getChattingList(
       @RequestParam Long partyId,

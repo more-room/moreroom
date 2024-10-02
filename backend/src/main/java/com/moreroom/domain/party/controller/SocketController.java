@@ -2,6 +2,7 @@ package com.moreroom.domain.party.controller;
 
 import com.moreroom.domain.member.entity.Member;
 import com.moreroom.domain.party.dto.ChatMessageDto;
+import com.moreroom.domain.party.entity.PartyMessage;
 import com.moreroom.domain.party.service.MessageService;
 import com.moreroom.domain.party.service.PartyService;
 import com.moreroom.global.dto.SocketNotificationDto;
@@ -40,7 +41,7 @@ public class SocketController {
 
   @MessageMapping("/chat/message")
   public void sendMessage(ChatMessageDto message, Principal principal, MessageHeaders headers) {
-    messageService.saveMessage(message, principal);
-    simpMessagingTemplate.convertAndSend("/topic/party/" + message.getPartyId(), message, headers);
+    ChatMessageDto partyMessage = messageService.saveMessage(message, principal);
+    simpMessagingTemplate.convertAndSend("/topic/party/" + message.getPartyId(), partyMessage, headers);
   }
 }
