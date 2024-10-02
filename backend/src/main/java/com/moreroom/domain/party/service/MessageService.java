@@ -56,7 +56,7 @@ public class MessageService {
   public PartyMessageLogsDto getMessageLogs(Long partyId, String lastMessageId, int pageSize)
       throws JsonProcessingException {
     // 채팅 정보 조회
-    Pageable pageable = PageRequest.of(0, pageSize);
+    Pageable pageable = PageRequest.of(0, pageSize + 1);
     List<PartyMessage> messages;
     if (lastMessageId == null) {
       messages = partyMessageRepository.findByPartyIdOrderByIdDesc(partyId, pageable);
@@ -64,13 +64,18 @@ public class MessageService {
       messages = partyMessageRepository.findByPartyIdAndIdLessThanOrderByIdDesc(partyId, lastMessageId, pageable);
     }
 
+    boolean hasNext = messages.size() > pageSize;
+    if (hasNext) {
+      messages = messages.subList(0, pageSize);
+    }
+
     // 메세지 내용을 프론트가 필요한 정보들로 가공 (닉네임, 프사, 메세지)
     List<MessageConvertDto> convertedMessages = convertMessageList(messages);
 
     // lastMessageId 찾기
-    lastMessageId = messages.get(messages.size()-1).getId();
+    lastMessageId = messages.isEmpty() ? null : messages.get(messages.size()-1).getId();
 
-    return new PartyMessageLogsDto(convertedMessages, lastMessageId);
+    return new PartyMessageLogsDto(convertedMessages, lastMessageId, hasNext);
   }
 
   // 메세지 가공
