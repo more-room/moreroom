@@ -15,3 +15,13 @@ export const createReview = (data: IReviewCreate) => {
 export const patchThumbsUp = (reviewId: number) => {
   return api.patch(`/api/review/thumbsup/${reviewId}`);
 };
+
+/* 리뷰 수정 */
+export const reviewPatch = (reviewId: number) => {
+  return api.patch(`/api/review/${reviewId}`)
+}
+
+/* 리뷰 삭제 */
+export const reviewDelete = (reviewId: number) => {
+  return api.delete(`/api/review/${reviewId}`)
+}

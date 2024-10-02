@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { TopBar } from '../../../components/TopBar';
-import { topbarcolor, bottombarcss, ratingcss, themeCardStyles, btncss } from './styles';
+import { largeBox, topbarcolor, bottombarcss, ratingcss, themeCardStyles, btncss } from './styles';
 import { BottomBar } from '../../../components/BottomBar';
 import { BellIcon } from '@heroicons/react/24/solid';
 import { ThemeItem } from '../../../components/ThemeItem';
@@ -67,10 +67,12 @@ export const ReviewWrite = () => {
 
   return (
     <div>
-      <TopBar css={topbarcolor}>
-        <TopBar.Title type="default" title="리뷰 작성" backHandler={() => navigate(-1)} />
-      </TopBar>
       
+      <div style={{ height: '5vh', overflow: 'auto'}}>
+        <TopBar css={topbarcolor}>
+          <TopBar.Title type="default" title="리뷰 작성" backHandler={() => navigate(-1)} />
+        </TopBar>
+      </div>
       
       <div css={themeCardStyles}>
         <ThemeItem theme={themeItem} />
@@ -87,17 +89,18 @@ export const ReviewWrite = () => {
           onChange={handleRatingChange} // 사용자가 별점을 선택할 때 호출되는 핸들러
         />
       </div>
-      <hr></hr>
+      <hr style={{ width: '60%'}}></hr>
 
-      <div style={{ margin: '2rem 0', textAlign: 'center' }}>
+      <div style={{ margin: '3rem 1rem', textAlign: 'center' , fontFamily: 'paperlogy'}}>
       <TextField
         id="outlined-multiline-static"
-        label="리뷰"
+        label={<Typography color='grey' weight={600}>리뷰</Typography>}
         multiline
-        rows={4}
-        placeholder="테마에 대한 후기를 자유롭게 적어주세요." // 설명 추가
+        rows={8}
+        placeholder="테마에 대한 후기를 적어주세요." // 설명 추가
         variant="outlined"
         fullWidth={true} // 전체 너비로 설정
+        
         value={reviewContent}
         onChange={(e) => setReviewContent(e.target.value)} // 리뷰 내용 업데이트
         InputLabelProps={{
@@ -107,6 +110,7 @@ export const ReviewWrite = () => {
           backgroundColor: '#333', // 배경 색상 어둡게 설정
           borderRadius: '5px',
           width: '90%', // 너비를 90%로 설정하여 적당히 확대
+          height: '70%',
           margin: '0 auto', // 중앙에 배치되도록 설정
           '& .MuiOutlinedInput-root': {
             '& fieldset': {
@@ -116,8 +120,10 @@ export const ReviewWrite = () => {
               borderColor: '#757271', // 호버 시 외곽선 색상 설정
             },
           },
+          
           '& .MuiInputBase-input': {
             color: '#ffffff', // 입력 텍스트 색상 설정
+            fontSize:'1.5rem'
           },
         }}
       />
@@ -130,24 +136,25 @@ export const ReviewWrite = () => {
         </div>
       )}
 
-      <div css={btncss} style={{ margin: '2rem' }}>
+      <div css={btncss}>
         <Button
           variant="contained"
           color="secondary"
           onClick={handleSubmit}
           disabled={ratingValue < 0.5 || reviewContent.length < 2} // 조건을 만족해야 버튼 활성화
           sx={{
-            backgroundColor: ratingValue < 0.5 || reviewContent.length < 2 ? '#ffffff' : '#8e44ad', // 조건에 따른 색상 변경
+            backgroundColor: ratingValue < 0.5 || reviewContent.length < 2 ? '#ffffff' : '#e040fb', // 조건에 따른 색상 변경
             color: '#ffffff', // 버튼 텍스트 색상
             width: '100%',
             '&:hover': {
-              backgroundColor: ratingValue < 0.5 || reviewContent.length < 2 ? '#ffffff' : '#732d91', // 조건에 따른 색상 변경
+              backgroundColor: ratingValue < 0.5 || reviewContent.length < 2 ? '#ffffff' : '#e040fb', // 조건에 따른 색상 변경
             },
           }}
         >
-          작성완료
+          <Typography color='light' weight={600}>작성 완료</Typography>
         </Button>
       </div>
+
       <BottomBar
         css={bottombarcss}
         icons={[<BellIcon />, <BellIcon />, <BellIcon />]}

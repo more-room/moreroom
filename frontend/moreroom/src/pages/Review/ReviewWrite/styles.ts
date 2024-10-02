@@ -1,10 +1,16 @@
 import { css } from '@emotion/react';
 import { Colors } from '../../../styles/globalStyle';
 
+
+export const largeBox = css`
+  margin-top: 3rem;
+  
+
+`
 export const topbarcolor = css`
   position: sticky;  /* 스크롤할 때 화면 상단에 고정 */
   top: 0;            /* 최상단 위치 */
-  z-index: 20;       /* themeItemCss보다 위에 위치하도록 z-index 설정 */
+  z-index: 1000;       /* themeItemCss보다 위에 위치하도록 z-index 설정 */
   background-color: #313131;
   padding: 1rem;
   
@@ -107,5 +113,10 @@ max-width: 600px;
 `;
 
 export const btncss = css`
- font-family: 'paperlogy';
+width: 70%;
+margin: 2rem auto;
+font-family: 'paperlogy';
+display: flex; 
+justify-content: center; 
+align-items: center;
 `
