@@ -38,7 +38,7 @@ public class ReviewController {
                                             @RequestParam(name = "pageNumber", required = false, defaultValue = "0") Integer pageNumber,
                                             @RequestParam(name = "pageSize", required = false, defaultValue = "10") Integer pageSize,
                                             @RequestParam(name = "sortOrder", required = false, defaultValue = "desc") String sortOrder,
-        @RequestParam(name = "sortBy", required = false, defaultValue = "updatedAt") String sortBy) {
+        @RequestParam(name = "sortBy", required = false, defaultValue = "createdAt") String sortBy) {
 
         PageResponseDto reviewList = reviewService.findAll(themeId, pageNumber, pageSize, sortOrder,
             sortBy);
@@ -51,7 +51,7 @@ public class ReviewController {
         @RequestParam(name = "pageNumber", required = false, defaultValue = "0") Integer pageNumber,
         @RequestParam(name = "pageSize", required = false, defaultValue = "10") Integer pageSize,
         @RequestParam(name = "sortOrder", required = false, defaultValue = "desc") String sortOrder,
-        @RequestParam(name = "sortBy", required = false, defaultValue = "updatedAt") String sortBy) {
+        @RequestParam(name = "sortBy", required = false, defaultValue = "createdAt") String sortBy) {
 
         PageResponseDto reviewList = reviewService.findAllByMine(pageNumber, pageSize, sortOrder,
             sortBy);
