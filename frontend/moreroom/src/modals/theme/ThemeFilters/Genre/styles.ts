@@ -10,5 +10,7 @@ export const items = css`
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  overflow-y: scroll;
   gap: 1rem;
+  padding-bottom: 1rem;
 `;

@@ -5,6 +5,7 @@ import {
   ArchiveBoxXMarkIcon,
   ArrowRightStartOnRectangleIcon,
   HashtagIcon,
+  KeyIcon,
   UserCircleIcon,
 } from '@heroicons/react/24/solid';
 import {
@@ -17,7 +18,6 @@ import {
   sectionCss,
 } from './styles';
 import { Typography } from '../../components/Typography';
-import { Chip } from '../../components/Chip';
 import { ManageInfo } from './ManageInfo';
 import { UserIcon } from '@heroicons/react/24/solid';
 import { Icon } from '../../components/Icon';
@@ -28,8 +28,31 @@ import {
   ChatBubbleLeftRightIcon,
 } from '@heroicons/react/24/solid';
 import { useNavigate } from 'react-router-dom';
+import { UserLogout } from '../../apis/loginApi';
+import { delUser } from '../../apis/authApi';
+import { useQuery } from '@tanstack/react-query';
+import { getMypage } from '../../apis/mypageApi';
+import { useSignUpStore } from '../../stores/signupStore';
 export const MyPage = () => {
   const nav = useNavigate();
+  const userdata = useSignUpStore.getState();
+  const handleLogout = async () => {
+    await UserLogout();
+    nav('/login');
+  };
+
+  const handledelete = async () => {
+    await delUser();
+    nav('/login');
+  };
+
+  const ProfileQuery = useQuery({
+    queryKey: ['profile'],
+    queryFn: async () => await getMypage(),
+  });
+
+  console.log(ProfileQuery.data)
+
   return (
     <div>
       <TopBar>
@@ -40,7 +63,8 @@ export const MyPage = () => {
         />
       </TopBar>
       <div css={profileContainer}>
-        <UserCircleIcon css={profile} />
+        {/* <UserCircleIcon css={profile} /> */}
+        <img css={profile} src={ProfileQuery.data?.data.photo} alt="프로필 사진" />
         <div>
           <Typography
             style={{ marginBottom: '0.5rem' }}
@@ -48,30 +72,12 @@ export const MyPage = () => {
             size={1.5}
             weight={600}
           >
-            D206탈출왕
+            {ProfileQuery.data?.data.nickname}
           </Typography>
           <div css={ChipCss}>
-            <Chip border={1} color="primary" fontSize={0.625} fontWeight={500}>
+            {/* <Chip border={1} color="primary" fontSize={0.625} fontWeight={500}>
               10방
-            </Chip>
-            <Chip
-              border={1}
-              color="primary"
-              fontSize={0.625}
-              fontWeight={500}
-              css={ChipCss}
-            >
-              구미시
-            </Chip>
-            <Chip
-              border={1}
-              color="primary"
-              fontSize={0.625}
-              fontWeight={500}
-              css={ChipCss}
-            >
-              스토리
-            </Chip>
+            </Chip> */}
           </div>
         </div>
       </div>
@@ -116,7 +122,7 @@ export const MyPage = () => {
                 </Icon>
               }
               children="내가 쓴 리뷰"
-              url="/mypage/profile"
+              url="/mypage/myreview"
             />
           </div>
         </div>
@@ -152,12 +158,26 @@ export const MyPage = () => {
             children="프로필 편집"
             url="/mypage/profile/edit"
           />
+          <ManageInfo
+            icon={
+              <Icon color="light" size={1.25}>
+                <KeyIcon />
+              </Icon>
+            }
+            children="비밀번호 변경"
+            url="/mypage/password/edit"
+          />
         </div>
         <div css={sectionCss}>
           <div css={lineCss}></div>
           <Typography color="grey" scale="400" size={0.875} weight={500}>
             기타
           </Typography>
+          {/* <Notification
+            handler={() => {}}
+            ment="정말 로그아웃 하시겠습니까?"
+            type="confirm"
+          /> */}
           <ManageInfo
             icon={
               <Icon color="light" size={1.25}>
@@ -165,7 +185,7 @@ export const MyPage = () => {
               </Icon>
             }
             children="로그아웃"
-            url="/mypage/profile"
+            onApi={handleLogout}
           />
           <ManageInfo
             icon={
@@ -174,7 +194,7 @@ export const MyPage = () => {
               </Icon>
             }
             children="회원 탈퇴"
-            url="/mypage/profile"
+            onApi={handledelete}
           />
         </div>
       </div>

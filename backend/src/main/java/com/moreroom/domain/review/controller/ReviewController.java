@@ -25,7 +25,7 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
-    @PostMapping("")
+    @PostMapping()
     public ResponseEntity<Review> addReview(@RequestBody ReviewRequestDTO reviewRequestDTO) {
 
         reviewService.save(reviewRequestDTO);
@@ -33,14 +33,15 @@ public class ReviewController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("")
+    @GetMapping()
     public ResponseEntity<PageResponseDto> reviewList(@RequestParam(name = "themeId", required = true) Integer themeId,
                                             @RequestParam(name = "pageNumber", required = false, defaultValue = "0") Integer pageNumber,
                                             @RequestParam(name = "pageSize", required = false, defaultValue = "10") Integer pageSize,
                                             @RequestParam(name = "sortOrder", required = false, defaultValue = "desc") String sortOrder,
-                                            @RequestParam(name = "sortBy", required = false, defaultValue = "date") String sortBy) {
+        @RequestParam(name = "sortBy", required = false, defaultValue = "updatedAt") String sortBy) {
 
-        PageResponseDto reviewList = reviewService.findAll(themeId, pageNumber, pageSize);
+        PageResponseDto reviewList = reviewService.findAll(themeId, pageNumber, pageSize, sortOrder,
+            sortBy);
 
         return new ResponseEntity<>(reviewList, HttpStatus.OK);
     }
@@ -50,9 +51,10 @@ public class ReviewController {
         @RequestParam(name = "pageNumber", required = false, defaultValue = "0") Integer pageNumber,
         @RequestParam(name = "pageSize", required = false, defaultValue = "10") Integer pageSize,
         @RequestParam(name = "sortOrder", required = false, defaultValue = "desc") String sortOrder,
-        @RequestParam(name = "sortBy", required = false, defaultValue = "date") String sortBy) {
+        @RequestParam(name = "sortBy", required = false, defaultValue = "updatedAt") String sortBy) {
 
-        PageResponseDto reviewList = reviewService.findAllByMine(pageNumber, pageSize);
+        PageResponseDto reviewList = reviewService.findAllByMine(pageNumber, pageSize, sortOrder,
+            sortBy);
 
         return new ResponseEntity<>(reviewList, HttpStatus.OK);
     }
@@ -72,7 +74,7 @@ public class ReviewController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PatchMapping("/thumbsUp/{reviewId}")
+    @PatchMapping("/thumbsup/{reviewId}")
     public ResponseEntity<Review> thumbsUpReview(@PathVariable("reviewId") Long reviewId) {
 
         reviewService.like(reviewId);

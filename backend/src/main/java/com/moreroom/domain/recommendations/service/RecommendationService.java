@@ -34,7 +34,8 @@ public class RecommendationService {
 
     public ThemeListResponseDto getSimilarUserThemes(long memberId) {
         // 1. 유사 유저 테마 조회 (mongoDB)
-        SimilarMemberTheme similarMemberTheme = similarMemberThemeRepository.findByMemberId(6L);
+        SimilarMemberTheme similarMemberTheme = similarMemberThemeRepository.findByMemberId(
+            memberId);
         // 2. 테마 상세 정보 조회
         ThemeListResponseDto themeListResponseDto = themeQueryRepository.findByThemeIds(
             similarMemberTheme.getSimilarMemberThemes(), memberId);

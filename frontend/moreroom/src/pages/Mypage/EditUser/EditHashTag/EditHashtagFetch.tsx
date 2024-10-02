@@ -1,15 +1,15 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
-import { TopBar } from '../../../components/TopBar';
+import { TopBar } from '../../../../components/TopBar';
 import { useNavigate } from 'react-router-dom';
-import { useHashtagStore } from '../../../stores/mypageStore';
-import { Typography } from '../../../components/Typography';
-import { FilterChip } from '../../../components/FilterChip';
-import { Button } from '../../../components/Button';
+import { useHashtagStore } from '../../../../stores/mypageStore';
+import { Typography } from '../../../../components/Typography';
+import { FilterChip } from '../../../../components/FilterChip';
+import { Button } from '../../../../components/Button';
 import { btnCss, hashtagCss, hashtagItemCss } from './styles';
-import { Ihashtags } from '../../../types/mypageTypes';
+import { Ihashtags } from '../../../../types/mypageTypes';
 import { useMutation } from '@tanstack/react-query';
-import { updateHashtag } from '../../../apis/mypageApi';
+import { updateHashtag } from '../../../../apis/mypageApi';
 
 export const EditHashTagFetch = () => {
   const nav = useNavigate();
@@ -27,10 +27,10 @@ export const EditHashTagFetch = () => {
     },
   });
 
-  const edithandler =(selectedHashtags:number[]) => {
-    mutate(selectedHashtags)
-    nav('/mypage')
-  }
+  const edithandler = (selectedHashtags: number[]) => {
+    mutate(selectedHashtags);
+    nav('/mypage');
+  };
 
   return (
     <div>
@@ -66,7 +66,11 @@ export const EditHashTagFetch = () => {
           ))}
         </div>
         <div css={btnCss}>
-          <Button rounded={0.5} handler={() => edithandler(selectedHashtags)} fullwidth>
+          <Button
+            rounded={0.5}
+            handler={() => edithandler(selectedHashtags)}
+            fullwidth
+          >
             적용하기
           </Button>
         </div>
