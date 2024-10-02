@@ -25,8 +25,17 @@ const meta = {
     type: {
       description: 'Notification 의 종류입니다',
     },
+    twoBtn: {
+      description: '버튼 2개 유무',
+    },
     handler: {
       description: '확인 버튼에 대한 핸들러 함수입니다',
+    },
+    outlinedHandler: {
+      description: '2번째 버튼에 대한 핸들러 함수입니다',
+    },
+    children: {
+      description: '버튼이 2개일 때 버튼 안의 내용입니다. 순서대로 2개를 작성하면 적용이 됩니다.',
     },
   },
 } satisfies Meta<typeof Notification>;
@@ -36,7 +45,12 @@ export default meta;
 type Story = StoryObj<typeof Notification>;
 
 export const Primary: Story = {
-  args: {},
+  args: {
+    ment: '이건 notification 입니다',
+    type: 'confirm',
+    twoBtn: false,
+    handler: () => console.log('btn press'),
+  },
   render: (args) => (
     <div
       style={{
@@ -45,8 +59,9 @@ export const Primary: Story = {
       }}
     >
       <Notification
-        ment="이건 notification 입니다"
-        type="confirm"
+        ment={args.ment}
+        type={args.type}
+        twoBtn={args.twoBtn}
         handler={() => console.log('btn press')}
       />
     </div>
@@ -77,6 +92,7 @@ export const Types: Story = {
         <Notification
           ment="이건 notification 입니다"
           type="confirm"
+          twoBtn={false}
           handler={() => console.log('btn press')}
         />
       </div>
@@ -90,6 +106,7 @@ export const Types: Story = {
         <Notification
           ment="이건 notification 입니다"
           type="alert"
+          twoBtn={false}
           handler={() => console.log('btn press')}
         />
       </div>

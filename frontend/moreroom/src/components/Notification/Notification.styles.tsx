@@ -14,3 +14,14 @@ export const btnCss = css`
   right: 1.5rem;
   bottom: 1.5rem;
 `;
+
+export const btnContainerCss = css`
+  display: flex;
+  justify-content: center;
+  position: absolute; 
+  margin: 0 1.5rem;
+  gap: 1rem;
+  bottom: 1.5rem;
+  left: 0;
+  right: 0;
+`;

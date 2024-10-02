@@ -22,9 +22,16 @@ api.interceptors.request.use(
 
 api.interceptors.response.use(
   (response) => {
+    const regex = /^(\/(login|signup))(\/.*)?$/;
+    if (regex.test(window.location.pathname)) {
+      window.location.href = '/';
+    }
     return response;
   },
   (error) => {
+    if (error.response.status === 400) {
+      window.location.href = '/login';
+    }
     return Promise.reject(error);
   },
 );

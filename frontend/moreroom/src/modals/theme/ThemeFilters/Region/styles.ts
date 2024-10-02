@@ -7,6 +7,7 @@ export const container = css`
   flex-direction: column;
   row-gap: 1rem;
   margin-top: 2rem;
+  overflow-y: scroll;
 `;
 
 export const regionContainer = css`
@@ -15,11 +16,17 @@ export const regionContainer = css`
   column-gap: 1rem;
   white-space: nowrap;
   overflow-x: scroll;
+  min-height: fit-content;
 `;
 
-export const items = css`
+export const item = css`
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+`;
+
+export const items = css`
+  overflow-y: scroll;
   gap: 1rem;
+  padding-bottom: 1rem;
 `;

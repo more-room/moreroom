@@ -22,7 +22,7 @@ export const Item = ({
         color={selected ? 'primary' : 'grey'}
         weight={selected ? 600 : 400}
         size={0.875}
-        style={{ textAlign: 'center' }}
+        style={{ textAlign: 'center', whiteSpace: 'nowrap' }}
       >
         {item}
       </Typography>

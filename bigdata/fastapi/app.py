@@ -30,10 +30,13 @@ def similar_themes():
 
 @app.get("/similar_member_themes")
 def similar_member_themes():
+    start_time = datetime.now() 
     get_similar_member_theme()
+    end_time = datetime.now()
     current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    print("operation_time: "+str((end_time-start_time).total_seconds()))
     return {"message": "get_similar_member_theme success",
-            "operation_time": current_time} 
+            "operation_time": (end_time-start_time).total_seconds()} 
 
 @app.get("/demographics_themes")
 def demographics_themes():
