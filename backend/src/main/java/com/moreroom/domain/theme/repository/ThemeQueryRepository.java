@@ -138,17 +138,10 @@ public class ThemeQueryRepository extends QuerydslRepositoryCustom {
             .from(theme)
             .leftJoin(cafe).on(cafe.cafeId.eq(theme.cafe.cafeId))
             .innerJoin(region).on(region.regionId.eq(cafe.region.regionId))
-            .leftJoin(themeGenreMapping)
-            .on(themeGenreMapping.theme.themeId.eq(theme.themeId)) // 테마와 장르 매핑 조인
-            .innerJoin(genre).on(genre.genreId.eq(themeGenreMapping.genre.genreId)) // 장르 테이블 조인
             .leftJoin(playLog).on(playLog.themeId.eq(theme.themeId), playLog.memberId.eq(memberId))
             .leftJoin(brand).on(brand.brandId.eq(cafe.brand.brandId))
-            .where(builder)
+            .where(theme.themeId.in(idList))
             .groupBy(theme)
-            .having(
-                f.getGenreList() != null ? genre.genreId.count().eq((long) f.getGenreList().length)
-                    : null
-            )
             .orderBy(theme.themeId.asc())
             // pagination
             .offset((long) pageRequest.getPageNumber() * pageRequest.getPageSize())
