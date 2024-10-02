@@ -52,6 +52,7 @@ public class PartyController {
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
+  //채팅 내역 조회
   @GetMapping("/chatLogs")
   public ResponseEntity<?> getChattingList(
       @RequestParam Long partyId,
@@ -107,6 +108,13 @@ public class PartyController {
     Member member = findMemberService.findCurrentMemberObject();
     partyService.updateChatroomNotice(member, partyId, notice);
     return new ResponseEntity<>(HttpStatus.OK);
+  }
+
+  //채팅방 공지사항 조회
+  @GetMapping("/{partyId}/notice")
+  public ResponseEntity<?> readNotice(@PathVariable Long partyId) {
+    NoticeDto notice = partyService.readChatroomNotice(partyId);
+    return new ResponseEntity<>(notice, HttpStatus.OK);
   }
 
   //채팅방 설정 수정

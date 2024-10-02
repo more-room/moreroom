@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { IReviewListItem } from '../../../../types/reviewTypes';
 import { Typography } from '../../../../components/Typography';
 import { container, img, info, profile, rating, title } from './styles';
@@ -13,12 +14,16 @@ import { getDateDiff } from '../../../../utils/dateUtils';
 interface ThemeReviewProps {
   review: IReviewListItem;
   cafe: ICafeThemeDetail;
+  onClickReview: () => void;
 }
 
-export const ThemeReview = ({ review, cafe }: ThemeReviewProps) => {
+export const ThemeReview = ({ review, cafe, onClickReview}: ThemeReviewProps) => {
   const [reviewType, setReviewType] = useState<number>(0);
 
   const reviewHandler = (menu: number) => setReviewType(menu);
+
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     console.log(reviewType);
@@ -34,7 +39,7 @@ export const ThemeReview = ({ review, cafe }: ThemeReviewProps) => {
           <Typography color="light" size={0.875} weight={400}>
             {cafe.brandName} {cafe.branchName} 리뷰
           </Typography>
-          <Icon size={1} color="light">
+          <Icon size={1} color="light" onClick={onClickReview}>
             <ArrowRightIcon />
           </Icon>
         </div>

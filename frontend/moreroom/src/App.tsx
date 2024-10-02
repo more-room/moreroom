@@ -29,6 +29,9 @@ import { Party } from './pages/Party';
 import { RegisterParty } from './pages/Party/RegisterParty';
 import { SectorTheme } from './pages/Party/RegisterParty/SectorTheme';
 
+import { Review } from './pages/Review/ReviewRead';
+import { ReviewWrite } from './pages/Review/ReviewWrite';
+
 function App() {
   const modalStore = useModalStore();
   useUserValidation();
@@ -65,6 +68,12 @@ function App() {
         <Route path="/history/write" element={<HistoryWrite />} />
         <Route path="/history/edit/:historyId" element={<HistoryWrite />} />
         <Route path="/themes/history" element={<ThemeList />} />
+
+        <Route path="/review" element={<Review/>} />
+        <Route path="/review/write" element={<ReviewWrite/>} />
+
+
+        
       </Routes>
       {modalStore.isOpen && (
         <Modal height={modalStore.height}>{modalStore.contents}</Modal>
