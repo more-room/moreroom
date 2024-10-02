@@ -31,11 +31,12 @@ export const ChatingFetch = () => {
     queryKey: ['party-list'],
     queryFn: async () => await getPartyList()
   });
+
   // 내가 속한 파티 불러오기
-  // const myPartyListQuery = useSuspenseQuery({
-  //   queryKey: ['myparty-list'],
-  //   queryFn: async () => await getMyPartyList()
-  // });
+  const myPartyListQuery = useSuspenseQuery({
+    queryKey: ['myparty-list'],
+    queryFn: async () => await getMyPartyList()
+  });
   
   // 파티 목록을 불러오는 중 에러 처리
   if (partyListQuery.error && !partyListQuery.isFetching) {
@@ -43,17 +44,20 @@ export const ChatingFetch = () => {
   }
 
 
-  // if (myPartyListQuery.error && !myPartyListQuery.isFetching) {
-  //   return <div>내가 속한 파티 목록을 불러오는 중 에러가 발생했습니다.</div>;
-  // }
+  if (myPartyListQuery.error && !myPartyListQuery.isFetching) {
+    return <div>내가 속한 파티 목록을 불러오는 중 에러가 발생했습니다.</div>;
+  }
+
 
 
   // 파티 목록 가져오기
   const partyList: IParty[] = partyListQuery.data.data.partyList || [];
-  // const mypartyList: IMyParty[] = myPartyListQuery.data.data.partyList || [];
+  //내가 속한 파티
+  const mypartyList: IParty[] = myPartyListQuery.data.data.partyList || [];
 
   console.log('파티 리스트',partyListQuery.data.data.partyList)
-  console.log('쿼리 데이터', partyListQuery.data.data)
+  // console.log('쿼리 데이터', partyListQuery.data.data)
+  console.log('내가 속한 파티', myPartyListQuery.data.data.partyList)
 
   // 내가 속한 파티 목록 가져오기
   // const mypartyList: IParty[] = myPartyListQuery.data.data.partyList || [];

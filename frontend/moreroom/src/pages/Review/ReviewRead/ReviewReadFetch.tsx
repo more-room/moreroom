@@ -22,15 +22,18 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 export const ReviewReadFetch = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const themeId:number = location.state?.themeId; // 불러온 테마 아이디 
+  const themeId: number = location.state?.themeId; // 불러온 테마 아이디 
 
   // 페이지에 보여줄 리뷰 수를 관리하는 상태
   const [visibleReviewCount, setVisibleReviewCount] = useState(3);
 
+  // 좋아요 누른 리뷰의 상태 관리 (리뷰별 좋아요 정보 포함)
+  const [thumbsUpReviews, setThumbsUpReviews] = useState<{ [key: number]: boolean }>({});
+
   // 리뷰 데이터를 가져오는 쿼리
   const reviewQuery = useSuspenseQuery({
     queryKey: ['theme-review', themeId],
-    queryFn: async () => await getReviewForTheme({ themeId, pageNumber: 0, pageSize: 80, sortOrder: 'desc', sortBy: 'updatedAt' })
+    queryFn: async () => await getReviewForTheme({ themeId, pageNumber: 0, pageSize: 80, sortOrder: 'desc',  })
   });
 
   // 테마 상세 정보를 가져오는 쿼리
@@ -43,25 +46,26 @@ export const ReviewReadFetch = () => {
   if (reviewQuery.error && !reviewQuery.isFetching) {
     throw reviewQuery.error;
   }
+
   // 테마 에러 처리
   if (themeQuery.error && !themeQuery.isFetching) {
     return <div>테마 데이터를 불러오는 중 에러가 발생했습니다.</div>;
   }
 
   const themeItem: IThemeItem = {
-    themeId : location.state?.themeId,  //number
-    poster: location.state?.poster,  // string
-    title : location.state?.title, // number
-    playtime : location.state?.playtime, // number
-    genreList : location.state?.genreList, // string
-    review : location.state?.review, // IThemeReview
-    regionId : location.state?.regionId, // string
-    cafe : {
-      "cafeId": location.state?.cafeId, // number
-      "brandName": location.state?.brandName, // string
-      "branchName": location.state?.branchName, // string
+    themeId: location.state?.themeId,
+    poster: location.state?.poster,
+    title: location.state?.title,
+    playtime: location.state?.playtime,
+    genreList: location.state?.genreList,
+    review: location.state?.review,
+    regionId: location.state?.regionId,
+    cafe: {
+      "cafeId": location.state?.cafeId,
+      "brandName": location.state?.brandName,
+      "branchName": location.state?.branchName,
       "cafeName": "",
-      "address": location.state?.address, // string
+      "address": location.state?.address,
     },
   };
 
@@ -98,7 +102,6 @@ export const ReviewReadFetch = () => {
   // "더 많은 리뷰 보기" 버튼을 클릭했을 때 더 많은 리뷰를 보여주기 위해 visibleReviewCount 증가
   const loadMoreReviews = () => {
     setVisibleReviewCount((prevCount) => {
-      // 더 많은 리뷰가 남아 있는 경우에만 증가
       if (prevCount + 3 > reviews.length) {
         return reviews.length; // 남은 모든 리뷰를 보여줍니다.
       }
@@ -114,19 +117,28 @@ export const ReviewReadFetch = () => {
     });
   };
 
-    // 좋아요 핸들러 함수 정의
-    const handleThumbsUp = async (reviewId: number) => {
-      console.log('handleThumbsUp called with reviewId:', reviewId); // 확인용 로그
-      try {
-        await patchThumbsUp(reviewId);
-        reviewQuery.refetch(); // 좋아요 반영 후 데이터 다시 불러오기
-      } catch (error) {
-        console.error('좋아요 요청 실패', error);
-      }
-    };
-    
+  // 좋아요 핸들러 함수 정의
+  const handleThumbsUp = async (reviewId: number, currentThumbsUp: number) => {
+    console.log('추천 확인용:', reviewId); // 확인용 로그
+    try {
+      const isThumbsUp = thumbsUpReviews[reviewId] || false;
+      const newThumbsUpValue = isThumbsUp ? currentThumbsUp - 1 : currentThumbsUp + 1;
 
-  console.log(reviewQuery.data.data)
+      // 좋아요 API 호출
+      await patchThumbsUp(reviewId);
+      reviewQuery.refetch(); // 좋아요 반영 후 데이터 다시 불러오기
+
+      // 로컬 상태 업데이트: 좋아요 상태 토글
+      setThumbsUpReviews((prevThumbsUpReviews) => ({
+        ...prevThumbsUpReviews,
+        [reviewId]: !isThumbsUp,
+      }));
+
+    } catch (error) {
+      console.error('좋아요 요청 실패', error);
+    }
+  };
+
   return (
     <div>
       <TopBar css={topbarcolor}>
@@ -207,7 +219,7 @@ export const ReviewReadFetch = () => {
       <div style={{ marginTop: '2rem' }}>
         <div css={cardcontainer}>
           {reviews.slice(0, visibleReviewCount).map((review) => (
-            <div key={review.content} css={themeCard} style={{ padding: '0.5rem' }}>
+            <div key={review.reviewId} css={themeCard} style={{ padding: '0.5rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem' }}>
                   <Rating activeColor="secondary" count={5} value={review.score} size={1} transparentBackground={false} />
@@ -224,9 +236,17 @@ export const ReviewReadFetch = () => {
               </Typography>
               <div style={{ marginTop: '1rem', display: 'flex', justifyContent: 'space-between' }}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <HandThumbUpIcon style={{ width: '20px', height: '20px', marginRight: '0.5rem' }} />
-                  <Typography color="light" size={0.875} weight={400} onClick={() => handleThumbsUp(review.reviewId)}>
-                    {review.thumbsUp}
+                  <HandThumbUpIcon
+                    onClick={() => handleThumbsUp(review.reviewId, review.thumbsUp)}
+                    style={{
+                      width: '20px',
+                      height: '20px',
+                      marginRight: '0.5rem',
+                      color: thumbsUpReviews[review.reviewId] ? '#80deea' : '#ffffff'
+                    }}
+                  />
+                  <Typography color="light" size={0.875} weight={400}>
+                    {thumbsUpReviews[review.reviewId] ? review.thumbsUp + 1 : review.thumbsUp}
                   </Typography>
                 </div>
                 <Typography color="light" size={0.75} weight={400}>
@@ -234,10 +254,8 @@ export const ReviewReadFetch = () => {
                 </Typography>
               </div>
             </div>
-              
-            
           ))}
-          
+
           {/* 더 많은 리뷰 보기 버튼 */}
           {reviews.length > visibleReviewCount && (
             <Button
@@ -251,7 +269,7 @@ export const ReviewReadFetch = () => {
             </Button>
           )}
 
-          <Button 
+          <Button
             css={reviewWrite}
             variant="contained"
             fullwidth={true}
@@ -259,12 +277,12 @@ export const ReviewReadFetch = () => {
             color='secondary'
             handler={reviewWriteMove}
           >
-            <PencilIcon/>
+            <PencilIcon />
           </Button>
         </div>
       </div>
-          
-      <BottomBar css={bottombarcss} 
+
+      <BottomBar css={bottombarcss}
         icons={[<BellIcon />, <BellIcon />, <BellIcon />]}
         menus={['메뉴1', '메뉴2', '메뉴3']}
         onHandleChange={() => console.log('바텀바 선택됨')}
