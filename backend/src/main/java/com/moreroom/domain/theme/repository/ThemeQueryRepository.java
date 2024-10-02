@@ -1,5 +1,6 @@
 package com.moreroom.domain.theme.repository;
 
+import static com.moreroom.domain.brand.entity.QBrand.brand;
 import static com.moreroom.domain.cafe.entity.QCafe.cafe;
 import static com.moreroom.domain.genre.entity.QGenre.genre;
 import static com.moreroom.domain.mapping.theme.entity.QThemeGenreMapping.themeGenreMapping;
@@ -8,6 +9,7 @@ import static com.moreroom.domain.region.entity.QRegion.region;
 import static com.moreroom.domain.review.entity.QReview.review;
 import static com.moreroom.domain.theme.entity.QTheme.theme;
 
+import com.moreroom.domain.brand.entity.Brand;
 import com.moreroom.domain.cafe.entity.Cafe;
 import com.moreroom.domain.theme.dto.request.ThemeListRequestDto;
 import com.moreroom.domain.theme.dto.response.ThemeCafeResponseDto;
@@ -130,7 +132,8 @@ public class ThemeQueryRepository extends QuerydslRepositoryCustom {
         // (2) 데이터 읽어오기
         List<Tuple> results = jpaQueryFactory
             .select(theme, cafe, region.regionId,
-                playLog.playCount.coalesce(0).gt(0)
+                playLog.playCount.coalesce(0).gt(0),
+                brand
             ) // theme, regionId, genreName 반환
             .from(theme)
             .leftJoin(cafe).on(cafe.cafeId.eq(theme.cafe.cafeId))
@@ -138,8 +141,8 @@ public class ThemeQueryRepository extends QuerydslRepositoryCustom {
             .leftJoin(themeGenreMapping)
             .on(themeGenreMapping.theme.themeId.eq(theme.themeId)) // 테마와 장르 매핑 조인
             .innerJoin(genre).on(genre.genreId.eq(themeGenreMapping.genre.genreId)) // 장르 테이블 조인
-            .leftJoin(playLog)
-            .on(playLog.themeId.eq(theme.themeId), playLog.memberId.eq(memberId))
+            .leftJoin(playLog).on(playLog.themeId.eq(theme.themeId), playLog.memberId.eq(memberId))
+            .leftJoin(brand).on(brand.brandId.eq(cafe.brand.brandId))
             .where(builder)
             .groupBy(theme)
             .having(
@@ -180,6 +183,7 @@ public class ThemeQueryRepository extends QuerydslRepositoryCustom {
             Cafe cafe = tuple.get(1, Cafe.class);
             String regionId = tuple.get(2, String.class);
             Boolean playFlag = tuple.get(3, Boolean.class);
+            Brand brand = tuple.get(4, Brand.class);
 
             // 테마 DTO 생성
             ThemeListComponentDto themeDto = themeMap.get(theme.getThemeId());
@@ -195,7 +199,7 @@ public class ThemeQueryRepository extends QuerydslRepositoryCustom {
                         .address(cafe.getAddress())
                         .cafeName(cafe.getCafeName())
                         .branchName(cafe.getBranchName())
-                        .brandName(cafe.getBrand() != null ? cafe.getBrand().getBrandName() : null)
+                        .brandName(brand != null ? brand.getBrandName() : null)
                         .cafeId(cafe.getCafeId())
                         .build())
                     .member(ThemeMemberResponseDto.builder()
@@ -245,6 +249,7 @@ public class ThemeQueryRepository extends QuerydslRepositoryCustom {
             .select(theme, cafe, region.regionId,
                 review.count(), review.score.avg(), genre.genreName
                 , playLog.playCount.coalesce(0).gt(0)
+                , brand
             )
             .from(theme)
             .leftJoin(cafe).on(cafe.cafeId.eq(theme.cafe.cafeId))
@@ -252,8 +257,8 @@ public class ThemeQueryRepository extends QuerydslRepositoryCustom {
             .leftJoin(themeGenreMapping).on(themeGenreMapping.theme.themeId.eq(theme.themeId))
             .leftJoin(genre).on(genre.genreId.eq(themeGenreMapping.genre.genreId))
             .leftJoin(review).on(review.theme.themeId.eq(theme.themeId))
-            .leftJoin(playLog)
-            .on(playLog.themeId.eq(theme.themeId), playLog.memberId.eq(memberId))
+            .leftJoin(playLog).on(playLog.themeId.eq(theme.themeId), playLog.memberId.eq(memberId))
+            .leftJoin(brand).on(brand.brandId.eq(cafe.brand.brandId))
             .where(theme.themeId.in(themeIds))
             .groupBy(theme.themeId, cafe.cafeId, region.regionId, genre.genreName)
             .orderBy(theme.themeId.asc())
@@ -270,6 +275,7 @@ public class ThemeQueryRepository extends QuerydslRepositoryCustom {
             Double avgScore = tuple.get(4, Double.class);
             String genreName = tuple.get(5, String.class);
             Boolean playFlag = tuple.get(6, Boolean.class);
+            Brand brand = tuple.get(7, Brand.class);
 
             // DTO 생성 및 업데이트
             ThemeListComponentDto themeDto = themeMap.computeIfAbsent(theme.getThemeId(),
@@ -284,7 +290,7 @@ public class ThemeQueryRepository extends QuerydslRepositoryCustom {
                         .address(cafe.getAddress())
                         .cafeName(cafe.getCafeName())
                         .branchName(cafe.getBranchName())
-                        .brandName(cafe.getBrand() != null ? cafe.getBrand().getBrandName() : null)
+                        .brandName(brand != null ? brand.getBrandName() : null)
                         .cafeId(cafe.getCafeId())
                         .build())
                     .member(ThemeMemberResponseDto.builder()
