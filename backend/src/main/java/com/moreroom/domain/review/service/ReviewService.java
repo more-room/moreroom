@@ -24,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -54,9 +55,11 @@ public class ReviewService {
         reviewRepository.save(review);
     }
 
-    public PageResponseDto findAll(Integer themeId, int pageNumber, int pageSize) {
-
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+    public PageResponseDto findAll(Integer themeId, int pageNumber, int pageSize, String sortOrder,
+        String sortBy) {
+        Sort sort = sortOrder.equalsIgnoreCase("desc") ? Sort.by(sortBy).descending()
+            : Sort.by(sortBy).ascending();
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
 
         Page<Review> reviewList = reviewRepository.findAllByThemeThemeId(themeId, pageable);
 
@@ -73,11 +76,13 @@ public class ReviewService {
             .build();
     }
 
-    public PageResponseDto findAllByMine(int pageNumber, int pageSize) {
+    public PageResponseDto findAllByMine(int pageNumber, int pageSize, String sortOrder,
+        String sortBy) {
 
         Long memberId = findMemberService.findCurrentMember();
-
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Sort sort = sortOrder.equalsIgnoreCase("desc") ? Sort.by(sortBy).descending()
+            : Sort.by(sortBy).ascending();
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
 
         Page<Review> reviewList = reviewRepository.findAllByMemberMemberId(memberId, pageable);
 
