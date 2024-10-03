@@ -7,5 +7,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface DeviceTokenRepository extends JpaRepository<DeviceToken, Long> {
   Optional<DeviceToken> findByMember(Member member);
-  int deleteByMember(Member member);
 }

@@ -1,10 +1,8 @@
 package com.moreroom.domain.deviceToken.service;
 
 import com.moreroom.domain.deviceToken.entity.DeviceToken;
-import com.moreroom.domain.deviceToken.exception.DeviceTokenNotFoundException;
 import com.moreroom.domain.deviceToken.repository.DeviceTokenRepository;
 import com.moreroom.domain.member.entity.Member;
-import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
