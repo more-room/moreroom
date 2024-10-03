@@ -85,8 +85,8 @@ public class ReviewService {
         Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
 
         Page<Review> reviewList = reviewRepository.findAllByMemberMemberId(memberId, pageable);
-
-        List<Review> reviews = reviewRepository.findAllByMemberMemberId(memberId);
+        // fix: 쿼리 한번 호출
+        List<Review> reviews = reviewList.getContent();
 
         List<ReviewMyPageResponseDTO> reviewMyPageResponseDTOList = reviews.stream()
             .map(review -> {
