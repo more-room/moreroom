@@ -27,6 +27,8 @@ services:
             - CONTEXT_PATH=${CONTEXT_PATH}
             - REACT_APP_API_BASE_URL=${REACT_APP_API_BASE_URL}
             - REACT_APP_KAKAOMAP_KEY=${REACT_APP_KAKAOMAP_KEY}
+            - REACT_APP_CHAT_SOCKET=${REACT_APP_CHAT_SOCKET}
+            - REACT_APP_CHAT_DEST=${REACT_APP_CHAT_DEST}
             - TZ=Asia/Seoul
         volumes:
             - /home/ubuntu/data/certbot/conf:/etc/letsencrypt
