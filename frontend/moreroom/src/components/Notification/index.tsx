@@ -2,15 +2,17 @@
 import React from 'react';
 import { NotificationProps } from './Notification.types';
 import { Backdrop } from '../Backdrop';
-import { base, btnCss } from './Notification.styles';
+import { base, btnContainerCss, btnCss } from './Notification.styles';
 import { Typography } from '../Typography';
 import { Button } from '../Button';
 
 export const Notification = ({
   ment,
   type,
+  twoBtn,
   handler,
-  children,
+  outlinedHandler = () => {},
+  children=['확인하기', '취소하기'],
   ...props
 }: NotificationProps) => {
   return (
@@ -25,18 +27,43 @@ export const Notification = ({
         <Typography color="light" size={1} weight={500}>
           {ment}
         </Typography>
-        <Button
-          css={btnCss}
-          handler={handler}
-          color={type === 'confirm' ? 'primary' : 'danger'}
-          rounded={0.5}
-        >
-          <Typography color="light" weight={600} size={0.875}>
-            확인
-          </Typography>
-        </Button>
+        {twoBtn ? (
+          <div css={btnContainerCss}>
+            <Button
+              handler={handler}
+              fullwidth
+              color={type === 'confirm' ? 'primary' : 'danger'}
+              rounded={0.5}
+            >
+              <Typography color="light" weight={600} size={0.875}>
+                {children[0]}
+              </Typography>
+            </Button>
+            <Button
+              handler={outlinedHandler}
+              fullwidth
+              variant="outlined"
+              color={type === 'confirm' ? 'primary' : 'danger'}
+              rounded={0.5}
+            >
+              <Typography color="primary" weight={600} size={0.875}>
+                {children[1]}
+              </Typography>
+            </Button>
+          </div>
+        ) : (
+          <Button
+            css={btnCss}
+            handler={handler}
+            color={type === 'confirm' ? 'primary' : 'danger'}
+            rounded={0.5}
+          >
+            <Typography color="light" weight={600} size={0.875}>
+              확인
+            </Typography>
+          </Button>
+        )}
       </div>
-      {children}
     </Backdrop>
   );
 };

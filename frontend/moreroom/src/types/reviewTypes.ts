@@ -35,3 +35,10 @@ export interface IReviewList {
   totalPage: number;
   totalElements: number;
 }
+
+// 리뷰 작성
+export interface IReviewCreate {
+  themeId: number;
+  content: string;
+  score: number;
+}

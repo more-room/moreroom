@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React, { useEffect } from 'react';
+import React from 'react';
 import { TopBar } from '../../../components/TopBar';
 import { container } from './styles';
 import { getThemeTitles } from '../../../apis/themeApi';
@@ -11,10 +11,12 @@ import {
 } from '../../../stores/themeStore';
 import { SearchList } from './SearchList';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { useNavigate } from 'react-router-dom';
 
 export type TThemePage = 'default' | 'search';
 
 export const ThemeList = () => {
+  const nav = useNavigate();
   const themePageStore = useThemePageStore();
   const searchTitleStore = useSearchTitleStore();
   const searchThemesStore = useSearchThemesStore();
@@ -32,6 +34,7 @@ export const ThemeList = () => {
   /* 뒤로가기 핸들러 */
   const onBackHandler = () => {
     if (themePageStore.type === 'search') themePageStore.setType('default');
+    else nav('/');
   };
 
   /* 아이콘 핸들러 */

@@ -35,7 +35,7 @@ public class MessageService {
   private final RedisUtil redisUtil;
   private final MemberRepository memberRepository;
 
-  public void saveMessage(ChatMessageDto message, Principal principal) {
+  public ChatMessageDto saveMessage(ChatMessageDto message, Principal principal) {
     PartyMessage partyMessage = PartyMessage.builder()
         .email(principal.getName())
         .message(message.getMessage())
@@ -43,14 +43,20 @@ public class MessageService {
         .partyId(message.getPartyId())
         .build();
 
-    partyMessageRepository.save(partyMessage);
+    PartyMessage savedMessage = partyMessageRepository.save(partyMessage);
+
+    return ChatMessageDto.builder()
+        .messageId(savedMessage.getId())
+        .partyId(savedMessage.getPartyId())
+        .message(savedMessage.getMessage())
+        .build();
   }
 
   //채팅 내역 불러오기
   public PartyMessageLogsDto getMessageLogs(Long partyId, String lastMessageId, int pageSize)
       throws JsonProcessingException {
     // 채팅 정보 조회
-    Pageable pageable = PageRequest.of(0, pageSize);
+    Pageable pageable = PageRequest.of(0, pageSize + 1);
     List<PartyMessage> messages;
     if (lastMessageId == null) {
       messages = partyMessageRepository.findByPartyIdOrderByIdDesc(partyId, pageable);
@@ -58,13 +64,18 @@ public class MessageService {
       messages = partyMessageRepository.findByPartyIdAndIdLessThanOrderByIdDesc(partyId, lastMessageId, pageable);
     }
 
+    boolean hasNext = messages.size() > pageSize;
+    if (hasNext) {
+      messages = messages.subList(0, pageSize);
+    }
+
     // 메세지 내용을 프론트가 필요한 정보들로 가공 (닉네임, 프사, 메세지)
     List<MessageConvertDto> convertedMessages = convertMessageList(messages);
 
     // lastMessageId 찾기
-    lastMessageId = messages.get(messages.size()-1).getId();
+    lastMessageId = messages.isEmpty() ? null : messages.get(messages.size()-1).getId();
 
-    return new PartyMessageLogsDto(convertedMessages, lastMessageId);
+    return new PartyMessageLogsDto(convertedMessages, lastMessageId, hasNext);
   }
 
   // 메세지 가공
@@ -107,6 +118,7 @@ public class MessageService {
         .map(m -> {
           RedisUserInfo userInfo = infoMap.get(m.getEmail());
           return MessageConvertDto.builder()
+              .messageId(m.getId())
               .nickname(userInfo.getNickname())
               .photo(userInfo.getPhoto())
               .message(m.getMessage())

@@ -24,9 +24,14 @@ import { EditPassword } from './pages/Mypage/EditUser/EditPassword';
 import { FindPwd } from './pages/Login/FindPwd';
 import { PwdDone } from './pages/Login/FindPwd/PwdDone';
 import { MyReview } from './pages/Mypage/MyReview';
+import { useUserValidation } from './hooks/useUserValidation';
+
+import { Review } from './pages/Review/ReviewRead';
+import { ReviewWrite } from './pages/Review/ReviewWrite';
 
 function App() {
   const modalStore = useModalStore();
+  useUserValidation();
 
   return (
     <>
@@ -57,6 +62,12 @@ function App() {
         <Route path="/history/write" element={<HistoryWrite />} />
         <Route path="/history/edit/:historyId" element={<HistoryWrite />} />
         <Route path="/themes/history" element={<ThemeList />} />
+
+        <Route path="/review" element={<Review/>} />
+        <Route path="/review/write" element={<ReviewWrite/>} />
+
+
+        
       </Routes>
       {modalStore.isOpen && (
         <Modal height={modalStore.height}>{modalStore.contents}</Modal>

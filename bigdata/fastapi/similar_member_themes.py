@@ -56,9 +56,8 @@ def load_mysql_data(n=None):
 # 사용자 - 테마 행렬도 함께 생성
 def get_members_matrix(member_df, mr_df, mg_df):
     member_list = member_df['memberId'].tolist() 
-    mr_matrix = mr_df.pivot_table(index='memberId', columns='themeId', values='score').reindex(member_list, fill_value=0)
+    mr_matrix = mr_df.pivot_table(index='memberId', columns='themeId', values='score').reindex(member_list, fill_value=0).fillna(0)
     mg_matrix = mg_df.pivot_table(index='memberId', columns='genreId', aggfunc=lambda x: 1, fill_value=0).reindex(member_list, fill_value=0)
-    print(mr_matrix)
     # 희소 행렬로 변환 
     sparse_mg_matrix = csr_matrix(mg_matrix)
     return mr_matrix, sparse_mg_matrix, mr_matrix.index
@@ -68,7 +67,6 @@ def get_members_matrix(member_df, mr_df, mg_df):
 # 선호 장르의 집합 사이의 유사도를 계산하기 때문에, 자카드 유사도를 사용하여 계산한다 
 def calculate_jaccard_similarity(mg_matrix, mg_index):
     num_users = mg_matrix.shape[0]
-    print(num_users)
 
     similarity_matrix = np.zeros((num_users, num_users))
     # 희소 행렬의 행렬 곱셈을 통해 유사도 계산
@@ -123,13 +121,14 @@ def extract_member_similar_theme(mr_matrix, similarity_matrix, member_id, N=10):
     
     # 평가하지 않은 테마에 대한 점수 계산
     unrated_scores = other_user_ratings.loc[:, other_user_ratings.columns.difference(user_rated_themes)]
-    
     # 가중 평균 점수 계산
-    weighted_scores = (unrated_scores.values.T * similarity_scores.values).T.sum(axis=0) / np.abs(similarity_scores).sum()
-    
+    # denominator가 0일 경우 1로 대체하여 나눗셈 오류를 방지
+    denominator = np.abs(similarity_scores).sum()
+    weighted_scores = (unrated_scores.values.T * similarity_scores.values).T.sum(axis=0) / np.where(denominator == 0, 1, denominator)
     # 점수 시리즈로 변환
     weighted_scores_series = pd.Series(weighted_scores, index=unrated_scores.columns)
 
+    # 속도 개선 전 
     # for other_user in similar_users:
     #     sim_score = similarity_matrix.loc[member_id, other_user]
     #     other_user_ratings = mr_matrix.loc[other_user]
