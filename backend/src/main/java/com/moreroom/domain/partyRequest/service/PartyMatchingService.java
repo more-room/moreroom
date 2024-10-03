@@ -1,16 +1,16 @@
 package com.moreroom.domain.partyRequest.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.moreroom.domain.deviceToken.dto.FcmMessageDto;
+import com.moreroom.domain.deviceToken.service.FcmService;
 import com.moreroom.domain.member.entity.Member;
 import com.moreroom.domain.member.exception.MemberNotFoundException;
 import com.moreroom.domain.member.repository.MemberRepository;
-import com.moreroom.domain.partyRequest.dto.PartyRequestNotificationDto;
 import com.moreroom.domain.partyRequest.entity.MatchingStatus;
 import com.moreroom.domain.partyRequest.entity.PartyRequest;
 import com.moreroom.domain.partyRequest.repository.PartyRequestRepository;
 import com.moreroom.domain.theme.entity.Theme;
 import com.moreroom.domain.theme.repository.ThemeRepository;
-import com.moreroom.global.dto.SocketNotificationDto;
 import com.moreroom.global.util.RedisUtil;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,8 +25,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClientException;
@@ -41,9 +39,9 @@ public class PartyMatchingService {
   private final MemberRepository memberRepository;
   private final PartyRequestRepository partyRequestRepository;
   private final RedisUtil redisUtil;
-  private final SimpMessagingTemplate simpMessagingtemplate;
   private final ThemeRepository themeRepository;
   private final RestTemplate restTemplate;
+  private final FcmService fcmService;
 
   private final String fastAPI_URL;
 
@@ -146,8 +144,7 @@ public class PartyMatchingService {
     redisUtil.saveLongStringHashMapExpire(key, partyAcceptRecordMap, 3600); //redis에 저장 (1시간 후 expire)
   }
 
-  // 4. 멤버에게 파티 참가 요청 보내기 -> fcm 쓸지 web notification 쓸지 정해야함. 학습곡선 있을 것 같아서 일단 후순위로 미룸
-  // 일단 급한대로 소켓요청 보내는 형식으로 구현한다.
+  // 4. 멤버에게 파티 참가 요청 보내기
   public void sendPartyNotification(List<Member> partyMemberList, Integer themeId, String uuid) {
     Theme theme = themeRepository.findById(themeId).orElseThrow(); //throws NoSuchElementException
     String cafeName = theme.getCafe().getCafeName(); //쿼리 추가 실행
@@ -155,17 +152,10 @@ public class PartyMatchingService {
     for (Member member : partyMemberList) {
       PartyRequest partyRequest = partyRequestRepository.findByThemeIdandMemberId( //쿼리 실행
           theme.getThemeId(), member.getMemberId());
-      // 메세지 전송
-      simpMessagingtemplate.convertAndSendToUser(
-          member.getEmail(),
-          "/queue/message",
-          new PartyRequestNotificationDto(
-              "PARTY_REQUEST",
-              theme.getTitle(),
-              cafeName,
-              partyRequest.getPartyRequestId(),
-              uuid,
-              theme.getThemeId()));
+      //알림보내기
+      FcmMessageDto fcmMessageDto = fcmService.makePartyRequestMessage(
+          member, theme.getTitle(), cafeName, partyRequest.getPartyRequestId(), uuid, themeId);
+      fcmService.sendMessageTo(fcmMessageDto);
     }
   }
 
@@ -214,18 +204,20 @@ public class PartyMatchingService {
   }
 
   // 파티 깨진 경우
+  // 쿼리 보내는 횟수 최적화
   @Transactional
-  public void partyBroke(String uuid) throws JsonProcessingException {
-    List<PartyRequest> partyRequestList = partyRequestRepository.findByUuid(uuid);
+  public void partyBroke(String uuid) {
+    //join 이용해 회원 정보와 디바이스 토큰 한꺼번에 조회
+    List<Object[]> memberInfos = partyRequestRepository.findMemberAndDeviceTokenByUuid(uuid);
+    //벌크 업데이트 - 상태와 UUID 한 번에 변경
+    partyRequestRepository.updateStatusAndUuidByUuid(MatchingStatus.NOT_MATCHED, null, uuid);
 
-    for (PartyRequest request : partyRequestList) {
-      request.changeStatus(MatchingStatus.NOT_MATCHED);
-      request.setUuid(null);
-      //파티 실패 알림 -> 3번의 쿼리가 추가적으로 실행됨(request.getMember().getEmail())
-      simpMessagingtemplate.convertAndSendToUser(
-          request.getMember().getEmail(),
-          "/queue/message",
-          new SocketNotificationDto("PARTY_BROKEN", "파티가 매칭되지 않았습니다."));
+    for (Object[] info : memberInfos) {
+      Member member = (Member) info[0];
+      String deviceToken = (String) info[1];
+      //파티 실패 알림
+      FcmMessageDto fcmMessageDto = fcmService.makePartyFailedMessage(member, deviceToken);
+      fcmService.sendMessageTo(fcmMessageDto);
     }
   }
 
