@@ -22,6 +22,7 @@ api.interceptors.request.use(
 
 const loginReg = /^(\/(login))(\/.*)?$/;
 const signupReg = /^(\/(signup))(\/.*)?$/;
+const chatReg = /^(\/(chating))(\/.*)?$/;
 
 api.interceptors.response.use(
   (response) => {
@@ -34,7 +35,8 @@ api.interceptors.response.use(
     if (error.response.status === 400) {
       if (
         !loginReg.test(window.location.pathname) &&
-        !signupReg.test(window.location.pathname)
+        !signupReg.test(window.location.pathname) &&
+        !chatReg.test(window.location.pathname)
       ) {
         window.location.href = '/login';
       }
