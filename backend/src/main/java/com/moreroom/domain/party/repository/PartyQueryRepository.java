@@ -170,7 +170,7 @@ public class PartyQueryRepository extends QuerydslRepositoryCustom {
     List<Tuple> memberCntTuple = jpaQueryFactory
         .select(memberPartyMapping.party.partyId, memberPartyMapping.count().intValue().as("memberCount"))
         .from(memberPartyMapping)
-        .where(memberPartyMapping.party.partyId.notIn(partyIdSet))
+        .where(memberPartyMapping.party.partyId.in(partyIdSet))
         .groupBy(memberPartyMapping.party.partyId)
         .fetch();
 
