@@ -40,7 +40,7 @@ export const SearchResults = () => {
       const scrollHeight = divRef.current.scrollHeight;
       const clientHeight = divRef.current.clientHeight;
 
-      if (scrollTop + clientHeight >= scrollHeight) {
+      if (scrollTop + clientHeight >= scrollHeight - 1) {
         fetchNextPage();
       }
     }
