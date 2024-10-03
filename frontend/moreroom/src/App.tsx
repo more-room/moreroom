@@ -28,6 +28,7 @@ import { useUserValidation } from './hooks/useUserValidation';
 
 import { Review } from './pages/Review/ReviewRead';
 import { ReviewWrite } from './pages/Review/ReviewWrite';
+import { ReviewFix } from './pages/Mypage/MyReview/ReviewFix';
 
 function App() {
   const modalStore = useModalStore();
@@ -52,6 +53,8 @@ function App() {
         <Route path="/mypage/hashtag/edit" element={<EditHashTag />} />
         <Route path="/mypage/password/edit" element={<EditPassword />} />
         <Route path="/mypage/myreview" element={<MyReview />} />
+        <Route path="/mypage/myreview/fix" element={<ReviewFix />} />
+
 
         <Route path="/chating" element={<Chating />} />
         <Route path="/chatingroom/:partyId" element={<ChatingRoom />} />

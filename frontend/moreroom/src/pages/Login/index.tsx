@@ -153,7 +153,7 @@ const handleLogin = async () => {
 
       <p css={textcolors}>
         아직 계정이 없으신가요?-&nbsp;
-          <a href="/" css={iconcolors}>회원가입</a>
+          <a href="/signup" css={iconcolors}>회원가입</a>
         &nbsp;하러가기
       </p>
 

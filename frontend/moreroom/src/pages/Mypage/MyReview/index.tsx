@@ -54,8 +54,10 @@ export const MyReview = () => {
             cafeBrand={review.cafe.brandName}
             cafeBranch={review.cafe.branchName}
             updatedAt={review.updatedAt}
-          />
-        ))}
+            reviewId={review.reviewId}
+            />
+          ))}
+          
       </div>
     </div>
   );

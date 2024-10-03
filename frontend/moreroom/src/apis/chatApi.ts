@@ -27,6 +27,12 @@ export const getChatRoomInfo = (partyId: number) => {
   return api.get<IChatRoomInfo>(`/api/party/${partyId}/settings`);
 };
 
+// 채팅방 정보 수정
+export const patchChatRoomInfo = (partyId: number, data: Partial<IChatRoomInfo>) => {
+  return api.patch<IChatRoomInfo>(`/api/party/${partyId}/settings`, data);
+};
+
+
 // 채팅방 채팅 내역
 export const getChatList = (partyId: number, lastMessageId?: string) => {
   return api.get<IChatList>('/api/party/chatLogs', {

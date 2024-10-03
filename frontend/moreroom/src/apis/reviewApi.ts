@@ -17,8 +17,8 @@ export const patchThumbsUp = (reviewId: number) => {
 };
 
 /* 리뷰 수정 */
-export const reviewPatch = (reviewId: number) => {
-  return api.patch(`/api/review/${reviewId}`)
+export const reviewPatch = (reviewId: number, reviewData: { content: string, score: number }) => {
+  return api.patch(`/api/review/${reviewId}`, reviewData)
 }
 
 /* 리뷰 삭제 */

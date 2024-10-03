@@ -10,12 +10,14 @@ import {
   profileCss,
   themeCss,
   updatedAtCss,
+  fixReview
 } from './styles';
 import Rating from '../../../../components/Rating';
 import { Typography } from '../../../../components/Typography';
 import { Icon } from '../../../../components/Icon';
 import { MapPinIcon } from '@heroicons/react/24/solid';
 import { useNavigate } from 'react-router-dom';
+import { Button } from '../../../../components/Button';
 
 export const ReivewList = ({
   nickname,
@@ -28,6 +30,8 @@ export const ReivewList = ({
   cafeBrand,
   cafeBranch,
   updatedAt,
+  reviewId,
+  
 }: {
   nickname: string;
   profileSrc: string;
@@ -39,10 +43,28 @@ export const ReivewList = ({
   cafeBrand?: string;
   cafeBranch?: string;
   updatedAt: string;
+  reviewId: number
 }) => {
   const nav = useNavigate();
   const handleClick = () => {
     nav('/theme/detail', { state: { themeId: themeId } });
+  };
+  const reviewFix = () => {
+    // 리뷰 수정 페이지로 이동하면서 해당 리뷰의 데이터 전달
+    nav('/mypage/myreview/fix', {
+      state: {
+        themeId,
+        themeTitle,
+        content,
+        score,
+        poster,
+        cafeBrand,
+        cafeBranch,
+        nickname,
+        profileSrc,
+        reviewId
+      },
+    });
   };
   return (
     <div css={containerCss}>
@@ -101,6 +123,14 @@ export const ReivewList = ({
           {updatedAt} 작성
         </Typography>
       </div>
+        <Button css={fixReview}
+          variant='contained'
+          color='secondary'
+          handler={reviewFix}
+          rounded={0.5}
+        >리뷰 수정
+        </Button>
+        
     </div>
   );
 };

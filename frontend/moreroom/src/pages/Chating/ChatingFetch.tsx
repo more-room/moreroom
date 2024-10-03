@@ -71,13 +71,11 @@ export const ChatingFetch = () => {
   const mypartyList: IParty[] = myPartyListQuery.data.data.partyList || [];
 
   console.log('파티 리스트', partyListQuery.data.data.partyList);
-  // console.log('쿼리 데이터', partyListQuery.data.data)
+  console.log('파티 리스트2', partyListQuery.data.data);
+  
   console.log('내가 속한 파티', myPartyListQuery.data.data.partyList);
 
-  // 내가 속한 파티 목록 가져오기
-  // const mypartyList: IParty[] = myPartyListQuery.data.data.partyList || [];
-  // console.log('내가 속한 파티 쿼리',myPartyListQuery.data.data.partyList)
-
+  
   const handlePartyClick = (partyId: number) => {
     console.log(`선택된 파티 ID: ${partyId}`);
     setRoomId(partyId); // 선택된 파티 ID 설정
@@ -87,6 +85,11 @@ export const ChatingFetch = () => {
   const handleFilterChange = (filter: string) => {
     setSelectedFilter(filter);
   };
+
+  // 선택된 필터에 따른 파티 목록
+  const partiesToDisplay: IParty[] = selectedFilter === '속한 파티'
+    ? mypartyList || []
+    : partyList || []; 
 
   // const nav = useNavigate();
 
@@ -110,80 +113,47 @@ export const ChatingFetch = () => {
             css={filterButton(selectedFilter === '속한 파티')}
             onClick={() => handleFilterChange('속한 파티')}
           >
-            <UserGroupIcon
-              css={iconcolors}
-              style={{ width: '1rem', marginRight: '0.25rem' }}
-            />
-            <Typography color="light" weight={600} size={0.9}>
-              속한 파티
-            </Typography>
+            <UserGroupIcon css={iconcolors} style={{ width: '1rem', marginRight: '0.25rem' }} />
+            <Typography color="light" weight={600} size={0.9}>속한 파티</Typography>
           </button>
           <button
             css={filterButton(selectedFilter === '일반 파티')}
             onClick={() => handleFilterChange('일반 파티')}
           >
-            <EllipsisHorizontalCircleIcon
-              css={iconcolors2}
-              style={{ width: '1rem', marginRight: '0.25rem' }}
-            />
-            <Typography color="light" weight={600} size={0.9}>
-              일반 파티
-            </Typography>
+            <EllipsisHorizontalCircleIcon css={iconcolors2} style={{ width: '1rem', marginRight: '0.25rem' }} />
+            <Typography color="light" weight={600} size={0.9}>일반 파티</Typography>
           </button>
         </div>
 
         {/* 필터된 파티만 렌더링 */}
         <div css={cardcontainer}>
-          {mypartyList.length > 0 ? (
-            mypartyList.map((party: IParty, idx: number) => (
-              <div
-                key={idx}
-                css={themeCard}
-                onClick={() => handlePartyClick(party.partyId)}
-              >
+          {partiesToDisplay.length > 0 ? (
+            partiesToDisplay.map((party: IParty, idx: number) => (
+              <div key={idx} css={themeCard} onClick={() => handlePartyClick(party.partyId)}>
                 {/* 파티 이미지 및 정보 렌더링 */}
-                <img
-                  src={party.theme.poster}
-                  alt="포스터 이미지"
-                  css={posterImage}
-                />
+                <img src={party.theme.poster} alt="포스터 이미지" css={posterImage} />
                 <div css={cardContent}>
                   <h2 css={roomname}>{party.roomName}</h2>
                   <h3 css={themeTitle}>{party.theme.title}</h3>
                   <div css={themeDetails}>
                     <p>
-                      <MapPinIcon
-                        css={iconcolors}
-                        style={{ width: '1rem', marginRight: '0.25rem' }}
-                      />
-                      {party.theme.cafe.cafeName}
+                      <MapPinIcon css={iconcolors} style={{ width: '1rem', marginRight: '0.25rem' }} />
+                      {party.theme.cafe.brandName}-{party.theme.cafe.branchName}
                     </p>
                     <p>
-                      <ClockIcon
-                        css={iconcolors}
-                        style={{ width: '1rem', marginRight: '0.25rem' }}
-                      />
+                      <ClockIcon css={iconcolors} style={{ width: '1rem', marginRight: '0.25rem' }} />
                       {party.date}
                     </p>
                     <p>
-                      <UserGroupIcon
-                        css={iconcolors}
-                        style={{ width: '1rem', marginRight: '0.25rem' }}
-                      />
+                      <UserGroupIcon css={iconcolors} style={{ width: '1rem', marginRight: '0.25rem' }} />
                       {party.memberCount}/{party.maxMember} 명 참여
                     </p>
                     <div>
                       {party.hashtags.map((tag) => (
-                        <Chip
-                          css={chipstyle}
-                          border={0.6}
-                          fontSize={0.7}
-                          key={tag.hashtagId}
-                        >
-                          {tag.hashtagName}
-                        </Chip>
+                        <Chip css={chipstyle} border={0.6} fontSize={0.7} key={tag.hashtagId}>{tag.hashtagName}</Chip>
                       ))}
                     </div>
+
                   </div>
                 </div>
               </div>

@@ -46,6 +46,16 @@ export const exitbutton = css`
   font-size: 1rem;
   
 `
+export const fixbutton = css`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  background-color: ${Colors['secondary']['200']};
+  font-size: 1rem;
+  width: 80%;
+  margin: 1rem 0rem;
+`
 
 export const wait = css`
   color: #ffffff;
