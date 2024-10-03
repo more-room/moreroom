@@ -1,4 +1,3 @@
-
 /* IHashtag 및 IParty 관련 타입 정의 */
 export interface IHashtag {
   hashtagId: number;
@@ -6,7 +5,7 @@ export interface IHashtag {
 }
 
 export interface ITheme {
-  themeId: number
+  themeId: number;
   poster: string;
   title: string;
   maxPeople: number;
@@ -17,7 +16,7 @@ export interface ITheme {
     count: number;
     score: number;
   };
-  cafe: ICafe
+  cafe: ICafe;
 }
 export interface IParty {
   partyId: number;
@@ -28,7 +27,7 @@ export interface IParty {
   memberCount: string;
   maxMember: string;
   hashtags: IHashtag[];
-  cafe: ICafe
+  cafe: ICafe;
 }
 export interface ICafe {
   cafeId: number;
@@ -43,6 +42,33 @@ export interface IPartyResponse {
   totalElements: number;
   totalPages: number;
   last: boolean;
-  partyList?: IParty[]
+  partyList?: IParty[];
 }
 
+/* 채팅방 정보 */
+export interface IChatRoomInfo {
+  roomName: string;
+  themeId: number;
+  date: string;
+  maxMember: number;
+  addFlag: boolean;
+}
+
+/* 채팅 내역 - 아이템 */
+export interface IChatListItem {
+  messageId: string;
+  nickname: string;
+  photo: string;
+  message: string;
+}
+
+/* 채팅 내역 */
+export interface IChatList {
+  messageList: IChatListItem[];
+  lastMessageId: string;
+}
+
+/* 공지사항 조회 */
+export interface INotice {
+  notice: string;
+}
