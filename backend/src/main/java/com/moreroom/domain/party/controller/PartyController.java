@@ -39,6 +39,7 @@ public class PartyController {
   private final PartyService partyService;
   private final MessageService messageService;
 
+  //파티 참가 수락/거절
   @PostMapping("")
   public ResponseEntity<?> acceptPartyRequest(@RequestBody PartyRequestAcceptDto dto)
       throws JsonProcessingException {

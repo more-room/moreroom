@@ -1,6 +1,6 @@
 package com.moreroom.global.controller;
 
-import com.moreroom.global.dto.FcmSendDto;
+import com.moreroom.global.dto.FcmMessageDto;
 import com.moreroom.global.service.FcmService;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ public class FcmController {
   private final FcmService fcmService;
 
   @PostMapping("/send")
-  public ResponseEntity<?> pushMessage(@RequestBody @Validated FcmSendDto fcmSendDto) throws IOException {
+  public ResponseEntity<?> pushMessage(@RequestBody @Validated FcmMessageDto fcmMessageDto) throws IOException {
     log.debug("[+] 푸시 메시지를 전송합니다.");
 //    int result = fcmService.sendMessageTo(fcmSendDto);
 
