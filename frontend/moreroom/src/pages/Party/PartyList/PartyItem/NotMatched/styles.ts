@@ -7,6 +7,7 @@ export const containerCss = css`
   margin: 1rem;
   padding: 1rem;
   gap: 1rem;
+  
 `;
 
 export const topContentCss = css`

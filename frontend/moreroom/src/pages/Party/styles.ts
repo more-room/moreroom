@@ -4,6 +4,6 @@ import { Colors } from '../../styles/globalStyle';
 export const containerCss = css``;
 
 export const partyCss = css`
-  border: 1px solid white;
+  border: 0.0625rem solid white;
   background-color: ${Colors['light']['100']};
 `;

@@ -16,9 +16,14 @@ import { Button } from '../../../../../components/Button';
 import { Icon } from '../../../../../components/Icon';
 import { ClockIcon } from '@heroicons/react/24/outline';
 import { Toggle } from '../../../../../components/Toggle';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { delParty, disabledParty } from '../../../../../apis/partyApi';
 import { useNavigate } from 'react-router-dom';
+import { Backdrop } from '../../../../../components/Backdrop';
 
 interface PartyItemProps {
   party: IParty;
@@ -31,42 +36,62 @@ type Hashtag = {
 };
 
 export const NotMatched = ({ party, onDeleteClick }: PartyItemProps) => {
+  const nav = useNavigate();
+  const queryClient = useQueryClient();
   const [isActive, setIsActive] = useState<boolean>(
     party.status.statusName !== 'DISABLED',
   );
-  const queryClient = useQueryClient();
-
-  const [isToggled, setIsToggled] = useState<boolean>(
-    party.status.statusName !== 'DISABLED',
-  );
-  const [isLoading, setIsLoading] = useState(false); // 로딩 상태 추가
+  const [isLoading, setIsLoading] = useState(false);
 
   const { mutate } = useMutation({
     mutationFn: ({
       partyRequestId,
-      disable,
+      isActive,
     }: {
       partyRequestId: number;
-      disable: boolean;
-    }) => disabledParty(partyRequestId, disable),
+      isActive: boolean;
+    }) => disabledParty(partyRequestId, isActive),
+
+    onMutate: async (variables) => {
+      setIsLoading(true);
+
+      // 낙관적 업데이트 (잠정적으로 상태를 반영)
+      queryClient.setQueryData(
+        ['party', variables.partyRequestId],
+        (prevData: any) => {
+          if (prevData) {
+            return {
+              ...prevData,
+              status: {
+                ...prevData.status,
+                statusName: variables.isActive ? 'MATCHED' : 'DISABLED',
+              },
+            };
+          }
+          return prevData;
+        },
+      );
+    },
+
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['party'] });
-      setIsToggled((prev) => !prev); // 성공 시 토글 상태 변경
-      setIsLoading(false); // 로딩 상태 해제
     },
-    onError: (error) => {
+
+    onError: (error, variables, context) => {
       console.error('파티 상태 변경 중 오류 발생:', error);
-      setIsLoading(false); // 에러 발생 시에도 로딩 상태 해제
+    },
+
+    onSettled: () => {
+      setIsLoading(false);
     },
   });
 
   const handleToggle = () => {
-    if (isLoading) return; // 로딩 중일 때 추가 요청 방지
+    if (isLoading) return;
 
-    setIsLoading(true); // 로딩 상태 설정
-    mutate({ partyRequestId: party.partyRequestId, disable: isToggled });
+    // 낙관적 업데이트에 반영할 변수
+    mutate({ partyRequestId: party.partyRequestId, isActive: !isActive });
   };
-
   return (
     <div css={containerCss}>
       <div css={topContentCss}>
@@ -75,20 +100,30 @@ export const NotMatched = ({ party, onDeleteClick }: PartyItemProps) => {
           <div
             style={{
               display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'flex-end',
               gap: '0.3rem',
-              justifyContent: 'flex-end',
             }}
           >
-            <Typography color="light" size={0.8} weight={400}>
-              {isActive ? '매칭 중' : '매칭 중지'}
-            </Typography>
-            <Toggle
-              children={'매칭'}
-              color="primary"
-              size={2.5}
-              onToggle={handleToggle}
-              isOn={isActive}
-            />
+            <div
+              style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}
+            >
+              <Typography color="light" size={0.8} weight={400}>
+                {isActive ? '매칭 중' : '매칭 중지'}
+              </Typography>
+              <Toggle
+                children={'매칭'}
+                color="primary"
+                size={2.5}
+                onToggle={handleToggle}
+                isOn={isActive}
+              />
+            </div>
+            {isLoading && (
+              <Typography color="primary" size={0.7} weight={400}>
+                매칭 상태 변경 중...
+              </Typography>
+            )}
           </div>
           <Typography color="light" size={1.2} weight={700}>
             {party.theme.title}
@@ -102,9 +137,8 @@ export const NotMatched = ({ party, onDeleteClick }: PartyItemProps) => {
             </Typography>
           </div>
           <div css={chipCss}>
-            {party.hashtagList
-              ?.filter((hashtag: Hashtag) => hashtag.hashtagId <= 5)
-              .map((hashtag: Hashtag) => (
+            {party.hashtagList.map((hashtag: Hashtag) =>
+              hashtag.hashtagId <= 5 ? (
                 <Chip
                   key={hashtag.hashtagId}
                   border={1}
@@ -114,7 +148,8 @@ export const NotMatched = ({ party, onDeleteClick }: PartyItemProps) => {
                 >
                   {hashtag.hashtagName}
                 </Chip>
-              ))}
+              ) : null,
+            )}
           </div>
         </div>
       </div>
@@ -135,17 +170,13 @@ export const NotMatched = ({ party, onDeleteClick }: PartyItemProps) => {
           fullwidth
           rounded={0.5}
           variant="contained"
-          handler={() => {}}
+          handler={() => nav(`/party/edit/${[party.partyRequestId]}`)}
         >
           수정하기
         </Button>
       </div>
-      {/* {isPending && (
-        <Typography color="primary" size={0.8}>
-          상태 변경 중...
-        </Typography>
-      )} */}
-      {party.status.statusName === 'DISABLED' && '매칭 중지'}
+      {isActive ? '매칭 중' : '매칭중지'}
+      {/* {party.status.statusName === 'NOT_MATCHED' ? '매칭중' : '매칭X'} */}
     </div>
   );
 };

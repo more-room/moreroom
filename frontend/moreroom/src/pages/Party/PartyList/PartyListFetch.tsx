@@ -33,7 +33,6 @@ export const PartyListFetch = () => {
   const { mutate } = useMutation({
     mutationFn: async () => await delParty(currentPartyId),
     onSuccess: () => {
-      // 캐시 업데이트
       queryClient.setQueryData(['party'], (oldData: any) => ({
         ...oldData,
         data: {

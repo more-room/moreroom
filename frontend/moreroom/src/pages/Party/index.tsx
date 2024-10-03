@@ -2,8 +2,8 @@
 import React from 'react';
 import { TopBar } from '../../components/TopBar';
 import { useNavigate } from 'react-router-dom';
-import { partyCss } from './styles';
 import { PartyList } from './PartyList';
+import { NavChat } from './NavChat';
 
 export const Party = () => {
   const nav = useNavigate();
@@ -16,6 +16,7 @@ export const Party = () => {
           backHandler={() => nav(-1)}
         />
       </TopBar>
+      <NavChat/>
       <PartyList />
     </div>
   );

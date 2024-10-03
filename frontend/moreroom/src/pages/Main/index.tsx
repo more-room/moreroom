@@ -7,7 +7,6 @@ import { TopBar } from '../../components/TopBar';
 import { MainPartyFetch } from './MainPartyFetch';
 import { BottomBar } from '../../components/BottomBar';
 import { BellIcon } from '@heroicons/react/24/outline';
-import { Notification } from '../../components/Notification';
 
 export const Main = () => {
   return (

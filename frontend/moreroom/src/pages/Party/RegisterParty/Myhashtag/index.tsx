@@ -1,18 +1,17 @@
 /** @jsxImportSource @emotion/react */
 import { Typography } from '../../../../components/Typography';
 import React from 'react';
-import { ImyHashtags } from '../../../../types/partyTypes';
+import { myHashtags } from '../../../../types/partyTypes';
 import { FilterChip } from '../../../../components/FilterChip';
 
 export const Myhashtag = () => {
-  const hashtags = ImyHashtags
   return (
     <div>
       <Typography color="light" size={1} weight={500}>
         희망하는 파티의 성향을 선택해주세요!
       </Typography>
       <div >
-          {hashtags.map((hashtag) => (
+          {myHashtags.map((hashtag) => (
             <div key={hashtag.id}>
               <FilterChip
                 style={{ width: '98px', textAlign: 'center' }}

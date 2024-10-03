@@ -1,6 +1,12 @@
 import { StoryIndex } from 'storybook/internal/types';
 
-export const Ipartyhastag = [
+export interface IHashtag {
+  hashtagId: number;
+  hashtagName: string;
+}
+
+
+export const partyhastags = [
   { id: 1, label: '뉴비친화' },
   { id: 2, label: '타임어택' },
   { id: 3, label: '노힌트' },
@@ -8,7 +14,7 @@ export const Ipartyhastag = [
   { id: 5, label: '편하게 와요' },
 ];
 
-export const ImyHashtags = [
+export const myHashtags = [
   { id: 6, label: '리더쉽' },
   { id: 7, label: '쫄보' },
   { id: 8, label: '공포면역' },
@@ -23,7 +29,7 @@ export const ImyHashtags = [
   { id: 17, label: '분위기 메이커' },
 ];
 
-export const IuserHashtags = [
+export const userHashtags = [
   { id: 18, label: '리더쉽' },
   { id: 19, label: '쫄보' },
   { id: 20, label: '공포면역' },
