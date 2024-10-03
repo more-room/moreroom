@@ -14,26 +14,27 @@ import {
 import { MegaphoneIcon, CogIcon } from '@heroicons/react/24/solid'; // 설정 아이콘 임포트
 import { Icon } from '../../../components/Icon';
 import { ArrowUpCircleIcon } from '@heroicons/react/24/solid'; // 전송 버튼으로 사용할 아이콘
-import { useQuery, useSuspenseQueries } from '@tanstack/react-query';
-import { getChatList, getChatRoomInfo } from '../../../apis/chatApi'; // 파티 목록 API 호출
+import { useSuspenseQueries } from '@tanstack/react-query';
+import { getChatRoomInfo, getNotice } from '../../../apis/chatApi'; // 파티 목록 API 호출
 import { useChat } from '../../../hooks/useChat';
 import { getMyInfo } from '../../../apis/mypageApi';
 import { Typography } from '../../../components/Typography';
 import { IChatListItem } from '../../../types/chatingTypes';
 import { ChatBubble } from './ChatBubble';
-import * as StompJs from '@stomp/stompjs';
+import { useChatingRoomStore } from '../../../stores/chatingroomStore';
 
 export const ChatingRoomFetch = () => {
   const navigate = useNavigate();
   const { partyId } = useParams<{ partyId: string }>(); // URL에서 partyId 가져오기
   const divRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const [showNotice, setShowNotice] = useState(false);
   const [msg, setMsg] = useState('');
-  const { stompClient, chatList, getPastChatList, sendChat } = useChat(
-    Number(partyId),
-  );
+  const { getPastChatList, sendChat } = useChat(Number(partyId));
+  const chat = useChatingRoomStore();
+  const isUser = useRef<boolean>(false);
 
-  const [roomQuery, userQuery] = useSuspenseQueries({
+  const [roomQuery, userQuery, noticeQuery] = useSuspenseQueries({
     queries: [
       {
         queryKey: ['roominfo'],
@@ -43,23 +44,54 @@ export const ChatingRoomFetch = () => {
         queryKey: ['userinfo'],
         queryFn: async () => await getMyInfo(),
       },
+      {
+        queryKey: ['notice'],
+        queryFn: async () => await getNotice(Number(partyId)),
+      },
     ],
   });
 
-  [roomQuery, userQuery].some((query) => {
+  [roomQuery, userQuery, noticeQuery].some((query) => {
     if (query.error && !query.isFetching) {
       throw query.error;
     }
   });
 
-  const handleScroll = () => {
+  /* 과거 채팅 내역 조회 & 스크롤 유지 */
+  const fetchMoreDatea = async () => {
+    const prevScrollHeight = divRef.current?.scrollHeight;
+    const prevScrollTop = divRef.current?.scrollTop;
+
+    await getPastChatList();
+
+    requestAnimationFrame(() => {
+      if (divRef.current) {
+        const newScrollHeight = divRef.current.scrollHeight;
+        if (prevScrollHeight && prevScrollTop !== undefined) {
+          divRef.current.scrollTop =
+            newScrollHeight - prevScrollHeight + prevScrollTop;
+        }
+      }
+    });
+  };
+
+  /* 스크롤 핸들러 */
+  const handleScroll = async () => {
     if (divRef.current) {
       const scrollTop = divRef.current.scrollTop;
 
       if (scrollTop <= 0) {
-        getPastChatList();
+        await fetchMoreDatea();
       }
     }
+  };
+
+  /* 채팅 전송 핸들러 */
+  const handleSendingChat = () => {
+    if (!msg.trim().length) return;
+
+    sendChat(msg.trim());
+    isUser.current = true;
   };
 
   useEffect(() => {
@@ -71,6 +103,18 @@ export const ChatingRoomFetch = () => {
     };
   }, []);
 
+  /* 새로운 채팅이 입력되면 화면 최하단으로 이동 */
+  useEffect(() => {
+    if (isUser.current && divRef.current) {
+      if (inputRef.current) inputRef.current.value = '';
+      divRef.current.scrollTo({
+        top: divRef.current.scrollHeight,
+        behavior: 'smooth',
+      });
+      isUser.current = false;
+    }
+  }, [chat.chatList]);
+
   return (
     <div css={container}>
       <TopBar style={{ backgroundColor: '#313131' }}>
@@ -80,6 +124,7 @@ export const ChatingRoomFetch = () => {
           title={roomQuery.data.data.roomName}
           backHandler={() => navigate('/chating')}
         />
+
         {/* 오른쪽에 설정 아이콘 추가 */}
         <Icon
           size={1.5}
@@ -97,7 +142,7 @@ export const ChatingRoomFetch = () => {
           <Icon size={1.5} color="secondary">
             <MegaphoneIcon />
           </Icon>
-          <Typography color="light">공지 사항 제목</Typography>
+          <Typography color="light">{noticeQuery.data.data.notice}</Typography>
         </div>
         <Typography color="secondary">{showNotice ? '▲' : '▼'}</Typography>
       </div>
@@ -106,14 +151,14 @@ export const ChatingRoomFetch = () => {
       {showNotice && (
         <div css={noticedetail}>
           <Typography color="light" weight={400}>
-            공지사항: 28일 4시 반 대구요-api 연결하기
+            {noticeQuery.data.data.notice}
           </Typography>
         </div>
       )}
 
       {/* 채팅 내역 */}
       <div ref={divRef} css={chatbox}>
-        {chatList.map((chat: IChatListItem) => {
+        {chat.chatList.map((chat: IChatListItem) => {
           return (
             <ChatBubble
               key={chat.messageId}
@@ -123,24 +168,21 @@ export const ChatingRoomFetch = () => {
           );
         })}
       </div>
+
       {/* 입력 폼 */}
       <div css={inputBar}>
         <input
-          type="text"
+          ref={inputRef}
           placeholder="채팅 내용"
           css={input}
           onChange={(e) => setMsg(e.target.value)}
           onKeyDown={(ev) => {
             if (ev.key === 'Enter') {
-              sendChat(msg);
+              handleSendingChat();
             }
           }}
         />
-        <Icon
-          color="light"
-          size={1.5}
-          onClick={() => msg.trim().length && sendChat(msg)}
-        >
+        <Icon color="light" size={1.5} onClick={() => handleSendingChat()}>
           <ArrowUpCircleIcon />
         </Icon>
       </div>

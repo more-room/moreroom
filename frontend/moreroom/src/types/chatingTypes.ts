@@ -67,3 +67,8 @@ export interface IChatList {
   messageList: IChatListItem[];
   lastMessageId: string;
 }
+
+/* 공지사항 조회 */
+export interface INotice {
+  notice: string;
+}

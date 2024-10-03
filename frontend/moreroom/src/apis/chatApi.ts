@@ -1,6 +1,7 @@
 import {
   IChatList,
   IChatRoomInfo,
+  INotice,
   IParty,
   IPartyResponse,
 } from '../types/chatingTypes';
@@ -34,4 +35,9 @@ export const getChatList = (partyId: number, lastMessageId?: string) => {
       lastMessageId: lastMessageId,
     },
   });
+};
+
+// 채팅방 공지사항 조회
+export const getNotice = (partyId: number) => {
+  return api.get<INotice>(`/api/party/${partyId}/notice`);
 };

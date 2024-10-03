@@ -1,53 +1,46 @@
 import * as StompJs from '@stomp/stompjs';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { IChatListItem } from '../types/chatingTypes';
 import { getChatList } from '../apis/chatApi';
 import { useQuery } from '@tanstack/react-query';
+import { useChatingRoomStore } from '../stores/chatingroomStore';
 
 export const useChat = (partyId: number) => {
-  /* 채팅 내역 */
-  const [chatList, setChatList] = useState<IChatListItem[]>([]);
-  const [lastMessageId, setLastMessageId] = useState<string | undefined>(
-    undefined,
-  );
+  const chat = useChatingRoomStore();
+  const stompClient = useRef<StompJs.Client | null>(null);
   const chatQuery = useQuery({
     queryKey: ['pastchat'],
-    queryFn: async () => await getChatList(Number(partyId), lastMessageId),
+    queryFn: async () => await getChatList(Number(partyId), chat.lastMessageId),
     enabled: false,
   });
-  const stompClient = useRef<StompJs.Client | null>(null);
 
   /* 채팅 내역 가져오기 */
   const getPastChatList = async () => {
     const response = await chatQuery.refetch();
-    setLastMessageId(response.data?.data.lastMessageId);
-    setChatList((prev) => {
-      const after = response.data
-        ? response.data.data.messageList.reverse()
-        : [];
-      return [...after, ...prev];
-    });
+
+    if (response.data) {
+      chat.setLastMessageId(response.data.data.lastMessageId);
+      chat.addOldChatList(response.data.data.messageList);
+    } else {
+      console.log('query error');
+    }
   };
 
   /* 채팅 추가 */
-  const addChat = (chat: IChatListItem) => {
-    setChatList((prev) => [...prev, chat]);
+  const addChat = (newChat: IChatListItem) => {
+    chat.addNewChat(newChat);
   };
 
   /* 채팅 전송 */
-  function sendChat(msg: string) {
-    if (stompClient.current?.active) {
-      stompClient.current?.publish({
-        destination: process.env.REACT_APP_CHAT_DEST!,
-        body: JSON.stringify({
-          partyId: partyId,
-          message: msg,
-        }),
-      });
-    } else {
-      console.log(stompClient.current?.active);
-    }
-  }
+  const sendChat = async (msg: string) => {
+    stompClient.current?.publish({
+      destination: process.env.REACT_APP_CHAT_DEST!,
+      body: JSON.stringify({
+        partyId: partyId,
+        message: msg,
+      }),
+    });
+  };
 
   useEffect(() => {
     /* 소켓 연결 정보 */
@@ -90,5 +83,5 @@ export const useChat = (partyId: number) => {
     };
   }, [partyId]);
 
-  return { stompClient, chatList, getPastChatList, sendChat };
+  return { stompClient, getPastChatList, sendChat };
 };
