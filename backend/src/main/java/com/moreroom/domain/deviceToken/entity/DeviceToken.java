@@ -48,7 +48,10 @@ public class DeviceToken extends BaseEntity {
   @JoinColumn(name = "memberId", nullable = false)
   private Member member;
 
-  @Enumerated(EnumType.STRING)
-  @Column(nullable = false)
-  private DeviceType deviceType;
+  @Column(nullable=false, length=255)
+  private String token;
+
+  public void updateToken(String token) {
+    this.token = token;
+  }
 }

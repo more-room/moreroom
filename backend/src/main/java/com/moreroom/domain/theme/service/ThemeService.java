@@ -56,7 +56,7 @@ public class ThemeService {
                 .orElse(null))
             .filter(Objects::nonNull) // null이 아닌 값들만 필터링
             .toList();
-        // 5. Dto 변환 후 반환
+        // 5. dto 변환 후 반환
         return ThemeDetailResponseDto.toDto(theme, reviewCount, reviewScore, playFlag, genreList);
         */
     }
