@@ -1,6 +1,6 @@
-package com.moreroom.global.service;
+package com.moreroom.domain.deviceToken.service;
 
-import com.moreroom.global.dto.FcmMessageDto;
+import com.moreroom.domain.deviceToken.dto.FcmMessageDto;
 import java.io.IOException;
 import org.springframework.stereotype.Service;
 

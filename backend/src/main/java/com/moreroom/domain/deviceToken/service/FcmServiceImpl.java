@@ -1,4 +1,4 @@
-package com.moreroom.global.service;
+package com.moreroom.domain.deviceToken.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,11 +8,11 @@ import com.moreroom.domain.deviceToken.exception.DeviceTokenNotFoundException;
 import com.moreroom.domain.deviceToken.repository.DeviceTokenRepository;
 import com.moreroom.domain.member.entity.Member;
 import com.moreroom.domain.theme.entity.Theme;
-import com.moreroom.global.dto.FcmMessageDto;
-import com.moreroom.global.dto.FcmMessageDto.Data;
-import com.moreroom.global.dto.FcmMessageDto.Message;
-import com.moreroom.global.dto.FcmMessageDto.MessageType;
-import com.moreroom.global.dto.FcmMessageDto.Notification;
+import com.moreroom.domain.deviceToken.dto.FcmMessageDto;
+import com.moreroom.domain.deviceToken.dto.FcmMessageDto.Data;
+import com.moreroom.domain.deviceToken.dto.FcmMessageDto.Message;
+import com.moreroom.domain.deviceToken.dto.FcmMessageDto.MessageType;
+import com.moreroom.domain.deviceToken.dto.FcmMessageDto.Notification;
 import com.moreroom.global.util.RedisUtil;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

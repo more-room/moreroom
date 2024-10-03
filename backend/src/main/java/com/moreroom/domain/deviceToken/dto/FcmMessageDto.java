@@ -1,4 +1,4 @@
-package com.moreroom.global.dto;
+package com.moreroom.domain.deviceToken.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;

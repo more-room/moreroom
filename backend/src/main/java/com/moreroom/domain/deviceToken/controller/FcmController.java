@@ -1,10 +1,10 @@
-package com.moreroom.global.controller;
+package com.moreroom.domain.deviceToken.controller;
 
 import com.moreroom.domain.deviceToken.dto.DeviceTokenRegisterDto;
 import com.moreroom.domain.deviceToken.service.DeviceTokenService;
 import com.moreroom.domain.member.entity.Member;
-import com.moreroom.global.dto.FcmMessageDto;
-import com.moreroom.global.service.FcmService;
+import com.moreroom.domain.deviceToken.dto.FcmMessageDto;
+import com.moreroom.domain.deviceToken.service.FcmService;
 import com.moreroom.global.util.FindMemberService;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
