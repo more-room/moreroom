@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { TopBar } from '../../../components/TopBar';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Typography } from '../../../components/Typography';
-import { usePartyStore } from '../../../stores/partyStore';
 import {
   myHashtags,
   partyhastags,
@@ -13,7 +12,7 @@ import {
 } from '../../../types/partyTypes';
 import { FilterChip } from '../../../components/FilterChip';
 import { Button } from '../../../components/Button';
-import { addParty, getPartyList } from '../../../apis/partyApi';
+import { getPartyList } from '../../../apis/partyApi';
 import { containerCss } from '../styles';
 import { contentCss, itemCss, themesCss } from '../RegisterParty/styles';
 import { useQuery } from '@tanstack/react-query';
@@ -27,7 +26,6 @@ export const EditParty = () => {
   const [selectedMyHashtagIdList, setSelectedMyHashtagIdList] = useState<number[]>([]);
   const [selectedYourHashtagIdList, setSelectedYourHashtagIdList] = useState<number[]>([]);
   const [selectedPartyHashtagIdList, setSelectedPartyHashtagIdList] = useState<number[]>([]);
-  const partyStore = usePartyStore();
   const nav = useNavigate();
 
   const PartyQuery = useQuery({
@@ -85,27 +83,8 @@ export const EditParty = () => {
     );
   };
 
-  const addNewParty = async () => {
-    if (!partyStore.themeId) {
-      alert('테마를 선택해주세요!');
-      return;
-    }
-
-    console.log('현재 데이터:', partyStore);
-
-    try {
-      const res = await addParty(
-        partyStore.themeId,
-        partyStore.partyHashtagIdList,
-        partyStore.myHashtagIdList,
-        partyStore.yourHashtagIdList,
-      );
-      console.log(res);
-      nav('/party');
-    } catch (err) {
-      console.log(err);
-      alert('파티 등록에 실패했습니다. 다시 시도해주세요.');
-    }
+  const updateParty = () => {
+    nav('/party')
   };
 
   return (
@@ -180,9 +159,9 @@ export const EditParty = () => {
           fullwidth
           rounded={0.5}
           variant="contained"
-          handler={addNewParty}
+          handler={updateParty}
         >
-          파티 요청 등록하기
+          수정하기
         </Button>
         </div>
 

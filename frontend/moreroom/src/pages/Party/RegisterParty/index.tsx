@@ -51,7 +51,17 @@ export const RegisterParty = () => {
         partyStore.myHashtagIdList,
         partyStore.yourHashtagIdList,
       );
+
+      partyStore.setPartyData({
+        themeId: undefined,
+        poster: undefined, 
+        themeTitle: undefined,
+        brandName: undefined, 
+        branchName: undefined,
+      });
+
       console.log(res);
+      
       nav('/party');
     } catch (err) {
       console.log(err);

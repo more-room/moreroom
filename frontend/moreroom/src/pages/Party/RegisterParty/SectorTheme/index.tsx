@@ -7,6 +7,7 @@ import { container } from '../../../Themes/ThemeList/styles';
 import { TopBar } from '../../../../components/TopBar';
 import { SearchTitle } from './SearchTitle';
 import { SearchList } from './SearchList';
+import { useNavigate } from 'react-router-dom';
 
 
 export type TThemePage = 'default' | 'search';
@@ -15,6 +16,7 @@ export const SectorTheme = () => {
   const themePageStore = useThemePageStore();
   const searchTitleStore = useSearchTitleStore();
   const searchThemesStore = useSearchThemesStore();
+  const nav = useNavigate()
 
   /* 테마 제목 검색 핸들러 */
   const onSearchHandler = async (value: string) => {
@@ -29,6 +31,7 @@ export const SectorTheme = () => {
   /* 뒤로가기 핸들러 */
   const onBackHandler = () => {
     if (themePageStore.type === 'search') themePageStore.setType('default');
+    nav(-1)
   };
 
   /* 아이콘 핸들러 */
@@ -53,7 +56,7 @@ export const SectorTheme = () => {
         <TopBar.Right icon={<MagnifyingGlassIcon />} handler={onTitleHandler} />
       </TopBar>
       {themePageStore.type === 'search' && <SearchTitle />}
-      {themePageStore.type === 'default' && <SearchList isAddThemeMode={true} />}
+      {themePageStore.type === 'default' && <SearchList />}
     </div>
   );
 };

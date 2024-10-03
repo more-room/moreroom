@@ -1,19 +1,21 @@
 import { css } from "@emotion/react";
 
 export const containerCss = css`
+position: relative;
   display: flex;
   flex-direction: column;
   background-color: #424242;
   margin: 1rem;
   padding: 1rem;
   gap: 1rem;
-  
 `;
 
-export const topContentCss = css`
+export const topContentCss = (isLoading:boolean) => css`
   display: flex; 
   gap: 1rem; 
   align-items: center; 
+  opacity: ${isLoading ? '60%' : undefined};
+  filter: ${isLoading ? 'blur(0.2rem)' : undefined};
 `;
 
 export const imgCss = css`
@@ -41,9 +43,10 @@ export const chipCss = css`
   flex-wrap: wrap;
 `;
 
-export const btnContainerCss = css`
+export const btnContainerCss = (isLoading:boolean) => css`
   display: flex;
   gap: 0.5rem;
   justify-content: flex-end;
-
+  opacity: ${isLoading ? '60%' : undefined};
+  filter: ${isLoading ? 'blur(0.2rem)' : undefined};
 `;

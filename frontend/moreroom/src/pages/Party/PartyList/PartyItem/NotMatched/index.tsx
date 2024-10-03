@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   btnContainerCss,
   chipCss,
@@ -17,13 +17,13 @@ import { Icon } from '../../../../../components/Icon';
 import { ClockIcon } from '@heroicons/react/24/outline';
 import { Toggle } from '../../../../../components/Toggle';
 import {
-  useInfiniteQuery,
   useMutation,
   useQueryClient,
 } from '@tanstack/react-query';
-import { delParty, disabledParty } from '../../../../../apis/partyApi';
+import {  disabledParty } from '../../../../../apis/partyApi';
 import { useNavigate } from 'react-router-dom';
-import { Backdrop } from '../../../../../components/Backdrop';
+import { Spinner } from '../../../../../components/Spinner';
+
 
 interface PartyItemProps {
   party: IParty;
@@ -55,7 +55,7 @@ export const NotMatched = ({ party, onDeleteClick }: PartyItemProps) => {
     onMutate: async (variables) => {
       setIsLoading(true);
 
-      // 낙관적 업데이트 (잠정적으로 상태를 반영)
+      // Optimistic Updates (잠정적으로 상태를 반영)
       queryClient.setQueryData(
         ['party', variables.partyRequestId],
         (prevData: any) => {
@@ -89,94 +89,114 @@ export const NotMatched = ({ party, onDeleteClick }: PartyItemProps) => {
   const handleToggle = () => {
     if (isLoading) return;
 
-    // 낙관적 업데이트에 반영할 변수
+    // Optimistic Updates에 반영할 변수
     mutate({ partyRequestId: party.partyRequestId, isActive: !isActive });
   };
   return (
-    <div css={containerCss}>
-      <div css={topContentCss}>
-        <img css={imgCss} src={party.theme.poster} alt="" />
-        <div css={contentCss}>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'flex-end',
-              gap: '0.3rem',
-            }}
-          >
+    <>
+      <div css={containerCss}>
+        <div css={topContentCss(isLoading)}>
+          <img css={imgCss} src={party.theme.poster} alt="" />
+          <div css={contentCss}>
             <div
-              style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-end',
+                gap: '0.3rem',
+              }}
             >
-              <Typography color="light" size={0.8} weight={400}>
-                {isActive ? '매칭 중' : '매칭 중지'}
-              </Typography>
-              <Toggle
-                children={'매칭'}
-                color="primary"
-                size={2.5}
-                onToggle={handleToggle}
-                isOn={isActive}
-              />
-            </div>
-            {isLoading && (
-              <Typography color="primary" size={0.7} weight={400}>
-                매칭 상태 변경 중...
-              </Typography>
-            )}
-          </div>
-          <Typography color="light" size={1.2} weight={700}>
-            {party.theme.title}
-          </Typography>
-          <div css={timeCss}>
-            <Icon color="primary" size={1}>
-              <ClockIcon />
-            </Icon>
-            <Typography color="grey" scale="500" size={0.8} weight={700}>
-              {party.createdAt}
-            </Typography>
-          </div>
-          <div css={chipCss}>
-            {party.hashtagList.map((hashtag: Hashtag) =>
-              hashtag.hashtagId <= 5 ? (
-                <Chip
-                  key={hashtag.hashtagId}
-                  border={1}
+              <div
+                style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}
+              >
+                <Typography color="light" size={0.8} weight={400}>
+                  {isActive ? '매칭 중' : '매칭 중지'}
+                </Typography>
+                <Toggle
+                  children={'매칭'}
                   color="primary"
-                  fontSize={0.6}
-                  fontWeight={700}
-                >
-                  {hashtag.hashtagName}
-                </Chip>
-              ) : null,
-            )}
+                  size={2.5}
+                  onToggle={handleToggle}
+                  isOn={isActive}
+                />
+              </div>
+              {/* {isLoading && (
+                <Typography color="primary" size={0.7} weight={400}>
+                  매칭 상태 변경 중...
+                </Typography>
+              )} */}
+            </div>
+            <Typography color="light" size={1.2} weight={700}>
+              {party.theme.title}
+            </Typography>
+            <div css={timeCss}>
+              <Icon color="primary" size={1}>
+                <ClockIcon />
+              </Icon>
+              <Typography color="grey" scale="500" size={0.8} weight={700}>
+                {party.createdAt}
+              </Typography>
+            </div>
+            <div css={chipCss}>
+              {party.hashtagList.map((hashtag: Hashtag) =>
+                hashtag.hashtagId <= 5 ? (
+                  <Chip
+                    key={hashtag.hashtagId}
+                    border={1}
+                    color="primary"
+                    fontSize={0.6}
+                    fontWeight={700}
+                  >
+                    {hashtag.hashtagName}
+                  </Chip>
+                ) : null,
+              )}
+            </div>
           </div>
         </div>
+        <div css={btnContainerCss(isLoading)}>
+          <Button
+            style={{ fontSize: '1rem' }}
+            color="danger"
+            fullwidth
+            rounded={0.5}
+            variant="contained"
+            handler={onDeleteClick}
+          >
+            삭제하기
+          </Button>
+          <Button
+            style={{ fontSize: '1rem' }}
+            color="primary"
+            fullwidth
+            rounded={0.5}
+            variant="contained"
+            handler={() => nav(`/party/edit/${[party.partyRequestId]}`)}
+          >
+            수정하기
+          </Button>
+        </div>
+        {/* {isActive ? '매칭 중' : '매칭중지'} */}
+        {/* {party.status.statusName === 'NOT_MATCHED' ? '매칭중' : '매칭X'} */}
+        {isLoading && (
+          <div
+            style={{
+              position: 'absolute',
+              top: '35%',
+              left: '40%',
+              display: 'flex',
+              flexDirection: 'column', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+            }}
+          >
+            <Spinner color="primary" size="sm" />
+            <Typography color="primary" size={1} weight={700}>
+              상태 변경 중
+            </Typography>
+          </div>
+        )}
       </div>
-      <div css={btnContainerCss}>
-        <Button
-          style={{ fontSize: '1rem' }}
-          color="danger"
-          fullwidth
-          rounded={0.5}
-          variant="contained"
-          handler={onDeleteClick}
-        >
-          삭제하기
-        </Button>
-        <Button
-          style={{ fontSize: '1rem' }}
-          color="primary"
-          fullwidth
-          rounded={0.5}
-          variant="contained"
-          handler={() => nav(`/party/edit/${[party.partyRequestId]}`)}
-        >
-          수정하기
-        </Button>
-      </div>
-      {isActive ? '매칭 중' : '매칭중지'}
-      {/* {party.status.statusName === 'NOT_MATCHED' ? '매칭중' : '매칭X'} */}
-    </div>
+    </>
   );
 };

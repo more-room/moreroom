@@ -4,11 +4,8 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { SearchFilters } from '../../../../Themes/ThemeList/SearchList/SearchFilters';
 import { SearchResults } from './SearchResults';
 
-interface SearchListProps {
-  isAddThemeMode?: boolean;
-}
 
-export const SearchList = (isAddThemeMode:SearchListProps) => {
+export const SearchList = () => {
   return (
     <>
       <SearchFilters />
