@@ -60,7 +60,18 @@ export const CafeInfo = ({ cafe }: CafeInfoProps) => {
         <Icon>
           <AtSymbolIcon />
         </Icon>
-        <Typography color="light" weight={400} size={0.875}>
+        <Typography
+          color="light"
+          weight={400}
+          size={0.875}
+          style={{
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            textDecoration: 'underline',
+          }}
+          onClick={() => window.open(cafe.link)}
+        >
           {cafe.link}
         </Typography>
       </div>
