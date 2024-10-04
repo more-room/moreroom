@@ -7,6 +7,11 @@ import { Icon } from '../Icon';
 import { StarIcon } from '@heroicons/react/24/solid';
 import { Button } from '../Button';
 import { useNavigate } from 'react-router-dom';
+import { LabeledTypography } from '../LabeledTypography';
+import {
+  useSearchCafesStore,
+  useSearchNameStore,
+} from '../../stores/cafeStore';
 
 export const CafeItem = ({
   cafe,
@@ -16,6 +21,7 @@ export const CafeItem = ({
   ...props
 }: CafeItemProps) => {
   const nav = useNavigate();
+  const searchCafesStore = useSearchCafesStore();
   const [imgErr, setImgErr] = useState<boolean>(false);
 
   return (
@@ -39,9 +45,19 @@ export const CafeItem = ({
 
       <div css={info(onList)}>
         <div css={title}>
-          <Typography color="light" size={1} weight={600}>
+          <LabeledTypography
+            str={cafe.cafeName}
+            pattern={
+              searchCafesStore.filters.cafeName
+                ? searchCafesStore.filters.cafeName
+                : ''
+            }
+            color="light"
+            size={1}
+            weight={600}
+          >
             {cafe.cafeName}
-          </Typography>
+          </LabeledTypography>
           <Typography color="grey" size={0.875} weight={400}>
             {cafe.address}
           </Typography>
