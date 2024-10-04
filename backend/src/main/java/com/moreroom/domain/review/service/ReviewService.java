@@ -61,10 +61,20 @@ public class ReviewService {
             : Sort.by(sortBy).ascending();
         Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
 
-        Page<Review> reviewList = reviewRepository.findAllByThemeThemeId(themeId, pageable);
+        Long memberId = findMemberService.findCurrentMember();
+
+        Page<Object[]> reviewList = reviewRepository.findAllByThemeThemeIdAndMemberMemberIdAndDelFlagFalse(
+            themeId, memberId, pageable);
+
+        System.out.println(reviewList);
 
         List<ReviewResponseDTO> reviewResponseDTOList = reviewList.stream()
-            .map(ReviewResponseDTO::toDTO)
+            .map(result -> {
+                Review review = (Review) result[0];
+                boolean upFlag = ((Integer) result[1]).equals(1);
+
+                return ReviewResponseDTO.toDTO(review, upFlag);
+            })
             .toList();
 
         return PageResponseDto.builder()
@@ -84,7 +94,8 @@ public class ReviewService {
             : Sort.by(sortBy).ascending();
         Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
 
-        Page<Review> reviewList = reviewRepository.findAllByMemberMemberId(memberId, pageable);
+        Page<Review> reviewList = reviewRepository.findAllByMemberMemberIdAndDelFlagFalse(memberId,
+            pageable);
         // fix: 쿼리 한번 호출
         List<Review> reviews = reviewList.getContent();
 
