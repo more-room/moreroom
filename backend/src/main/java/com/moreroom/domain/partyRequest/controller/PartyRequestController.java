@@ -73,4 +73,12 @@ public class PartyRequestController {
     partyRequestService.updatePartyRequestSettings(partyRequestId, dto);
     return new ResponseEntity<>(HttpStatus.OK);
   }
+
+  //파티요청별 해시태그 조회
+  @GetMapping("/{partyRequestId}/hashtags")
+  public ResponseEntity<?> getPartyRequestHashtags(@PathVariable Long partyRequestId) {
+    Member member = findMemberService.findCurrentMemberObject();
+    PartyRequestDto hashtagsList = partyRequestService.getHashtagsList(partyRequestId, member);
+    return new ResponseEntity<>(hashtagsList, HttpStatus.OK);
+  }
 }
