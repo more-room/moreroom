@@ -11,9 +11,9 @@ import {
   containerCss,
   inputCss,
 } from '../../../Signup/AccountInfo/styles';
-import { CssTextField } from '../../../Signup/AccountInfo';
 import { Button } from '../../../../components/Button';
 import { nextStepBtnCss } from './styles';
+import { CssTextField } from '../../../../components/Mui/CssTextField';
 
 interface UserDataFormProps {
   onSubmit: () => void;

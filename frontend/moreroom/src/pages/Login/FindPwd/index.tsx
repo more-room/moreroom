@@ -9,7 +9,6 @@ import {
   containerCss,
   inputCss,
 } from '../../Signup/AccountInfo/styles';
-import { CssTextField } from '../../Signup/AccountInfo';
 import { Typography } from '../../../components/Typography';
 import { isEmail } from '../../../apis/authApi';
 import { validateEmail } from '../../../utils/validationUtils';

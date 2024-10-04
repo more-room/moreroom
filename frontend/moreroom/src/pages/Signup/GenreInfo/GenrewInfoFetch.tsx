@@ -111,6 +111,7 @@ export const GenreInfoFetch = ({ onSubmit }: VerificationProps) => {
           rounded={0.5}
           scale="A200"
           variant="contained"
+          disabled={!selectedGenres.length}
           handler={handleNext}
         >
           다음으로
