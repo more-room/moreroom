@@ -18,12 +18,22 @@ export const box = css`
   column-gap: 1rem;
 `;
 
-export const img = css`
+export const img = (imgErr: boolean) => css`
   min-width: 5.5rem;
   max-width: 5.5rem;
   height: 6.5rem;
   border-top-left-radius: 0.5rem;
   border-bottom-left-radius: 0.5rem;
+
+  ${imgErr &&
+  css`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    row-gap: 0.25rem;
+    background-color: #212121;
+  `}
 `;
 
 export const info = css`

@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React from 'react';
+import React, { useState } from 'react';
 import { HistoryCardProps } from './HistoryCard.types';
 import { base, box, header, img, info } from './HistoryCard.styles';
 import {
@@ -21,10 +21,28 @@ export const HistoryCard = ({
   children,
   ...props
 }: HistoryCardProps) => {
+  const [imgErr, setImgErr] = useState<boolean>(false);
+
   return (
     <div css={base(bgColor, bgColorScale)} {...props}>
       <div css={box}>
-        <img src={history.theme.poster} alt={history.theme.title} css={img} />
+        {!imgErr ? (
+          <img
+            src={history.theme.poster}
+            alt={history.theme.title}
+            css={img(imgErr)}
+            onError={() => setImgErr(true)}
+          />
+        ) : (
+          <div css={img(imgErr)}>
+            <Typography color="light" weight={500} size={0.75}>
+              포스터를
+            </Typography>
+            <Typography color="light" weight={500} size={0.75}>
+              준비중입니다
+            </Typography>
+          </div>
+        )}
         <div css={info}>
           <div>
             <Typography color="light" weight={500} size={1}>
