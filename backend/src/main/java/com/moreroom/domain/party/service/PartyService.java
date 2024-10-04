@@ -200,6 +200,7 @@ public class PartyService {
     party.setSettings(roomname, date, dto.isAddFlag(), dto.getMaxMember());
   }
 
+  //마스터인지 검사하는 메서드
   private void validUser(Member member, Party party) {
     if (!Objects.equals(party.getMasterMember().getMemberId(), member.getMemberId())) {
       throw new NotPartyMasterException();
@@ -215,6 +216,16 @@ public class PartyService {
   //파티 멤버 조회
   public PartyMemberDto getPartyMemberList(Long partyId) {
       return partyQueryRepository.getPartyMemberList(partyId);
+  }
+
+  //파티 멤버 강퇴
+  @Transactional
+  public void kickOutMember(Member master, Long memberId, Long partyId) {
+    //방장인지 검사
+    Party party = partyRepository.findById(partyId).orElseThrow(PartyNotFoundException::new);
+    validUser(master, party);
+    //partymembermapping테이블에서 삭제
+    memberPartyMappingRepository.deleteMemberPartyMappingByMemberAndParty(memberId, partyId);
   }
 
 }
