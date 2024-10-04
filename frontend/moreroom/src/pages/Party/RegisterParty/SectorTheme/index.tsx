@@ -1,26 +1,22 @@
 /** @jsxImportSource @emotion/react */
-import React from 'react';
-import { TopBar } from '../../../components/TopBar';
-import { container } from './styles';
-import { getThemeTitles } from '../../../apis/themeApi';
-import { SearchTitle } from './SearchTitle';
-import {
-  useSearchThemesStore,
-  useSearchTitleStore,
-  useThemePageStore,
-} from '../../../stores/themeStore';
-import { SearchList } from './SearchList';
+
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { useSearchThemesStore, useSearchTitleStore, useThemePageStore } from '../../../../stores/themeStore';
+import { getThemeTitles } from '../../../../apis/themeApi';
+import { container } from '../../../Themes/ThemeList/styles';
+import { TopBar } from '../../../../components/TopBar';
+import { SearchTitle } from './SearchTitle';
+import { SearchList } from './SearchList';
 import { useNavigate } from 'react-router-dom';
-import { Notification } from '../../../components/Notification';
+
 
 export type TThemePage = 'default' | 'search';
 
-export const ThemeList = () => {
-  const nav = useNavigate();
+export const SectorTheme = () => {
   const themePageStore = useThemePageStore();
   const searchTitleStore = useSearchTitleStore();
   const searchThemesStore = useSearchThemesStore();
+  const nav = useNavigate()
 
   /* 테마 제목 검색 핸들러 */
   const onSearchHandler = async (value: string) => {
@@ -35,7 +31,7 @@ export const ThemeList = () => {
   /* 뒤로가기 핸들러 */
   const onBackHandler = () => {
     if (themePageStore.type === 'search') themePageStore.setType('default');
-    else nav('/');
+    nav(-1)
   };
 
   /* 아이콘 핸들러 */
