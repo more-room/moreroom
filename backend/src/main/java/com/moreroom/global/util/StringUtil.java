@@ -1,11 +1,8 @@
 package com.moreroom.global.util;
 
 import com.moreroom.global.exception.globalException.DateTimeInvalidException;
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
@@ -15,7 +12,7 @@ public class StringUtil {
         return str == null || str.trim().isEmpty();
     }
 
-    public static String dateToString(LocalDateTime date) {
+    public static String datetimeToString(LocalDateTime date) {
         if (date == null) {
             throw new DateTimeInvalidException();
         }
@@ -24,7 +21,7 @@ public class StringUtil {
         return formattedDateTime;
     }
 
-    public static LocalDateTime stringToDate(String date) {
+    public static LocalDateTime stringToDatetime(String date) {
         if (date == null) {
             throw new DateTimeInvalidException();
         }
@@ -45,6 +42,15 @@ public class StringUtil {
         }
 
         return localDateTime;
+    }
+
+    public static String dateToString(LocalDate date) {
+        if (date == null) {
+            throw new DateTimeInvalidException();
+        }
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String formattedDateTime = date.format(formatter);
+        return formattedDateTime;
     }
 
     public static boolean isParent(String regionId) {

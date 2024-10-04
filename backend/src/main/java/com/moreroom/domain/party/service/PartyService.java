@@ -9,7 +9,6 @@ import com.moreroom.domain.member.repository.MemberRepository;
 import com.moreroom.domain.party.dto.ChatroomListDto;
 import com.moreroom.domain.party.dto.ChatroomSettingDto;
 import com.moreroom.domain.party.dto.NoticeDto;
-import com.moreroom.domain.party.dto.PartyInfoDto;
 import com.moreroom.domain.party.entity.Party;
 import com.moreroom.domain.party.exception.InputValidationException;
 import com.moreroom.domain.party.exception.NotPartyMasterException;
@@ -22,21 +21,14 @@ import com.moreroom.domain.partyRequest.entity.PartyRequest;
 import com.moreroom.domain.partyRequest.repository.PartyRequestRepository;
 import com.moreroom.domain.theme.entity.Theme;
 import com.moreroom.domain.theme.repository.ThemeRepository;
-import com.moreroom.global.dto.SocketNotificationDto;
 import com.moreroom.global.util.StringUtil;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -203,7 +195,7 @@ public class PartyService {
     Party party = partyRepository.findById(partyId).orElseThrow(PartyNotFoundException::new);
     validUser(member, party);
     String roomname = dto.getRoomName();
-    LocalDateTime date = StringUtil.stringToDate(dto.getDate());
+    LocalDateTime date = StringUtil.stringToDatetime(dto.getDate());
     if (roomname.length() > 50) {
       throw new InputValidationException();
     }
