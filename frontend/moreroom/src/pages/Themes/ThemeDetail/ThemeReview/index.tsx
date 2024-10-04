@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { IReviewListItem } from '../../../../types/reviewTypes';
 import { Typography } from '../../../../components/Typography';
 import { container, img, info, profile, rating, title } from './styles';
@@ -27,17 +27,17 @@ export const ThemeReview = ({
 }: ThemeReviewProps) => {
   const [reviewType, setReviewType] = useState<number>(0);
   const [upFlag, setUpFlag] = useState<boolean>(review.upFlag);
+  const countRef = useRef<number>(review.thumbsUp);
 
   const reviewHandler = (menu: number) => setReviewType(menu);
 
   const { mutate } = useMutation({
     mutationFn: async () => await patchThumbsUp(review.reviewId),
-    onSuccess: () => setUpFlag((prev) => !prev),
+    onSuccess: () => {
+      upFlag ? (countRef.current -= 1) : (countRef.current += 1);
+      setUpFlag((prev) => !prev);
+    },
   });
-
-  useEffect(() => {
-    console.log(reviewType);
-  }, [reviewType]);
 
   return (
     <div style={{ marginTop: '2rem' }}>
@@ -88,7 +88,7 @@ export const ThemeReview = ({
               {upFlag ? <SolidHandThumbUpIcon /> : <OutlineHandThumbUpIcon />}
             </Icon>
             <Typography color="light" size={0.75} weight={400}>
-              {review.thumbsUp}
+              {countRef.current}
             </Typography>
           </div>
         </div>
