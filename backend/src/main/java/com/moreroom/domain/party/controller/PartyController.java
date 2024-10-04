@@ -142,4 +142,12 @@ public class PartyController {
     return new ResponseEntity<>(partyMemberList, HttpStatus.OK);
   }
 
+  //파티원 추방
+  @PostMapping("/{partyId}/kick-out")
+  public ResponseEntity<?> kickOutMember(@RequestParam Long memberId, @PathVariable Long partyId) {
+    Member member = findMemberService.findCurrentMemberObject();
+    partyService.kickOutMember(member, memberId, partyId);
+    return new ResponseEntity<>(HttpStatus.OK);
+  }
+
 }
