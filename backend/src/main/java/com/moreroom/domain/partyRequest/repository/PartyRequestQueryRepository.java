@@ -193,8 +193,6 @@ public class PartyRequestQueryRepository extends QuerydslRepositoryCustom {
       }
 
       Tuple tuple = results.get(0);
-      log.info("tuple: {}", tuple);
-      log.info("theme: {}", tuple.get(theme));
       ThemeDto themeDto = ThemeDto.builder()
               .themeId(tuple.get(theme).getThemeId())
               .poster(tuple.get(theme).getPoster())
@@ -202,9 +200,6 @@ public class PartyRequestQueryRepository extends QuerydslRepositoryCustom {
               .brandName(tuple.get(cafe).getCafeName())
               .branchName(tuple.get(cafe).getBranchName())
               .build();
-
-      log.info("theme: {}", themeDto);
-      log.info("해시태그 타입: {}", tuple.get(partyRequestHashtagMapping).getHashtagType());
 
       String yours = tuple.get(partyRequestHashtagMapping).getHashtagType();
       List<Integer> yourHashtagIdList = convertToIntegerList(yours);

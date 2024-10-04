@@ -135,4 +135,11 @@ public class PartyController {
     return new ResponseEntity<>(partyIdList, HttpStatus.OK);
   }
 
+  //파티원 조회
+  @GetMapping("/{partyId}/memberList")
+  public ResponseEntity<?> getMemberList(@PathVariable Long partyId) {
+    PartyMemberDto partyMemberList = partyService.getPartyMemberList(partyId);
+    return new ResponseEntity<>(partyMemberList, HttpStatus.OK);
+  }
+
 }
