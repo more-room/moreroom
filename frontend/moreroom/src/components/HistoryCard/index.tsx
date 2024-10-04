@@ -27,14 +27,12 @@ export const HistoryCard = ({
         <img src={history.theme.poster} alt={history.theme.title} css={img} />
         <div css={info}>
           <div>
-            <div css={header}>
-              <Typography color="light" weight={500} size={1}>
-                {history.theme.title}
-              </Typography>
-              <Typography color="grey" size={0.75} weight={400}>
-                {history.theme.cafeName}
-              </Typography>
-            </div>
+            <Typography color="light" weight={500} size={1}>
+              {history.theme.title}
+            </Typography>
+            <Typography color="grey" size={0.75} weight={400}>
+              {history.theme.cafeName}
+            </Typography>
             <Typography color="grey" size={0.75} weight={400}>
               {dayjs(history.date).format('YYYY년 M월 D일(ddd) HH:mm')}
             </Typography>

@@ -19,7 +19,8 @@ export const box = css`
 `;
 
 export const img = css`
-  width: 5.5rem;
+  min-width: 5.5rem;
+  max-width: 5.5rem;
   height: 6.5rem;
   border-top-left-radius: 0.5rem;
   border-bottom-left-radius: 0.5rem;
