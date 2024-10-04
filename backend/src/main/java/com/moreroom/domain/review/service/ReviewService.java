@@ -66,8 +66,6 @@ public class ReviewService {
         Page<Object[]> reviewList = reviewRepository.findAllByThemeThemeIdAndMemberMemberIdAndDelFlagFalse(
             themeId, memberId, pageable);
 
-        System.out.println(reviewList);
-
         List<ReviewResponseDTO> reviewResponseDTOList = reviewList.stream()
             .map(result -> {
                 Review review = (Review) result[0];
