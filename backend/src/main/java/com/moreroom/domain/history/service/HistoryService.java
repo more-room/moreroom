@@ -36,7 +36,7 @@ public class HistoryService {
     public HistoryListResponseDto findHistoriesByDate(Long memberId, String startDate,
         String endDate) {
         return historyQueryRepository.findHistoriesByDate(memberId,
-            StringUtil.stringToDate(startDate), StringUtil.stringToDate(endDate));
+            StringUtil.stringToDatetime(startDate), StringUtil.stringToDatetime(endDate));
     }
 
     public HistoryListComponentDto findHistoryDetail(Long memberId, Long historyId) {
@@ -49,7 +49,7 @@ public class HistoryService {
         Member member = memberRepository.getReferenceById(memberId); // lazy loading
         Theme theme = themeRepository.getReferenceById(historyRequestDto.getThemeId());
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime playDate = StringUtil.stringToDate(historyRequestDto.getDate());
+        LocalDateTime playDate = StringUtil.stringToDatetime(historyRequestDto.getDate());
 
         // 2. History entity 생성 후 삽입
         History history = History.builder()
@@ -84,7 +84,7 @@ public class HistoryService {
     public Boolean updateHistory(Long memberId, Long historyId,
         HistoryUpdateRequestDto historyUpdateRequestDto) {
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime playDate = StringUtil.stringToDate(historyUpdateRequestDto.getDate());
+        LocalDateTime playDate = StringUtil.stringToDatetime(historyUpdateRequestDto.getDate());
 
         History history = historyRepository.findByHistoryIdAndMemberMemberIdAndDelFlagIsFalse(
                 historyId, memberId)

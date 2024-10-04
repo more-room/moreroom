@@ -61,10 +61,10 @@ public class HistoryQueryRepository extends QuerydslRepositoryCustom {
             assert c != null;
             list.add(HistoryListComponentDto.builder()
                 .historyId(h.getHistoryId())
-                .date(StringUtil.dateToString(h.getPlayDate()))
+                .date(StringUtil.datetimeToString(h.getPlayDate()))
                 .memberPlayTime(h.getMemberPlayTime())
                 .hintCount(h.getHintCount())
-                .updatedAt(StringUtil.dateToString(h.getUpdatedAt()))
+                .updatedAt(StringUtil.datetimeToString(h.getUpdatedAt()))
                 .theme(HistoryListThemeDto.builder()
                     .themeId(th.getThemeId())
                     .title(th.getTitle())
@@ -107,7 +107,7 @@ public class HistoryQueryRepository extends QuerydslRepositoryCustom {
         return HistoryListComponentDto.builder()
             .historyId(h.getHistoryId())
             .themeId(h.getTheme().getThemeId())
-            .date(StringUtil.dateToString(h.getPlayDate()))
+            .date(StringUtil.datetimeToString(h.getPlayDate()))
             .hintCount(h.getHintCount())
             .content(h.getContent())
             .memberLevel(h.getMemberLevel())
@@ -115,7 +115,7 @@ public class HistoryQueryRepository extends QuerydslRepositoryCustom {
             .players(h.getPlayers())
             .price(h.getPrice())
             .successFlag(h.isSuccessFlag())
-            .updatedAt(StringUtil.dateToString(h.getUpdatedAt()))
+            .updatedAt(StringUtil.datetimeToString(h.getUpdatedAt()))
             .cafeName(c.getCafeName())
             .build();
     }
