@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import React, { useState } from 'react';
 import { useSuspenseQueries } from '@tanstack/react-query';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { getThemeDetail } from '../../../apis/themeApi';
 import { getCafeForTheme } from '../../../apis/cafeApi';
 import { getReviewForTheme } from '../../../apis/reviewApi';
@@ -14,24 +14,24 @@ import { ThemeReview } from './ThemeReview';
 import { ThemeCafe } from './ThemeCafe';
 
 export const ThemeDetailFetch = () => {
-  const loc = useLocation();
+  const themeIdDetail = Number(useParams().themeId);
   const navigate = useNavigate();
 
   const [themeQuery, cafeQuery, reviewQuery] = useSuspenseQueries({
     queries: [
       {
         queryKey: ['theme-detail'],
-        queryFn: async () => await getThemeDetail(loc.state.themeId),
+        queryFn: async () => await getThemeDetail(themeIdDetail),
       },
       {
         queryKey: ['theme-cafe'],
-        queryFn: async () => await getCafeForTheme(loc.state.themeId),
+        queryFn: async () => await getCafeForTheme(themeIdDetail),
       },
       {
         queryKey: ['theme-review'],
         queryFn: async () =>
           await getReviewForTheme({
-            themeId: loc.state.themeId,
+            themeId: themeIdDetail,
             pageNumber: 0,
           }),
       },

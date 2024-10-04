@@ -51,7 +51,7 @@ export const SearchResults = () => {
       historyWriteStore.setThemeId(theme.themeId);
       nav('/history/write');
     } else {
-      nav('/theme/detail', { state: { themeId: theme.themeId } });
+      nav(`/themes/${theme.themeId}`);
     }
   };
 
