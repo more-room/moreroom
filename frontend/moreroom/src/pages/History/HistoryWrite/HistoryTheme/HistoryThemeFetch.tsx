@@ -2,7 +2,7 @@
 import React from 'react';
 import { info, poster, row, themebox } from './styles';
 import { useHistoryWriteStore } from '../../../../stores/historyStore';
-import { useSuspenseQueries, useSuspenseQuery } from '@tanstack/react-query';
+import { useSuspenseQueries } from '@tanstack/react-query';
 import { getThemeDetail } from '../../../../apis/themeApi';
 import { getCafeForTheme } from '../../../../apis/cafeApi';
 import { Typography } from '../../../../components/Typography';

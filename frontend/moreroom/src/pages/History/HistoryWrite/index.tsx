@@ -69,7 +69,7 @@ export const HistoryWrite = () => {
       <TopBar
         css={css`
           position: ${params.historyId || historyWriteStore.themeId
-            ? 'absolute'
+            ? 'fixed'
             : 'static'};
         `}
       >

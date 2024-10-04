@@ -61,7 +61,7 @@ export const HistoryDetailFetch = () => {
 
   return (
     <div css={container}>
-      <TopBar style={{ position: 'absolute', top: '0' }}>
+      <TopBar style={{ position: 'fixed' }}>
         <TopBar.Title
           type="default"
           title={themeQuery.data?.data.theme.title + ' 기록'}
