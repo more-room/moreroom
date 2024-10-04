@@ -59,7 +59,9 @@ export const ThemeInfo = ({ theme, cafe }: ThemeInfoProps) => {
         </Typography>
       </div>
       <Button handler={() => window.open(cafe.link)} rounded={0.5}>
-        예약하러가기
+        <Typography color="light" weight={500}>
+          예약하러가기
+        </Typography>
       </Button>
     </div>
   );

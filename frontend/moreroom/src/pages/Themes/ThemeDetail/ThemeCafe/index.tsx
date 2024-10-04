@@ -55,7 +55,18 @@ export const ThemeCafe = ({ cafe }: ThemeCafeProps) => {
           <Icon size={1} style={{ minWidth: '1rem' }}>
             <AtSymbolIcon />
           </Icon>
-          <Typography color="light" size={0.8125} weight={400}>
+          <Typography
+            color="light"
+            size={0.8125}
+            weight={400}
+            style={{
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              textDecoration: 'underline',
+            }}
+            onClick={() => window.open(cafe.link)}
+          >
             {cafe.link}
           </Typography>
         </div>

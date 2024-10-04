@@ -42,7 +42,7 @@ export const ReivewList = ({
 }) => {
   const nav = useNavigate();
   const handleClick = () => {
-    nav('/theme/detail', { state: { themeId: themeId } });
+    nav(`/themes/${themeId}`);
   };
   return (
     <div css={containerCss}>
