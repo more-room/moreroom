@@ -66,4 +66,11 @@ public class PartyRequestController {
     partyRequestService.activateOrDeactivatePartyRequest(activateDto.isActivate(), partyRequestId);
     return new ResponseEntity<>(HttpStatus.OK);
   }
+
+  //파티요청 정보 수정
+  @PatchMapping("/{partyRequestId}/settings")
+  public ResponseEntity<?> updatePartyRequestSetting(@PathVariable Long partyRequestId, @RequestBody SettingPartyRequestDto dto) {
+    partyRequestService.updatePartyRequestSettings(partyRequestId, dto);
+    return new ResponseEntity<>(HttpStatus.OK);
+  }
 }
