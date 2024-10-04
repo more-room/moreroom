@@ -19,7 +19,7 @@ export const Region = () => {
     selectedCity,
     setSelectedRegion,
     setSelectedCity,
-    setSelectedRegionId, // 추가된 부분
+    setSelectedRegionId, 
   } = useRegionSelectionStore();
 
   useEffect(() => {
@@ -47,7 +47,7 @@ export const Region = () => {
             size={0.875}
             color={selectedRegion === region.regionName ? 'light' : 'grey'}
             weight={selectedRegion === region.regionName ? 600 : 400}
-            onClick={() => handleRegionClick(region)} // 수정된 부분
+            onClick={() => handleRegionClick(region)} 
           >
             {region.regionName}
           </Typography>
@@ -63,7 +63,7 @@ export const Region = () => {
               handler={() => setSelectedCity(null)}
             />
           </div>
-          <Typography color="light" size={0.875} weight={700}>
+          <Typography style={{marginTop:'1rem'}} color="light" size={0.875} weight={700}>
             시/군/구
           </Typography>
           <div css={[item, items]}>

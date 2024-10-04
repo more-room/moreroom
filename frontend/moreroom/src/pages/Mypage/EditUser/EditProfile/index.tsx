@@ -29,6 +29,7 @@ import { useModal } from '../../../../hooks/useModal';
 import { Selectedtheme } from '../../../../modals/mypage/Selectedtheme';
 import { SelectedGenre } from '../../../../modals/mypage/SelectedGenre';
 import { CssTextField } from '../../../../components/Mui/CssTextField';
+import { useRegionSelectionStore } from '../../../../stores/signupStore';
 
 export const EditProfile = () => {
   const nav = useNavigate();
@@ -41,7 +42,7 @@ export const EditProfile = () => {
   const [birthYear, setBirthYear] = useState<string>('');
   const [birthMonth, setBirthMonth] = useState<string>('');
   const [birthDay, setBirthDay] = useState<string>('');
-
+  const { selectedRegionId, selectedRegion, selectedCity } = useRegionSelectionStore(); 
   const regionQuery = useQuery({
     queryKey: ['region'],
     queryFn: async () => await getRegions(),
@@ -139,23 +140,15 @@ export const EditProfile = () => {
     }
   };
 
-  const getText = () => {
-    let str = '';
-    regionQuery.data?.data.regions.forEach((region: IRegionItem) => {
-      if (region.regionId === searchThemesStore.filters.region) {
-        // 시/도만 선택된 경우
-        str += region.regionName;
-      } else {
-        region.cities.forEach((city: IRegionCommon) => {
-          if (city.regionId === searchThemesStore.filters.region) {
-            // 시/도와 시/군/구를 모두 연결
-            str += `${region.regionName} ${city.regionName}`;
-          }
-        });
-      }
-    });
-    return str || '선택안함';
-  };
+  const getText = () => { 
+    return selectedRegion && selectedCity 
+        ? `${selectedRegion} ${selectedCity}` 
+        : selectedRegion 
+        ? selectedRegion 
+        : selectedCity 
+        ? selectedCity 
+        : '선택안함'; // 기본값은 '선택안함' 
+}; 
 
   const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;

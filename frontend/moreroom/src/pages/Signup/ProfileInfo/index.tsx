@@ -261,7 +261,8 @@ return (
                       setCheck(prevCheck => ({ 
                           ...prevCheck, 
                           region: true, 
-                      })); 
+                      }));
+                       
                   }} 
               > 
                   {getText()} 

@@ -319,7 +319,7 @@ export const AccountInfo = ({ onSubmit }: UserDataFormProps) => {
         rounded={0.5}
         scale="A200"
         variant="contained"
-        // disabled={!available}
+        disabled={!available}
         handler={handleSignUp}
       >
         다음으로
