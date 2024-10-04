@@ -59,7 +59,7 @@ export const ThemeDetailFetch = () => {
 
   return (
     <div css={container}>
-      <TopBar style={{ position: imgErr ? 'static' : 'absolute' }}>
+      <TopBar style={{ position: imgErr ? 'static' : 'fixed' }}>
         <TopBar.Title
           type="default"
           title={themeQuery.data.data.theme.title}
