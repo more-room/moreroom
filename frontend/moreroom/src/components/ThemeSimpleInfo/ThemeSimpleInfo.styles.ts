@@ -9,6 +9,7 @@ export const imgCss = (imgErr: boolean) => css`
   width: 5.625rem;
   height: 7rem;
   border-radius: 0.25rem;
+
   ${imgErr &&
   css`
     display: flex;

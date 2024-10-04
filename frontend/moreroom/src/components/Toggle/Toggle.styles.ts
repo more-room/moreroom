@@ -6,10 +6,10 @@ export const toggle = (
   isOn: boolean,
   color: Palette = 'primary',
   scale?: ColorScale,
-  size: number = 2.5
+  size: number = 2.5,
 ) => css`
   position: relative;
-  width: ${size}rem;
+  width: ${size * 0.8}rem;
   height: ${size / 2.5}rem;
   border-radius: ${size / 2.5}rem;
   background-color: ${isOn
@@ -26,7 +26,6 @@ export const toggle = (
     height: ${size / 2.5}rem;
     border-radius: 50%;
     background-color: white;
-    top: 0;
     left: ${isOn ? `calc(100% - ${size / 2.5}rem)` : '0'};
     transition: left 300ms ease-in-out;
   }

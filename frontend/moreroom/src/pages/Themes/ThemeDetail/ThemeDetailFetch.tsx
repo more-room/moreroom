@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import React from 'react';
+import React, { useState } from 'react';
 import { useSuspenseQueries } from '@tanstack/react-query';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { getThemeDetail } from '../../../apis/themeApi';
 import { getCafeForTheme } from '../../../apis/cafeApi';
 import { getReviewForTheme } from '../../../apis/reviewApi';
@@ -14,31 +14,24 @@ import { ThemeReview } from './ThemeReview';
 import { ThemeCafe } from './ThemeCafe';
 
 export const ThemeDetailFetch = () => {
-  const loc = useLocation();
+  const themeIdDetail = Number(useParams().themeId);
   const navigate = useNavigate();
 
   const [themeQuery, cafeQuery, reviewQuery] = useSuspenseQueries({
     queries: [
       {
         queryKey: ['theme-detail'],
-        queryFn: async () =>
-          await getThemeDetail(
-            process.env.NODE_ENV === 'development' ? loc.state.themeId : loc.state.themeId,
-          ),
+        queryFn: async () => await getThemeDetail(themeIdDetail),
       },
       {
         queryKey: ['theme-cafe'],
-        queryFn: async () =>
-          await getCafeForTheme(
-            process.env.NODE_ENV === 'development' ? loc.state.themeId : loc.state.themeId,
-          ),
+        queryFn: async () => await getCafeForTheme(themeIdDetail),
       },
       {
         queryKey: ['theme-review'],
         queryFn: async () =>
           await getReviewForTheme({
-            themeId:
-              process.env.NODE_ENV === 'development' ? loc.state.themeId : loc.state.themeId,
+            themeId: themeIdDetail,
             pageNumber: 0,
           }),
       },
@@ -51,27 +44,45 @@ export const ThemeDetailFetch = () => {
     }
   });
 
-  
+  const [imgErr, setImgErr] = useState<boolean>(false);
   const themeId = themeQuery.data.data.theme.themeId;
   const title = themeQuery.data.data.theme.title;
   const playtime = themeQuery.data.data.theme.playtime;
   const genreList = themeQuery.data.data.theme.genreList;
   const review = themeQuery.data.data.theme.review;
-  const poster = themeQuery.data.data.theme.poster
-  const regionId = cafeQuery.data.data.regionId
-  const cafeId = cafeQuery.data.data.cafeId
-  const brandName = cafeQuery.data.data.brandName
-  const branchName = cafeQuery.data.data.branchName
-  const address = cafeQuery.data.data.address
-  
+  const poster = themeQuery.data.data.theme.poster;
+  const regionId = cafeQuery.data.data.regionId;
+  const cafeId = cafeQuery.data.data.cafeId;
+  const brandName = cafeQuery.data.data.brandName;
+  const branchName = cafeQuery.data.data.branchName;
+  const address = cafeQuery.data.data.address;
 
   return (
     <div css={container}>
-      <TopBar style={{ position: 'absolute' }}>
-        <TopBar.Title type="default" title={themeQuery.data.data.theme.title} />
+      <TopBar style={{ position: imgErr ? 'static' : 'fixed' }}>
+        <TopBar.Title
+          type="default"
+          title={themeQuery.data.data.theme.title}
+          backHandler={() => navigate('/themes')}
+        />
         <TopBar.Right handler={() => console.log('it"s notification')} />
       </TopBar>
-      <img src={themeQuery.data.data.theme.poster} css={posters} />
+      {!imgErr ? (
+        <img
+          src={themeQuery.data.data.theme.poster}
+          css={posters(imgErr)}
+          onError={() => setImgErr(true)}
+        />
+      ) : (
+        <div css={posters(imgErr)}>
+          <Typography color="light" weight={600} size={1.5}>
+            포스터를
+          </Typography>
+          <Typography color="light" weight={600} size={1.5}>
+            준비중입니다
+          </Typography>
+        </div>
+      )}
       <ThemeInfo
         theme={themeQuery.data.data.theme}
         cafe={cafeQuery.data.data}
@@ -86,13 +97,31 @@ export const ThemeDetailFetch = () => {
       </Typography>
       <div css={description}>
         <Typography color="light" size={0.875} weight={400}>
-          {themeQuery.data.data.theme.description}
+          {themeQuery.data.data.theme.description
+            ? themeQuery.data.data.theme.description
+            : '테마 스토리를 준비중입니다'}
         </Typography>
       </div>
       <ThemeReview
         review={reviewQuery.data.data.content[0]}
         cafe={cafeQuery.data.data}
-        onClickReview={() => navigate('/review', { state: { themeId, title, playtime, genreList, review, poster, regionId, cafeId, brandName, branchName, address } })}
+        onClickReview={() =>
+          navigate('/review', {
+            state: {
+              themeId,
+              title,
+              playtime,
+              genreList,
+              review,
+              poster,
+              regionId,
+              cafeId,
+              brandName,
+              branchName,
+              address,
+            },
+          })
+        }
       />
       <ThemeCafe cafe={cafeQuery.data.data} />
     </div>

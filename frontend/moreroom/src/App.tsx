@@ -42,7 +42,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Main />} />
         <Route path="/themes" element={<ThemeList />} />
-        <Route path="/theme/detail" element={<ThemeDetail />} />
+        <Route path="/themes/:themeId" element={<ThemeDetail />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/cafes" element={<CafeList />} />
         <Route path="/cafe/detail" element={<CafeDetail />} />
@@ -71,11 +71,8 @@ function App() {
         <Route path="/history/edit/:historyId" element={<HistoryWrite />} />
         <Route path="/themes/history" element={<ThemeList />} />
 
-        <Route path="/review" element={<Review/>} />
-        <Route path="/review/write" element={<ReviewWrite/>} />
-
-
-        
+        <Route path="/review" element={<Review />} />
+        <Route path="/review/write" element={<ReviewWrite />} />
       </Routes>
       {modalStore.isOpen && (
         <Modal height={modalStore.height}>{modalStore.contents}</Modal>
