@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React from 'react';
+import React, { useState } from 'react';
 import { useSuspenseQueries } from '@tanstack/react-query';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getThemeDetail } from '../../../apis/themeApi';
@@ -44,6 +44,7 @@ export const ThemeDetailFetch = () => {
     }
   });
 
+  const [imgErr, setImgErr] = useState<boolean>(false);
   const themeId = themeQuery.data.data.theme.themeId;
   const title = themeQuery.data.data.theme.title;
   const playtime = themeQuery.data.data.theme.playtime;
@@ -58,7 +59,7 @@ export const ThemeDetailFetch = () => {
 
   return (
     <div css={container}>
-      <TopBar style={{ position: 'absolute' }}>
+      <TopBar style={{ position: imgErr ? 'static' : 'absolute' }}>
         <TopBar.Title
           type="default"
           title={themeQuery.data.data.theme.title}
@@ -66,7 +67,22 @@ export const ThemeDetailFetch = () => {
         />
         <TopBar.Right handler={() => console.log('it"s notification')} />
       </TopBar>
-      <img src={themeQuery.data.data.theme.poster} css={posters} />
+      {!imgErr ? (
+        <img
+          src={themeQuery.data.data.theme.poster}
+          css={posters(imgErr)}
+          onError={() => setImgErr(true)}
+        />
+      ) : (
+        <div css={posters(imgErr)}>
+          <Typography color="light" weight={600} size={1.5}>
+            포스터를
+          </Typography>
+          <Typography color="light" weight={600} size={1.5}>
+            준비중입니다
+          </Typography>
+        </div>
+      )}
       <ThemeInfo
         theme={themeQuery.data.data.theme}
         cafe={cafeQuery.data.data}
