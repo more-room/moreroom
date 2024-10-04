@@ -6,6 +6,7 @@ import { Typography } from '../Typography';
 import { Icon } from '../Icon';
 import { StarIcon } from '@heroicons/react/24/solid';
 import { Button } from '../Button';
+import { useNavigate } from 'react-router-dom';
 
 export const CafeItem = ({
   cafe,
@@ -14,6 +15,7 @@ export const CafeItem = ({
   children,
   ...props
 }: CafeItemProps) => {
+  const nav = useNavigate();
   const [imgErr, setImgErr] = useState<boolean>(false);
 
   return (
@@ -56,7 +58,7 @@ export const CafeItem = ({
           <Button
             fullwidth={true}
             rounded={0.5}
-            handler={() => console.log('going to detail')}
+            handler={() => nav(`/cafes/${cafe.cafeId}`)}
           >
             상세보기
           </Button>

@@ -1,11 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import React, { useState } from 'react';
-import { ICafeList, ICafeListItem } from '../../../../../../types/cafeTypes';
+import { ICafeListItem } from '../../../../../../types/cafeTypes';
 import { CafeItem } from '../../../../../../components/CafeItem';
-import {
-  useSearchCafesStore,
-  useSearchNameStore,
-} from '../../../../../../stores/cafeStore';
+import { useSearchNameStore } from '../../../../../../stores/cafeStore';
 import { Typography } from '../../../../../../components/Typography';
 import { box, btn, container } from './styles';
 import { useMap } from 'react-kakao-maps-sdk';
