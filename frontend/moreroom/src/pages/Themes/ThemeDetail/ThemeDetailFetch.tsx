@@ -97,7 +97,9 @@ export const ThemeDetailFetch = () => {
       </Typography>
       <div css={description}>
         <Typography color="light" size={0.875} weight={400}>
-          {themeQuery.data.data.theme.description}
+          {themeQuery.data.data.theme.description
+            ? themeQuery.data.data.theme.description
+            : '테마 스토리를 준비중입니다'}
         </Typography>
       </div>
       <ThemeReview
