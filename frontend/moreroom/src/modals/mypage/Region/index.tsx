@@ -1,4 +1,5 @@
-/** @jsxImportSource @emotion/react */import React, { useEffect } from 'react';
+/** @jsxImportSource @emotion/react */
+import React, { useEffect } from 'react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { container, item, items, regionContainer, cityListContainer } from './styles';
 import { getRegions } from '../../../apis/infoApi';
@@ -21,6 +22,19 @@ export const Region = () => {
     setSelectedCity,
     setSelectedRegionId, 
   } = useRegionSelectionStore();
+
+  // 컴포넌트가 마운트될 때 '서울'이 미리 선택되도록 설정
+  useEffect(() => {
+    if (!selectedRegion) {
+      const seoulRegion = regionQuery.data.data.regions.find(
+        (region: IRegionItem) => region.regionName === '서울'
+      );
+      if (seoulRegion) {
+        setSelectedRegion(seoulRegion.regionName);
+        setSelectedRegionId(seoulRegion.regionId);
+      }
+    }
+  }, [regionQuery.data.data.regions, setSelectedRegion, setSelectedRegionId]);
 
   useEffect(() => {
     if (selectedRegion) {
