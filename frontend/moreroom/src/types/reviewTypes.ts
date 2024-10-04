@@ -25,6 +25,7 @@ export interface IReviewListItem {
   score: number;
   thumbsUp: number;
   createdAt: string;
+  upFlag: boolean;
 }
 
 /* 내부 리뷰 조회 */
