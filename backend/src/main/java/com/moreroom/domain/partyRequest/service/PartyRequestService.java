@@ -10,14 +10,19 @@ import com.moreroom.domain.partyRequest.dto.PartyRequestDto;
 import com.moreroom.domain.partyRequest.dto.SettingPartyRequestDto;
 import com.moreroom.domain.partyRequest.entity.MatchingStatus;
 import com.moreroom.domain.partyRequest.entity.PartyRequest;
+import com.moreroom.domain.partyRequest.exception.PartyRequestNotFoundException;
 import com.moreroom.domain.partyRequest.repository.PartyRequestQueryRepository;
 import com.moreroom.domain.partyRequest.repository.PartyRequestRepository;
 import com.moreroom.domain.theme.entity.Theme;
+import com.moreroom.domain.theme.exception.ThemeNotFoundException;
 import com.moreroom.domain.theme.repository.ThemeRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -47,20 +52,7 @@ public class PartyRequestService {
     partyRequestRepository.save(partyRequest); //파티요청 save
 
     //파티요청-해시태그 저장
-    List<PartyRequestHashtagMapping> list = new ArrayList<>();
-    Stream.of(
-        partyRequestDto.getPartyHashtagIdList(),
-        partyRequestDto.getMyHashtagIdList(),
-        partyRequestDto.getYourHashtagIdList()
-    )
-        .flatMapToInt(Arrays::stream)
-        .distinct()
-        .forEach(hashtagId -> {
-          Hashtag hashtag = hashtagRepository.getReferenceById(hashtagId);
-          list.add(new PartyRequestHashtagMapping(partyRequest, hashtag));
-        });
-
-    partyRequestHashtagRepository.saveAll(list); //파티요청-해시태그 save
+    updatePartyRequestHashtags(partyRequest, partyRequestDto);
   }
 
   //파티요청 삭제
@@ -94,6 +86,53 @@ public class PartyRequestService {
       }
     }
     return partyRequestDtoList;
+  }
+
+  //파티요청 세팅 수정
+  @Transactional
+  public void updatePartyRequestSettings(Long partyRequestId, SettingPartyRequestDto partyRequestDto) {
+    PartyRequest partyRequest = partyRequestRepository.findById(partyRequestId).orElseThrow(PartyRequestNotFoundException::new);
+
+    //테마가 바뀐 경우 테마 업데이트
+    if (!partyRequest.getTheme().getThemeId().equals(partyRequestDto.getThemeId())) {
+      Theme theme = themeRepository.findById(partyRequestDto.getThemeId()).orElseThrow(ThemeNotFoundException::new);
+      partyRequest.updateTheme(theme);
+    }
+
+    //해시태그 업데이트
+    partyRequestHashtagRepository.deleteAllByPartyRequestId(partyRequestId);
+    updatePartyRequestHashtags(partyRequest, partyRequestDto);
+  }
+
+  private void updatePartyRequestHashtags(PartyRequest partyRequest, SettingPartyRequestDto partyRequestDto) {
+
+    String yourHashtagList = makeHashtagType(partyRequestDto.getYourHashtagIdList());
+
+    List<Integer> hashtagIds = Arrays.stream(partyRequestDto.getPartyHashtagIdList()).boxed().toList(); //파티해시태그만
+    List<Hashtag> hashtags = hashtagRepository.findAllById(hashtagIds);
+
+    List<PartyRequestHashtagMapping> mappings = hashtags.stream()
+            .map(hashtag -> new PartyRequestHashtagMapping(partyRequest, hashtag, yourHashtagList))
+            .toList();
+
+    partyRequestHashtagRepository.saveAll(mappings); //파티요청-해시태그 save
+  }
+
+  private String makeHashtagType(int[] yourHashtagIdList) {
+    if (yourHashtagIdList.length == 0) {
+      return "[]";
+    }
+
+    StringBuilder sb = new StringBuilder();
+    sb.append("[");
+    for (int i = 0; i < yourHashtagIdList.length; i++) {
+      sb.append(yourHashtagIdList[i]);
+      if (i < yourHashtagIdList.length - 1) {
+        sb.append(", ");
+      }
+    }
+    sb.append("]");
+    return sb.toString();
   }
 
 
