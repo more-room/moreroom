@@ -24,7 +24,7 @@ export interface IReviewListItem {
   content: string;
   score: number;
   thumbsUp: number;
-  updatedAt: string;
+  createdAt: string;
 }
 
 /* 내부 리뷰 조회 */

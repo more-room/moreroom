@@ -17,13 +17,16 @@ interface ThemeReviewProps {
   onClickReview: () => void;
 }
 
-export const ThemeReview = ({ review, cafe, onClickReview}: ThemeReviewProps) => {
+export const ThemeReview = ({
+  review,
+  cafe,
+  onClickReview,
+}: ThemeReviewProps) => {
   const [reviewType, setReviewType] = useState<number>(0);
 
   const reviewHandler = (menu: number) => setReviewType(menu);
 
   const navigate = useNavigate();
-
 
   useEffect(() => {
     console.log(reviewType);
@@ -83,7 +86,7 @@ export const ThemeReview = ({ review, cafe, onClickReview}: ThemeReviewProps) =>
           {review.content}
         </Typography>
         <Typography color="grey" size={0.875} weight={400}>
-          {getDateDiff(review.updatedAt)}
+          {getDateDiff(review.createdAt)}
         </Typography>
       </div>
     </div>
