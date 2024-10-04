@@ -4,6 +4,8 @@ import com.moreroom.domain.mapping.member.entity.MemberPartyId;
 import com.moreroom.domain.mapping.member.entity.MemberPartyMapping;
 import com.moreroom.domain.member.entity.Member;
 import com.moreroom.domain.party.entity.Party;
+
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,4 +18,7 @@ public interface MemberPartyMappingRepository extends JpaRepository<MemberPartyM
   int getNumberOfMemberByPartyId(Long partyId);
 
   Optional<MemberPartyMapping> findByMemberAndParty(Member member, Party party);
+
+  @Query("select m.party.partyId from MemberPartyMapping m where m.member.memberId = :memberId")
+  List<Long> getPartyIdListByMemberId(Long memberId);
 }
