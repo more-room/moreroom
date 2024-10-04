@@ -64,3 +64,31 @@ export const wait = css`
   padding: 5rem;
   margin: 1rem;
 `
+export const memberContainer = css`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  margin: 1rem 0;
+`;
+
+export const memberItem = css`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 80px;
+`;
+
+export const memberImage = css`
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 0.5rem;
+`;
+
+export const memberName = css`
+  font-size: 0.9rem;
+  color: ${Colors["light"]["100"]};
+  text-align: center;
+`;

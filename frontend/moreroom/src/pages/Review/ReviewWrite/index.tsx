@@ -51,7 +51,8 @@ export const ReviewWrite = () => {
       score: ratingValue, // 사용자가 선택한 별점 값
     };
 
-    console.log('리뷰 제출 데이터:', reviewData);
+    
+    // console.log
     // 여기에 API 호출 (예: createReview(reviewData))을 추가하여 데이터 전송
     createReview(reviewData)
     .then((response) => {
@@ -64,7 +65,8 @@ export const ReviewWrite = () => {
       setErrorMessage("리뷰 작성에 실패했습니다. 다시 시도해주세요.");
     });
   };
-
+    console.log('리뷰 제출 데이터:', themeItem);
+    console.log('테마 아이디', themeItem.themeId)
   return (
     <div>
       

@@ -73,10 +73,10 @@ export const updatedAtCss = css`
 `;
 
 export const fixReview = css`
-  width: 30%;
-  z-index: 10;
-  margin-bottom: 0.5rem ;
-  margin-left: 70%;
+  width: 25%;
+  /* z-index: 10; */
+  margin-bottom: 0.3rem ;
+  margin-left: 75%;
   font-family: 'paperlogy';
   display: flex; 
   justify-content: center; 

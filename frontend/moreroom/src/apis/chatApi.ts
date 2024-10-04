@@ -4,6 +4,8 @@ import {
   INotice,
   IParty,
   IPartyResponse,
+  IMemberListResponse,
+  
 } from '../types/chatingTypes';
 import { api } from './interceptors';
 
@@ -46,4 +48,9 @@ export const getChatList = (partyId: number, lastMessageId?: string) => {
 // 채팅방 공지사항 조회
 export const getNotice = (partyId: number) => {
   return api.get<INotice>(`/api/party/${partyId}/notice`);
+};
+
+// 채팅의 파티원 조회
+export const getPartyMembers = (partyId: number) => {
+  return api.get<IMemberListResponse>(`/api/party/${partyId}/memberList`);
 };

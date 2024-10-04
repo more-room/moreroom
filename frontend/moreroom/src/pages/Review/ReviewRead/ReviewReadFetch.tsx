@@ -70,6 +70,7 @@ export const ReviewReadFetch = () => {
   };
 
   const reviews = reviewQuery.data.data.content;
+  console.log(reviews)
   const averageRating = reviews.length > 0
     ? (reviews.reduce((sum, review) => sum + review.score, 0) / reviews.length).toFixed(1)
     : "0.0";
