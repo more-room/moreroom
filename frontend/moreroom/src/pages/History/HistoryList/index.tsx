@@ -5,8 +5,11 @@ import { TopBar } from '../../../components/TopBar';
 import { ErrorBoundary } from 'react-error-boundary';
 import { HistoryListFetch } from './HistoryListFetch';
 import { useHistoryWriteStore } from '../../../stores/historyStore';
+import { useNavigate } from 'react-router-dom';
 
 export const HistoryList = () => {
+  const nav = useNavigate();
+
   useEffect(() => {
     useHistoryWriteStore.persist.clearStorage();
   }, []);
@@ -17,7 +20,7 @@ export const HistoryList = () => {
         <TopBar.Title
           type="withoutRight"
           title="테마 기록"
-          backHandler={() => console.log('history list')}
+          backHandler={() => nav('/')}
         />
       </TopBar>
       <ErrorBoundary fallback={<>에러</>}>

@@ -1,33 +1,24 @@
 /** @jsxImportSource @emotion/react */
-import React from 'react';
+import React, { useState } from 'react';
 import { info, poster, row, themebox } from './styles';
 import { useHistoryWriteStore } from '../../../../stores/historyStore';
-import { useSuspenseQueries, useSuspenseQuery } from '@tanstack/react-query';
+import { useSuspenseQueries } from '@tanstack/react-query';
 import { getThemeDetail } from '../../../../apis/themeApi';
 import { getCafeForTheme } from '../../../../apis/cafeApi';
 import { Typography } from '../../../../components/Typography';
 
 export const HistoryThemeFetch = () => {
   const historyWriteStore = useHistoryWriteStore();
+  const [imgErr, setImgErr] = useState<boolean>(false);
   const [themeQuery, cafeQuery] = useSuspenseQueries({
     queries: [
       {
         queryKey: ['theme-detail'],
-        queryFn: async () =>
-          await getThemeDetail(
-            process.env.NODE_ENV === 'development'
-              ? 1
-              : historyWriteStore.themeId!,
-          ),
+        queryFn: async () => await getThemeDetail(historyWriteStore.themeId!),
       },
       {
         queryKey: ['cafe-detail'],
-        queryFn: async () =>
-          await getCafeForTheme(
-            process.env.NODE_ENV === 'development'
-              ? 1
-              : historyWriteStore.themeId!,
-          ),
+        queryFn: async () => await getCafeForTheme(historyWriteStore.themeId!),
       },
     ],
   });
@@ -40,7 +31,22 @@ export const HistoryThemeFetch = () => {
 
   return (
     <div css={themebox}>
-      <img src={themeQuery.data.data.theme.poster} css={poster} />
+      {!imgErr ? (
+        <img
+          src={themeQuery.data.data.theme.poster}
+          css={poster(imgErr)}
+          onError={() => setImgErr(true)}
+        />
+      ) : (
+        <div css={poster(imgErr)}>
+          <Typography color="light" weight={500} size={0.875}>
+            포스터를
+          </Typography>
+          <Typography color="light" weight={500} size={0.875}>
+            준비중입니다
+          </Typography>
+        </div>
+      )}
       <div css={info}>
         <div css={row}>
           <Typography color="light" weight={600}>
@@ -56,7 +62,9 @@ export const HistoryThemeFetch = () => {
           size={0.75}
           style={{ marginTop: '1rem' }}
         >
-          {themeQuery.data.data.theme.description}
+          {themeQuery.data.data.theme.description
+            ? themeQuery.data.data.theme.description
+            : '테마 스토리를 준비중입니다'}
         </Typography>
       </div>
     </div>
