@@ -242,7 +242,7 @@ export const RoomdetailFetch = () => {
       <div css={memberContainer}>
         {members?.memberList.map((member, index) => (
           <div key={index} css={memberItem}>
-            <img src={member.photo} alt={`${member.nickname}의 프로필`} css={memberImage} />
+            <img src={`/profiles/profile${member.photo}.png`} alt={`profiles/profile${member.photo}.png`} css={memberImage} />
             <div css={memberName}>{member.nickname}</div>
           </div>
         ))}

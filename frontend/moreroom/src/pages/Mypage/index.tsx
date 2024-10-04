@@ -92,7 +92,7 @@ export const MyPage = () => {
         {/* <UserCircleIcon css={profile} /> */}
         <img
           css={profile}
-          src={ProfileQuery.data?.data.photo}
+          src={`/profiles/profile${ProfileQuery.data?.data.photo}.png`}
           alt="프로필 사진"
         />
         <div>
