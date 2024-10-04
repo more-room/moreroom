@@ -18,7 +18,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
         "MAX(CASE WHEN mr.member.memberId = :memberId THEN 1 ELSE 0 END) AS upFlag " +
         "FROM Review r " +
         "LEFT JOIN MemberReviewMapping mr ON r.reviewId = mr.review.reviewId " +
-        "WHERE r.theme.themeId = :themeId " +
+        "WHERE r.theme.themeId = :themeId AND r.delFlag = false " +
         "GROUP BY r.reviewId")
     Page<Object[]> findAllByThemeThemeIdAndMemberMemberIdAndDelFlagFalse(
         @Param("themeId") Integer themeId, @Param("memberId") Long memberId, Pageable pageable);
