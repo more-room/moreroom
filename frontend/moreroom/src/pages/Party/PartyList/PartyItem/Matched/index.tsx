@@ -15,9 +15,7 @@ import { Typography } from '../../../../../components/Typography';
 import { Button } from '../../../../../components/Button';
 import { Icon } from '../../../../../components/Icon';
 import { ClockIcon } from '@heroicons/react/24/outline';
-import { Toggle } from '../../../../../components/Toggle';
-import { fontSize } from '../../../../../components/MenuTab/MenuTab.stories';
-import { UserGroupIcon } from '@heroicons/react/24/solid';
+
 
 interface PartyItemProps {
   party: IParty;
@@ -69,7 +67,7 @@ export const Matched = ({ party, handler }: PartyItemProps) => {
           variant="contained"
           handler={handler}
         >
-          매칭 완료!
+          매칭 수락하기
         </Button>
       </div>
     </div>

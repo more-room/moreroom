@@ -91,20 +91,6 @@ export const PartyListFetch = () => {
           );
         },
       )}
-      <div
-        css={containerCss}
-        onClick={() => {
-          nav('/party/register');
-        }}
-      >
-        <Icon color="grey" scale="500" size={1.875}>
-          <PlusIcon />
-        </Icon>
-        <Typography color="light" size={1} weight={500}>
-          파티를 등록해주세요
-        </Typography>
-      </div>
-
       {showDelNotification && (
         <Notification
           handler={handleConfirmDelete}

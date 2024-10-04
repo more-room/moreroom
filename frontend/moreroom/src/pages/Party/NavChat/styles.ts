@@ -1,11 +1,29 @@
-import { css } from "@emotion/react";
+import { css } from '@emotion/react';
 
 export const containerCss = css`
+  display: flex;
   background-color: #424242;
+  margin: 1rem;
+  justify-content: center;
+`;
+
+export const navCss = css`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 1rem;
+  margin: 0.5rem;
+  padding: 0.5rem;
+  gap: 0.5rem;
+  /* background-color: red; */
+`;
+
+export const addCss = css`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0.5rem;
   padding: 1rem;
   gap: 0.5rem;
+  /* background-color: blue; */
 `;

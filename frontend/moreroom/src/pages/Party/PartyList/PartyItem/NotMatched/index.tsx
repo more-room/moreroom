@@ -16,14 +16,10 @@ import { Button } from '../../../../../components/Button';
 import { Icon } from '../../../../../components/Icon';
 import { ClockIcon } from '@heroicons/react/24/outline';
 import { Toggle } from '../../../../../components/Toggle';
-import {
-  useMutation,
-  useQueryClient,
-} from '@tanstack/react-query';
-import {  disabledParty } from '../../../../../apis/partyApi';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { disabledParty } from '../../../../../apis/partyApi';
 import { useNavigate } from 'react-router-dom';
 import { Spinner } from '../../../../../components/Spinner';
-
 
 interface PartyItemProps {
   party: IParty;
@@ -185,8 +181,8 @@ export const NotMatched = ({ party, onDeleteClick }: PartyItemProps) => {
               top: '35%',
               left: '40%',
               display: 'flex',
-              flexDirection: 'column', 
-              alignItems: 'center', 
+              flexDirection: 'column',
+              alignItems: 'center',
               justifyContent: 'center',
             }}
           >
