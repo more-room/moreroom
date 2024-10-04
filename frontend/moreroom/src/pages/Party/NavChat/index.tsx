@@ -13,22 +13,37 @@ export const NavChat = () => {
     <div css={containerCss}>
       <div css={navCss}>
         <Typography color="light" size={0.9} weight={500}>
-          매칭이 완료된 파티는
-          <br />
-          채팅방에서 확인가능해요
+          매칭이 완료된 파티
         </Typography>
         <Button
           color="primary"
           rounded={0.5}
           variant="contained"
           handler={() => nav('/chating')}
+          style={{ padding: '0.5rem' }}
         >
-          <Typography color="light" size={0.8} weight={500}>
+          <Typography color="light" size={0.75} weight={500}>
             채팅방으로 가기
           </Typography>
         </Button>
       </div>
-      <div
+      <div css={navCss}>
+        <Typography color="light" size={0.9} weight={500}>
+          새로운 파티 등록
+        </Typography>
+        <Button
+          color="secondary"
+          rounded={0.5}
+          variant="contained"
+          handler={() => nav('/party/register')}
+          style={{ padding: '0.5rem' }}
+        >
+          <Typography color="light" size={0.75} weight={500}>
+            등록하러 가기
+          </Typography>
+        </Button>
+      </div>
+      {/* <div
         css={addCss}
         onClick={() => {
           nav('/party/register');
@@ -40,7 +55,7 @@ export const NavChat = () => {
         <Typography color="light" size={0.8} weight={500}>
           파티를 등록해주세요
         </Typography>
-      </div>
+      </div> */}
     </div>
   );
 };

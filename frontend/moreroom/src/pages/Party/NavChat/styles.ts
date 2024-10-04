@@ -5,6 +5,7 @@ export const containerCss = css`
   background-color: #424242;
   margin: 1rem;
   justify-content: center;
+  align-items: center;
 `;
 
 export const navCss = css`

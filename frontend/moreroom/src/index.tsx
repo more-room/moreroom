@@ -8,10 +8,10 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter } from 'react-router-dom';
 import ScrollToTop from './components/common/ScrollToTop';
 
-if (process.env.NODE_ENV === 'development') {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  require('./mocks/mocks');
-}
+// if (process.env.NODE_ENV === 'development') {
+//   // eslint-disable-next-line @typescript-eslint/no-require-imports
+//   require('./mocks/mocks');
+// }
 
 const queryClient = new QueryClient();
 
