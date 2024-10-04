@@ -1,18 +1,24 @@
 package com.moreroom.domain.partyRequest.repository;
 
+import static com.moreroom.domain.member.entity.QMember.*;
 import static com.moreroom.domain.partyRequest.entity.QPartyRequest.partyRequest;
 import static com.moreroom.domain.mapping.partyRequest.entity.QPartyRequestHashtagMapping.partyRequestHashtagMapping;
 import static com.moreroom.domain.theme.entity.QTheme.theme;
 import static com.moreroom.domain.hashtag.entity.QHashtag.hashtag;
 import static com.moreroom.domain.member.entity.QMember.member;
 import static com.moreroom.domain.mapping.member.entity.QMemberHashtagMapping.memberHashtagMapping;
+import static com.moreroom.domain.cafe.entity.QCafe.cafe;
 
+import com.moreroom.domain.hashtag.entity.Hashtag;
+import com.moreroom.domain.member.entity.Member;
+import com.moreroom.domain.member.entity.QMember;
 import com.moreroom.domain.partyRequest.dto.HashTagsDto;
 import com.moreroom.domain.partyRequest.dto.MemberDto;
 import com.moreroom.domain.partyRequest.dto.PartyRequestDto;
 import com.moreroom.domain.partyRequest.dto.StatusDto;
 import com.moreroom.domain.partyRequest.dto.ThemeDto;
 import com.moreroom.domain.partyRequest.exception.PartyRequestNotFoundException;
+import com.moreroom.domain.theme.entity.QTheme;
 import com.moreroom.global.repository.QuerydslRepositoryCustom;
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.JPAExpressions;
@@ -47,12 +53,15 @@ public class PartyRequestQueryRepository extends QuerydslRepositoryCustom {
             theme.themeId,
             theme.poster,
             theme.title,
+            cafe.cafeName,
+            cafe.branchName,
             partyRequest.createdAt,
             hashtag.hashtagId,
             hashtag.hashtagName)
         .from(partyRequest)
         .leftJoin(partyRequestHashtagMapping).on(partyRequest.partyRequestId.eq(partyRequestHashtagMapping.partyRequest.partyRequestId))
         .leftJoin(theme).on(theme.themeId.eq(partyRequest.theme.themeId))
+        .leftJoin(cafe).on(theme.cafe.cafeId.eq(cafe.cafeId))
         .leftJoin(hashtag).on(hashtag.hashtagId.eq(partyRequestHashtagMapping.hashtag.hashtagId))
         .where(partyRequest.member.memberId.eq(memberId))
         .fetch();
@@ -81,6 +90,8 @@ public class PartyRequestQueryRepository extends QuerydslRepositoryCustom {
               .themeId(tuple.get(theme.themeId))
               .poster(tuple.get(theme.poster))
               .title(tuple.get(theme.title))
+              .brandName(tuple.get(cafe.cafeName))
+              .branchName(tuple.get(cafe.branchName))
               .build();
           String createdAt = tuple.get(partyRequest.createdAt).format(formatter);
 
@@ -99,7 +110,7 @@ public class PartyRequestQueryRepository extends QuerydslRepositoryCustom {
               .status(status)
               .theme(themeDto)
               .createdAt(createdAt)
-              .hashtagList(hashtagList)
+              .partyHashtagList(hashtagList)
               .build();
         })
         .toList();
@@ -163,6 +174,88 @@ public class PartyRequestQueryRepository extends QuerydslRepositoryCustom {
               .build();
         })
         .toList();
+  }
+
+  public PartyRequestDto findHashtagsByPartyRequestId(Long partyRequestId, Long memberId) {
+      //쿼리 1 : 전반적인 정보 (theme, hashtags)
+      List<Tuple> results = jpaQueryFactory
+              .select(theme, cafe, hashtag, partyRequestHashtagMapping)
+              .from(partyRequest)
+              .leftJoin(theme).on(partyRequest.theme.eq(theme))
+              .leftJoin(cafe).on(theme.cafe.eq(cafe))
+              .leftJoin(partyRequestHashtagMapping).on(partyRequestHashtagMapping.partyRequest.eq(partyRequest))
+              .leftJoin(hashtag).on(partyRequestHashtagMapping.hashtag.eq(hashtag))
+              .where(partyRequest.partyRequestId.eq(partyRequestId))
+              .fetch();
+
+      if (results.isEmpty()) {
+          throw new PartyRequestNotFoundException();
+      }
+
+      Tuple tuple = results.get(0);
+      ThemeDto themeDto = ThemeDto.builder()
+              .themeId(tuple.get(theme).getThemeId())
+              .poster(tuple.get(theme).getPoster())
+              .title(tuple.get(theme).getTitle())
+              .brandName(tuple.get(cafe).getCafeName())
+              .branchName(tuple.get(cafe).getBranchName())
+              .build();
+
+      String yours = tuple.get(partyRequestHashtagMapping).getHashtagType();
+      List<Integer> yourHashtagIdList = convertToIntegerList(yours);
+
+      //partyHashtagList 가공
+      List<HashTagsDto> partyHashtagList = results.stream()
+              .map(t -> new HashTagsDto(t.get(hashtag).getHashtagId(), t.get(hashtag).getHashtagName()))
+              .toList();
+
+      //쿼리 2 : myHashtagList
+      List<Hashtag> myHashtagList = jpaQueryFactory
+              .select(hashtag)
+              .from(member)
+              .leftJoin(memberHashtagMapping).on(memberHashtagMapping.member.eq(member))
+              .leftJoin(hashtag).on(hashtag.eq(memberHashtagMapping.hashtag))
+              .where(member.memberId.eq(memberId))
+              .fetch();
+
+      List<HashTagsDto> myHashtagDtoList = myHashtagList.stream()
+              .map(h -> new HashTagsDto(h.getHashtagId(), h.getHashtagName()))
+              .toList();
+
+      //쿼리 3 : yourHashtagList
+      List<Hashtag> yourHashtagList = jpaQueryFactory
+              .select(hashtag)
+              .from(hashtag)
+              .where(hashtag.hashtagId.in(yourHashtagIdList))
+              .fetch();
+
+      List<HashTagsDto> yourHashtagDtoList = yourHashtagList.stream()
+              .map(h -> new HashTagsDto(h.getHashtagId(), h.getHashtagName()))
+              .toList();
+
+      return PartyRequestDto.builder()
+              .partyRequestId(partyRequestId)
+              .theme(themeDto)
+              .partyHashtagList(partyHashtagList)
+              .myHashtagList(myHashtagDtoList)
+              .yourHashtagList(yourHashtagDtoList)
+              .build();
+  }
+
+  private List<Integer> convertToIntegerList(String hashtagList) {
+      List<Integer> result = new ArrayList<>();
+
+      if (hashtagList.equals("[]")) return result;
+
+      String[] numbers = hashtagList.substring(1, hashtagList.length() - 1).split(",");
+      for (String number : numbers) {
+          try {
+              result.add(Integer.parseInt(number.trim()));
+          } catch (NumberFormatException e) {
+              log.error("숫자로 변환할 수 없는 값 발견: {}", number);
+          }
+      }
+      return result;
   }
 
 }

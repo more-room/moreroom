@@ -53,7 +53,7 @@ export const ReviewList = ({
   const nav = useNavigate();
 
   const handleClick = () => {
-    nav('/theme/detail', { state: { themeId: themeId } });
+    nav(`/themes/${themeId}`);
   };
   const reviewFix = () => {
     // 리뷰 수정 페이지로 이동하면서 해당 리뷰의 데이터 전달
@@ -108,7 +108,7 @@ export const ReviewList = ({
             </div>
           </div>
           <div css={themeCss} onClick={handleClick}>
-            <Typography color="grey" scale="600" size={0.8} weight={600}>
+            <Typography color="grey" scale="100" size={1} weight={600}>
               {themeTitle}
             </Typography>
             <div css={brandCss}>

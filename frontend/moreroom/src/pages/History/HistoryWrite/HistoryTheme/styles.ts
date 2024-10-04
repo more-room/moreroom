@@ -9,10 +9,20 @@ export const container = (themeSelected: boolean) => css`
   background-color: #212121;
 `;
 
-export const poster = css`
+export const poster = (imgErr: boolean) => css`
   width: 100%;
   height: 15rem;
   object-fit: cover;
+
+  ${imgErr &&
+  css`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    row-gap: 0.25rem;
+    background-color: #212121;
+  `}
 `;
 
 export const btn = css`

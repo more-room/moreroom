@@ -38,11 +38,17 @@ export const getDateDiff = (date: string) => {
   const today = dayjs();
   const inputDate = dayjs(date);
 
+  const secondDiff = today.diff(inputDate, 'second');
+  const minuteDiff = today.diff(inputDate, 'minute');
+  const hourDiff = today.diff(inputDate, 'hour');
   const dayDiff = today.diff(inputDate, 'day');
   const monthDiff = today.diff(inputDate, 'month');
   const yearDiff = today.diff(inputDate, 'year');
 
-  if (dayDiff <= 30) return dayDiff + '일 전';
+  if (secondDiff <= 59) return secondDiff + '초 전';
+  else if (minuteDiff <= 59) return minuteDiff + '분 전';
+  else if (hourDiff <= 23) return hourDiff + '시간 전';
+  else if (dayDiff <= 30) return dayDiff + '일 전';
   else if (monthDiff <= 12) return monthDiff + '달 전';
   else return yearDiff + '년 전';
 };

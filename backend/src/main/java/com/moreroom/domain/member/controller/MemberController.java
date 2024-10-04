@@ -99,7 +99,19 @@ public class MemberController {
 
     @PostMapping("/logout")
     public void logout(HttpServletRequest request, HttpServletResponse response) {
-        request.getSession().invalidate();  // 세션 무효화
+        // 기존 세션이 있으면 가져오고, 세션이 있으면 무효화
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();  // 세션 무효화
+        }
+
+        // JSESSIONID 쿠키 삭제
+        Cookie cookie = new Cookie("JSESSIONID", null);
+        cookie.setMaxAge(0); // 쿠키를 만료시켜 삭제
+        cookie.setPath("/"); // 애플리케이션의 루트 경로
+        response.addCookie(cookie); // 클라이언트에 쿠키 삭제 명령 전송
+
+        // 상태 코드 설정
         response.setStatus(HttpServletResponse.SC_OK);
     }
 

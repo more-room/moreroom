@@ -66,4 +66,19 @@ public class PartyRequestController {
     partyRequestService.activateOrDeactivatePartyRequest(activateDto.isActivate(), partyRequestId);
     return new ResponseEntity<>(HttpStatus.OK);
   }
+
+  //파티요청 정보 수정
+  @PatchMapping("/{partyRequestId}/settings")
+  public ResponseEntity<?> updatePartyRequestSetting(@PathVariable Long partyRequestId, @RequestBody SettingPartyRequestDto dto) {
+    partyRequestService.updatePartyRequestSettings(partyRequestId, dto);
+    return new ResponseEntity<>(HttpStatus.OK);
+  }
+
+  //파티요청별 해시태그 조회
+  @GetMapping("/{partyRequestId}/hashtags")
+  public ResponseEntity<?> getPartyRequestHashtags(@PathVariable Long partyRequestId) {
+    Member member = findMemberService.findCurrentMemberObject();
+    PartyRequestDto hashtagsList = partyRequestService.getHashtagsList(partyRequestId, member);
+    return new ResponseEntity<>(hashtagsList, HttpStatus.OK);
+  }
 }
