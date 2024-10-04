@@ -64,7 +64,7 @@ export const ReivewList = ({
             </div>
           </div>
           <div css={themeCss} onClick={handleClick}>
-            <Typography color="grey" scale="600" size={0.8} weight={600}>
+            <Typography color="grey" scale="100" size={1} weight={600}>
               {themeTitle}
             </Typography>
             <div css={brandCss}>

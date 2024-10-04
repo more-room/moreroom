@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React from 'react';
+import React, { useState } from 'react';
 import { TopBar } from '../../components/TopBar';
 import {
   ArchiveBoxXMarkIcon,
@@ -33,16 +33,22 @@ import { delUser } from '../../apis/authApi';
 import { useQuery } from '@tanstack/react-query';
 import { getMypage } from '../../apis/mypageApi';
 import { useSignUpStore } from '../../stores/signupStore';
+import { Notification } from '../../components/Notification';
 export const MyPage = () => {
   const nav = useNavigate();
-  const userdata = useSignUpStore.getState();
+  const [showLogoutNotification, setShowLogoutNotification] =
+    useState<boolean>(false);
+  const [showDelNotification, setShowDelNotification] =
+    useState<boolean>(false);
   const handleLogout = async () => {
     await UserLogout();
+    setShowLogoutNotification(false);
     nav('/login');
   };
 
   const handledelete = async () => {
     await delUser();
+    setShowDelNotification(false);
     nav('/login');
   };
 
@@ -51,10 +57,30 @@ export const MyPage = () => {
     queryFn: async () => await getMypage(),
   });
 
-  console.log(ProfileQuery.data)
+  console.log(ProfileQuery.data);
 
   return (
     <div>
+      {showLogoutNotification && (
+        <Notification
+          handler={handleLogout}
+          outlinedHandler={() => setShowLogoutNotification(false)}
+          ment="로그아웃 하시겠습니까?"
+          children={['로그아웃하기', '취소하기']}
+          twoBtn
+          type="confirm"
+        />
+      )}
+      {showDelNotification && (
+        <Notification
+          handler={handledelete}
+          outlinedHandler={() => setShowDelNotification(false)}
+          ment="회원탈퇴 하시겠습니까?"
+          children={['탈퇴하기', '취소하기']}
+          twoBtn
+          type="confirm"
+        />
+      )}
       <TopBar>
         <TopBar.Title
           type="default"
@@ -64,7 +90,11 @@ export const MyPage = () => {
       </TopBar>
       <div css={profileContainer}>
         {/* <UserCircleIcon css={profile} /> */}
-        <img css={profile} src={ProfileQuery.data?.data.photo} alt="프로필 사진" />
+        <img
+          css={profile}
+          src={ProfileQuery.data?.data.photo}
+          alt="프로필 사진"
+        />
         <div>
           <Typography
             style={{ marginBottom: '0.5rem' }}
@@ -94,7 +124,7 @@ export const MyPage = () => {
               </Icon>
             }
             children="파티"
-            url="/mypage/profile"
+            url="/party"
           />
           <ManageInfo
             icon={
@@ -185,7 +215,7 @@ export const MyPage = () => {
               </Icon>
             }
             children="로그아웃"
-            onApi={handleLogout}
+            onApi={() => setShowLogoutNotification(true)}
           />
           <ManageInfo
             icon={
@@ -194,7 +224,9 @@ export const MyPage = () => {
               </Icon>
             }
             children="회원 탈퇴"
-            onApi={handledelete}
+            onApi={() => {
+              setShowDelNotification(true);
+            }}
           />
         </div>
       </div>

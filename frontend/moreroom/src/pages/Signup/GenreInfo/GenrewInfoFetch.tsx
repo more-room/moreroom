@@ -17,7 +17,6 @@ interface VerificationProps {
 }
 
 export const GenreInfoFetch = ({ onSubmit }: VerificationProps) => {
-  const nav = useNavigate();
   const { genreIdList, setSignUpData } = useSignUpStore();
   const genreQuery = useSuspenseQuery({
     queryKey: ['genre'],
