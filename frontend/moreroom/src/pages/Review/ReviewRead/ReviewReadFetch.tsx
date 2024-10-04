@@ -345,7 +345,7 @@ export const ReviewReadFetch = () => {
                     {review.member.memberName}
                   </Typography>
                   <img
-                    src={review.member.memberProfile}
+                    src={`/profiles/profile${review.member.memberProfile}.png`}
                     alt="프로필"
                     style={{
                       width: '40px',

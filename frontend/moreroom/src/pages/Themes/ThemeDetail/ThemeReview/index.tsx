@@ -62,7 +62,10 @@ export const ThemeReview = ({
         />
         <div css={info}>
           <div css={profile}>
-            <img src={review.member.memberProfile} css={img} />
+            <img
+              src={`/profiles/profile${review.member.memberProfile}.png`}
+              css={img}
+            />
             <div>
               <Typography color="light" size={0.875} weight={700}>
                 {review.member.memberName}
