@@ -65,7 +65,7 @@ export const HistoryDetailFetch = () => {
         <TopBar.Title
           type="default"
           title={themeQuery.data?.data.theme.title + ' 기록'}
-          backHandler={() => nav(-1)}
+          backHandler={() => nav('/history')}
         />
       </TopBar>
       <img src={themeQuery.data?.data.theme.poster} css={poster} />

@@ -76,7 +76,13 @@ export const HistoryWrite = () => {
         <TopBar.Title
           type="withoutRight"
           title="기록 작성"
-          backHandler={() => nav(-1)}
+          backHandler={() =>
+            nav(
+              params.historyId
+                ? `/history/detail/${params.historyId}`
+                : '/history',
+            )
+          }
         />
       </TopBar>
       <HistoryTheme />
