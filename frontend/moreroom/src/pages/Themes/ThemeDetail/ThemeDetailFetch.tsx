@@ -63,7 +63,7 @@ export const ThemeDetailFetch = () => {
         <TopBar.Title
           type="default"
           title={themeQuery.data.data.theme.title}
-          backHandler={() => navigate('/themes')}
+          backHandler={() => navigate(-1)}
         />
         <TopBar.Right handler={() => console.log('it"s notification')} />
       </TopBar>
