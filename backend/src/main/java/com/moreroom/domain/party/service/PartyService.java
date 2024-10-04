@@ -6,9 +6,7 @@ import com.moreroom.domain.mapping.member.repository.MemberPartyMappingRepositor
 import com.moreroom.domain.member.entity.Member;
 import com.moreroom.domain.member.exception.MemberNotFoundException;
 import com.moreroom.domain.member.repository.MemberRepository;
-import com.moreroom.domain.party.dto.ChatroomListDto;
-import com.moreroom.domain.party.dto.ChatroomSettingDto;
-import com.moreroom.domain.party.dto.NoticeDto;
+import com.moreroom.domain.party.dto.*;
 import com.moreroom.domain.party.entity.Party;
 import com.moreroom.domain.party.exception.InputValidationException;
 import com.moreroom.domain.party.exception.NotPartyMasterException;
@@ -206,6 +204,17 @@ public class PartyService {
     if (!Objects.equals(party.getMasterMember().getMemberId(), member.getMemberId())) {
       throw new NotPartyMasterException();
     }
+  }
+
+  //파티id 리스트
+  public PartyIdListDto getPartyIdList(Member member) {
+    List<Long> partyIdList = memberPartyMappingRepository.getPartyIdListByMemberId(member.getMemberId());
+    return new PartyIdListDto(partyIdList);
+  }
+
+  //파티 멤버 조회
+  public PartyMemberDto getPartyMemberList(Long partyId) {
+      return partyQueryRepository.getPartyMemberList(partyId);
   }
 
 }

@@ -14,7 +14,7 @@ export const list = css`
   display: flex;
   flex-direction: column;
   row-gap: 1rem;
-  margin-top: 1rem;
+  margin: 1rem 0;
   overflow-y: scroll;
 `;
 

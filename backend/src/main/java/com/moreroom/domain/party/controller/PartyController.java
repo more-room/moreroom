@@ -2,16 +2,13 @@ package com.moreroom.domain.party.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.moreroom.domain.member.entity.Member;
-import com.moreroom.domain.party.dto.ChatroomListDto;
-import com.moreroom.domain.party.dto.ChatroomSettingDto;
-import com.moreroom.domain.party.dto.NoticeDto;
-import com.moreroom.domain.party.dto.PartyMessageLogsDto;
-import com.moreroom.domain.party.dto.PartyRequestAcceptDto;
+import com.moreroom.domain.party.dto.*;
 import com.moreroom.domain.party.service.MessageService;
 import com.moreroom.domain.party.service.PartyService;
 import com.moreroom.domain.partyRequest.service.PartyMatchingService;
 import com.moreroom.global.util.FindMemberService;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -128,6 +125,21 @@ public class PartyController {
   public ResponseEntity<?> getChatroomSetting(@PathVariable Long partyId) {
     ChatroomSettingDto settingInfo = partyService.getSettingInfo(partyId);
     return new ResponseEntity<>(settingInfo, HttpStatus.OK);
+  }
+
+  //내가 속한 파티 리스트 조회
+  @GetMapping("/channel")
+  public ResponseEntity<?> getPartyIdList() {
+    Member member = findMemberService.findCurrentMemberObject();
+    PartyIdListDto partyIdList = partyService.getPartyIdList(member);
+    return new ResponseEntity<>(partyIdList, HttpStatus.OK);
+  }
+
+  //파티원 조회
+  @GetMapping("/{partyId}/memberList")
+  public ResponseEntity<?> getMemberList(@PathVariable Long partyId) {
+    PartyMemberDto partyMemberList = partyService.getPartyMemberList(partyId);
+    return new ResponseEntity<>(partyMemberList, HttpStatus.OK);
   }
 
 }

@@ -44,6 +44,7 @@ public class PartyMatchingService {
   private final FcmService fcmService;
 
   private final String fastAPI_URL;
+  private final PartyRequestUtil partyRequestUtil;
 
   // FastAPI의 여러 파티 매칭 결과를 가져오는 메서드
   private List<Map<String, Object>> getBatchPartyMatchingResultFromFastAPI() {
@@ -167,7 +168,7 @@ public class PartyMatchingService {
     HashMap<Long, String> partyAcceptRecordMap = redisUtil.getLongStringHashMap(key);
 
     if (partyAcceptRecordMap == null) {
-      partyBroke(uuid);
+      partyRequestUtil.partyBroke(uuid);
       return null; //expired되었다면 null 반환
     }
 
@@ -197,28 +198,10 @@ public class PartyMatchingService {
       return partyAcceptRecordMap;
     } else {
       //한명이라도 거절하면 파티 깨짐
-      partyBroke(uuid);
+      partyRequestUtil.partyBroke(uuid);
       redisUtil.deleteData(key);
     }
     return null;
-  }
-
-  // 파티 깨진 경우
-  // 쿼리 보내는 횟수 최적화
-  @Transactional
-  public void partyBroke(String uuid) {
-    //join 이용해 회원 정보와 디바이스 토큰 한꺼번에 조회
-    List<Object[]> memberInfos = partyRequestRepository.findMemberAndDeviceTokenByUuid(uuid);
-    //벌크 업데이트 - 상태와 UUID 한 번에 변경
-    partyRequestRepository.updateStatusAndUuidByUuid(MatchingStatus.NOT_MATCHED, null, uuid);
-
-    for (Object[] info : memberInfos) {
-      Member member = (Member) info[0];
-      String deviceToken = (String) info[1];
-      //파티 실패 알림
-      FcmMessageDto fcmMessageDto = fcmService.makePartyFailedMessage(member, deviceToken);
-      fcmService.sendMessageTo(fcmMessageDto);
-    }
   }
 
 }
