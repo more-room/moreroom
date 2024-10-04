@@ -2,14 +2,7 @@ package com.moreroom.domain.cafe.entity;
 
 import com.moreroom.domain.brand.entity.Brand;
 import com.moreroom.domain.region.entity.Region;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,6 +15,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 @ToString(callSuper = true)
+@Table(name = "cafe")
 public class Cafe {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
