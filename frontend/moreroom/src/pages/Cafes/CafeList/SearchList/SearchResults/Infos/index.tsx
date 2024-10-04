@@ -23,33 +23,46 @@ export const Infos = ({ cafeList, selected, handler }: InfosProps) => {
     <div css={container(onList)}>
       <button css={btn} onClick={handleOnList}>
         <Typography color="light" weight={400} size={0.75}>
-          {onList ? '지도보기' : '목록보기'}
+          {cafeList.length ? (onList ? '지도보기' : '목록보기') : '카페 없음'}
         </Typography>
       </button>
       <div css={box(onList)}>
-        {!onList ? (
-          <CafeItem
-            cafe={cafeList[selected]}
-            onList={onList}
-            pattern={searchNameStore.cafeName}
-          />
-        ) : (
+        {cafeList.length ? (
           <>
-            {cafeList.map((cafe: ICafeListItem, idx: number) => {
-              return (
-                <CafeItem
-                  cafe={cafe}
-                  onList={onList}
-                  pattern={searchNameStore.cafeName}
-                  onClick={() => {
-                    handler(idx);
-                    handleOnList();
-                    map.setLevel(1);
-                  }}
-                />
-              );
-            })}
+            {!onList ? (
+              <CafeItem
+                cafe={cafeList[selected]}
+                onList={onList}
+                pattern={searchNameStore.cafeName}
+              />
+            ) : (
+              <>
+                {cafeList.map((cafe: ICafeListItem, idx: number) => {
+                  return (
+                    <CafeItem
+                      cafe={cafe}
+                      onList={onList}
+                      pattern={searchNameStore.cafeName}
+                      onClick={() => {
+                        handler(idx);
+                        handleOnList();
+                        map.setLevel(1);
+                      }}
+                    />
+                  );
+                })}
+              </>
+            )}
           </>
+        ) : (
+          <Typography
+            color="light"
+            size={1.125}
+            weight={500}
+            style={{ textAlign: 'center', padding: '1rem' }}
+          >
+            해당 지역에 카페가 없습니다
+          </Typography>
         )}
       </div>
     </div>

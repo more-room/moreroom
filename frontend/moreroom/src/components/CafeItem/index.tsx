@@ -20,14 +20,14 @@ export const CafeItem = ({
 
   return (
     <div css={base} {...props}>
-      {!imgErr ? (
+      {cafe.themePoster !== null && !imgErr ? (
         <img
           src={cafe.themePoster}
-          css={img(imgErr)}
+          css={img(cafe.themePoster === null || imgErr)}
           onError={() => setImgErr(true)}
         />
       ) : (
-        <div css={img(imgErr)}>
+        <div css={img(cafe.themePoster === null || imgErr)}>
           <Typography color="light" weight={500} size={0.75}>
             포스터를
           </Typography>
