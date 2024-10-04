@@ -5,4 +5,3 @@ export interface ThemeItemProps extends React.ComponentProps<'div'> {
   pattern?: string;
 }
 
-// props 서치용인지 보는용인지 추가

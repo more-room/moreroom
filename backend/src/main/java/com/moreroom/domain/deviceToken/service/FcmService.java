@@ -152,7 +152,7 @@ public class FcmService {
   }
 
   private String getDeviceToken(Member member) {
-    String key = "DeviceToken:" + member.getMemberId();
+    String key = "DeviceToken:" + member.getEmail();
     String token = redisUtil.getData(key); //레디스에서 가져오기
     if (token == null) { //레디스에 없으면
       DeviceToken deviceToken = deviceTokenRepository.findByMember(member) //mysql에서 가져오기
@@ -161,6 +161,39 @@ public class FcmService {
       redisUtil.setDataExpire(key, token, 3600); //1시간동안 레디스에 보관
     }
     return token;
+  }
+
+  public String getDeviceToken(String email) {
+    String key = "DeviceToken:" + email;
+    String token = redisUtil.getData(key);
+    if (token == null) {
+      DeviceToken deviceToken = deviceTokenRepository.findByEmail(email)
+          .orElseThrow(DeviceTokenNotFoundException::new);
+      token = deviceToken.getToken();
+      redisUtil.setDataExpire(key, token, 3600);
+    }
+    return token;
+  }
+
+  public FcmMessageDto makeChattingPush(String nickname, String message, String email, Long partyId) {
+    Notification notification = Notification.builder()
+        .title(nickname)
+        .body(message)
+        .build();
+
+    Data data = Data.builder()
+        .type(MessageType.CHAT_MESSAGE)
+        .partyId(partyId)
+        .build();
+
+    return FcmMessageDto.builder()
+        .validateOnly(false)
+        .message(Message.builder()
+            .token(getDeviceToken(email))
+            .notification(notification)
+            .data(data)
+            .build())
+        .build();
   }
 
 }

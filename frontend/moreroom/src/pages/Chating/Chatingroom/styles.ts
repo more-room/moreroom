@@ -1,72 +1,65 @@
 import { css } from '@emotion/react';
 import { Colors } from '../../../styles/globalStyle';
 
-export const topbarcolor = css`
-  background-color: #313131;
+export const container = css`
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+`;
 
-`
-
-export const notice = css`
-  background-Color: ${Colors['dark']['900']};
-  color: ${Colors['light']['100']};
-  padding: 0.8rem;
+export const noticeContainer = css`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  cursor: pointer; 
-  font-weight: 600;
-`
-export const noticedetail = css`
-  background-color: #313131;
-  color: ${Colors['light']['100']};
-  margin: 0 1rem;
+  padding: 1rem;
+  background-color: ${Colors['dark']['900']};
+  cursor: pointer;
+`;
 
-`
-export const noticeIconText = css`
+export const title = css`
   display: flex;
   align-items: center;
   gap: 0.5rem;
-`
+`;
 
-export const texttype = css`
-  font-family: "paperlogy";
-`
-/* 입력 폼 스타일 */
+export const noticedetail = css`
+  box-sizing: border-box;
+  padding: 1rem;
+  background-color: ${Colors['dark']['900']};
+`;
+
+export const chatbox = css`
+  width: 100%;
+  box-sizing: border-box;
+  padding: 1rem 1rem 4rem 1rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  row-gap: 1rem;
+  overflow-y: scroll;
+`;
+
 export const inputBar = css`
   position: fixed;
-  bottom: 0; /* 페이지 하단에 고정 */
-  left: 0;
-  right: 0;
-  background-color: #313131; /* 검은색 배경 */
+  bottom: 0;
+  width: 100%;
   display: flex;
   align-items: center;
+  column-gap: 0.5rem;
+  box-sizing: border-box;
   padding: 0.5rem 1rem;
-  
+  background-color: #313131;
+  border-top: 1px solid white;
 `;
 
 export const input = css`
-  flex-grow: 1;
-  background-color: ${Colors['light']['100']};
+  flex: 1;
+  min-height: 2.5rem;
+  padding: 0 0.5rem;
   border: none;
   border-radius: 0.5rem;
+  background-color: white;
   outline: none;
-  color: ${Colors['dark']['900']};
-  padding: 0.5rem;
-  font-size: 1rem;
-  font-family: "paperlogy";
-  border-top: 1px solid #ffffff;
-  margin: 0.2rem 0;
+  font-size: 0.875rem;
 `;
-
-export const sendBtn = css`
-  cursor: pointer;
-  width: 24px;
-  height: 24px;
-  color: ${Colors['light']['100']};
-  margin-left: 0.5rem;
-`;
-
-export const iconColor = css`
-  color: ${Colors['secondary']['200']};
-
-`
