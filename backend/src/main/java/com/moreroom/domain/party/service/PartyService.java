@@ -219,4 +219,9 @@ public class PartyService {
     return new PartyIdListDto(partyIdList);
   }
 
+  //파티 멤버 조회
+  public PartyMemberDto getPartyMemberList(Long partyId) {
+      return partyQueryRepository.getPartyMemberList(partyId);
+  }
+
 }
