@@ -51,7 +51,7 @@ export const HistoryDetailFetch = () => {
     historyWriteStore.setPlayers(historyQuery.data.data.players);
     historyWriteStore.setPrice(historyQuery.data.data.price);
     historyWriteStore.setSuccessFlag(historyQuery.data.data.successFlag);
-    historyWriteStore.setThemeId(1);
+    historyWriteStore.setThemeId(historyQuery.data.data.themeId);
     nav(`/history/edit/${historyQuery.data.data.historyId}`);
   };
 

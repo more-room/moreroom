@@ -13,21 +13,11 @@ export const HistoryThemeFetch = () => {
     queries: [
       {
         queryKey: ['theme-detail'],
-        queryFn: async () =>
-          await getThemeDetail(
-            process.env.NODE_ENV === 'development'
-              ? 1
-              : historyWriteStore.themeId!,
-          ),
+        queryFn: async () => await getThemeDetail(historyWriteStore.themeId!),
       },
       {
         queryKey: ['cafe-detail'],
-        queryFn: async () =>
-          await getCafeForTheme(
-            process.env.NODE_ENV === 'development'
-              ? 1
-              : historyWriteStore.themeId!,
-          ),
+        queryFn: async () => await getCafeForTheme(historyWriteStore.themeId!),
       },
     ],
   });
