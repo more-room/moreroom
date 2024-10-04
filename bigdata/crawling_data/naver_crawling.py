@@ -123,6 +123,68 @@ def get_crawling(driver, keyword, client_id, client_secret, page=1, dis=10):
 
         return pd.DataFrame(columns=['themeId', 'title', 'content', 'date', 'link']) 
 
+
+def get_crawling_by_url(driver, naver_urls):
+    # selenium으로 검색 페이지 불러오기
+    # postdate = []
+    # titles = []
+    linkss = naver_urls 
+    print(naver_urls)
+    contents = []
+    try:
+        for i in naver_urls:
+            print(i)
+            linkss.append(i)
+            driver.get(i)
+            time.sleep(0.5)  # 대기시간 변경 가능
+    
+            iframe = driver.find_element(By.ID , "mainFrame")  # id가 mainFrame이라는 요소를 찾아내고 -> iframe임
+            driver.switch_to.frame(iframe)  # 이 iframe이 내가 찾고자 하는 HTML을 포함하고 있는 내용
+    
+            source = driver.page_source
+            html = BeautifulSoup(source, "html.parser")
+            print(html)
+            
+            # 기사 텍스트만 가져오기
+            content = html.select("div.se-main-container")
+            # list 합치기
+            content = ''.join(str(content))
+            
+            # html태그제거 및 텍스트 다듬기
+            pattern1 = '<[^>]*>'
+            content = re.sub(pattern=pattern1, repl=' ', string=content)
+            pattern2 = """[\n\n\n\n\n// flash 오류를 우회하기 위한 함수 추가\nfunction _flash_removeCallback() {}"""
+            content = content.replace(pattern2, '')
+            content = content.replace('\u200b', ' ')
+            pattern3 = r'\s+' 
+            content = re.sub(pattern=pattern3,  repl=' ', string=content)
+            
+            # 맨 앞의 [] 삭제
+            content = content[1:-1].strip()
+            contents.append(content)
+            print(content)
+          #  print("hi")
+    
+        news_df = pd.DataFrame({'content': contents, 'link': linkss})
+        current_time = datetime.now().strftime("%Y%m%d_%H%M%S")
+    
+        # 파일 이름 지정
+        file_name = f'blog_{current_time}.csv'
+        news_df.to_csv(file_name, index=False, encoding='utf-8-sig')
+
+        return news_df 
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        contents.append('error')
+        news_df = pd.DataFrame({'content': contents, 'link': linkss})
+        current_time = datetime.now().strftime("%Y%m%d_%H%M%S")
+    
+        # 파일 이름 지정
+        file_name = f'blog_{current_time}.csv'
+        news_df.to_csv(file_name, index=False, encoding='utf-8-sig')
+
+        # return pd.DataFrame(columns=['themeId', 'title', 'content', 'date', 'link']) 
+
 def get_driver():
      # # 웹드라이버 설정
     options = Options()
@@ -242,6 +304,34 @@ def naver_crawling():
     print("operation_time: "+str((end_time-start_time).total_seconds()))
 
 
-naver_crawling()
+def naver_crawling_with_link():
+    driver = get_driver()
+    naver_urls = ["https://blog.naver.com/fairyninoming/220828716888"]
+    
+    # 결과를 담을 리스트 초기화
+    final_data = []
+
+    get_crawling_by_url(driver, naver_urls)
+    
+
+        # 크롤링 결과에 themeId와 title 추가
+    # for _, crawling_row in crawling_df.iterrows():
+    #     final_data.append({
+    #         'themeId': themeId,
+    #         'title': crawling_row['title'],
+    #         'content': crawling_row['content'],
+    #         'date': crawling_row['date'],
+    #         'link': crawling_row['link']
+    #     })
+    
+    # print(f"search end theme {themeId}")
+
+    # # 최종 DataFrame 생성
+    # final_df = pd.DataFrame(final_data)
+    # save_data(final_df.to_dict('records'))
+    # end_time = datetime.now()
+    # current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    # print("operation_time: "+str((end_time-start_time).total_seconds()))
+naver_crawling_with_link()
 
     
