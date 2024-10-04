@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import React, { useState } from 'react';
 import { Typography } from '../../../../../components/Typography';
-import { CssTextField } from '../../../../Signup/AccountInfo';
 import {
   btnCss,
   containerCss,
@@ -12,6 +11,7 @@ import { FormHelperText } from '@mui/material';
 import { isEmail, sendEmail, verifyCode } from '../../../../../apis/authApi';
 import { validateEmail } from '../../../../../utils/validationUtils';
 import { codeInputCss, nextStepBtnCss } from './styles';
+import { CssTextField } from '../../../../../components/Mui/CssTextField';
 
 interface UserDataFormProps {
   onSubmit: () => void;

@@ -4,8 +4,7 @@ import { TopBar } from '../../../../components/TopBar';
 import { useNavigate } from 'react-router-dom';
 import { Typography } from '../../../../components/Typography';
 import { Button } from '../../../../components/Button';
-import { UserCircleIcon } from '@heroicons/react/24/solid';
-import { FormHelperText, styled, TextField } from '@mui/material';
+import { FormHelperText} from '@mui/material';
 import {
   chipItemCss,
   containerCss,
@@ -20,7 +19,6 @@ import {
   updateUserInfo,
 } from '../../../../apis/mypageApi';
 import { isNickname } from '../../../../apis/authApi';
-import { CssTextField } from '../../../Signup/AccountInfo';
 import { btnCss, inputCss } from '../../../Signup/AccountInfo/styles';
 import { validateNickname } from '../../../../utils/validationUtils';
 import { FilterChip } from '../../../../components/FilterChip';
@@ -30,6 +28,7 @@ import { IRegionCommon, IRegionItem } from '../../../../types/infoTypes';
 import { useModal } from '../../../../hooks/useModal';
 import { Selectedtheme } from '../../../../modals/mypage/Selectedtheme';
 import { SelectedGenre } from '../../../../modals/mypage/SelectedGenre';
+import { CssTextField } from '../../../../components/Mui/CssTextField';
 
 export const EditProfile = () => {
   const nav = useNavigate();

@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { Typography } from '../../../components/Typography';
 import { FilterChip } from '../../../components/FilterChip';
 import { chipItemCss, containerCss, filterCss } from './styles';
-import { CssTextField } from '../AccountInfo';
 import { Button } from '../../../components/Button';
 import { btnCss } from '../AccountInfo/styles';
 import { useModal } from '../../../hooks/useModal';
@@ -13,6 +12,7 @@ import { Selectedtheme } from '../../../modals/mypage/Selectedtheme';
 import { useQuery } from '@tanstack/react-query';
 import { getRegions } from '../../../apis/infoApi';
 import { IRegionCommon, IRegionItem } from '../../../types/infoTypes';
+import { CssTextField } from '../../../components/Mui/CssTextField';
 
 interface VerificationProps {
   onSubmit: () => void;
