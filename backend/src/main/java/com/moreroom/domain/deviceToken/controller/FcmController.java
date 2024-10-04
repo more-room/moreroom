@@ -26,17 +26,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/fcm")
 @RequiredArgsConstructor
 public class FcmController {
-  private final FcmService fcmService;
   private final FindMemberService findMemberService;
   private final DeviceTokenService deviceTokenService;
-
-  @PostMapping("/send")
-  public ResponseEntity<?> pushMessage(@RequestBody @Validated FcmMessageDto fcmMessageDto) throws IOException {
-    log.debug("[+] 푸시 메시지를 전송합니다.");
-//    int result = fcmService.sendMessageTo(fcmSendDto);
-
-    return new ResponseEntity<>(HttpStatus.OK);
-  }
 
   @PostMapping("/register")
   public ResponseEntity<?> getDeviceToken(@RequestBody DeviceTokenRegisterDto deviceTokenRegisterDto) {
