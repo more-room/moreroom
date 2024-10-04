@@ -6,7 +6,7 @@ import {
   useQueryClient,
   useSuspenseQuery,
 } from '@tanstack/react-query';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { delHistory, getHistoryDetail } from '../../../apis/historyApi';
 import { getThemeDetail } from '../../../apis/themeApi';
@@ -25,6 +25,7 @@ export const HistoryDetailFetch = () => {
   const params = useParams();
   const queryClient = useQueryClient();
   const historyWriteStore = useHistoryWriteStore();
+  const [imgErr, setImgErr] = useState<boolean>(false);
   const historyQuery = useSuspenseQuery({
     queryKey: ['history-detail'],
     queryFn: async () => await getHistoryDetail(Number(params.historyId)),
@@ -51,7 +52,7 @@ export const HistoryDetailFetch = () => {
     historyWriteStore.setPlayers(historyQuery.data.data.players);
     historyWriteStore.setPrice(historyQuery.data.data.price);
     historyWriteStore.setSuccessFlag(historyQuery.data.data.successFlag);
-    historyWriteStore.setThemeId(1);
+    historyWriteStore.setThemeId(historyQuery.data.data.themeId);
     nav(`/history/edit/${historyQuery.data.data.historyId}`);
   };
 
@@ -61,14 +62,30 @@ export const HistoryDetailFetch = () => {
 
   return (
     <div css={container}>
-      <TopBar style={{ position: 'absolute', top: '0' }}>
+      <TopBar style={{ position: imgErr ? 'fixed' : 'static' }}>
         <TopBar.Title
           type="default"
           title={themeQuery.data?.data.theme.title + ' 기록'}
-          backHandler={() => nav(-1)}
+          backHandler={() => nav('/history')}
         />
       </TopBar>
-      <img src={themeQuery.data?.data.theme.poster} css={poster} />
+      {!imgErr ? (
+        <img
+          src={themeQuery.data?.data.theme.poster}
+          css={poster(imgErr)}
+          onError={() => setImgErr(true)}
+        />
+      ) : (
+        <div css={poster(imgErr)}>
+          <Typography color="light" weight={500} size={0.875}>
+            포스터를
+          </Typography>
+          <Typography color="light" weight={500} size={0.875}>
+            준비중입니다
+          </Typography>
+        </div>
+      )}
+
       {themeQuery.data && (
         <HistoryThemeInfo
           cafeName={historyQuery.data.data.cafeName}
