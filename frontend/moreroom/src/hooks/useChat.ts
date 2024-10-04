@@ -34,7 +34,7 @@ export const useChat = (partyId: number) => {
   /* 채팅 전송 */
   const sendChat = async (msg: string) => {
     stompClient.current?.publish({
-      destination: process.env.REACT_APP_CHAT_DEST!,
+      destination: '/app/chat/message',
       body: JSON.stringify({
         partyId: partyId,
         message: msg,
@@ -45,7 +45,7 @@ export const useChat = (partyId: number) => {
   useEffect(() => {
     /* 소켓 연결 정보 */
     stompClient.current = new StompJs.Client({
-      brokerURL: process.env.REACT_APP_CHAT_SOCKET,
+      brokerURL: 'wss://j11d206.p.ssafy.io/api/ws',
       reconnectDelay: 5000,
       heartbeatIncoming: 4000,
       heartbeatOutgoing: 4000,
