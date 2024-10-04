@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React from 'react';
+import React, { useState } from 'react';
 import { CafeItemProps } from './CafeItem.types';
 import { base, cafename, img, info, title } from './CafeItem.styles';
 import { Typography } from '../Typography';
@@ -14,39 +14,43 @@ export const CafeItem = ({
   children,
   ...props
 }: CafeItemProps) => {
+  const [imgErr, setImgErr] = useState<boolean>(false);
+
   return (
     <div css={base} {...props}>
-      <img src={cafe.themePoster} css={img} />
+      {!imgErr ? (
+        <img
+          src={cafe.themePoster}
+          css={img(imgErr)}
+          onError={() => setImgErr(true)}
+        />
+      ) : (
+        <div css={img(imgErr)}>
+          <Typography color="light" weight={500} size={0.75}>
+            포스터를
+          </Typography>
+          <Typography color="light" weight={500} size={0.75}>
+            준비중입니다
+          </Typography>
+        </div>
+      )}
+
       <div css={info(onList)}>
-        <div css={title(onList)}>
-          <div css={cafename(onList)}>
-            <Typography color="light" size={1} weight={600}>
-              {cafe.cafeName}
-            </Typography>
-            {!onList && (
-              <div css={cafename(onList)}>
-                <Icon color="secondary" size={1}>
-                  <StarIcon />
-                </Icon>
-                <Typography color="grey" size={0.75} weight={400}>
-                  리뷰({cafe.reviewCount})
-                </Typography>
-              </div>
-            )}
-          </div>
+        <div css={title}>
+          <Typography color="light" size={1} weight={600}>
+            {cafe.cafeName}
+          </Typography>
           <Typography color="grey" size={0.875} weight={400}>
             {cafe.address}
           </Typography>
-          {onList && (
-            <div css={cafename(false)}>
-              <Icon color="secondary" size={1}>
-                <StarIcon />
-              </Icon>
-              <Typography color="grey" size={0.75} weight={400}>
-                리뷰({cafe.reviewCount})
-              </Typography>
-            </div>
-          )}
+          <div css={cafename}>
+            <Icon color="secondary" size={1}>
+              <StarIcon />
+            </Icon>
+            <Typography color="grey" size={0.75} weight={400}>
+              리뷰({cafe.reviewCount})
+            </Typography>
+          </div>
         </div>
         {!onList && (
           <Button
