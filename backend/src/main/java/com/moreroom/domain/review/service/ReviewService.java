@@ -7,6 +7,8 @@ import com.moreroom.domain.mapping.theme.entity.ThemeGenreMapping;
 import com.moreroom.domain.mapping.theme.repository.ThemeGenreMappingRepository;
 import com.moreroom.domain.member.entity.Member;
 import com.moreroom.domain.member.repository.MemberRepository;
+import com.moreroom.domain.playLog.entity.PlayLog;
+import com.moreroom.domain.playLog.repository.PlayLogRepository;
 import com.moreroom.domain.review.dto.request.ReviewRequestDTO;
 import com.moreroom.domain.review.dto.request.ReviewUpdateRequestDTO;
 import com.moreroom.domain.review.dto.response.ReviewMyPageResponseDTO;
@@ -20,6 +22,7 @@ import com.moreroom.global.dto.PageResponseDto;
 import com.moreroom.global.util.FindMemberService;
 import jakarta.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -37,6 +40,7 @@ public class ReviewService {
     private final ThemeRepository themeRepository;
     private final ThemeGenreMappingRepository themeGenreMappingRepository;
     private final MemberReviewMappingRepository memberReviewMappingRepository;
+    private final PlayLogRepository playLogRepository;
 
     @Transactional
     public void save(ReviewRequestDTO reviewRequestDTO) {
@@ -172,6 +176,27 @@ public class ReviewService {
             }
         } else {
             throw new ReviewNotFoundException();
+        }
+    }
+
+    @Transactional
+    public void updatePlayLog(Integer themeId) {
+        Long memberId = findMemberService.findCurrentMember();
+
+        Optional<PlayLog> playLogOptional = playLogRepository.findByMemberIdAndThemeId(memberId,
+            themeId);
+
+        if (playLogOptional.isPresent()) {
+            PlayLog playLog = playLogOptional.get();
+            playLog.increasePlayCount();
+        } else {
+            PlayLog playLog = PlayLog.builder()
+                .memberId(memberId)
+                .themeId(themeId)
+                .playCount(1)
+                .build();
+
+            playLogRepository.save(playLog);
         }
     }
 }
