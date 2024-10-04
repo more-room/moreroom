@@ -92,6 +92,7 @@ export const HistoryListFetch = () => {
                       `${calendarStore.curYear}-${calendarStore.curMonth}-01`,
                     ).format('YYYY-MM-DD'),
               );
+              useHistoryWriteStore.persist.clearStorage();
               nav('/history/write');
             }}
           >
@@ -115,6 +116,7 @@ export const HistoryListFetch = () => {
                       `${calendarStore.curYear}-${calendarStore.curMonth}-01`,
                     ).format('YYYY-MM-DD'),
               );
+              useHistoryWriteStore.persist.clearStorage();
               nav('/history/write');
             }}
           >
