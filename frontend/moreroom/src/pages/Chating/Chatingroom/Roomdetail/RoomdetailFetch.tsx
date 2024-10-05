@@ -5,15 +5,14 @@ import { TopBar } from "../../../../components/TopBar";
 import { IParty, IChatRoomInfo, IMemberListResponse } from "../../../../types/chatingTypes";
 import { getPartyList, getMyPartyList, getChatRoomInfo, patchChatRoomInfo, getPartyMembers } from "../../../../apis/chatApi";
 import { ThemeItem } from "../../../../components/ThemeItem";
-import { titletext, topbarcolor, textcolor, infobox, buttoncss, hr, exitbutton, wait, memberContainer, memberItem, memberImage, memberName } from "./styles";
+import { titletext, topbarcolor, textcolor, infobox, buttoncss, hr, exitbutton, memberContainer, memberItem, memberImage, memberName, inputStyle, modalContent, modalTitle } from "./styles";
 import { InfoBox } from "../../../../components/InfoBox";
 import { UserIcon } from "@heroicons/react/24/solid";
 import { Button } from "../../../../components/Button";
 import { Colors } from "../../../../styles/globalStyle";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { RoomNameModal } from "../../../../components/CustomModal/RoomNameModal";
-import { DateModal } from "../../../../components/CustomModal/DateModal";
-import { MaxMemberModal } from "../../../../components/CustomModal/MaxMemberModal";
+import { Modal } from "../../../../components/Modal"; // Provided Modal component
+import { Notification } from "../../../../components/Notification"; // Provided Notification component
 
 export const RoomdetailFetch = () => {
   const { partyId } = useParams<{ partyId: string }>();
@@ -25,6 +24,10 @@ export const RoomdetailFetch = () => {
   const [roomNameModalOpen, setRoomNameModalOpen] = useState(false);
   const [dateModalOpen, setDateModalOpen] = useState(false);
   const [maxMemberModalOpen, setMaxMemberModalOpen] = useState(false);
+  const [notificationOpen, setNotificationOpen] = useState(false);
+  const [newRoomName, setNewRoomName] = useState("");
+  const [newDate, setNewDate] = useState("");
+  const [newMaxMember, setNewMaxMember] = useState<number>(0);
 
   // Suspense Query로 데이터 가져오기
   const partyQuery = useSuspenseQuery({
@@ -99,14 +102,14 @@ export const RoomdetailFetch = () => {
       };
       await patchChatRoomInfo(Number(partyId), updatedInfo);
       setChatRoomInfo(updatedInfo); // 상태 업데이트
-      alert("채팅방 정보가 성공적으로 변경되었습니다.");
+      setNotificationOpen(true); // Notification 열기
     } catch (error) {
       console.error("채팅방 정보 수정 중 오류 발생:", error);
     }
   };
 
   // 각 모달에서 확인 버튼 클릭 시 호출되는 핸들러
-  const handleConfirmRoomNameChange = (newRoomName: string) => {
+  const handleConfirmRoomNameChange = () => {
     if (newRoomName && newRoomName.length >= 1 && newRoomName.length <= 40 && !newRoomName.trim().includes(" ")) {
       updateChatRoomInfo({ roomName: newRoomName });
     } else {
@@ -115,25 +118,37 @@ export const RoomdetailFetch = () => {
     setRoomNameModalOpen(false);
   };
 
-  const handleConfirmDateChange = (newDate: string) => {
-    try {
-      if (newDate) {
-        updateChatRoomInfo({ date: newDate }); // 형식이 'YYYY-MM-DD HH:MM'으로 전달됨
-      }
-      setDateModalOpen(false);
-    } catch (error) {
-      console.error("잘못된 날짜 포맷입니다.");
-      alert("날짜 형식이 잘못되었습니다. 다시 시도해 주세요.");
+  const handleConfirmDateChange = () => {
+    if (newDate) {
+      updateChatRoomInfo({ date: newDate });
+    } else {
+      alert("유효한 날짜를 입력하세요.");
     }
+    setDateModalOpen(false);
   };
 
-  const handleConfirmMaxMemberChange = (newMaxMember: number) => {
+  const handleConfirmMaxMemberChange = () => {
     if (newMaxMember > 0) {
       updateChatRoomInfo({ maxMember: newMaxMember });
     } else {
       alert("최대 인원 수는 1명 이상이어야 합니다.");
     }
     setMaxMemberModalOpen(false);
+  };
+
+  const handleRoomNameModalOpen = () => {
+    setNewRoomName(chatRoomInfo.roomName);
+    setRoomNameModalOpen(true);
+  };
+
+  const handleDateModalOpen = () => {
+    setNewDate(chatRoomInfo.date);
+    setDateModalOpen(true);
+  };
+
+  const handleMaxMemberModalOpen = () => {
+    setNewMaxMember(chatRoomInfo.maxMember);
+    setMaxMemberModalOpen(true);
   };
 
   const handleToggleVisibility = () => {
@@ -144,7 +159,6 @@ export const RoomdetailFetch = () => {
   const exitbuttonhandle = () => {
     console.log("채팅방 나가기 버튼");
   };
-  console.log(members)
 
   return (
     <div>
@@ -153,17 +167,85 @@ export const RoomdetailFetch = () => {
       </TopBar>
 
       {/* 채팅방 제목 클릭 시 수정 가능 */}
-      <div css={titletext} onClick={() => setRoomNameModalOpen(true)}>
+      <div css={titletext} onClick={handleRoomNameModalOpen}>
         {chatRoomInfo.roomName}
       </div>
 
       {/* 채팅방 이름 변경 모달 */}
       {roomNameModalOpen && (
-        <RoomNameModal
-          title="새로운 채팅방 제목을 입력하세요"
-          initialValue={chatRoomInfo.roomName}
-          onConfirm={handleConfirmRoomNameChange}
-          onCancel={() => setRoomNameModalOpen(false)}
+        <Modal height={35}>
+          <div css={modalContent}>
+            <h3 css={modalTitle}>새로운 채팅방 제목을 입력하세요</h3>
+            <input
+              type="text"
+              value={newRoomName}
+              onChange={(e) => setNewRoomName(e.target.value)}
+              css={inputStyle}
+            />
+            <div style={{ display: "flex", justifyContent: "right", marginTop: "1rem" }}>
+              <Button variant="contained" handler={handleConfirmRoomNameChange}>
+                확인
+              </Button>
+              <Button variant="outlined" handler={() => setRoomNameModalOpen(false)}>
+                취소
+              </Button>
+            </div>
+          </div>
+        </Modal>
+      )}
+
+      {/* 날짜 변경 모달 */}
+      {dateModalOpen && (
+        <Modal height={35}>
+          <div css={modalContent}>
+            <h3 css={modalTitle}>새로운 날짜를 입력하세요</h3>
+            <input
+              type="text"
+              value={newDate}
+              onChange={(e) => setNewDate(e.target.value)}
+              css={inputStyle}
+            />
+            <div style={{ display: "flex", justifyContent: "right", marginTop: "1rem" }}>
+              <Button variant="contained" handler={handleConfirmDateChange}>
+                확인
+              </Button>
+              <Button variant="outlined" handler={() => setDateModalOpen(false)}>
+                취소
+              </Button>
+            </div>
+          </div>
+        </Modal>
+      )}
+
+      {/* 최대 멤버 변경 모달 */}
+      {maxMemberModalOpen && (
+        <Modal height={35}>
+          <div css={modalContent}>
+            <h3 css={modalTitle}>새로운 최대 인원 수를 입력하세요</h3>
+            <input
+              type="number"
+              value={newMaxMember}
+              onChange={(e) => setNewMaxMember(parseInt(e.target.value))}
+              css={inputStyle}
+            />
+            <div style={{ display: "flex", justifyContent: "right", marginTop: "1rem" }}>
+              <Button variant="contained" handler={handleConfirmMaxMemberChange}>
+                확인
+              </Button>
+              <Button variant="outlined" handler={() => setMaxMemberModalOpen(false)}>
+                취소
+              </Button>
+            </div>
+          </div>
+        </Modal>
+      )}
+
+      {/* Notification 모달 */}
+      {notificationOpen && (
+        <Notification
+          ment="채팅방 정보가 성공적으로 변경되었습니다."
+          type="confirm"
+          handler={() => setNotificationOpen(false)}
         />
       )}
 
@@ -178,20 +260,10 @@ export const RoomdetailFetch = () => {
           fontWeight={500}
           size={1.3}
           style={{ margin: "0.5rem" }}
-          onClick={() => setDateModalOpen(true)}
+          onClick={handleDateModalOpen}
         >
           {chatRoomInfo.date}
         </InfoBox>
-
-        {/* 날짜 변경 모달 */}
-        {dateModalOpen && (
-          <DateModal
-            title="새로운 날짜를 입력하세요"
-            initialValue={chatRoomInfo.date}
-            onConfirm={handleConfirmDateChange}
-            onCancel={() => setDateModalOpen(false)}
-          />
-        )}
 
         {/* 최대 인원 변경 가능 */}
         <InfoBox
@@ -201,22 +273,10 @@ export const RoomdetailFetch = () => {
           color={"secondary"}
           size={1.3}
           style={{ margin: "0.5rem" }}
-          onClick={() => setMaxMemberModalOpen(true)}
+          onClick={handleMaxMemberModalOpen}
         >
           최대 {chatRoomInfo.maxMember}명
         </InfoBox>
-
-        {/* 최대 인원 변경 모달 */}
-        {maxMemberModalOpen && (
-          <MaxMemberModal
-            title="새로운 최대 인원 수를 입력하세요"
-            initialValue={chatRoomInfo.maxMember}
-            min={1}
-            max={100}
-            onConfirm={handleConfirmMaxMemberChange}
-            onCancel={() => setMaxMemberModalOpen(false)}
-          />
-        )}
       </div>
 
       {/* 공개 상태 변경 버튼 */}
