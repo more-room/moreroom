@@ -72,7 +72,7 @@ public class FcmService {
    * @throws IOException
    */
   private String getAccessToken() throws IOException {
-    String firebaseConfigPath = "firebase/d206-moreroom-firebase-adminsdk-byl7s-3637b87df4.json";
+    String firebaseConfigPath = "firebase/d206-moreroom-firebase-adminsdk-byl7s-8676046b0a.json";
 
     GoogleCredentials googleCredentials = GoogleCredentials
         .fromStream(new ClassPathResource(firebaseConfigPath).getInputStream())
@@ -214,9 +214,7 @@ public class FcmService {
     } catch (Exception e) {
       e.printStackTrace();
       log.error("푸시 알림 로직 실패");
-      throw new PushNotificationException();
     }
-
   }
 
 }
