@@ -5,7 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.moreroom.domain.deviceToken.entity.DeviceToken;
 import com.moreroom.domain.deviceToken.exception.DeviceTokenNotFoundException;
+import com.moreroom.domain.deviceToken.exception.PushNotificationException;
 import com.moreroom.domain.deviceToken.repository.DeviceTokenRepository;
+import com.moreroom.domain.mapping.member.repository.MemberPartyMappingRepository;
 import com.moreroom.domain.member.entity.Member;
 import com.moreroom.domain.theme.entity.Theme;
 import com.moreroom.domain.deviceToken.dto.FcmMessageDto;
@@ -37,6 +39,7 @@ public class FcmService {
 
   private final DeviceTokenRepository deviceTokenRepository;
   private final RedisUtil redisUtil;
+  private final MemberPartyMappingRepository memberPartyMappingRepository;
 
   public int sendMessageTo(FcmMessageDto fcmMessageDto) {
     try {
@@ -194,6 +197,26 @@ public class FcmService {
             .data(data)
             .build())
         .build();
+  }
+
+  //푸시알림 전송 : 발신자를 제외한 파티원에게 전송
+  public void sendChattingMessagePushAlarm(String email, Long partyId, String senderNickname, String message) {
+    try {
+      List<String> emailList = memberPartyMappingRepository.getEmailListForChattingAlarm(partyId, email);
+      for (String emailAddress : emailList) {
+        try {
+          FcmMessageDto fcmMessageDto = makeChattingPush(senderNickname, message, emailAddress, partyId);
+          sendMessageTo(fcmMessageDto);
+        } catch (Exception e) {
+          log.error("푸시 알람 전송 실패: to {}", emailAddress, e);
+        }
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      log.error("푸시 알림 로직 실패");
+      throw new PushNotificationException();
+    }
+
   }
 
 }
