@@ -4,7 +4,10 @@ import { MainColors } from '../../../../styles/globalStyle';
 export const container = css`
   width: 100%;
   flex: 1;
+  display: flex;
+  flex-direction: column;
   margin-top: 2rem;
+  overflow-y: scroll;
 `;
 
 export const inputContainer = css`
@@ -25,7 +28,6 @@ export const input = css`
   width: 100%;
   color: white;
   font-size: 1rem;
-  font-family: 'Paperlogy';
 `;
 
 export const items = css`
@@ -34,6 +36,8 @@ export const items = css`
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  overflow-y: scroll;
   gap: 1rem;
   margin-top: 2rem;
+  padding-bottom: 1rem;
 `;

@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import React, { useEffect, useState } from 'react';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { container, items, regionContainer } from './styles';
+import { container, item, items, regionContainer } from './styles';
 import { Item } from '../Item';
 import { useSearchCafesStore } from '../../../../stores/cafeStore';
 import { getRegions } from '../../../../apis/infoApi';
@@ -63,7 +63,7 @@ export const Region = () => {
           );
         })}
       </div>
-      <div css={items}>
+      <div css={item}>
         <Item
           item={selected.regionName + ' 전체'}
           fullWidth={true}
@@ -79,7 +79,7 @@ export const Region = () => {
       <Typography color="light" size={0.875} weight={700}>
         시/군/구
       </Typography>
-      <div css={items}>
+      <div css={[item, items]}>
         {sigungu.map((s: IRegionCommon) => (
           <Item
             key={s.regionId}
