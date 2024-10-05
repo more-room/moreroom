@@ -28,6 +28,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class FcmController {
   private final FindMemberService findMemberService;
   private final DeviceTokenService deviceTokenService;
+  private final FcmService fcmService;
+
+  @PostMapping("/send")
+  public ResponseEntity<?> pushMessage(@RequestBody @Validated FcmMessageDto fcmMessageDto) throws IOException {
+    log.debug("[+] 푸시 메시지를 전송합니다. ");
+    int result = fcmService.sendMessageTo(fcmMessageDto);
+    String arw = result == 1 ? "알림 성공" : "알림 실패";
+
+    return new ResponseEntity<>(arw, HttpStatus.OK);
+  }
 
   @PostMapping("/register")
   public ResponseEntity<?> getDeviceToken(@RequestBody DeviceTokenRegisterDto deviceTokenRegisterDto) {
