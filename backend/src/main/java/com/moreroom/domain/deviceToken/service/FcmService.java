@@ -79,6 +79,7 @@ public class FcmService {
         .createScoped(List.of("<https://www.googleapis.com/auth/cloud-platform>"));
 
     googleCredentials.refreshIfExpired();
+    log.info("액세스 토큰: {}", googleCredentials.getAccessToken().getTokenValue());
     return googleCredentials.getAccessToken().getTokenValue();
   }
 
