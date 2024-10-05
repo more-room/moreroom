@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { ICafeThemeList } from './cafeTypes';
+import { ICafeCommon, ICafeList, ICafeThemeList } from './cafeTypes';
 import { IThemeReview } from './reviewTypes';
 
 /* 제목 검색 결과 */
@@ -106,4 +106,15 @@ export interface IThemeDetail {
 /* 테마 추천 조회 */
 export interface IThemeRecommendList {
   themeList: IThemeListItem[];
+}
+
+export interface IThemeItem {
+  themeId: number;
+  poster: string;
+  title: string;
+  playtime: number;
+  genreList: string[];
+  review: IThemeReview
+  regionId: string;
+  cafe: ICafeThemeList;
 }

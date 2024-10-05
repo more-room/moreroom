@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 public class PartyMessageLogsDto {
   private List<MessageConvertDto> messageList;
   private String lastMessageId;
+  private boolean hasNext;
 }

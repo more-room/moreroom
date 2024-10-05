@@ -1,8 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
-import { TopBar } from '../../../components/TopBar';
 import { useNavigate } from 'react-router-dom';
-import { Progress } from '../../../components/Progress';
 import { Button } from '../../../components/Button';
 import { btnCss } from '../AccountInfo/styles';
 import { useSuspenseQuery } from '@tanstack/react-query';
@@ -14,8 +12,11 @@ import { Typography } from '../../../components/Typography';
 import { useSignUpStore } from '../../../stores/signupStore';
 import { userSignup } from '../../../apis/authApi';
 
-export const GenreInfoFetch = () => {
-  const nav = useNavigate();
+interface VerificationProps {
+  onSubmit: () => void;
+}
+
+export const GenreInfoFetch = ({ onSubmit }: VerificationProps) => {
   const { genreIdList, setSignUpData } = useSignUpStore();
   const genreQuery = useSuspenseQuery({
     queryKey: ['genre'],
@@ -71,7 +72,8 @@ export const GenreInfoFetch = () => {
         regionId,
       );
       console.log(res);
-      nav('/signup/done');
+      // nav('/signup/done');
+      onSubmit();
     } catch (err) {
       console.log(err);
     }
@@ -83,14 +85,6 @@ export const GenreInfoFetch = () => {
 
   return (
     <div>
-      <TopBar>
-        <TopBar.Title
-          type="default"
-          title="회원가입"
-          backHandler={() => nav(-1)}
-        />
-      </TopBar>
-      <Progress color="primary" max={4} size="md" value={3} variant="rounded" />
       <div css={containerCss}>
         <Typography color="light" size={1} weight={700}>
           선호 장르(다중 선택 가능)

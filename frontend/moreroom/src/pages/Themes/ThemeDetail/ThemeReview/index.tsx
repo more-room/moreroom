@@ -1,28 +1,43 @@
 /** @jsxImportSource @emotion/react */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { IReviewListItem } from '../../../../types/reviewTypes';
 import { Typography } from '../../../../components/Typography';
 import { container, img, info, profile, rating, title } from './styles';
 import { ICafeThemeDetail } from '../../../../types/cafeTypes';
 import { Icon } from '../../../../components/Icon';
-import { ArrowRightIcon, HandThumbUpIcon } from '@heroicons/react/24/outline';
+import { ArrowRightIcon } from '@heroicons/react/24/solid';
+import SolidHandThumbUpIcon from '@heroicons/react/24/solid/HandThumbUpIcon';
+import OutlineHandThumbUpIcon from '@heroicons/react/24/outline/HandThumbUpIcon';
 import { MenuTab } from '../../../../components/MenuTab';
 import Rating from '../../../../components/Rating';
 import { getDateDiff } from '../../../../utils/dateUtils';
+import { useMutation } from '@tanstack/react-query';
+import { patchThumbsUp } from '../../../../apis/reviewApi';
 
 interface ThemeReviewProps {
   review: IReviewListItem;
   cafe: ICafeThemeDetail;
+  onClickReview: () => void;
 }
 
-export const ThemeReview = ({ review, cafe }: ThemeReviewProps) => {
+export const ThemeReview = ({
+  review,
+  cafe,
+  onClickReview,
+}: ThemeReviewProps) => {
   const [reviewType, setReviewType] = useState<number>(0);
+  const [upFlag, setUpFlag] = useState<boolean>(review.upFlag);
+  const countRef = useRef<number>(review.thumbsUp);
 
   const reviewHandler = (menu: number) => setReviewType(menu);
 
-  useEffect(() => {
-    console.log(reviewType);
-  }, [reviewType]);
+  const { mutate } = useMutation({
+    mutationFn: async () => await patchThumbsUp(review.reviewId),
+    onSuccess: () => {
+      upFlag ? (countRef.current -= 1) : (countRef.current += 1);
+      setUpFlag((prev) => !prev);
+    },
+  });
 
   return (
     <div style={{ marginTop: '2rem' }}>
@@ -34,7 +49,7 @@ export const ThemeReview = ({ review, cafe }: ThemeReviewProps) => {
           <Typography color="light" size={0.875} weight={400}>
             {cafe.brandName} {cafe.branchName} 리뷰
           </Typography>
-          <Icon size={1} color="light">
+          <Icon size={1} color="light" onClick={onClickReview}>
             <ArrowRightIcon />
           </Icon>
         </div>
@@ -47,7 +62,10 @@ export const ThemeReview = ({ review, cafe }: ThemeReviewProps) => {
         />
         <div css={info}>
           <div css={profile}>
-            <img src={review.member.memberProfile} css={img} />
+            <img
+              src={`/profiles/profile${review.member.memberProfile}.png`}
+              css={img}
+            />
             <div>
               <Typography color="light" size={0.875} weight={700}>
                 {review.member.memberName}
@@ -65,12 +83,12 @@ export const ThemeReview = ({ review, cafe }: ThemeReviewProps) => {
               </div>
             </div>
           </div>
-          <div css={rating}>
-            <Icon color="light" size={1}>
-              <HandThumbUpIcon />
+          <div css={rating} onClick={() => mutate()}>
+            <Icon color={upFlag ? 'secondary' : 'light'} size={1}>
+              {upFlag ? <SolidHandThumbUpIcon /> : <OutlineHandThumbUpIcon />}
             </Icon>
             <Typography color="light" size={0.75} weight={400}>
-              {review.thumbsUp}
+              {countRef.current}
             </Typography>
           </div>
         </div>
@@ -78,7 +96,7 @@ export const ThemeReview = ({ review, cafe }: ThemeReviewProps) => {
           {review.content}
         </Typography>
         <Typography color="grey" size={0.875} weight={400}>
-          {getDateDiff(review.updatedAt)}
+          {getDateDiff(review.createdAt)}
         </Typography>
       </div>
     </div>

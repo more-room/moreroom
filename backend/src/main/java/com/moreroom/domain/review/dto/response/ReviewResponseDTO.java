@@ -15,9 +15,10 @@ public class ReviewResponseDTO {
     private String content;
     private Float score;
     private Integer thumbsUp;
-    private String updatedAt;
+    private String createdAt;
+    private Boolean upFlag;
 
-    public static ReviewResponseDTO toDTO(Review review) {
+    public static ReviewResponseDTO toDTO(Review review, boolean upFlag) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         Member member = review.getMember();
@@ -28,7 +29,8 @@ public class ReviewResponseDTO {
             .content(review.getContent())
             .score(review.getScore())
             .thumbsUp(review.getThumbsUp())
-            .updatedAt(review.getUpdatedAt().format(formatter))
+            .createdAt(review.getCreatedAt().format(formatter))
+            .upFlag(upFlag)
             .build();
     }
 }

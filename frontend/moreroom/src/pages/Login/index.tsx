@@ -148,7 +148,7 @@ const handleLogin = async () => {
       </div>
 
       <p css={textcolors}>
-        <a  href="/" css={iconcolors} >비밀번호</a>&nbsp;찾기
+        <a  href="/find/password" css={iconcolors} >비밀번호</a>&nbsp;찾기
       </p>
 
       <p css={textcolors}>

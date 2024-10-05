@@ -2,7 +2,7 @@
 import React from 'react';
 import { btn, container } from './styles';
 import { TopBar } from '../../../components/TopBar';
-import { useLocation } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { getCafeDetail } from '../../../apis/cafeApi';
 import { CafeMap } from './CafeMap';
@@ -12,14 +12,12 @@ import { Button } from '../../../components/Button';
 import { Typography } from '../../../components/Typography';
 
 export const CafeDetailFetch = () => {
-  const loc = useLocation();
+  const params = useParams();
+  const nav = useNavigate();
 
   const cafeQuery = useSuspenseQuery({
     queryKey: ['cafe-detail'],
-    queryFn: async () =>
-      await getCafeDetail(
-        process.env.NODE_ENV === 'development' ? 1 : loc.state.cafeId,
-      ),
+    queryFn: async () => await getCafeDetail(Number(params.cafeId)),
   });
 
   if (cafeQuery.error && !cafeQuery.isFetching) {
@@ -29,7 +27,11 @@ export const CafeDetailFetch = () => {
   return (
     <div css={container}>
       <TopBar>
-        <TopBar.Title type="default" title={cafeQuery.data.data.cafeName} />
+        <TopBar.Title
+          type="default"
+          title={cafeQuery.data.data.cafeName}
+          backHandler={() => nav('/cafes')}
+        />
         <TopBar.Right handler={() => console.log('it"s notification')} />
       </TopBar>
       <CafeMap cafe={cafeQuery.data.data} />

@@ -1,10 +1,11 @@
 /** @jsxImportSource @emotion/react */
-import React from 'react';
+import React, { useState } from 'react';
 import { TopBar } from '../../components/TopBar';
 import {
   ArchiveBoxXMarkIcon,
   ArrowRightStartOnRectangleIcon,
   HashtagIcon,
+  KeyIcon,
   UserCircleIcon,
 } from '@heroicons/react/24/solid';
 import {
@@ -17,7 +18,6 @@ import {
   sectionCss,
 } from './styles';
 import { Typography } from '../../components/Typography';
-import { Chip } from '../../components/Chip';
 import { ManageInfo } from './ManageInfo';
 import { UserIcon } from '@heroicons/react/24/solid';
 import { Icon } from '../../components/Icon';
@@ -28,10 +28,59 @@ import {
   ChatBubbleLeftRightIcon,
 } from '@heroicons/react/24/solid';
 import { useNavigate } from 'react-router-dom';
+import { UserLogout } from '../../apis/loginApi';
+import { delUser } from '../../apis/authApi';
+import { useQuery } from '@tanstack/react-query';
+import { getMypage } from '../../apis/mypageApi';
+import { useSignUpStore } from '../../stores/signupStore';
+import { Notification } from '../../components/Notification';
 export const MyPage = () => {
   const nav = useNavigate();
+  const [showLogoutNotification, setShowLogoutNotification] =
+    useState<boolean>(false);
+  const [showDelNotification, setShowDelNotification] =
+    useState<boolean>(false);
+  const handleLogout = async () => {
+    await UserLogout();
+    setShowLogoutNotification(false);
+    nav('/login');
+  };
+
+  const handledelete = async () => {
+    await delUser();
+    setShowDelNotification(false);
+    nav('/login');
+  };
+
+  const ProfileQuery = useQuery({
+    queryKey: ['profile'],
+    queryFn: async () => await getMypage(),
+  });
+
+  console.log(ProfileQuery.data);
+
   return (
     <div>
+      {showLogoutNotification && (
+        <Notification
+          handler={handleLogout}
+          outlinedHandler={() => setShowLogoutNotification(false)}
+          ment="로그아웃 하시겠습니까?"
+          children={['로그아웃하기', '취소하기']}
+          twoBtn
+          type="confirm"
+        />
+      )}
+      {showDelNotification && (
+        <Notification
+          handler={handledelete}
+          outlinedHandler={() => setShowDelNotification(false)}
+          ment="회원탈퇴 하시겠습니까?"
+          children={['탈퇴하기', '취소하기']}
+          twoBtn
+          type="confirm"
+        />
+      )}
       <TopBar>
         <TopBar.Title
           type="default"
@@ -40,7 +89,12 @@ export const MyPage = () => {
         />
       </TopBar>
       <div css={profileContainer}>
-        <UserCircleIcon css={profile} />
+        {/* <UserCircleIcon css={profile} /> */}
+        <img
+          css={profile}
+          src={ProfileQuery.data?.data.photo}
+          alt="프로필 사진"
+        />
         <div>
           <Typography
             style={{ marginBottom: '0.5rem' }}
@@ -48,30 +102,12 @@ export const MyPage = () => {
             size={1.5}
             weight={600}
           >
-            D206탈출왕
+            {ProfileQuery.data?.data.nickname}
           </Typography>
           <div css={ChipCss}>
-            <Chip border={1} color="primary" fontSize={0.625} fontWeight={500}>
+            {/* <Chip border={1} color="primary" fontSize={0.625} fontWeight={500}>
               10방
-            </Chip>
-            <Chip
-              border={1}
-              color="primary"
-              fontSize={0.625}
-              fontWeight={500}
-              css={ChipCss}
-            >
-              구미시
-            </Chip>
-            <Chip
-              border={1}
-              color="primary"
-              fontSize={0.625}
-              fontWeight={500}
-              css={ChipCss}
-            >
-              스토리
-            </Chip>
+            </Chip> */}
           </div>
         </div>
       </div>
@@ -88,7 +124,7 @@ export const MyPage = () => {
               </Icon>
             }
             children="파티"
-            url="/mypage/profile"
+            url="/party"
           />
           <ManageInfo
             icon={
@@ -116,7 +152,7 @@ export const MyPage = () => {
                 </Icon>
               }
               children="내가 쓴 리뷰"
-              url="/mypage/profile"
+              url="/mypage/myreview"
             />
           </div>
         </div>
@@ -152,12 +188,26 @@ export const MyPage = () => {
             children="프로필 편집"
             url="/mypage/profile/edit"
           />
+          <ManageInfo
+            icon={
+              <Icon color="light" size={1.25}>
+                <KeyIcon />
+              </Icon>
+            }
+            children="비밀번호 변경"
+            url="/mypage/password/edit"
+          />
         </div>
         <div css={sectionCss}>
           <div css={lineCss}></div>
           <Typography color="grey" scale="400" size={0.875} weight={500}>
             기타
           </Typography>
+          {/* <Notification
+            handler={() => {}}
+            ment="정말 로그아웃 하시겠습니까?"
+            type="confirm"
+          /> */}
           <ManageInfo
             icon={
               <Icon color="light" size={1.25}>
@@ -165,7 +215,7 @@ export const MyPage = () => {
               </Icon>
             }
             children="로그아웃"
-            url="/mypage/profile"
+            onApi={() => setShowLogoutNotification(true)}
           />
           <ManageInfo
             icon={
@@ -174,7 +224,9 @@ export const MyPage = () => {
               </Icon>
             }
             children="회원 탈퇴"
-            url="/mypage/profile"
+            onApi={() => {
+              setShowDelNotification(true);
+            }}
           />
         </div>
       </div>

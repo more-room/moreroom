@@ -7,6 +7,8 @@ import com.moreroom.domain.mapping.theme.entity.ThemeGenreMapping;
 import com.moreroom.domain.mapping.theme.repository.ThemeGenreMappingRepository;
 import com.moreroom.domain.member.entity.Member;
 import com.moreroom.domain.member.repository.MemberRepository;
+import com.moreroom.domain.playLog.entity.PlayLog;
+import com.moreroom.domain.playLog.repository.PlayLogRepository;
 import com.moreroom.domain.review.dto.request.ReviewRequestDTO;
 import com.moreroom.domain.review.dto.request.ReviewUpdateRequestDTO;
 import com.moreroom.domain.review.dto.response.ReviewMyPageResponseDTO;
@@ -20,10 +22,12 @@ import com.moreroom.global.dto.PageResponseDto;
 import com.moreroom.global.util.FindMemberService;
 import jakarta.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -36,6 +40,7 @@ public class ReviewService {
     private final ThemeRepository themeRepository;
     private final ThemeGenreMappingRepository themeGenreMappingRepository;
     private final MemberReviewMappingRepository memberReviewMappingRepository;
+    private final PlayLogRepository playLogRepository;
 
     @Transactional
     public void save(ReviewRequestDTO reviewRequestDTO) {
@@ -54,14 +59,24 @@ public class ReviewService {
         reviewRepository.save(review);
     }
 
-    public PageResponseDto findAll(Integer themeId, int pageNumber, int pageSize) {
+    public PageResponseDto findAll(Integer themeId, int pageNumber, int pageSize, String sortOrder,
+        String sortBy) {
+        Sort sort = sortOrder.equalsIgnoreCase("desc") ? Sort.by(sortBy).descending()
+            : Sort.by(sortBy).ascending();
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
 
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Long memberId = findMemberService.findCurrentMember();
 
-        Page<Review> reviewList = reviewRepository.findAllByThemeThemeId(themeId, pageable);
+        Page<Object[]> reviewList = reviewRepository.findAllByThemeThemeIdAndMemberMemberIdAndDelFlagFalse(
+            themeId, memberId, pageable);
 
         List<ReviewResponseDTO> reviewResponseDTOList = reviewList.stream()
-            .map(ReviewResponseDTO::toDTO)
+            .map(result -> {
+                Review review = (Review) result[0];
+                boolean upFlag = ((Integer) result[1]).equals(1);
+
+                return ReviewResponseDTO.toDTO(review, upFlag);
+            })
             .toList();
 
         return PageResponseDto.builder()
@@ -73,15 +88,18 @@ public class ReviewService {
             .build();
     }
 
-    public PageResponseDto findAllByMine(int pageNumber, int pageSize) {
+    public PageResponseDto findAllByMine(int pageNumber, int pageSize, String sortOrder,
+        String sortBy) {
 
         Long memberId = findMemberService.findCurrentMember();
+        Sort sort = sortOrder.equalsIgnoreCase("desc") ? Sort.by(sortBy).descending()
+            : Sort.by(sortBy).ascending();
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
 
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-
-        Page<Review> reviewList = reviewRepository.findAllByMemberMemberId(memberId, pageable);
-
-        List<Review> reviews = reviewRepository.findAllByMemberMemberId(memberId);
+        Page<Review> reviewList = reviewRepository.findAllByMemberMemberIdAndDelFlagFalse(memberId,
+            pageable);
+        // fix: 쿼리 한번 호출
+        List<Review> reviews = reviewList.getContent();
 
         List<ReviewMyPageResponseDTO> reviewMyPageResponseDTOList = reviews.stream()
             .map(review -> {
@@ -158,6 +176,27 @@ public class ReviewService {
             }
         } else {
             throw new ReviewNotFoundException();
+        }
+    }
+
+    @Transactional
+    public void updatePlayLog(Integer themeId) {
+        Long memberId = findMemberService.findCurrentMember();
+
+        Optional<PlayLog> playLogOptional = playLogRepository.findByMemberIdAndThemeId(memberId,
+            themeId);
+
+        if (playLogOptional.isPresent()) {
+            PlayLog playLog = playLogOptional.get();
+            playLog.increasePlayCount();
+        } else {
+            PlayLog playLog = PlayLog.builder()
+                .memberId(memberId)
+                .themeId(themeId)
+                .playCount(1)
+                .build();
+
+            playLogRepository.save(playLog);
         }
     }
 }

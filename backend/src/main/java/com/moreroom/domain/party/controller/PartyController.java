@@ -2,17 +2,11 @@ package com.moreroom.domain.party.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.moreroom.domain.member.entity.Member;
-import com.moreroom.domain.party.dto.ChatroomListDto;
-import com.moreroom.domain.party.dto.ChatroomSettingDto;
-import com.moreroom.domain.party.dto.NoticeDto;
-import com.moreroom.domain.party.dto.PartyInfoDto;
-import com.moreroom.domain.party.dto.PartyMessageLogsDto;
-import com.moreroom.domain.party.dto.PartyRequestAcceptDto;
+import com.moreroom.domain.party.dto.*;
 import com.moreroom.domain.party.service.MessageService;
 import com.moreroom.domain.party.service.PartyService;
 import com.moreroom.domain.partyRequest.service.PartyMatchingService;
 import com.moreroom.global.util.FindMemberService;
-import com.querydsl.core.annotations.QueryProjection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +33,7 @@ public class PartyController {
   private final PartyService partyService;
   private final MessageService messageService;
 
+  //파티 참가 수락/거절
   @PostMapping("")
   public ResponseEntity<?> acceptPartyRequest(@RequestBody PartyRequestAcceptDto dto)
       throws JsonProcessingException {
@@ -52,6 +47,7 @@ public class PartyController {
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
+  //채팅 내역 조회
   @GetMapping("/chatLogs")
   public ResponseEntity<?> getChattingList(
       @RequestParam Long partyId,
@@ -109,6 +105,13 @@ public class PartyController {
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
+  //채팅방 공지사항 조회
+  @GetMapping("/{partyId}/notice")
+  public ResponseEntity<?> readNotice(@PathVariable Long partyId) {
+    NoticeDto notice = partyService.readChatroomNotice(partyId);
+    return new ResponseEntity<>(notice, HttpStatus.OK);
+  }
+
   //채팅방 설정 수정
   @PatchMapping("/{partyId}/settings")
   public ResponseEntity<?> updateChatroomSetting(@PathVariable Long partyId, @RequestBody ChatroomSettingDto dto) {
@@ -122,6 +125,29 @@ public class PartyController {
   public ResponseEntity<?> getChatroomSetting(@PathVariable Long partyId) {
     ChatroomSettingDto settingInfo = partyService.getSettingInfo(partyId);
     return new ResponseEntity<>(settingInfo, HttpStatus.OK);
+  }
+
+  //내가 속한 파티 리스트 조회
+  @GetMapping("/channel")
+  public ResponseEntity<?> getPartyIdList() {
+    Member member = findMemberService.findCurrentMemberObject();
+    PartyIdListDto partyIdList = partyService.getPartyIdList(member);
+    return new ResponseEntity<>(partyIdList, HttpStatus.OK);
+  }
+
+  //파티원 조회
+  @GetMapping("/{partyId}/memberList")
+  public ResponseEntity<?> getMemberList(@PathVariable Long partyId) {
+    PartyMemberDto partyMemberList = partyService.getPartyMemberList(partyId);
+    return new ResponseEntity<>(partyMemberList, HttpStatus.OK);
+  }
+
+  //파티원 추방
+  @PostMapping("/{partyId}/kick-out")
+  public ResponseEntity<?> kickOutMember(@RequestParam Long memberId, @PathVariable Long partyId) {
+    Member member = findMemberService.findCurrentMemberObject();
+    partyService.kickOutMember(member, memberId, partyId);
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 
 }

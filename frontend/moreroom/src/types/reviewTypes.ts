@@ -19,12 +19,13 @@ export interface IReviewListItem {
   member: {
     memberId: number;
     memberName: string;
-    memberProfile: string;
+    memberProfile: number;
   };
   content: string;
   score: number;
   thumbsUp: number;
-  updatedAt: string;
+  createdAt: string;
+  upFlag: boolean;
 }
 
 /* 내부 리뷰 조회 */
@@ -34,4 +35,11 @@ export interface IReviewList {
   pageSize: number;
   totalPage: number;
   totalElements: number;
+}
+
+// 리뷰 작성
+export interface IReviewCreate {
+  themeId: number;
+  content: string;
+  score: number;
 }
