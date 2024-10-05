@@ -55,7 +55,7 @@ public class FcmService {
 
       HttpEntity<String> entity = new HttpEntity<>(message, headers);
 
-      String API_URL = "<https://fcm.googleapis.com/v1/projects/d206-moreroom/messages:send>";
+      String API_URL = "https://fcm.googleapis.com/v1/projects/d206-moreroom/messages:send";
       ResponseEntity<String> response = restTemplate.exchange(API_URL, HttpMethod.POST, entity, String.class);
 
       log.info("알림보내기: {}", response.getStatusCode());
@@ -74,9 +74,10 @@ public class FcmService {
   private String getAccessToken() throws IOException {
     String firebaseConfigPath = "firebase/d206-moreroom-firebase-adminsdk-byl7s-8676046b0a.json";
 
+    log.info("googleCredentials 진입 전");
     GoogleCredentials googleCredentials = GoogleCredentials
         .fromStream(new ClassPathResource(firebaseConfigPath).getInputStream())
-        .createScoped(List.of("<https://www.googleapis.com/auth/cloud-platform>"));
+        .createScoped(List.of("https://www.googleapis.com/auth/cloud-platform"));
 
     googleCredentials.refreshIfExpired();
     log.info("액세스 토큰: {}", googleCredentials.getAccessToken().getTokenValue());

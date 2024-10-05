@@ -1,10 +1,7 @@
 package com.moreroom.domain.deviceToken.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 /**
  * FCM 전송 Format DTO
@@ -36,6 +33,8 @@ import lombok.Setter;
 @Getter
 @Builder
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class FcmMessageDto {
   private boolean validateOnly;
@@ -43,6 +42,7 @@ public class FcmMessageDto {
 
   @Builder
   @AllArgsConstructor
+  @NoArgsConstructor
   @Getter
   @JsonInclude(JsonInclude.Include.NON_NULL)
   public static class Message {
@@ -53,6 +53,7 @@ public class FcmMessageDto {
 
   @Builder
   @AllArgsConstructor
+  @NoArgsConstructor
   @Getter
   @JsonInclude(JsonInclude.Include.NON_NULL)
   public static class Notification {
@@ -62,6 +63,7 @@ public class FcmMessageDto {
 
   @Builder
   @AllArgsConstructor
+  @NoArgsConstructor
   @Getter
   @JsonInclude(JsonInclude.Include.NON_NULL)
   public static class Data {
