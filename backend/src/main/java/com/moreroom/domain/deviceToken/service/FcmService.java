@@ -74,6 +74,7 @@ public class FcmService {
   private String getAccessToken() throws IOException {
     String firebaseConfigPath = "firebase/d206-moreroom-firebase-adminsdk-byl7s-8676046b0a.json";
 
+    log.info("googleCredentials 진입 전");
     GoogleCredentials googleCredentials = GoogleCredentials
         .fromStream(new ClassPathResource(firebaseConfigPath).getInputStream())
         .createScoped(List.of("https://www.googleapis.com/auth/cloud-platform"));
