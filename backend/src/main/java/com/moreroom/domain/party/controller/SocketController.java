@@ -45,9 +45,9 @@ public class SocketController {
   @MessageMapping("/chat/message")
   public void sendMessage(ChatMessageDto message, Principal principal, MessageHeaders headers, @Header("nickname") String nickname) {
     messageService.saveMessage(message, principal); //메시지 저장
-//    FcmMessageDto fcmMessageDto = fcmService.makeChattingPush(nickname, message.getMessage(),
-//        principal.getName(), message.getPartyId());
-//    fcmService.sendMessageTo(fcmMessageDto); //푸시알림 전송 -> 클라이언트에서는 소켓연결이 되지 않은 경우 소켓연결을 해야 함
+    FcmMessageDto fcmMessageDto = fcmService.makeChattingPush(nickname, message.getMessage(),
+        principal.getName(), message.getPartyId());
+    fcmService.sendMessageTo(fcmMessageDto); //푸시알림 전송 -> 클라이언트에서는 소켓연결이 되지 않은 경우 소켓연결을 해야 함
     simpMessagingTemplate.convertAndSend("/topic/party/" + message.getPartyId(), message, headers); //소켓메세지 전송
   }
 }
