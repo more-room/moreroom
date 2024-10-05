@@ -1,32 +1,33 @@
 /** @jsxImportSource @emotion/react */
-import React, { Suspense } from 'react';
+import React, { useState, Suspense } from 'react';
 import { useModal } from '../../../hooks/useModal';
 import { ErrorBoundary } from 'react-error-boundary';
-import { Genre } from '../../theme/ThemeFilters/Genre';
-import { Button } from '../../../components/Button';
-import { useSearchThemesStore } from '../../../stores/themeStore';
-import { Typography } from '../../../components/Typography';
-import { btnCss, containerCss, fontCss } from '../Selectedtheme/styles';
+import { containerCss } from '../Selectedtheme/styles';
 import { ReviewSortFetch } from './ReviewSortFetch';
 
-export const ReviewSort = () => {
-  const modal = useModal();
-  const searchThemesStore = useSearchThemesStore();
+interface ReviewSortProps {
+  onSelect: (option: string) => void; // onSelect prop 타입 정의
+}
 
-  const clickHandler = () => {
-    console.log(searchThemesStore.filters);
-    modal.hide();
+export const ReviewSort: React.FC<ReviewSortProps> = ({ onSelect }) => {
+  const modal = useModal();
+  const [selectedOption, setSelectedOption] = useState('최신 작성순'); // 로컬 상태로 선택된 옵션 관리
+
+  // 정렬 기준 선택 핸들러
+  const handleSortSelect = (option: string) => {
+    setSelectedOption(option); // 선택된 옵션 업데이트
+    console.log(`선택된 정렬 기준: ${option}`); // 선택된 옵션 로그
+    onSelect(option); // onSelect 호출
+    modal.hide(); // 모달 닫기
   };
+
   return (
     <div css={containerCss}>
       <ErrorBoundary fallback={<>에러</>}>
         <Suspense fallback={<>로딩중</>}>
-          <ReviewSortFetch />
+          <ReviewSortFetch onSelect={handleSortSelect} /> {/* onSelect 핸들러 전달 */}
         </Suspense>
       </ErrorBoundary>
-      {/* <Button css={btnCss} fullwidth rounded={0.5} handler={clickHandler}>
-        확인
-      </Button> */}
     </div>
   );
 };

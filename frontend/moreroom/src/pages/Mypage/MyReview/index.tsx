@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { TopBar } from '../../../components/TopBar';
 import { useNavigate } from 'react-router-dom';
 import { Icon } from '../../../components/Icon';
@@ -16,12 +16,42 @@ import { IMyReview } from '../../../types/mypageTypes';
 export const MyReview = () => {
   const nav = useNavigate();
   const modal = useModal();
+
+  // 정렬 기준 상태
+  const [sortOption, setSortOption] = useState('최신 작성순'); // 기본값: '작성순'
+  
+  // 리뷰 데이터 가져오기
   const ReviewQuery = useQuery({
     queryKey: ['myReview'],
     queryFn: async () => await getMyReview(),
   });
 
-  console.log(ReviewQuery.data);
+  console.log(ReviewQuery)
+
+  // 정렬된 리뷰 목록을 계산
+  const sortedReviews = useMemo(() => {
+    if (!ReviewQuery.data?.data.content) return [];
+
+    const reviews = [...ReviewQuery.data.data.content];
+
+    switch (sortOption) {
+      case '최신 작성순':
+        return reviews.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      case '오래된 작성순':
+        return reviews.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+      case '높은 별점순':
+        return reviews.sort((a, b) => b.score - a.score);
+      default:
+        return reviews;
+    }
+  }, [ReviewQuery.data, sortOption]);
+
+  // 모달에서 정렬 옵션 선택 핸들러
+  const handleSortSelect = (option: string) => {
+    setSortOption(option);
+    modal.hide();
+  };
+
   return (
     <div>
       <TopBar>
@@ -37,11 +67,16 @@ export const MyReview = () => {
           <Icon color="grey" size={1}>
             <ChevronDownIcon />
           </Icon>
-          <Typography color="grey" size={1} weight={700} onClick={()=>modal.show(<ReviewSort/>)}>
-            작성순
+          <Typography
+            color="grey"
+            size={1}
+            weight={700}
+            onClick={() => modal.show(<ReviewSort onSelect={handleSortSelect} />, 35)}
+          >
+            {sortOption} {/* 현재 선택된 정렬 기준 */}
           </Typography>
         </div>
-        {ReviewQuery.data?.data.content.map((review: IMyReview) => (
+        {sortedReviews.map((review: IMyReview) => (
           <ReivewList
             key={review.reviewId}
             nickname={review.member.memberName}
@@ -49,11 +84,11 @@ export const MyReview = () => {
             content={review.content}
             score={review.score}
             poster={review.theme.poster}
-            themeId = {review.theme.themeId}
+            themeId={review.theme.themeId}
             themeTitle={review.theme.title}
             cafeBrand={review.cafe.brandName}
             cafeBranch={review.cafe.branchName}
-            updatedAt={review.updatedAt}
+            updatedAt={review.createdAt}
           />
         ))}
       </div>

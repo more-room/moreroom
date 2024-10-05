@@ -4,12 +4,9 @@ import {
   FormHelperText,
   IconButton,
   InputAdornment,
-  TextField,
-  styled,
 } from '@mui/material';
 import { Button } from '../../../components/Button';
 import { btnCss, inputCss, containerCss } from './styles';
-import { useNavigate } from 'react-router-dom';
 import {
   isEmail,
   isNickname,

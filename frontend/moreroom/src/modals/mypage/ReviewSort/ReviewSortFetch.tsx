@@ -1,43 +1,45 @@
 /** @jsxImportSource @emotion/react */
-import React, { Suspense, useState } from 'react';
-import {
-  checkmarkStyles,
-  confirmButtonStyles,
-  labelStyles,
-  modalStyles,
-  optionStyles,
-} from './styles';
+import React, { useState } from 'react';
 import { useModal } from '../../../hooks/useModal';
+import { Typography } from '../../../components/Typography';
+import { Button } from '../../../components/Button';
+import { containerCss, confirmButtonStyles, optionStyles, labelStyles, checkmarkStyles } from './styles';
 
-export const ReviewSortFetch = () => {
+interface ReviewSortFetchProps {
+  onSelect: (option: string) => void; // onSelect 프로퍼티 타입 정의
+}
+
+export const ReviewSortFetch: React.FC<ReviewSortFetchProps> = ({
+  onSelect,
+}) => {
   const [selectedOption, setSelectedOption] = useState('방문 일자 순');
-  const modal = useModal();
   const sortOptions = [
-    '방문 일자 순',
     '최신 작성순',
     '오래된 작성순',
     '높은 별점순',
   ];
+  const modal = useModal();
+
   const clickHandler = () => {
-    // console.log(searchThemesStore.filters);
-    modal.hide();
+    onSelect(selectedOption); // 선택한 옵션을 상위 컴포넌트로 넘겨줌
+    modal.hide(); // 모달 닫기
   };
 
   return (
-    <div css={modalStyles}>
-      {sortOptions.map((option) => (
-        <div
-          key={option}
-          css={optionStyles}
-          onClick={() => setSelectedOption(option)}
-        >
-          <span css={labelStyles}>{option}</span>
-          {selectedOption === option && <span css={checkmarkStyles}>✓</span>}
-        </div>
-      ))}
-      <button css={confirmButtonStyles} onClick={clickHandler}>
-        확인
-      </button>
-    </div>
+    <div css={containerCss}>
+    {sortOptions.map((option) => (
+      <div
+        key={option}
+        css={optionStyles}
+        onClick={() => setSelectedOption(option)}
+      >
+        <span css={labelStyles}>{option}</span>
+        {selectedOption === option && <span css={checkmarkStyles}>✓</span>}
+      </div>
+    ))}
+    <button css={confirmButtonStyles} onClick={clickHandler}>
+      확인
+    </button>
+  </div>
   );
 };

@@ -54,7 +54,7 @@ export const EmailVerificaion = ({ onSubmit }: UserDataFormProps) => {
           <div style={{ flex: '1' }}>
             <CssTextField
               fullWidth
-              // error={!!emailError}
+              error={!!emailError}
               label="이메일"
               id="custom-css-outlined-input"
               placeholder="abc@gmail.com"

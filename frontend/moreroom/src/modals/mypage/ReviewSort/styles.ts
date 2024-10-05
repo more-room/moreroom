@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 
-export const modalStyles = css`
+export const containerCss = css`
   position: absolute;
   left: 0;
   right: 0;

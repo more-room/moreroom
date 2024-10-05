@@ -43,5 +43,5 @@ export interface IMyReview {
     brandName: string;
     branchName: string;
   };
-  updatedAt: string;
+  createdAt: string;
 }

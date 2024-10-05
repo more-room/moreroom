@@ -2,17 +2,6 @@
 import React, { useState } from 'react';
 import { TopBar } from '../../../components/TopBar';
 import { useNavigate } from 'react-router-dom';
-import { FormHelperText } from '@mui/material';
-import { Button } from '../../../components/Button';
-import {
-  btnCss,
-  containerCss,
-  inputCss,
-} from '../../Signup/AccountInfo/styles';
-import { Typography } from '../../../components/Typography';
-import { isEmail } from '../../../apis/authApi';
-import { validateEmail } from '../../../utils/validationUtils';
-import { tmpPwd } from '../../../apis/loginApi';
 import { Progress } from '../../../components/Progress';
 import { Transition } from '../../../components/common/Transition';
 import { EmailVerificaion } from './EmailVerification';
