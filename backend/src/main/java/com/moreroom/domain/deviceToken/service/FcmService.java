@@ -96,12 +96,12 @@ public class FcmService {
         .build();
 
     Data data = Data.builder()
-        .type(MessageType.PARTY_REQUEST)
+        .type(MessageType.PARTY_REQUEST.toString())
         .themeName(themeTitle)
         .cafeName(cafeName)
-        .partyRequestId(partyRequestId)
+        .partyRequestId(partyRequestId.toString())
         .uuid(uuid)
-        .themeId(themeId)
+        .themeId(themeId.toString())
         .build();
 
     return FcmMessageDto.builder()
@@ -121,8 +121,8 @@ public class FcmService {
         .build();
 
     Data data = Data.builder()
-        .type(MessageType.CHATROOM_SUBSCRIBE)
-        .partyId(partyId)
+        .type(MessageType.CHATROOM_SUBSCRIBE.toString())
+        .partyId(partyId.toString())
         .build();
 
     return FcmMessageDto.builder()
@@ -142,7 +142,7 @@ public class FcmService {
         .build();
 
     Data data = Data.builder()
-        .type(MessageType.PARTY_BROKEN)
+        .type(MessageType.PARTY_BROKEN.toString())
         .message("파티가 매칭되지 않았습니다.")
         .build();
 
@@ -187,8 +187,8 @@ public class FcmService {
         .build();
 
     Data data = Data.builder()
-        .type(MessageType.CHAT_MESSAGE)
-        .partyId(partyId)
+        .type(MessageType.CHAT_MESSAGE.toString())
+        .partyId(partyId.toString())
         .build();
 
     return FcmMessageDto.builder()

@@ -67,13 +67,13 @@ public class FcmMessageDto {
   @Getter
   @JsonInclude(JsonInclude.Include.NON_NULL)
   public static class Data {
-    private MessageType type;
+    private String type;
     private String themeName;
     private String cafeName;
-    private Long partyRequestId;
+    private String partyRequestId;
     private String uuid;
-    private Integer themeId;
-    private Long partyId;
+    private String themeId;
+    private String partyId;
     private String message;
   }
 
