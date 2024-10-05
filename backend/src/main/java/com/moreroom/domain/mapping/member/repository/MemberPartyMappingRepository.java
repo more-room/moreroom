@@ -26,4 +26,8 @@ public interface MemberPartyMappingRepository extends JpaRepository<MemberPartyM
   @Modifying
   @Query("delete from MemberPartyMapping m where m.member.memberId = :memberId and m.party.partyId = :partyId")
   int deleteMemberPartyMappingByMemberAndParty(Long memberId, Long partyId);
+
+
+  @Query("select m.email from Member m join MemberPartyMapping mp on m = mp.member where mp.party.partyId = :partyId and m.email != :email")
+  List<String> getEmailListForChattingAlarm(Long partyId, String email);
 }
