@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/fcm")
+@RequestMapping("/fcm")
 @RequiredArgsConstructor
 public class FcmController {
   private final FindMemberService findMemberService;
