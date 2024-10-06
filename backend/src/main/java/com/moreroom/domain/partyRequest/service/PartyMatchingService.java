@@ -8,8 +8,10 @@ import com.moreroom.domain.member.exception.MemberNotFoundException;
 import com.moreroom.domain.member.repository.MemberRepository;
 import com.moreroom.domain.partyRequest.entity.MatchingStatus;
 import com.moreroom.domain.partyRequest.entity.PartyRequest;
+import com.moreroom.domain.partyRequest.exception.PartyRequestNotFoundException;
 import com.moreroom.domain.partyRequest.repository.PartyRequestRepository;
 import com.moreroom.domain.theme.entity.Theme;
+import com.moreroom.domain.theme.exception.ThemeNotFoundException;
 import com.moreroom.domain.theme.repository.ThemeRepository;
 import com.moreroom.global.util.RedisUtil;
 import java.util.ArrayList;
@@ -19,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
@@ -70,13 +74,8 @@ public class PartyMatchingService {
   }
 
   // FastAPI에서 받은 partyMemberIds로 Member 엔티티 리스트를 가져오는 메서드
-  private List<Member> getPartyMembersFromIds(List<Integer> memberIds) {
-    List<Member> members = new ArrayList<>();
-    for (Integer memberId : memberIds) {
-      Member member = memberRepository.findById(Long.valueOf(memberId)).orElseThrow(MemberNotFoundException::new);
-      members.add(member);
-    }
-    return members;
+  private List<Member> getPartyMembersFromIds(List<Long> memberIds) {
+    return memberRepository.findAllByMemberIdIn(memberIds);
   }
 
   @Scheduled(cron = "0 0 18 * * *", zone = "Asia/Seoul")
@@ -101,13 +100,10 @@ public class PartyMatchingService {
       }
 
       // FastAPI 결과에서 멤버 ID 리스트를 가져와서 Member 엔티티 리스트를 가져옴
-      List<Member> partyMembers = getPartyMembersFromIds(partyMemberIds);
+      List<Long> memberIdList = partyMemberIds.stream().mapToLong(Long::valueOf).boxed().toList();
+      List<Member> partyMembers = getPartyMembersFromIds(memberIdList);
 
       // 파티 매칭 UUID 생성 및 처리
-      List<Long> memberIdList = partyMembers.stream()
-          .map(Member::getMemberId)
-          .toList();
-
       String uuid = setUuidToRequest(memberIdList, themeId); // partyRequest의 uuid 필드에 uuid 저장
       setPartyAcceptRecordMap(uuid, memberIdList); // redis에 accept 현황판 저장
       sendPartyNotification(partyMembers, themeId, uuid); //알림 보내기
@@ -119,15 +115,8 @@ public class PartyMatchingService {
   @Transactional
   public String setUuidToRequest(List<Long> memberIdList, Integer themeId) {
     String uuid = UUID.randomUUID().toString();
-
-    List<PartyRequest> partyRequestList = partyRequestRepository.findByThemeIdandMemberIdList(
-        themeId, memberIdList);
-
-    for (PartyRequest pr : partyRequestList) { //dirty checking update
-      pr.setUuid(uuid);
-      pr.changeStatus(MatchingStatus.MATCHED);
-    }
-
+    int updatedCount = partyRequestRepository.updateUuidAndStatusForMembers(uuid, MatchingStatus.MATCHED, themeId, memberIdList);
+    log.info("업데이트된 행의 수: {}", updatedCount);
     return uuid;
   }
 
@@ -135,7 +124,6 @@ public class PartyMatchingService {
   public void setPartyAcceptRecordMap(String uuid, List<Long> memberIdList)
       throws JsonProcessingException {
     String key = "PARTYMATCH:" + uuid;
-
 
     HashMap<Long, String> partyAcceptRecordMap = new HashMap<>();
     for (Long memberId : memberIdList) {
@@ -148,16 +136,29 @@ public class PartyMatchingService {
 
   // 4. 멤버에게 파티 참가 요청 보내기
   public void sendPartyNotification(List<Member> partyMemberList, Integer themeId, String uuid) {
-    Theme theme = themeRepository.findById(themeId).orElseThrow(); //throws NoSuchElementException
-    String cafeName = theme.getCafe().getCafeName(); //쿼리 추가 실행
+    Theme theme = themeRepository.findThemeAndCafeById(themeId).orElseThrow(ThemeNotFoundException::new);
+    String cafeName = theme.getCafe().getCafeName(); //fetch join 써서 쿼리 추가 실행X
+
+    List<Long> memberIds = partyMemberList.stream().map(Member::getMemberId).toList();
+    List<PartyRequest> partyRequests = partyRequestRepository.findByThemeIdAndMemberIdIn(themeId, memberIds);
 
     for (Member member : partyMemberList) {
-      PartyRequest partyRequest = partyRequestRepository.findByThemeIdandMemberId( //쿼리 실행
-          theme.getThemeId(), member.getMemberId());
-      //알림보내기
-      FcmMessageDto fcmMessageDto = fcmService.makePartyRequestMessage(
-          member, theme.getTitle(), cafeName, partyRequest.getPartyRequestId(), uuid, themeId);
-      fcmService.sendMessageTo(fcmMessageDto);
+      try {
+        //partyRequest 찾기
+        PartyRequest partyRequest = partyRequests.stream()
+                .filter(pr -> pr.getMember().getMemberId().equals(member.getMemberId()))
+                .findFirst()
+                .orElseThrow(PartyRequestNotFoundException::new);
+        //알림보내기
+        FcmMessageDto fcmMessageDto = fcmService.makePartyRequestMessage(
+                member, theme.getTitle(), cafeName, partyRequest.getPartyRequestId(), uuid, themeId);
+        fcmService.sendMessageTo(fcmMessageDto);
+
+      } catch (PartyRequestNotFoundException e) {
+        log.error("멤버정보와 일치하는 partyRequest 찾지 못함", e);
+      } catch (Exception e) {
+        log.error("푸시알림 오류 발생", e);
+      }
     }
   }
 
