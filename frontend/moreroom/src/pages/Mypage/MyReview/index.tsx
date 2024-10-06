@@ -71,7 +71,7 @@ export const MyReview = () => {
             color="grey"
             size={1}
             weight={700}
-            onClick={() => modal.show(<ReviewSort onSelect={handleSortSelect} />, 35)}
+            onClick={() => modal.show(<ReviewSort sortOption={sortOption} onSelect={handleSortSelect} />, 35)}
           >
             {sortOption} {/* 현재 선택된 정렬 기준 */}
           </Typography>

@@ -23,7 +23,8 @@ api.interceptors.request.use(
 const loginReg = /^(\/(login))(\/.*)?$/;
 const signupReg = /^(\/(signup))(\/.*)?$/;
 const chatReg = /^(\/(chating))(\/.*)?$/;
-
+const findPwdReg = /^(\/(find))(\/.*)?$/;
+ 
 api.interceptors.response.use(
   (response) => {
     if (loginReg.test(window.location.pathname)) {
@@ -36,7 +37,8 @@ api.interceptors.response.use(
       if (
         !loginReg.test(window.location.pathname) &&
         !signupReg.test(window.location.pathname) &&
-        !chatReg.test(window.location.pathname)
+        !chatReg.test(window.location.pathname) &&
+        !findPwdReg.test(window.location.pathname) 
       ) {
         window.location.href = '/login';
       }

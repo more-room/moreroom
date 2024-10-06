@@ -6,10 +6,11 @@ import { containerCss } from '../Selectedtheme/styles';
 import { ReviewSortFetch } from './ReviewSortFetch';
 
 interface ReviewSortProps {
+  sortOption: string,
   onSelect: (option: string) => void; // onSelect prop 타입 정의
 }
 
-export const ReviewSort: React.FC<ReviewSortProps> = ({ onSelect }) => {
+export const ReviewSort = ({ sortOption, onSelect }:ReviewSortProps) => {
   const modal = useModal();
   const [selectedOption, setSelectedOption] = useState('최신 작성순'); // 로컬 상태로 선택된 옵션 관리
 
@@ -25,7 +26,7 @@ export const ReviewSort: React.FC<ReviewSortProps> = ({ onSelect }) => {
     <div css={containerCss}>
       <ErrorBoundary fallback={<>에러</>}>
         <Suspense fallback={<>로딩중</>}>
-          <ReviewSortFetch onSelect={handleSortSelect} /> {/* onSelect 핸들러 전달 */}
+          <ReviewSortFetch sortOption={sortOption} onSelect={handleSortSelect} /> {/* onSelect 핸들러 전달 */}
         </Suspense>
       </ErrorBoundary>
     </div>

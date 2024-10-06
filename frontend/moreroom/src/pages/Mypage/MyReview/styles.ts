@@ -6,5 +6,5 @@ export const containerCss = css`
 
 export const sortCss = css`
   display: flex;
-  /* gap: 0.5rem; */
+  gap: 0.5rem;
 `

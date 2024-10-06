@@ -1,13 +1,15 @@
 import React, { Suspense } from 'react';
-import { ErrorBoundary } from 'react-error-boundary';
+import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 import { PartyListFetch } from './PartyListFetch';
+import Error from '../../../components/common/Error';
+import Loading from '../../../components/common/Loading';
 
 
 export const PartyList = () => {
   return (
     <div>
-      <ErrorBoundary fallback={<>에러</>}>
-        <Suspense fallback={<>로딩중</>}>
+       <ErrorBoundary fallbackRender={(fallbackProps: FallbackProps) => <Error {...fallbackProps} />}>
+       <Suspense fallback={<Loading height='50vh' />}>
           <PartyListFetch />
         </Suspense>
       </ErrorBoundary>
