@@ -6,23 +6,14 @@ import com.moreroom.domain.member.exception.MemberNotFoundException;
 import com.moreroom.domain.member.repository.MemberRepository;
 import com.moreroom.global.dto.RedisUserInfo;
 import com.moreroom.global.util.RedisUtil;
-import java.security.Principal;
-import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageBuilder;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
@@ -89,7 +80,7 @@ public class WebSocketInterceptor implements ChannelInterceptor {
     RedisUserInfo info = redisUtil.getRedisUserInfo(key);
 
     if (info == null) {
-      Member member = memberRepository.findByEmail(email)
+      Member member = memberRepository.findByEmailAndDelFlagFalse(email)
           .orElseThrow(MemberNotFoundException::new);
       info = new RedisUserInfo(member.getMemberId(), member.getEmail(), member.getNickname(),
           member.getPhoto());

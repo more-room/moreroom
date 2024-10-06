@@ -1,17 +1,17 @@
 package com.moreroom.domain.member.service;
 
+import com.moreroom.domain.member.entity.Member;
+import com.moreroom.domain.member.repository.MemberRepository;
 import java.util.ArrayList;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import com.moreroom.domain.member.entity.Member;
-import com.moreroom.domain.member.repository.MemberRepository;
-import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,7 +23,7 @@ public class AuthService {
 
     public boolean authenticate(String email, String rawPassword) {
         // 이메일로 사용자 조회
-        Member member = memberRepository.findByEmail(email)
+        Member member = memberRepository.findByEmailAndDelFlagFalse(email)
             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         if (passwordEncoder.matches(rawPassword, member.getPassword())) {

@@ -90,8 +90,8 @@ public class MailService {
                 "<br>" +
                 "비밀번호를 꼭 변경해주세요"; //이메일 내용 삽입
 
-        if (memberRepository.findByEmail(email).isPresent()) {
-            Member member = memberRepository.findByEmail(email).get();
+        if (memberRepository.findByEmailAndDelFlagFalse(email).isPresent()) {
+            Member member = memberRepository.findByEmailAndDelFlagFalse(email).get();
             member.changePassword(passwordEncoder.encode(tempPassword));
 
             mailSendWithPassword(setFrom, email, title, content);
