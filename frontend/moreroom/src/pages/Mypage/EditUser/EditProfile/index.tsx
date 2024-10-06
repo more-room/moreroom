@@ -30,11 +30,11 @@ import { Selectedtheme } from '../../../../modals/mypage/Selectedtheme';
 import { SelectedGenre } from '../../../../modals/mypage/SelectedGenre';
 import { CssTextField } from '../../../../components/Mui/CssTextField';
 import { useRegionSelectionStore } from '../../../../stores/signupStore';
+import { handleDateChange } from '../../../../utils/birthUtils';
 
 export const EditProfile = () => {
   const nav = useNavigate();
-  
-  
+
   const [namemsg, setNamemsg] = useState('');
   const [nicknameError, setNicknameError] = useState<string>('');
   const searchThemesStore = useSearchThemesStore();
@@ -52,25 +52,30 @@ export const EditProfile = () => {
     queryFn: async () => await getMyInfo(),
   });
 
-  const [nickname, setNickname] = useState<string>(MyInfoQuery.data?.data?.nickname);
-  const [gender, setGender] = useState<'M' | 'F' | undefined>(MyInfoQuery.data?.data.gender);
+  const [nickname, setNickname] = useState<string>(
+    MyInfoQuery.data?.data?.nickname,
+  );
+  const [gender, setGender] = useState<'M' | 'F' | undefined>(
+    MyInfoQuery.data?.data.gender,
+  );
   const birthdata = MyInfoQuery.data?.data?.birth.split('-');
-  console.log(birthdata)
+  console.log(birthdata);
   const [birthYear, setBirthYear] = useState<string>('birthdata[0]');
   const [birthMonth, setBirthMonth] = useState<string>('birthdata[1]');
   const [birthDay, setBirthDay] = useState<string>('birthdata[2]');
 
-  console.log(MyInfoQuery.data)
+  console.log(MyInfoQuery.data);
   const [room, setRoom] = useState<string>(
     MyInfoQuery?.data?.data?.clearRoom || '',
   );
   useEffect(() => {
     if (MyInfoQuery.isSuccess && MyInfoQuery.data && MyInfoQuery.data.data) {
-      const { nickname, gender, birth, clearRoom, regionId, preferredGenre } = MyInfoQuery.data.data;
-  
+      const { nickname, gender, birth, clearRoom, regionId, preferredGenre } =
+        MyInfoQuery.data.data;
+
       setNickname(nickname || ''); // 닉네임 초기화
       setGender(gender || undefined); // 성별 초기화
-  
+
       // 생년월일이 존재하는지 확인하고 분리
       if (birth && typeof birth === 'string') {
         const birthArr = birth.split('-');
@@ -80,18 +85,18 @@ export const EditProfile = () => {
           setBirthDay(birthArr[2] || '');
         }
       }
-  
+
       // 클리어 방 수 설정
       setRoom(clearRoom ? String(clearRoom) : '');
-  
+
       // 지역 설정
       // setRegion(regionId || '');  // regionId가 있을 경우 설정
-  
+
       // 선호 장르 설정
       // setPreferredGenre(preferredGenre || []); // 선호 장르가 있을 경우 설정
     }
   }, [MyInfoQuery.isSuccess, MyInfoQuery.data]);
-  
+
   const { mutate } = useMutation({
     mutationFn: async ({
       newNickName,
@@ -174,7 +179,15 @@ export const EditProfile = () => {
       });
     } else {
       alert('성별을 선택해 주세요.');
-      console.log('보낸 데이터',nickname,gender,  birth, newRegionId, room, genreIdList)
+      console.log(
+        '보낸 데이터',
+        nickname,
+        gender,
+        birth,
+        newRegionId,
+        room,
+        genreIdList,
+      );
     }
   };
   // 장르 목록에서 선택된 장르 이름 가져오기
@@ -209,70 +222,17 @@ export const EditProfile = () => {
 
   const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    let onlyNumber = value.replace(/[^0-9]/g, '');
-
-    if (onlyNumber.length > 4) {
-      onlyNumber = onlyNumber.slice(0, 4);
-    }
-
-    // 4자리 입력 후 범위 체크
-    if (onlyNumber.length === 4) {
-      const year = parseInt(onlyNumber, 10);
-      if (year < 1924) {
-        setBirthYear('1924');
-      } else if (year > 2024) {
-        setBirthYear('2024');
-      } else {
-        setBirthYear(onlyNumber); // 유효한 연도는 그대로 설정
-      }
-    } else {
-      setBirthYear(onlyNumber); // 4자리 미만일 때는 그대로 입력
-    }
+    handleDateChange(value, 'year', setBirthYear);
   };
+
   const handleMonthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    // 숫자만 허용
-    const onlyNumber = value.replace(/[^0-9]/g, '');
-    const month = parseInt(onlyNumber, 10);
-
-    // 2자리 미만일 때는 그대로 입력
-    if (onlyNumber.length <= 2) {
-      setBirthMonth(onlyNumber);
-    }
-
-    // 1~12 범위 제한
-    if (onlyNumber.length === 2) {
-      if (month < 1) {
-        setBirthMonth('01'); // 01로 설정
-      } else if (month > 12) {
-        setBirthMonth('12'); // 12로 설정
-      } else {
-        setBirthMonth(onlyNumber); // 유효한 월은 그대로 설정
-      }
-    }
+    handleDateChange(value, 'month', setBirthMonth);
   };
 
   const handleDayChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    // 숫자만 허용
-    const onlyNumber = value.replace(/[^0-9]/g, '');
-    const day = parseInt(onlyNumber, 10);
-
-    // 2자리 미만일 때는 그대로 입력
-    if (onlyNumber.length <= 2) {
-      setBirthDay(onlyNumber);
-    }
-
-    // 1~31 범위 제한
-    if (onlyNumber.length === 2) {
-      if (day < 1) {
-        setBirthDay('01'); // 01로 설정
-      } else if (day > 31) {
-        setBirthDay('31'); // 31로 설정
-      } else {
-        setBirthDay(onlyNumber); // 유효한 일은 그대로 설정
-      }
-    }
+    handleDateChange(value, 'day', setBirthDay);
   };
 
   const handleroom = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -281,8 +241,6 @@ export const EditProfile = () => {
     const onlyNumber = value.replace(/[^0-9]/g, '');
     setRoom(onlyNumber); // 수정된 값으로 상태 업데이트
   };
-
-  
 
   return (
     <div>
@@ -411,10 +369,14 @@ export const EditProfile = () => {
               {getSelectedGenresText()}
             </FilterChip>
           </div>
-
-          <Button rounded={0.5} handler={handleEdit} fullwidth>
-            수정하기
-          </Button>
+          <div style={{display:'flex', justifyContent:'flex-end', marginTop:'2rem', gap: '0.5rem'}}>
+            <Button color="danger" rounded={0.5} handler={() => nav(-1)}>
+              취소
+            </Button>
+            <Button rounded={0.5} handler={handleEdit}>
+              수정
+            </Button>
+          </div>
         </div>
       </div>
     </div>
