@@ -5,8 +5,9 @@ import { TopBar } from "../../../../components/TopBar";
 import { IParty, IChatRoomInfo, IMemberListResponse } from "../../../../types/chatingTypes";
 import { getPartyList, getMyPartyList, getChatRoomInfo, patchChatRoomInfo, getPartyMembers } from "../../../../apis/chatApi";
 import { ThemeItem } from "../../../../components/ThemeItem";
-import { titletext, topbarcolor, textcolor, infobox, buttoncss, hr, exitbutton, memberContainer, memberItem, memberImage, memberName, inputStyle, modalContent, modalTitle } from "./styles";
+import { titletext, topbarcolor, textcolor, infobox, buttoncss, hr, exitbutton, memberContainer, memberItem, memberImage, memberName, inputStyle, modalContent, modalTitle, rangeInputStyle } from "./styles";
 import { InfoBox } from "../../../../components/InfoBox";
+import { Typography } from "../../../../components/Typography";
 import { UserIcon } from "@heroicons/react/24/solid";
 import { Button } from "../../../../components/Button";
 import { Colors } from "../../../../styles/globalStyle";
@@ -223,11 +224,19 @@ export const RoomdetailFetch = () => {
           <div css={modalContent}>
             <h3 css={modalTitle}>새로운 최대 인원 수를 입력하세요</h3>
             <input
-              type="number"
+              type="range"
+              min="1"
+              max="10"
+             
               value={newMaxMember}
               onChange={(e) => setNewMaxMember(parseInt(e.target.value))}
-              css={inputStyle}
+              css={rangeInputStyle}
             />
+            <div style={{ textAlign: 'center', margin: '0.5rem 0' }}>
+              <Typography color="grey">
+                현재 인원 수: {newMaxMember}
+              </Typography>
+            </div>
             <div style={{ display: "flex", justifyContent: "right", marginTop: "1rem" }}>
               <Button variant="contained" handler={handleConfirmMaxMemberChange}>
                 확인

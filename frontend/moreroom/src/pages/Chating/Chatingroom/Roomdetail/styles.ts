@@ -100,6 +100,8 @@ export const inputStyle = css`
   font-size: 1rem;
   border: 1px solid #ccc;
   border-radius: 4px;
+  font-family: 'paperlogy' ;
+  
 `;
 
 export const modalContent = css`
@@ -110,6 +112,7 @@ export const modalContent = css`
   border-radius: 8px;
   width: 100%;
   box-sizing: border-box;
+  font-family: 'paperlogy';
   /* margin-top: 1rem; */
 `;
 
@@ -119,3 +122,31 @@ export const modalTitle = css`
   margin-bottom: 1rem;
   color: ${Colors['grey']['700']}
 `;
+export const rangeInputStyle = css`
+    -webkit-appearance: none;
+    width: 100%;
+    height: 8px;
+    background: ${Colors["light"]["A200"]};
+    border-radius: 5px;
+    outline: none;
+    opacity: 0.9;
+    transition: opacity 0.15s ease-in-out;
+    
+    &::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      background: ${Colors["primary"]["A200"]};
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    &::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      background: ${Colors["primary"]["A200"]};
+      border-radius: 50%;
+      cursor: pointer;
+    }
+  `;

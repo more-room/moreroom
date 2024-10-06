@@ -50,6 +50,14 @@ export const getNotice = (partyId: number) => {
   return api.get<INotice>(`/api/party/${partyId}/notice`);
 };
 
+// 채팅방 공지사항 등록
+export const registerNotice = (partyId: number, notice: string) => {
+  return api.post(`/api/party/${partyId}/notice`, {
+    notice: notice,
+  });
+};
+
+
 // 채팅의 파티원 조회
 export const getPartyMembers = (partyId: number) => {
   return api.get<IMemberListResponse>(`/api/party/${partyId}/memberList`);
