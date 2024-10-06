@@ -17,7 +17,7 @@ public class FindMemberService {
     public Long findCurrentMember() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        Member member = memberRepository.findByEmail(email)
+        Member member = memberRepository.findByEmailAndDelFlagFalse(email)
             .orElseThrow(MemberNotFoundException::new);
 
         return member.getMemberId();
@@ -26,12 +26,14 @@ public class FindMemberService {
 
     public Member findCurrentMember(Principal principal) {
         String email = principal.getName();
-        return memberRepository.findByEmail(email).orElseThrow(MemberNotFoundException::new);
+        return memberRepository.findByEmailAndDelFlagFalse(email)
+            .orElseThrow(MemberNotFoundException::new);
     }
 
     public Member findCurrentMemberObject() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        return memberRepository.findByEmail(email).orElseThrow(MemberNotFoundException::new);
+        return memberRepository.findByEmailAndDelFlagFalse(email)
+            .orElseThrow(MemberNotFoundException::new);
     }
 
 }
