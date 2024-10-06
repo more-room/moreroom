@@ -13,11 +13,11 @@ def fetch_member_theme_ids():
         load_dotenv()
         # MySQL 연결 설정
         connection = mysql.connector.connect(
-            host = os.getenv('HOST'),
-            user = os.getenv('USER'),  # 데이터베이스 사용자 이름
-            password = os.getenv('PASSWORD'),  # 데이터베이스 비밀번호
-            database = os.getenv('DATABASE'),  # 사용할 데이터베이스 이름
-            port = os.getenv('PORT')
+            host=os.getenv('HOST'),
+            user=os.getenv('USER'),  # 데이터베이스 사용자 이름
+            password=os.getenv('PASSWORD'),  # 데이터베이스 비밀번호
+            database=os.getenv('DATABASE'),  # 사용할 데이터베이스 이름
+            port=os.getenv('PORT')
         )
         cursor = connection.cursor()
 
@@ -25,14 +25,17 @@ def fetch_member_theme_ids():
         cursor.execute("SELECT memberId FROM Member")
         member_ids = [row[0] for row in cursor.fetchall()]
         
-        cursor.execute("SELECT themeId FROM Theme LIMIT 50")
+        cursor.execute("SELECT themeId FROM Theme LIMIT 100")
         theme_ids = [row[0] for row in cursor.fetchall()]
         
-        return member_ids, theme_ids
+        # 멤버 수 가져오기
+        member_count = len(member_ids)
+        
+        return member_ids, theme_ids, member_count
 
     except mysql.connector.Error as error:
         print(f"데이터 가져오기 중 오류 발생: {error}")
-        return [], []
+        return [], [], 0
 
     finally:
         if connection.is_connected():
@@ -77,11 +80,11 @@ def insert_party_request_data_to_db(party_request_data):
         load_dotenv()
         # MySQL 연결 설정
         connection = mysql.connector.connect(
-            host = os.getenv('HOST'),
-            user = os.getenv('USER'),  # 데이터베이스 사용자 이름
-            password = os.getenv('PASSWORD'),  # 데이터베이스 비밀번호
-            database = os.getenv('DATABASE'),  # 사용할 데이터베이스 이름
-            port = os.getenv('PORT')
+            host=os.getenv('HOST'),
+            user=os.getenv('USER'),  # 데이터베이스 사용자 이름
+            password=os.getenv('PASSWORD'),  # 데이터베이스 비밀번호
+            database=os.getenv('DATABASE'),  # 사용할 데이터베이스 이름
+            port=os.getenv('PORT')
         )
         cursor = connection.cursor()
 
@@ -112,15 +115,17 @@ def insert_party_request_data_to_db(party_request_data):
             print("MySQL 연결이 종료되었습니다.")
 
 # 실행 함수
-def generate_and_insert_party_requests(num_requests):
-    member_ids, theme_ids = fetch_member_theme_ids()
+def generate_and_insert_party_requests():
+    member_ids, theme_ids, member_count = fetch_member_theme_ids()
     if not member_ids or not theme_ids:
         print("멤버 또는 테마 데이터를 가져오는 데 문제가 발생했습니다.")
         return
 
+    # 멤버 수 * 3 으로 파티 요청 데이터 수 설정
+    num_requests = member_count * 3
+
     party_request_data = generate_party_request_data(num_requests, member_ids, theme_ids)
     insert_party_request_data_to_db(party_request_data)
 
-# 1000개의 파티 요청 데이터 생성 및 DB에 삽입
-num_requests = 1500
-generate_and_insert_party_requests(num_requests)
+# 파티 요청 데이터 생성 및 DB에 삽입 실행
+generate_and_insert_party_requests()

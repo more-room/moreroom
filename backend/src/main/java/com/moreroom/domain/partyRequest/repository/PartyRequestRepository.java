@@ -18,6 +18,8 @@ public interface PartyRequestRepository extends JpaRepository<PartyRequest, Long
   @Query("select pr from PartyRequest pr where pr.theme.themeId = :themeId and pr.member.memberId = :memberId")
   PartyRequest findByThemeIdandMemberId(@Param("themeId") Integer themeId, @Param("memberId") Long memberId);
 
+  List<PartyRequest> findByThemeIdAndMemberIdIn(Integer themeId, List<Long> memberIds);
+
   @Query("select pr from PartyRequest pr where pr.redisUuid = :uuid")
   List<PartyRequest> findByUuid(@Param("uuid") String uuid);
 
@@ -32,6 +34,10 @@ public interface PartyRequestRepository extends JpaRepository<PartyRequest, Long
   @Query("update PartyRequest pr set pr.matchingStatus = :status, pr.redisUuid = :uuid where pr.redisUuid = :oldUuid")
   int updateStatusAndUuidByUuid(@Param("status") MatchingStatus status, @Param("uuid") String uuid, @Param("oldUuid") String oldUuid);
 
-  @Query("select pr.member, dt.token from PartyRequest pr join DeviceToken dt on pr.member = dt.member where pr.redisUuid = :uuid")
+  @Query("select pr.member, dt.token from PartyRequest pr left join DeviceToken dt on pr.member = dt.member where pr.redisUuid = :uuid")
   List<Object[]> findMemberAndDeviceTokenByUuid(@Param("uuid") String uuid);
+
+  @Modifying
+  @Query("update PartyRequest pr set pr.matchingStatus = :status, pr.redisUuid = :uuid where pr.member.memberId in :memberIds and pr.theme.themeId = :themeId")
+  int updateUuidAndStatusForMembers(@Param("uuid") String uuid, @Param("status") MatchingStatus status, @Param("themeId") Integer themeId, @Param("memberIds") List<Long> memberIdList);
 }

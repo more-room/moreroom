@@ -62,8 +62,11 @@ public class FcmService {
 
       return response.getStatusCode() == HttpStatus.OK ? 1 : 0;
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      log.error("access token 발급 실패", e);
+    } catch (Exception e) {
+      log.error("해당 계정에 deviceToken이 없거나 올바르게 구성되지 않은 토큰임: {}", fcmMessageDto.getMessage().getToken(), e);
     }
+      return 0;
   }
 
   /**
@@ -96,12 +99,12 @@ public class FcmService {
         .build();
 
     Data data = Data.builder()
-        .type(MessageType.PARTY_REQUEST)
+        .type(MessageType.PARTY_REQUEST.toString())
         .themeName(themeTitle)
         .cafeName(cafeName)
-        .partyRequestId(partyRequestId)
+        .partyRequestId(partyRequestId.toString())
         .uuid(uuid)
-        .themeId(themeId)
+        .themeId(themeId.toString())
         .build();
 
     return FcmMessageDto.builder()
@@ -121,8 +124,8 @@ public class FcmService {
         .build();
 
     Data data = Data.builder()
-        .type(MessageType.CHATROOM_SUBSCRIBE)
-        .partyId(partyId)
+        .type(MessageType.CHATROOM_SUBSCRIBE.toString())
+        .partyId(partyId.toString())
         .build();
 
     return FcmMessageDto.builder()
@@ -142,7 +145,7 @@ public class FcmService {
         .build();
 
     Data data = Data.builder()
-        .type(MessageType.PARTY_BROKEN)
+        .type(MessageType.PARTY_BROKEN.toString())
         .message("파티가 매칭되지 않았습니다.")
         .build();
 
@@ -187,8 +190,8 @@ public class FcmService {
         .build();
 
     Data data = Data.builder()
-        .type(MessageType.CHAT_MESSAGE)
-        .partyId(partyId)
+        .type(MessageType.CHAT_MESSAGE.toString())
+        .partyId(partyId.toString())
         .build();
 
     return FcmMessageDto.builder()

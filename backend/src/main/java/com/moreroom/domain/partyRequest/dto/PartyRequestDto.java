@@ -26,4 +26,5 @@ public class PartyRequestDto {
   public void setMemberCnt(int cnt) {
     this.acceptedMemberCnt = cnt;
   }
+
 }
