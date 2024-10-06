@@ -208,7 +208,9 @@ export const EditProfile = () => {
       if (selectedGenres.length > 3) {
         str = '장르 ' + selectedGenres.length;
       } else {
-        str = selectedGenres.join(', '); // 장르 이름들을 ','로 연결
+        str = selectedGenres.forEach((genre:string) => {
+          str += genre + ', '
+        });
       }
     } else {
       str = '선택안함';

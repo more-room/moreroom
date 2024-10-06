@@ -8,7 +8,7 @@ import Loading from '../../../components/common/Loading';
 export const PartyList = () => {
   return (
     <div>
-       <ErrorBoundary fallbackRender={(fallbackProps: FallbackProps) => <Error {...fallbackProps} />}>
+       <ErrorBoundary fallbackRender={Error}>
        <Suspense fallback={<Loading height='50vh' />}>
           <PartyListFetch />
         </Suspense>

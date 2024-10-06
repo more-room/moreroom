@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import React, { Suspense } from 'react';
-import { ErrorBoundary } from 'react-error-boundary';
+import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 import { MainThemeFetch } from './MainThemeFetch';
 import { container } from './styles';
 import { TopBar } from '../../components/TopBar';
@@ -8,6 +8,8 @@ import { MainPartyFetch } from './MainPartyFetch';
 import { BottomBar } from '../../components/BottomBar';
 import { BellIcon } from '@heroicons/react/24/outline';
 import { handleAllowNotification } from '../../utils/notificationUtils';
+import Loading from '../../components/common/Loading';
+import Error from '../../components/common/Error';
 
 export const Main = () => {
   return (
@@ -17,13 +19,13 @@ export const Main = () => {
           <TopBar.Title type="withoutBack" title="몰룸" />
           <TopBar.Right handler={async () => await handleAllowNotification()} />
         </TopBar>
-        <ErrorBoundary fallback={<>에러</>}>
-          <Suspense fallback={<>로딩중</>}>
+        <ErrorBoundary fallbackRender={Error}>
+          <Suspense fallback={<Loading height='50vh'/>}>
             <MainPartyFetch />
           </Suspense>
         </ErrorBoundary>
-        <ErrorBoundary fallback={<>에러</>}>
-          <Suspense fallback={<>로딩중</>}>
+        <ErrorBoundary fallbackRender={Error}>
+          <Suspense fallback={<Loading height='50vh'/>}>
             <MainThemeFetch />
           </Suspense>
         </ErrorBoundary>
