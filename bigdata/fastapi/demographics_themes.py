@@ -42,6 +42,17 @@ def calculate_theme_score(rm_df, N=10):
         lambda x: x.sort_values(by=['score_mean', 'score_count'], ascending=False).head(N)
     ).reset_index(drop=True)
 
+    # 전체 연령대 - 테마 별로만 평균 점수와 점수 개수 계산
+    grouped_all = rm_df.groupby(['themeId']).agg(
+        score_mean=('score', 'mean'),
+        score_count=('score', 'size')
+    ).reset_index()
+
+    # N개 테마를 평균 점수와 점수 개수 기준으로 정렬 
+    result_all_dict = grouped_all.sort_values(
+        by=['score_mean', 'score_count'], ascending=False
+    ).head(N).reset_index(drop=True)
+
     # 리스트로 변환
     result = []
     
@@ -53,6 +64,14 @@ def calculate_theme_score(rm_df, N=10):
         current['demographicThemesScoreCount'] = group_data['score_count'].tolist()  # 평균 점수 리스트
         
         result.append(current)
+
+    # 전체 데이터 추가
+    current = {}
+    current['groupId'] = f"Total"
+    current['demographicThemes'] = result_all_dict['themeId'].tolist()  # 테마 ID 리스트
+    current['demographicThemesScore'] = result_all_dict['score_mean'].tolist()  # 평균 점수 리스트
+    current['demographicThemesScoreCount'] = result_all_dict['score_count'].tolist()  # 평균 점수 리스트
+    result.append(current)
 
     return result 
 
