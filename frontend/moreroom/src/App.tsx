@@ -28,7 +28,6 @@ import { useUserValidation } from './hooks/useUserValidation';
 import { Party } from './pages/Party';
 import { RegisterParty } from './pages/Party/RegisterParty';
 import { SectorTheme } from './pages/Party/RegisterParty/SectorTheme';
-
 import { Review } from './pages/Review/ReviewRead';
 import { ReviewWrite } from './pages/Review/ReviewWrite';
 import { EditParty } from './pages/Party/EditParty';
@@ -46,7 +45,7 @@ function App() {
         <Route path="/themes/:themeId" element={<ThemeDetail />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/cafes" element={<CafeList />} />
-        <Route path="/cafe/detail" element={<CafeDetail />} />
+        <Route path="/cafes/:cafeId" element={<CafeDetail />} />
         <Route path="/login" element={<Login />} />
         <Route path="/find/password" element={<FindPwd />} />
         <Route path="/find/password/done" element={<PwdDone />} />

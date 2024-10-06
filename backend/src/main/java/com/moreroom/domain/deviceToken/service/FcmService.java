@@ -5,7 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.moreroom.domain.deviceToken.entity.DeviceToken;
 import com.moreroom.domain.deviceToken.exception.DeviceTokenNotFoundException;
+import com.moreroom.domain.deviceToken.exception.PushNotificationException;
 import com.moreroom.domain.deviceToken.repository.DeviceTokenRepository;
+import com.moreroom.domain.mapping.member.repository.MemberPartyMappingRepository;
 import com.moreroom.domain.member.entity.Member;
 import com.moreroom.domain.theme.entity.Theme;
 import com.moreroom.domain.deviceToken.dto.FcmMessageDto;
@@ -37,6 +39,7 @@ public class FcmService {
 
   private final DeviceTokenRepository deviceTokenRepository;
   private final RedisUtil redisUtil;
+  private final MemberPartyMappingRepository memberPartyMappingRepository;
 
   public int sendMessageTo(FcmMessageDto fcmMessageDto) {
     try {
@@ -52,15 +55,18 @@ public class FcmService {
 
       HttpEntity<String> entity = new HttpEntity<>(message, headers);
 
-      String API_URL = "<https://fcm.googleapis.com/v1/projects/d206-moreroom/messages:send>";
+      String API_URL = "https://fcm.googleapis.com/v1/projects/d206-moreroom/messages:send";
       ResponseEntity<String> response = restTemplate.exchange(API_URL, HttpMethod.POST, entity, String.class);
 
       log.info("알림보내기: {}", response.getStatusCode());
 
       return response.getStatusCode() == HttpStatus.OK ? 1 : 0;
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      log.error("access token 발급 실패", e);
+    } catch (Exception e) {
+      log.error("해당 계정에 deviceToken이 없거나 올바르게 구성되지 않은 토큰임: {}", fcmMessageDto.getMessage().getToken(), e);
     }
+      return 0;
   }
 
   /**
@@ -69,13 +75,15 @@ public class FcmService {
    * @throws IOException
    */
   private String getAccessToken() throws IOException {
-    String firebaseConfigPath = "firebase/d206-moreroom-firebase-adminsdk-byl7s-3637b87df4.json";
+    String firebaseConfigPath = "firebase/d206-moreroom-firebase-adminsdk-byl7s-8676046b0a.json";
 
+    log.info("googleCredentials 진입 전");
     GoogleCredentials googleCredentials = GoogleCredentials
         .fromStream(new ClassPathResource(firebaseConfigPath).getInputStream())
-        .createScoped(List.of("<https://www.googleapis.com/auth/cloud-platform>"));
+        .createScoped(List.of("https://www.googleapis.com/auth/cloud-platform"));
 
     googleCredentials.refreshIfExpired();
+    log.info("액세스 토큰: {}", googleCredentials.getAccessToken().getTokenValue());
     return googleCredentials.getAccessToken().getTokenValue();
   }
 
@@ -91,12 +99,12 @@ public class FcmService {
         .build();
 
     Data data = Data.builder()
-        .type(MessageType.PARTY_REQUEST)
+        .type(MessageType.PARTY_REQUEST.toString())
         .themeName(themeTitle)
         .cafeName(cafeName)
-        .partyRequestId(partyRequestId)
+        .partyRequestId(partyRequestId.toString())
         .uuid(uuid)
-        .themeId(themeId)
+        .themeId(themeId.toString())
         .build();
 
     return FcmMessageDto.builder()
@@ -116,8 +124,8 @@ public class FcmService {
         .build();
 
     Data data = Data.builder()
-        .type(MessageType.CHATROOM_SUBSCRIBE)
-        .partyId(partyId)
+        .type(MessageType.CHATROOM_SUBSCRIBE.toString())
+        .partyId(partyId.toString())
         .build();
 
     return FcmMessageDto.builder()
@@ -137,7 +145,7 @@ public class FcmService {
         .build();
 
     Data data = Data.builder()
-        .type(MessageType.PARTY_BROKEN)
+        .type(MessageType.PARTY_BROKEN.toString())
         .message("파티가 매칭되지 않았습니다.")
         .build();
 
@@ -182,8 +190,8 @@ public class FcmService {
         .build();
 
     Data data = Data.builder()
-        .type(MessageType.CHAT_MESSAGE)
-        .partyId(partyId)
+        .type(MessageType.CHAT_MESSAGE.toString())
+        .partyId(partyId.toString())
         .build();
 
     return FcmMessageDto.builder()
@@ -194,6 +202,24 @@ public class FcmService {
             .data(data)
             .build())
         .build();
+  }
+
+  //푸시알림 전송 : 발신자를 제외한 파티원에게 전송
+  public void sendChattingMessagePushAlarm(String email, Long partyId, String senderNickname, String message) {
+    try {
+      List<String> emailList = memberPartyMappingRepository.getEmailListForChattingAlarm(partyId, email);
+      for (String emailAddress : emailList) {
+        try {
+          FcmMessageDto fcmMessageDto = makeChattingPush(senderNickname, message, emailAddress, partyId);
+          sendMessageTo(fcmMessageDto);
+        } catch (Exception e) {
+          log.error("푸시 알람 전송 실패: to {}", emailAddress, e);
+        }
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      log.error("푸시 알림 로직 실패");
+    }
   }
 
 }

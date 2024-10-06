@@ -84,6 +84,36 @@ services:
             - mongodb
             - rabbitmq
 
+    fastapi:
+        image: ${DOCKER_IMAGE}:${DOCKER_TAG_FASTAPI}-latest
+        # build: 
+        #     context: ./bigdata/fastapi
+        #     dockerfile: Dockerfile
+        container_name: ${DOCKER_TAG_FASTAPI}
+        environment:
+            - TZ=Asia/Seoul
+            - MYSQL_HOST=${MYSQL_HOST}
+            - MYSQL_USER=${MYSQL_USER}
+            - MYSQL_PW=${MYSQL_PW}
+            - MYSQL_DB=${MYSQL_DB}
+            - MYSQL_PORT=${MYSQL_PORT}
+            - MONGO_HOST=${MONGO_HOST}
+            - MONGO_PORT=${MONGO_PORT}
+            - MONGO_USER=${MONGO_USER}
+            - MONGO_PW=${MONGO_PW}
+            - HOST=${HOST}
+            - USER=${USER}
+            - PASSWORD=${PASSWORD}
+            - DATABASE=${DATABASE}
+            - PORT=${PORT}
+        expose:
+            - "5000"
+        networks:
+            - backend-network
+        depends_on:
+            - mysql
+            - mongodb
+
     rabbitmq:
         container_name: rabbitmq
         image: rabbitmq:3-management-alpine
