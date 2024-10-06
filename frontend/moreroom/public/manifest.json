@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "몰룸",
+  "name": "몰룸(MoreRoom)",
   "icons": [
     {
       "src": "./icons/apple-touch-icon-57x57.png",
