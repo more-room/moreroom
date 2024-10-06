@@ -15,7 +15,7 @@ export const Main = () => {
       <div css={container}>
         <TopBar>
           <TopBar.Title type="withoutBack" title="몰룸" />
-          <TopBar.Right handler={async () => await handleAllowNotification()} />
+          <TopBar.Right handler={() => console.log('it"s notification')} />
         </TopBar>
         <ErrorBoundary fallback={<>에러</>}>
           <Suspense fallback={<>로딩중</>}>
