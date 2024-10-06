@@ -72,7 +72,7 @@ public class RecommendationService {
         String totalGroupId = "Total";
         // 2. 인기 테마 조회 (mongoDB)
         DemographicsTheme demographicsTheme = demographicsThemeRepository.findByGroupId(groupId);
-        if (demographicsTheme == null) {
+        if (demographicsTheme == null || demographicsTheme.getDemographicThemes().size() < 10) {
             demographicsTheme = demographicsThemeRepository.findByGroupId(totalGroupId);
         }
         // 3. 테마 상세 정보 조회
