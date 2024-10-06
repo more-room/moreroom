@@ -25,6 +25,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClientException;
@@ -78,7 +79,7 @@ public class PartyMatchingService {
     return members;
   }
 
-//  @Scheduled(cron = "0 0 18 * * *", zone = "Asia/Seoul")
+  @Scheduled(cron = "0 0 18 * * *", zone = "Asia/Seoul")
 //  @Scheduled(fixedRate = 3600000, initialDelay = 10000)
   @Transactional
   public void partyMatchingAndRequest() throws JsonProcessingException {
