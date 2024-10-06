@@ -99,9 +99,7 @@ public class PartyRequestService {
         try {
           HashMap<Long, String> partyAcceptRecordMap = redisUtil.getLongStringHashMap(key); //레디스에서 기록 가져옴
 
-          if (partyAcceptRecordMap == null) {
-            partyRequestUtil.partyBroke(partyRequest.getRedisUuid()); //파티 깨짐
-          } else {
+          if (partyAcceptRecordMap != null) {
             int cnt = Integer.parseInt(partyAcceptRecordMap.get(-2L)); //파티 참가한 사람 수
             dto.setMemberCnt(cnt); //dto에 정보 넣기
           }
