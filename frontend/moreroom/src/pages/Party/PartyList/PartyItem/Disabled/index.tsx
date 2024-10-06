@@ -45,7 +45,7 @@ export const Disabled = ({ party }: PartyItemProps) => {
             </Typography>
           </div>
           <div css={chipCss}>
-            {party.hashtagList?.map((hashtag: Hashtag) => (
+            {party.partyHashtagList?.map((hashtag: Hashtag) => (
               <Chip
                 key={hashtag.hashtagId}
                 border={1}

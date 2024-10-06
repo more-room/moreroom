@@ -29,6 +29,8 @@ export const PartyListFetch = () => {
     queryKey: ['party'],
     queryFn: async () => await getPartyList(),
   });
+  
+  console.log(PartyQuery)
 
   const { mutate } = useMutation({
     mutationFn: async () => await delParty(currentPartyId),

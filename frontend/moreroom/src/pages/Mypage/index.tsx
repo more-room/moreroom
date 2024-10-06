@@ -133,7 +133,7 @@ export const MyPage = () => {
               </Icon>
             }
             children="채팅방"
-            url="/mypage/profile"
+            url="/chating"
           />
           <ManageInfo
             icon={
@@ -142,7 +142,7 @@ export const MyPage = () => {
               </Icon>
             }
             children="테마 기록"
-            url="/mypage/profile"
+            url="/history"
           />
           <div css={manageInfoContainerCss}>
             <ManageInfo

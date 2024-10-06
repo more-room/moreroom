@@ -62,12 +62,14 @@ export interface IParty {
     members: null | IMember;
   };
   theme: {
+    branchName: string,
+    brandName: string,
     themeId: number;
     poster: string;
     title: string;
   };
   createdAt: string;
-  hashtagList: {
+  partyHashtagList: {
     hashtagId: number;
     hashtagName: string;
   }[];
