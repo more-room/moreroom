@@ -54,6 +54,7 @@ http  {
             proxy_set_header X-Forwarded-Proto $scheme;
         }
 
+
         # 소켓 설정
         location /${CONTEXT_PATH}/ws {
                 proxy_pass http://${DOCKER_TAG_BE}:${BACKEND_PORT};
