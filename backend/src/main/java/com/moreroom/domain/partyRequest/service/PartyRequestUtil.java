@@ -6,6 +6,7 @@ import com.moreroom.domain.member.entity.Member;
 import com.moreroom.domain.partyRequest.entity.MatchingStatus;
 import com.moreroom.domain.partyRequest.repository.PartyRequestRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +14,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PartyRequestUtil {
 
     private final PartyRequestRepository partyRequestRepository;
@@ -30,9 +32,15 @@ public class PartyRequestUtil {
         for (Object[] info : memberInfos) {
             Member member = (Member) info[0];
             String deviceToken = (String) info[1];
+            if (deviceToken == null) continue;
             //파티 실패 알림
-            FcmMessageDto fcmMessageDto = fcmService.makePartyFailedMessage(member, deviceToken);
-            fcmService.sendMessageTo(fcmMessageDto);
+            try {
+                FcmMessageDto fcmMessageDto = fcmService.makePartyFailedMessage(member, deviceToken);
+                fcmService.sendMessageTo(fcmMessageDto);
+            } catch (Exception e) {
+                log.error("파티 깨짐 푸시알림 전송 오류 발생", e);
+            }
+
         }
     }
 }
