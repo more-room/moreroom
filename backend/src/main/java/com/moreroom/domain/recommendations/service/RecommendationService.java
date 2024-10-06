@@ -15,6 +15,7 @@ import com.moreroom.domain.theme.dto.response.ThemeListResponseDto;
 import com.moreroom.domain.theme.repository.ThemeQueryRepository;
 import com.moreroom.global.util.GlobalUtil;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -38,6 +39,11 @@ public class RecommendationService {
         // 1. 유사 유저 테마 조회 (mongoDB)
         SimilarMemberTheme similarMemberTheme = similarMemberThemeRepository.findByMemberId(
             memberId);
+        if (similarMemberTheme == null) {
+            return ThemeListResponseDto.builder()
+                .themeList(new ArrayList<>())
+                .build();
+        }
         // 2. 테마 상세 정보 조회
         ThemeListResponseDto themeListResponseDto = themeQueryRepository.findByThemeIds(
             similarMemberTheme.getSimilarMemberThemes(), memberId);
