@@ -7,6 +7,7 @@ import com.moreroom.global.util.RedisUtil;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.transaction.Transactional;
+import java.util.Optional;
 import java.util.Random;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -89,9 +90,9 @@ public class MailService {
                 "임시 비밀번호는 " + tempPassword + "입니다." +
                 "<br>" +
                 "비밀번호를 꼭 변경해주세요"; //이메일 내용 삽입
-
-        if (memberRepository.findByEmail(email).isPresent()) {
-            Member member = memberRepository.findByEmail(email).get();
+        Optional<Member> optionalMember = memberRepository.findByEmailAndDelFlagFalse(email);
+        if (optionalMember.isPresent()) {
+            Member member = optionalMember.get();
             member.changePassword(passwordEncoder.encode(tempPassword));
 
             mailSendWithPassword(setFrom, email, title, content);

@@ -12,6 +12,7 @@ import com.moreroom.domain.member.entity.Member;
 import com.moreroom.domain.member.exception.MemberExistsEmailException;
 import com.moreroom.domain.member.exception.MemberExistsNicknameException;
 import com.moreroom.domain.member.exception.MemberNotFoundException;
+import com.moreroom.domain.member.service.AuthService;
 import com.moreroom.domain.member.service.MemberService;
 import com.moreroom.global.util.FindMemberService;
 import jakarta.servlet.http.Cookie;
@@ -19,6 +20,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +30,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -43,6 +46,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController {
 
     private final MemberService memberService;
+    private final AuthService authService;
     private final AuthenticationManager authenticationManager;
     private final FindMemberService findMemberService;
 
@@ -57,6 +61,17 @@ public class MemberController {
     @PostMapping("/login")
     public void login(@RequestBody Map<String, String> loginRequest, HttpServletRequest request, HttpServletResponse response) {
         try {
+            boolean isAuthenticated = authService.authenticate(loginRequest.get("email"),
+                loginRequest.get("password"));
+
+            if (!isAuthenticated) {
+                // 비밀번호 불일치 처리
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json");
+                response.getWriter().write("{\"error\": \"비밀번호가 틀립니다.\"}");
+                return;
+            }
+
             // AuthenticationManager를 통해 인증 시도
             Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -90,9 +105,33 @@ public class MemberController {
             session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
 
             response.setStatus(HttpServletResponse.SC_OK);
-        } catch (Exception e) {
-            // 인증 실패 시 처리
+        } catch (UsernameNotFoundException e) {
+            // 이메일 불일치 처리
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            try {
+                response.getWriter().write("{\"error\": \"이메일을 찾을 수 없습니다.\"}");
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        } catch (MemberNotFoundException e) {
+            // 탈퇴한 회원에 대한 예외 처리
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            try {
+                response.getWriter().write("{\"error\": \"" + e.getMessage() + "\"}");
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        } catch (Exception e) {
+            // 일반적인 예외 처리
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            try {
+                response.getWriter().write("{\"error\": \"Authentication failed.\"}");
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
         }
     }
 
