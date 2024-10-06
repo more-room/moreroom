@@ -82,6 +82,24 @@ export const HistoryListFetch = () => {
               onClick={() => nav(`/history/detail/${history.historyId}`)}
             />
           ))}
+          <Button
+            rounded={0.5}
+            handler={() => {
+              historyWriteStore.setDate(
+                calendarStore.selected
+                  ? calendarStore.selected.format('YYYY-MM-DD')
+                  : dayjs(
+                      `${calendarStore.curYear}-${calendarStore.curMonth}-01`,
+                    ).format('YYYY-MM-DD'),
+              );
+              useHistoryWriteStore.persist.clearStorage();
+              nav('/history/write');
+            }}
+          >
+            <Typography color="light" weight={600} size={0.875}>
+              기록 등록하기
+            </Typography>
+          </Button>
         </div>
       ) : (
         <div css={empty}>
@@ -98,6 +116,7 @@ export const HistoryListFetch = () => {
                       `${calendarStore.curYear}-${calendarStore.curMonth}-01`,
                     ).format('YYYY-MM-DD'),
               );
+              useHistoryWriteStore.persist.clearStorage();
               nav('/history/write');
             }}
           >

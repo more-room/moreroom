@@ -7,6 +7,7 @@ import { TopBar } from '../../components/TopBar';
 import { MainPartyFetch } from './MainPartyFetch';
 import { BottomBar } from '../../components/BottomBar';
 import { BellIcon } from '@heroicons/react/24/outline';
+import { handleAllowNotification } from '../../utils/notificationUtils';
 
 export const Main = () => {
   return (
@@ -14,7 +15,7 @@ export const Main = () => {
       <div css={container}>
         <TopBar>
           <TopBar.Title type="withoutBack" title="몰룸" />
-          <TopBar.Right handler={() => console.log('it"s notification')} />
+          <TopBar.Right handler={async () => await handleAllowNotification()} />
         </TopBar>
         <ErrorBoundary fallback={<>에러</>}>
           <Suspense fallback={<>로딩중</>}>

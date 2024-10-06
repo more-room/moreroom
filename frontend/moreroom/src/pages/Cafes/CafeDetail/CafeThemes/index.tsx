@@ -6,11 +6,14 @@ import { Typography } from '../../../../components/Typography';
 import { ThemeSimpleInfo } from '../../../../components/ThemeSimpleInfo';
 import { StarIcon } from '@heroicons/react/24/solid';
 import { Icon } from '../../../../components/Icon';
+import { useNavigate } from 'react-router-dom';
 
 interface CafeThemesProps {
   themes: IThemeCommon[];
 }
 export const CafeThemes = ({ themes }: CafeThemesProps) => {
+  const nav = useNavigate();
+
   return (
     <div css={container}>
       <Typography color="light" size={0.875} weight={400}>
@@ -19,7 +22,10 @@ export const CafeThemes = ({ themes }: CafeThemesProps) => {
       <div css={list}>
         {themes.map((theme: IThemeCommon) => {
           return (
-            <div>
+            <div
+              key={theme.themeId}
+              onClick={() => nav(`/themes/${theme.themeId}`)}
+            >
               <ThemeSimpleInfo
                 theme={theme}
                 style={{ backgroundColor: '#212121' }}

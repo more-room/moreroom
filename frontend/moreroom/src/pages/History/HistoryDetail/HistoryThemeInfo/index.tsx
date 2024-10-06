@@ -29,7 +29,7 @@ export const HistoryThemeInfo = ({
         size={0.75}
         style={{ marginTop: '1rem' }}
       >
-        {theme.description}
+        {theme.description ? theme.description : '테마 스토리를 준비중입니다'}
       </Typography>
     </div>
   );

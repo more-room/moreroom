@@ -40,7 +40,7 @@ export const SearchResults = () => {
       const scrollHeight = divRef.current.scrollHeight;
       const clientHeight = divRef.current.clientHeight;
 
-      if (scrollTop + clientHeight >= scrollHeight) {
+      if (scrollTop + clientHeight >= scrollHeight - 1) {
         fetchNextPage();
       }
     }
@@ -51,7 +51,7 @@ export const SearchResults = () => {
       historyWriteStore.setThemeId(theme.themeId);
       nav('/history/write');
     } else {
-      nav('/theme/detail', { state: { themeId: theme.themeId } });
+      nav(`/themes/${theme.themeId}`);
     }
   };
 

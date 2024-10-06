@@ -13,6 +13,7 @@ export const containerCss = css`
 
 export const imgCss = (imgErr: boolean) => css`
   min-width: 5rem;
+  max-width: 5rem;
   height: 6.5rem;
   border-radius: 0.25rem;
 

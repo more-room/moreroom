@@ -6,10 +6,7 @@ import com.moreroom.domain.mapping.member.repository.MemberPartyMappingRepositor
 import com.moreroom.domain.member.entity.Member;
 import com.moreroom.domain.member.exception.MemberNotFoundException;
 import com.moreroom.domain.member.repository.MemberRepository;
-import com.moreroom.domain.party.dto.ChatroomListDto;
-import com.moreroom.domain.party.dto.ChatroomSettingDto;
-import com.moreroom.domain.party.dto.NoticeDto;
-import com.moreroom.domain.party.dto.PartyInfoDto;
+import com.moreroom.domain.party.dto.*;
 import com.moreroom.domain.party.entity.Party;
 import com.moreroom.domain.party.exception.InputValidationException;
 import com.moreroom.domain.party.exception.NotPartyMasterException;
@@ -22,21 +19,14 @@ import com.moreroom.domain.partyRequest.entity.PartyRequest;
 import com.moreroom.domain.partyRequest.repository.PartyRequestRepository;
 import com.moreroom.domain.theme.entity.Theme;
 import com.moreroom.domain.theme.repository.ThemeRepository;
-import com.moreroom.global.dto.SocketNotificationDto;
 import com.moreroom.global.util.StringUtil;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -203,17 +193,39 @@ public class PartyService {
     Party party = partyRepository.findById(partyId).orElseThrow(PartyNotFoundException::new);
     validUser(member, party);
     String roomname = dto.getRoomName();
-    LocalDateTime date = StringUtil.stringToDate(dto.getDate());
+    LocalDateTime date = StringUtil.stringToDatetime(dto.getDate());
     if (roomname.length() > 50) {
       throw new InputValidationException();
     }
     party.setSettings(roomname, date, dto.isAddFlag(), dto.getMaxMember());
   }
 
+  //마스터인지 검사하는 메서드
   private void validUser(Member member, Party party) {
     if (!Objects.equals(party.getMasterMember().getMemberId(), member.getMemberId())) {
       throw new NotPartyMasterException();
     }
+  }
+
+  //파티id 리스트
+  public PartyIdListDto getPartyIdList(Member member) {
+    List<Long> partyIdList = memberPartyMappingRepository.getPartyIdListByMemberId(member.getMemberId());
+    return new PartyIdListDto(partyIdList);
+  }
+
+  //파티 멤버 조회
+  public PartyMemberDto getPartyMemberList(Long partyId) {
+      return partyQueryRepository.getPartyMemberList(partyId);
+  }
+
+  //파티 멤버 강퇴
+  @Transactional
+  public void kickOutMember(Member master, Long memberId, Long partyId) {
+    //방장인지 검사
+    Party party = partyRepository.findById(partyId).orElseThrow(PartyNotFoundException::new);
+    validUser(master, party);
+    //partymembermapping테이블에서 삭제
+    memberPartyMappingRepository.deleteMemberPartyMappingByMemberAndParty(memberId, partyId);
   }
 
 }

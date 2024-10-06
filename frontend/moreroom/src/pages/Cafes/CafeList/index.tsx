@@ -11,8 +11,10 @@ import {
 } from '../../../stores/cafeStore';
 import { getCafeNames } from '../../../apis/cafeApi';
 import { SearchList } from './SearchList';
+import { useNavigate } from 'react-router-dom';
 
 export const CafeList = () => {
+  const nav = useNavigate();
   const cafePageStore = useCafePageStore();
   const searchNameStore = useSearchNameStore();
   const searchCafesStore = useSearchCafesStore();
@@ -30,6 +32,7 @@ export const CafeList = () => {
   /* 뒤로가기 핸들러 */
   const onBackHandler = () => {
     if (cafePageStore.type === 'search') cafePageStore.setType('default');
+    else nav('/');
   };
 
   /* 아이콘 핸들러 */

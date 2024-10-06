@@ -24,15 +24,12 @@ export const HistoryWrite = () => {
     mutationFn: async (type: string) =>
       type === 'add'
         ? await addHistory(historyInfo)
-        : await editHistory(
-            historyInfo,
-            process.env.NODE_ENV === 'development'
-              ? 1
-              : Number(params.historyId),
-          ),
+        : await editHistory(historyInfo, Number(params.historyId)),
     onSuccess: () => {
       useHistoryWriteStore.persist.clearStorage();
-      nav('/history');
+      nav(
+        params.historyId ? `/history/detail/${params.historyId}` : '/history',
+      );
     },
     onError: () => alert('오류 발생'),
   });
@@ -49,8 +46,7 @@ export const HistoryWrite = () => {
   };
 
   useEffect(() => {
-    setHistoryInfo({
-      themeId: historyWriteStore.themeId,
+    const info: IHistoryWrite = {
       content: historyWriteStore.content,
       date: dayjs(historyWriteStore.date).format('YYYY-MM-DD HH:mm'),
       hintCount: historyWriteStore.hintCount,
@@ -59,7 +55,13 @@ export const HistoryWrite = () => {
       players: historyWriteStore.players,
       price: historyWriteStore.price,
       successFlag: historyWriteStore.successFlag,
-    });
+    };
+
+    if (!params.historyId) {
+      info['themeId'] = historyWriteStore.themeId;
+    }
+
+    setHistoryInfo(info);
   }, [historyWriteStore]);
 
   return (
@@ -67,14 +69,20 @@ export const HistoryWrite = () => {
       <TopBar
         css={css`
           position: ${params.historyId || historyWriteStore.themeId
-            ? 'absolute'
+            ? 'fixed'
             : 'static'};
         `}
       >
         <TopBar.Title
           type="withoutRight"
           title="기록 작성"
-          backHandler={() => nav(-1)}
+          backHandler={() =>
+            nav(
+              params.historyId
+                ? `/history/detail/${params.historyId}`
+                : '/history',
+            )
+          }
         />
       </TopBar>
       <HistoryTheme />
