@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.moreroom.domain.deviceToken.dto.FcmMessageDto;
 import com.moreroom.domain.deviceToken.service.FcmService;
 import com.moreroom.domain.member.entity.Member;
-import com.moreroom.domain.member.exception.MemberNotFoundException;
 import com.moreroom.domain.member.repository.MemberRepository;
 import com.moreroom.domain.partyRequest.entity.MatchingStatus;
 import com.moreroom.domain.partyRequest.entity.PartyRequest;
@@ -14,15 +13,6 @@ import com.moreroom.domain.theme.entity.Theme;
 import com.moreroom.domain.theme.exception.ThemeNotFoundException;
 import com.moreroom.domain.theme.repository.ThemeRepository;
 import com.moreroom.global.util.RedisUtil;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
@@ -34,6 +24,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -204,6 +196,14 @@ public class PartyMatchingService {
       redisUtil.deleteData(key);
     }
     return null;
+  }
+
+  // 오후 7시에 파티 요청 status를 not_matched로 바꾸는 함수
+  @Scheduled(cron = "0 0 19 * * *", zone = "Asia/Seoul")
+  @Transactional
+  public void makePartyRequestNotMatched() {
+    int result = partyRequestRepository.updateAllPartyRequestStatus(MatchingStatus.NOT_MATCHED);
+    log.info("오후 7시 업데이트: 총 {}행 변경", result);
   }
 
 }
