@@ -2,12 +2,13 @@
 import React, { Suspense } from 'react';
 import { useModal } from '../../../hooks/useModal';
 import { ErrorBoundary } from 'react-error-boundary';
-import { Genre } from '../../theme/ThemeFilters/Genre';
+// import { Genre } from '../../theme/ThemeFilters/Genre';
 import { Button } from '../../../components/Button';
 import { useSearchThemesStore } from '../../../stores/themeStore';
 import { Region } from '../../theme/ThemeFilters/Region';
 import { Typography } from '../../../components/Typography';
 import { btnCss, containerCss, fontCss } from '../Selectedtheme/styles';
+import { Genre } from '../Genre';
 
 export const SelectedGenre = () => {
   const modal = useModal();

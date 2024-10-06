@@ -8,7 +8,7 @@ import { Typography } from '../../../components/Typography';
 import { Item } from '../../theme/ThemeFilters/Item';
 import { useRegionSelectionStore } from '../../../stores/signupStore';
 
-export const Region = () => {
+export const Region = ({ regionId }: { regionId?: string }) => {
   const regionQuery = useSuspenseQuery({
     queryKey: ['region'],
     queryFn: async () => await getRegions(),
@@ -20,21 +20,42 @@ export const Region = () => {
     selectedCity,
     setSelectedRegion,
     setSelectedCity,
-    setSelectedRegionId, 
+    setSelectedRegionId,
   } = useRegionSelectionStore();
 
-  // 컴포넌트가 마운트될 때 '서울'이 미리 선택되도록 설정
+  // 넘어온 regionId를 통해 해당 지역이 선택되도록 설정
   useEffect(() => {
-    if (!selectedRegion) {
+    if (regionId) {
+      const matchedRegion = regionQuery.data.data.regions.find(
+        (region: IRegionItem) => region.regionId === regionId
+      );
+      if (matchedRegion) {
+        console.log('매치됨', matchedRegion);
+        setSelectedRegion(matchedRegion.regionName);
+        setSelectedRegionId(matchedRegion.regionId);
+  
+        // 시/군/구 자동 선택 (첫 번째 도시 선택)
+        if (matchedRegion.cities && matchedRegion.cities.length > 0) {
+          setSelectedCity(matchedRegion.cities[0].regionName);
+        }
+      }
+    } else {
+      // 만약 regionId가 없다면 기본적으로 '서울'을 선택
       const seoulRegion = regionQuery.data.data.regions.find(
         (region: IRegionItem) => region.regionName === '서울'
       );
       if (seoulRegion) {
         setSelectedRegion(seoulRegion.regionName);
         setSelectedRegionId(seoulRegion.regionId);
+  
+        // 서울의 첫 번째 시/군/구 자동 선택
+        if (seoulRegion.cities && seoulRegion.cities.length > 0) {
+          setSelectedCity(seoulRegion.cities[0].regionName);
+        }
       }
     }
-  }, [regionQuery.data.data.regions, setSelectedRegion, setSelectedRegionId]);
+  }, [regionId, regionQuery.data.data.regions, setSelectedRegion, setSelectedRegionId, setSelectedCity]);
+  
 
   useEffect(() => {
     if (selectedRegion) {

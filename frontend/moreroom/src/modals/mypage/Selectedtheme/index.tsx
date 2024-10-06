@@ -7,8 +7,9 @@ import { btnCss, containerCss, fontCss } from './styles';
 import { Typography } from '../../../components/Typography';
 import { Region } from '../Region';
 import { useRegionSelectionStore } from '../../../stores/signupStore';
+import { number } from 'prop-types';
 
-export const Selectedtheme = () => {
+export const Selectedtheme = ({ regionId }: { regionId?: string }) => {
   const modal = useModal();
   const { selectedRegionId, selectedRegion, selectedCity } = useRegionSelectionStore();
 
@@ -26,7 +27,7 @@ export const Selectedtheme = () => {
       </Typography>
       <ErrorBoundary fallback={<>에러가 발생했습니다. 다시 시도해주세요.</>}>
         <Suspense fallback={<>로딩중...</>}>
-          <Region />
+          <Region regionId={regionId}/>
         </Suspense>
       </ErrorBoundary>
       <Button css={btnCss} fullwidth rounded={0.5} handler={clickHandler}>

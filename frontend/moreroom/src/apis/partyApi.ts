@@ -82,3 +82,11 @@ export const partyApprove = (
     },
   });
 };
+
+// 해시태그 조회
+export const getHashtag = (groupId: number) => {
+  return api({
+    url: `/api/info/hashtag/${groupId}`,
+    method: 'get',
+  });
+};

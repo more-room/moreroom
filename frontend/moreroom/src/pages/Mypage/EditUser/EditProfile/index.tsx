@@ -15,6 +15,7 @@ import {
 import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   getMyInfo,
+  getMypage,
   updateHashtag,
   updateUserInfo,
 } from '../../../../apis/mypageApi';
@@ -24,7 +25,7 @@ import { validateNickname } from '../../../../utils/validationUtils';
 import { FilterChip } from '../../../../components/FilterChip';
 import { getGenres, getRegions } from '../../../../apis/infoApi';
 import { useSearchThemesStore } from '../../../../stores/themeStore';
-import { IRegionCommon, IRegionItem } from '../../../../types/infoTypes';
+import { IGenreCommon, IRegionCommon, IRegionItem } from '../../../../types/infoTypes';
 import { useModal } from '../../../../hooks/useModal';
 import { Selectedtheme } from '../../../../modals/mypage/Selectedtheme';
 import { SelectedGenre } from '../../../../modals/mypage/SelectedGenre';
@@ -40,17 +41,35 @@ export const EditProfile = () => {
   const searchThemesStore = useSearchThemesStore();
   const modal = useModal();
 
-  const { selectedRegionId, selectedRegion, selectedCity } =
-    useRegionSelectionStore();
+  const { 
+    selectedRegionId,
+    selectedRegion, 
+    selectedCity,
+    setSelectedRegionId,
+    setSelectedRegion, 
+    setSelectedCity 
+  } = useRegionSelectionStore();
+
   const GenreQuery = useQuery({
     queryKey: ['genre'],
     queryFn: async () => await getGenres(),
+  });
+
+  const regionQuery = useQuery({
+    queryKey: ['region'],
+    queryFn: async () => await getRegions(),
   });
 
   const MyInfoQuery = useQuery({
     queryKey: ['myinfo'],
     queryFn: async () => await getMyInfo(),
   });
+
+  const ProfileQuery = useQuery({
+    queryKey: ['profile'],
+    queryFn: async () => await getMypage(),
+  });
+
 
   const [nickname, setNickname] = useState<string>(
     MyInfoQuery.data?.data?.nickname,
@@ -68,14 +87,15 @@ export const EditProfile = () => {
   const [room, setRoom] = useState<string>(
     MyInfoQuery?.data?.data?.clearRoom || '',
   );
+
+
   useEffect(() => {
     if (MyInfoQuery.isSuccess && MyInfoQuery.data && MyInfoQuery.data.data) {
-      const { nickname, gender, birth, clearRoom, regionId, preferredGenre } =
-        MyInfoQuery.data.data;
-
+      const { nickname, gender, birth, clearRoom, regionId } = MyInfoQuery.data.data;
+  
       setNickname(nickname || ''); // 닉네임 초기화
       setGender(gender || undefined); // 성별 초기화
-
+  
       // 생년월일이 존재하는지 확인하고 분리
       if (birth && typeof birth === 'string') {
         const birthArr = birth.split('-');
@@ -85,17 +105,32 @@ export const EditProfile = () => {
           setBirthDay(birthArr[2] || '');
         }
       }
-
+  
       // 클리어 방 수 설정
       setRoom(clearRoom ? String(clearRoom) : '');
-
-      // 지역 설정
-      // setRegion(regionId || '');  // regionId가 있을 경우 설정
-
-      // 선호 장르 설정
-      // setPreferredGenre(preferredGenre || []); // 선호 장르가 있을 경우 설정
+  
+      // 지역 설정 (regionId가 있을 경우)
+      if (regionId && regionQuery.isSuccess) {
+        // 지역 API 데이터에서 regionId와 일치하는 지역 찾기
+        const selectedRegionData = regionQuery.data.data.regions.find(
+          (region: IRegionItem) => region.regionId === regionId
+        );
+  
+        // 선택된 지역이 존재하면, 스토어에 지역과 도시 설정
+        if (selectedRegionData) {
+          setSelectedRegion(selectedRegionData.regionName);
+          setSelectedRegionId(regionId);
+  
+          // 만약 하위 도시 정보도 있으면 설정
+          if (selectedRegionData.cities && selectedRegionData.cities.length > 0) {
+            setSelectedCity(selectedRegionData.cities[0].regionName); // 첫 번째 도시를 기본값으로 설정
+          } else {
+            setSelectedCity(null); // 도시가 없을 경우 초기화
+          }
+        }
+      }
     }
-  }, [MyInfoQuery.isSuccess, MyInfoQuery.data]);
+  }, [MyInfoQuery.isSuccess, MyInfoQuery.data, regionQuery.isSuccess]);
 
   const { mutate } = useMutation({
     mutationFn: async ({
@@ -190,27 +225,26 @@ export const EditProfile = () => {
       );
     }
   };
-  // 장르 목록에서 선택된 장르 이름 가져오기
-  const getSelectedGenresText = () => {
-    let str = '';
+// 장르 목록에서 선택된 장르 이름 가져오기
+const getSelectedGenresText = () => {
+  let str = '';
 
-    if (searchThemesStore.filters.genreList.length > 0) {
-      if (searchThemesStore.filters.genreList.length > 3) {
-        str = '장르 ' + searchThemesStore.filters.genreList.length;
-      } else {
-        GenreQuery.data?.data.genreList.forEach((genre) => {
-          if (searchThemesStore.filters.genreList.includes(genre.genreId)) {
-            str += genre.genreName + ', ';
-          }
-        });
-        str = str.substring(0, str.length - 2); // 마지막 콤마 제거
-      }
+  const selectedGenres = ProfileQuery.data?.data.genreList; // 프로필에서 가져온 장르 리스트
+
+  if (selectedGenres && selectedGenres.length > 0) {
+    if (selectedGenres.length > 3) {
+      str = '장르 ' + selectedGenres.length;
     } else {
-      str = '선택안함';
+      str = selectedGenres.join(', '); // 장르 이름들을 ','로 연결
     }
-    return str;
-  };
+  } else {
+    str = '선택안함';
+  }
+  return str;
+};
+
   const getText = () => {
+    console.log(selectedRegion , selectedCity)
     return selectedRegion && selectedCity
       ? `${selectedRegion} ${selectedCity}`
       : selectedRegion
@@ -351,7 +385,7 @@ export const EditProfile = () => {
               color="primary"
               size={1}
               selected={getText() !== '선택안함'}
-              onHandleClick={() => modal.show(<Selectedtheme />)}
+              onHandleClick={() => modal.show(<Selectedtheme regionId={MyInfoQuery.data?.data?.regionId}/>)}
             >
               {getText()}
             </FilterChip>
