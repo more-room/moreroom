@@ -18,6 +18,7 @@ public interface PartyRequestRepository extends JpaRepository<PartyRequest, Long
   @Query("select pr from PartyRequest pr where pr.theme.themeId = :themeId and pr.member.memberId = :memberId")
   PartyRequest findByThemeIdandMemberId(@Param("themeId") Integer themeId, @Param("memberId") Long memberId);
 
+  @Query("select pr from PartyRequest pr where pr.theme.themeId = :themeId and pr.member.memberId in :memberIds")
   List<PartyRequest> findByThemeIdAndMemberIdIn(Integer themeId, List<Long> memberIds);
 
   @Query("select pr from PartyRequest pr where pr.redisUuid = :uuid")
