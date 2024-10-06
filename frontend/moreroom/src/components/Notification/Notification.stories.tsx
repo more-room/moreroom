@@ -31,6 +31,9 @@ const meta = {
     handler: {
       description: '확인 버튼에 대한 핸들러 함수입니다',
     },
+    xbtn: {
+      description: '뒤로 가기 버튼입니다.',
+    },
     outlinedHandler: {
       description: '2번째 버튼에 대한 핸들러 함수입니다',
     },
@@ -48,6 +51,7 @@ export const Primary: Story = {
   args: {
     ment: '이건 notification 입니다',
     type: 'confirm',
+    xbtn:false,
     twoBtn: false,
     handler: () => console.log('btn press'),
   },
@@ -61,6 +65,7 @@ export const Primary: Story = {
       <Notification
         ment={args.ment}
         type={args.type}
+        xbtn={args.xbtn}
         twoBtn={args.twoBtn}
         handler={() => console.log('btn press')}
       />

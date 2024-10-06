@@ -5,16 +5,22 @@ import { Backdrop } from '../Backdrop';
 import { base, btnContainerCss, btnCss } from './Notification.styles';
 import { Typography } from '../Typography';
 import { Button } from '../Button';
+import { Icon } from '../Icon';
+import { XMarkIcon } from '@heroicons/react/24/solid';
+import { Right } from '../TopBar/Right';
 
 export const Notification = ({
   ment,
   type,
+  xbtn,
   twoBtn,
   handler,
+  xhandler,
   outlinedHandler = () => {},
-  children=['확인하기', '취소하기'],
+  children = ['확인하기', '취소하기'],
   ...props
 }: NotificationProps) => {
+  
   return (
     <Backdrop
       style={{
@@ -24,9 +30,19 @@ export const Notification = ({
       }}
     >
       <div css={base} {...props}>
-        <Typography color="light" size={1} weight={500}>
-          {ment}
-        </Typography>
+        {xbtn ? (
+          <div onClick={xhandler} style={{ position: 'absolute', right: '0', margin: '0 1.5rem' }}>
+            <Icon color="light" size={1.5}>
+              <XMarkIcon />
+            </Icon>
+          </div>
+        ) : undefined}
+
+        <div style={xbtn ? { margin: '1.5em 0' } : undefined}>
+          <Typography color="light" size={1} weight={500}>
+            {ment}
+          </Typography>
+        </div>
         {twoBtn ? (
           <div css={btnContainerCss}>
             <Button

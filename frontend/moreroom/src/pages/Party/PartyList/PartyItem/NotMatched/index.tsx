@@ -14,7 +14,7 @@ import { IParty } from '../../../../../types/partyTypes';
 import { Typography } from '../../../../../components/Typography';
 import { Button } from '../../../../../components/Button';
 import { Icon } from '../../../../../components/Icon';
-import { ClockIcon, MapPinIcon } from '@heroicons/react/24/outline';
+import { ClockIcon, MapPinIcon } from '@heroicons/react/24/solid';
 import { Toggle } from '../../../../../components/Toggle';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { disabledParty } from '../../../../../apis/partyApi';

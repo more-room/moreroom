@@ -1,9 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import React, { useState } from 'react';
-import { containerCss } from './styles';
-import { Typography } from '../../../components/Typography';
-import { Icon } from '../../../components/Icon';
-import { PlusIcon } from '@heroicons/react/24/solid';
 import { useNavigate } from 'react-router-dom';
 import {
   useMutation,
@@ -18,7 +14,6 @@ import { Pending } from './PartyItem/Pending';
 import { Notification } from '../../../components/Notification';
 
 export const PartyListFetch = () => {
-  const nav = useNavigate();
   const [showDelNotification, setShowDelNotification] = useState(false);
   const [showMatchingNotification, setshowMatchingNotification] =
     useState(false);
@@ -65,9 +60,9 @@ export const PartyListFetch = () => {
   return (
     <>
       {PartyQuery?.data.data.requestList.map(
-        (party: IParty, partyRequestId: number) => {
+        (party: IParty) => {
           return (
-            <React.Fragment key={partyRequestId}>
+            <>
               {party.status.statusName === 'NOT_MATCHED' && (
                 <NotMatched
                   party={party}
@@ -89,7 +84,7 @@ export const PartyListFetch = () => {
                   onDeleteClick={() => handleDeleteClick(party.partyRequestId)}
                 />
               )}
-            </React.Fragment>
+            </>
           );
         },
       )}
@@ -105,7 +100,9 @@ export const PartyListFetch = () => {
       {showMatchingNotification && (
         <Notification
           handler={() => {}}
-          outlinedHandler={() => setshowMatchingNotification(false)}
+          xhandler={() => setshowMatchingNotification(false)}
+          outlinedHandler={()=>{}}
+          xbtn
           ment="파티 매칭을 수락하시겠습니까?"
           children={['수락하기', '거절하기']}
           twoBtn
