@@ -9,7 +9,7 @@ export const Ihashtags = [
   { id: 37, label: '꼼꼼해요' },
   { id: 38, label: '적극적이에요' },
   { id: 39, label: '분석적이에요' },
-  { id: 40, label: '스토리를 좋아해요' },
+  { id: 40, label: '스토리 좋아해요' },
   { id: 41, label: '분위기 메이커' },
 ];
 
@@ -24,4 +24,24 @@ export interface ISignUP {
   birth: string;
   genreIdList: number[];
   regionId: string;
+}
+
+export interface IMyReview {
+  reviewId: number;
+  content: string;
+  score: number;
+  member: {
+    memberName: string;
+    memberProfile: string;
+  };
+  theme: {
+    themeId: number;
+    title: string;
+    poster: string;
+  };
+  cafe: {
+    brandName: string;
+    branchName: string;
+  };
+  updatedAt: string;
 }

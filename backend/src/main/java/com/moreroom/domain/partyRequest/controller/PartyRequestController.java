@@ -1,11 +1,13 @@
 package com.moreroom.domain.partyRequest.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.moreroom.domain.member.entity.Member;
 import com.moreroom.domain.partyRequest.dto.ActivateDto;
 import com.moreroom.domain.partyRequest.dto.MockDto;
 import com.moreroom.domain.partyRequest.dto.PartyRequestDto;
 import com.moreroom.domain.partyRequest.dto.SettingPartyRequestDto;
 import com.moreroom.domain.partyRequest.entity.PartyRequest;
+import com.moreroom.domain.partyRequest.service.PartyMatchingService;
 import com.moreroom.domain.partyRequest.service.PartyRequestService;
 import com.moreroom.global.util.FindMemberService;
 import java.util.HashMap;
@@ -33,6 +35,7 @@ public class PartyRequestController {
 
   private final FindMemberService findMemberService;
   private final PartyRequestService partyRequestService;
+  private final PartyMatchingService partyMatchingService;
 
   //파티요청 목록 조회
   @GetMapping("")
@@ -65,5 +68,31 @@ public class PartyRequestController {
   public ResponseEntity<?> activatePartyRequest(@RequestBody ActivateDto activateDto, @PathVariable Long partyRequestId) {
     partyRequestService.activateOrDeactivatePartyRequest(activateDto.isActivate(), partyRequestId);
     return new ResponseEntity<>(HttpStatus.OK);
+  }
+
+  //파티요청 정보 수정
+  @PatchMapping("/{partyRequestId}/settings")
+  public ResponseEntity<?> updatePartyRequestSetting(@PathVariable Long partyRequestId, @RequestBody SettingPartyRequestDto dto) {
+    partyRequestService.updatePartyRequestSettings(partyRequestId, dto);
+    return new ResponseEntity<>(HttpStatus.OK);
+  }
+
+  //파티요청별 해시태그 조회
+  @GetMapping("/{partyRequestId}/hashtags")
+  public ResponseEntity<?> getPartyRequestHashtags(@PathVariable Long partyRequestId) {
+    Member member = findMemberService.findCurrentMemberObject();
+    PartyRequestDto hashtagsList = partyRequestService.getHashtagsList(partyRequestId, member);
+    return new ResponseEntity<>(hashtagsList, HttpStatus.OK);
+  }
+
+  //파티매칭 전체로직 트리거 api (실험용)
+  @GetMapping("/party-match-trigger")
+  public ResponseEntity<?> trigger() {
+    try {
+      partyMatchingService.partyMatchingAndRequest();
+    } catch (JsonProcessingException e) {
+      return new ResponseEntity<>("파티 매칭 중 오류 발생", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    return new ResponseEntity<>("파티매칭 성공", HttpStatus.OK);
   }
 }

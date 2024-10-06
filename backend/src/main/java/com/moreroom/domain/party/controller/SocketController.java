@@ -1,24 +1,21 @@
 package com.moreroom.domain.party.controller;
 
+import com.moreroom.domain.deviceToken.service.FcmService;
 import com.moreroom.domain.member.entity.Member;
 import com.moreroom.domain.party.dto.ChatMessageDto;
 import com.moreroom.domain.party.service.MessageService;
 import com.moreroom.domain.party.service.PartyService;
 import com.moreroom.global.dto.SocketNotificationDto;
 import com.moreroom.global.util.FindMemberService;
-import java.security.Principal;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.messaging.simp.annotation.SubscribeMapping;
-import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Controller;
+
+import java.security.Principal;
 
 // /app으로 시작하는 토픽으로 오는 메세지 처리
 @Controller
@@ -30,6 +27,7 @@ public class SocketController {
   private final FindMemberService findMemberService;
   private final PartyService partyService;
   private final MessageService messageService;
+  private final FcmService fcmService;
 
   @MessageMapping("/chat/join")
   public void joinChatroom(SocketNotificationDto dto, Principal principal) {
@@ -39,8 +37,9 @@ public class SocketController {
   }
 
   @MessageMapping("/chat/message")
-  public void sendMessage(ChatMessageDto message, Principal principal, MessageHeaders headers) {
-    messageService.saveMessage(message, principal);
-    simpMessagingTemplate.convertAndSend("/topic/party/" + message.getPartyId(), message, headers);
+  public void sendMessage(ChatMessageDto message, Principal principal, MessageHeaders headers, @Header("nickname") String nickname) {
+    messageService.saveMessage(message, principal); //메시지 저장
+    fcmService.sendChattingMessagePushAlarm(principal.getName(), message.getPartyId(), nickname, message.getMessage()); //푸시알림 전송
+    simpMessagingTemplate.convertAndSend("/topic/party/" + message.getPartyId(), message, headers); //소켓메세지 전송
   }
 }

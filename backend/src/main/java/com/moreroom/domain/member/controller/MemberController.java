@@ -12,6 +12,7 @@ import com.moreroom.domain.member.entity.Member;
 import com.moreroom.domain.member.exception.MemberExistsEmailException;
 import com.moreroom.domain.member.exception.MemberExistsNicknameException;
 import com.moreroom.domain.member.exception.MemberNotFoundException;
+import com.moreroom.domain.member.service.AuthService;
 import com.moreroom.domain.member.service.MemberService;
 import com.moreroom.global.util.FindMemberService;
 import jakarta.servlet.http.Cookie;
@@ -19,6 +20,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +30,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -43,6 +46,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController {
 
     private final MemberService memberService;
+    private final AuthService authService;
     private final AuthenticationManager authenticationManager;
     private final FindMemberService findMemberService;
 
@@ -57,6 +61,17 @@ public class MemberController {
     @PostMapping("/login")
     public void login(@RequestBody Map<String, String> loginRequest, HttpServletRequest request, HttpServletResponse response) {
         try {
+            boolean isAuthenticated = authService.authenticate(loginRequest.get("email"),
+                loginRequest.get("password"));
+
+            if (!isAuthenticated) {
+                // 비밀번호 불일치 처리
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json");
+                response.getWriter().write("{\"error\": \"비밀번호가 틀립니다.\"}");
+                return;
+            }
+
             // AuthenticationManager를 통해 인증 시도
             Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -68,9 +83,14 @@ public class MemberController {
             // 인증 성공 시 SecurityContextHolder에 인증 정보 저장
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
+            Long memberId = findMemberService.findCurrentMember();
+            if (memberService.checkMemberOut(memberId).equals(Boolean.TRUE)) {
+                throw new MemberNotFoundException();
+            }
+
             // 쿠키 정보 저장
             Cookie idCookie = new Cookie("memberId",
-                String.valueOf(findMemberService.findCurrentMember()));
+                String.valueOf(memberId));
             idCookie.setHttpOnly(true);
             idCookie.setSecure(true);
             idCookie.setMaxAge(60 * 60 * 24);
@@ -85,16 +105,52 @@ public class MemberController {
             session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
 
             response.setStatus(HttpServletResponse.SC_OK);
-        } catch (Exception e) {
-            // 인증 실패 시 처리
+        } catch (UsernameNotFoundException e) {
+            // 이메일 불일치 처리
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            try {
+                response.getWriter().write("{\"error\": \"이메일을 찾을 수 없습니다.\"}");
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        } catch (MemberNotFoundException e) {
+            // 탈퇴한 회원에 대한 예외 처리
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            try {
+                response.getWriter().write("{\"error\": \"" + e.getMessage() + "\"}");
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        } catch (Exception e) {
+            // 일반적인 예외 처리
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            try {
+                response.getWriter().write("{\"error\": \"Authentication failed.\"}");
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
         }
     }
 
 
     @PostMapping("/logout")
     public void logout(HttpServletRequest request, HttpServletResponse response) {
-        request.getSession().invalidate();  // 세션 무효화
+        // 기존 세션이 있으면 가져오고, 세션이 있으면 무효화
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();  // 세션 무효화
+        }
+
+        // JSESSIONID 쿠키 삭제
+        Cookie cookie = new Cookie("JSESSIONID", null);
+        cookie.setMaxAge(0); // 쿠키를 만료시켜 삭제
+        cookie.setPath("/"); // 애플리케이션의 루트 경로
+        response.addCookie(cookie); // 클라이언트에 쿠키 삭제 명령 전송
+
+        // 상태 코드 설정
         response.setStatus(HttpServletResponse.SC_OK);
     }
 

@@ -56,4 +56,8 @@ public class PartyRequest extends BaseEntity {
     public void changeStatus(MatchingStatus status) {
         this.matchingStatus = status;
     }
+
+    public void updateTheme(Theme theme) {
+        this.theme = theme;
+    }
 }

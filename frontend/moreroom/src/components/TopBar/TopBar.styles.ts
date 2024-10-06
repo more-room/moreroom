@@ -18,4 +18,5 @@ export const base = (bgColor?: Palette, bgColorScale?: ColorScale) => css`
       : Colors[bgColor][bgColorScale]
     : '#212121'};
   box-sizing: border-box;
+  z-index: 10; 
 `;

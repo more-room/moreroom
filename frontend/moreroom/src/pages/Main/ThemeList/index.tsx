@@ -25,9 +25,7 @@ export const ThemeList = ({ title, themes }: ThemeListProps) => {
           return (
             <div
               key={theme.themeId}
-              onClick={() =>
-                nav('/theme/detail', { state: { themeId: theme.themeId } })
-              }
+              onClick={() => nav(`/themes/${theme.themeId}`)}
             >
               <ThemeSimpleInfo theme={theme} />
               <StarPoint color="secondary" iconSize={0.875} numberSize={0.75}>

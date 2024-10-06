@@ -9,11 +9,15 @@ import static com.moreroom.domain.review.entity.QReview.review;
 import static com.moreroom.domain.mapping.member.entity.QMemberPartyMapping.memberPartyMapping;
 import static com.moreroom.domain.mapping.party.entity.QPartyHashtagMapping.partyHashtagMapping;
 import static com.moreroom.domain.mapping.theme.entity.QThemeGenreMapping.themeGenreMapping;
+import static com.moreroom.domain.member.entity.QMember.member;
 
 
+import com.moreroom.domain.mapping.member.entity.QMemberPartyMapping;
 import com.moreroom.domain.mapping.theme.repository.ThemeGenreMappingRepository;
+import com.moreroom.domain.member.entity.Member;
 import com.moreroom.domain.party.dto.ChatroomListDto;
 import com.moreroom.domain.party.dto.PartyInfoDto;
+import com.moreroom.domain.party.dto.PartyMemberDto;
 import com.moreroom.domain.party.exception.PartyNotFoundException;
 import com.moreroom.domain.partyRequest.dto.HashTagsDto;
 import com.moreroom.domain.theme.dto.response.ThemeCafeResponseDto;
@@ -170,7 +174,7 @@ public class PartyQueryRepository extends QuerydslRepositoryCustom {
     List<Tuple> memberCntTuple = jpaQueryFactory
         .select(memberPartyMapping.party.partyId, memberPartyMapping.count().intValue().as("memberCount"))
         .from(memberPartyMapping)
-        .where(memberPartyMapping.party.partyId.notIn(partyIdSet))
+        .where(memberPartyMapping.party.partyId.in(partyIdSet))
         .groupBy(memberPartyMapping.party.partyId)
         .fetch();
 
@@ -244,5 +248,23 @@ public class PartyQueryRepository extends QuerydslRepositoryCustom {
         .where(memberPartyMapping.member.memberId.eq(memberId));
 
     return includeMember ? party.partyId.in(subQuery) : party.partyId.notIn(subQuery).and(party.addFlag.eq(true));
+  }
+
+  public PartyMemberDto getPartyMemberList(Long partyId) {
+      List<Member> memberList = jpaQueryFactory
+              .selectFrom(member)
+              .where(member.memberId.in(
+                      JPAExpressions
+                              .select(memberPartyMapping.member.memberId)
+                              .from(memberPartyMapping)
+                              .where(memberPartyMapping.party.partyId.eq(partyId))
+              ))
+              .fetch();
+
+      List<PartyMemberDto.MemberDto> memberDtoList = memberList.stream()
+              .map(m -> new PartyMemberDto.MemberDto(m.getPhoto(), m.getNickname()))
+              .toList();
+
+      return new PartyMemberDto(memberDtoList);
   }
 }

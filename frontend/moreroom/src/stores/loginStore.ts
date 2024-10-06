@@ -30,7 +30,7 @@ export const useLoginStore = create<LoginStore>()((set) => ({
   
   // 비밀번호 유효성 검사
   validatePassword: () => set((state) => {
-    const passwordRegex = /^(?=.*[a-z])(?=.*\d)[a-z\d]{8,}$/; // 소문자 및 숫자 포함 8자 이상
+    const passwordRegex = /^[a-zA-Z0-9]{8,}$/; // 소문자 및 숫자 포함 8자 이상
     return { passwordError: !passwordRegex.test(state.password) };
   }),
   

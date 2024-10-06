@@ -82,6 +82,12 @@ export const themeDetails = css`
     text-overflow: ellipsis;
     font-size: 0.75rem; /* 텍스트 크기를 작게 설정 */
   }
+  div {
+    display: flex;
+    flex-wrap: wrap;  /* 칩들이 가로로 배치되며, 필요하면 다음 줄로 넘어가도록 설정 */
+    gap: 0.5rem;  /* 칩 간의 간격 조절 */
+    margin-top: 0.5rem;
+  }
 `;
 
 export const filterContainer = css`
@@ -91,12 +97,15 @@ export const filterContainer = css`
   margin-top: 0.5rem;
 `;
 
+
 export const chipstyle = css`
   display: flex;
+  align-items: center;
+  padding: 0.25rem 0.35rem !important;
+  font-size: 0.75rem;
   gap: 0.5rem;
   margin-top: 0.5rem;
-  font-size: 0.75rem; /* 칩 텍스트 크기 줄이기 */
-  padding: 0.25rem 0.35rem !important;
+  white-space: nowrap;  /* 칩의 텍스트가 잘리지 않도록 설정 */
 `;
 
 export const ellipsisIconWrapper = css`
@@ -147,4 +156,5 @@ export const bottombarcss = css`
   background-color: ${Colors['grey']['900']}; /* 바텀바 배경색 */
   z-index: 1000; /* 다른 요소 위에 위치 */
   padding: 0.25rem; /* 바텀바 안의 패딩 */
+  border-top: 1px solid #ffffff;
 `
