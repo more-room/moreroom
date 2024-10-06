@@ -101,6 +101,11 @@ services:
             - MONGO_PORT=${MONGO_PORT}
             - MONGO_USER=${MONGO_USER}
             - MONGO_PW=${MONGO_PW}
+            - HOST=${HOST}
+            - USER=${USER}
+            - PASSWORD=${PASSWORD}
+            - DATABASE=${DATABASE}
+            - PORT=${PORT}
         expose:
             - "5000"
         networks:
