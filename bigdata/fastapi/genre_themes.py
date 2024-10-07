@@ -74,7 +74,7 @@ def calculate_theme_score(rg_df, N=10):
 def save_data(result):
     client = mongo_connect()
     try:
-        col = mongo_get_collection(client, "themeRec", "genreThemes")
+        col = mongo_get_collection(client, "themeRec", "genresTheme")
         mongo_save_with_delete(col, result)
     except Exception as e:
         print(f"Error: {e}")
