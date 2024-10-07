@@ -13,7 +13,8 @@ public enum MatchingStatus {
     NOT_MATCHED(0),
     MATCHED(1),
     PENDING(2),
-    DISABLED(3);
+    DISABLED(3),
+    ALL_MATCHED(4);
 
     private final int id;
 
