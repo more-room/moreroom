@@ -32,7 +32,7 @@ export const EditProfile = () => {
   const [nicknameError, setNicknameError] = useState<string>('');
   const searchThemesStore = useSearchThemesStore();
   const modal = useModal();
-  const [showmodal, setshowmodal] = useState<boolean>(false)
+  const [showmodal, setshowmodal] = useState<boolean>(false);
 
   const regionStore = useRegionSelectionStore();
 
@@ -50,7 +50,7 @@ export const EditProfile = () => {
   const [gender, setGender] = useState<'M' | 'F' | undefined>(
     MyInfoQuery.data?.data.gender,
   );
-  
+
   const [birthYear, setBirthYear] = useState<string>('');
   const [birthMonth, setBirthMonth] = useState<string>('');
   const [birthDay, setBirthDay] = useState<string>('');
@@ -58,7 +58,6 @@ export const EditProfile = () => {
   const [room, setRoom] = useState<string>(
     MyInfoQuery?.data?.data?.clearRoom || '',
   );
-
 
   useEffect(() => {
     if (MyInfoQuery.isSuccess && MyInfoQuery.data && MyInfoQuery.data.data) {
@@ -135,7 +134,7 @@ export const EditProfile = () => {
       ),
     onSuccess: () => {
       console.log('변경 성공');
-      nav('/mypage');
+      nav('/', { state: { menu: 4 } });
     },
     onError: () => {
       alert('오류가 발생하였습니다.');
@@ -162,7 +161,7 @@ export const EditProfile = () => {
   const handleEdit = async () => {
     // 만약 닉네임 중복확인 안하고 수정하면 뜨는 공지
     if (!isNicknameVerified) {
-      setshowmodal(true)
+      setshowmodal(true);
       return;
     }
 
@@ -182,7 +181,7 @@ export const EditProfile = () => {
         gender: gender,
         birth: birth,
         newRegionId: newRegionId,
-        clearRoom: parseInt(room) || 0, 
+        clearRoom: parseInt(room) || 0,
         genreIdList: genreIdList,
       });
     } else {
@@ -202,7 +201,7 @@ export const EditProfile = () => {
   const getSelectedGenresText = () => {
     let str = '';
     const selectedGenres = ProfileQuery.data?.data.genreList; // ['SF', '동화']
-    
+
     if (selectedGenres && selectedGenres.length > 0) {
       if (selectedGenres.length > 4) {
         str = '장르 ' + selectedGenres.length;
@@ -212,10 +211,9 @@ export const EditProfile = () => {
     } else {
       str = '선택안함';
     }
-    
+
     return str;
   };
-  
 
   const getText = () => {
     const selectedRegion = regionStore.selectedRegion;
@@ -257,13 +255,13 @@ export const EditProfile = () => {
         <TopBar.Title
           type="default"
           title="프로필 편집"
-          backHandler={() => nav(-1)}
+          backHandler={() => nav('/', { state: { menu: 4 } })}
         />
       </TopBar>
       <div css={containerCss}>
         {showmodal ? (
           <Notification
-            handler={()=>setshowmodal(false)}
+            handler={() => setshowmodal(false)}
             ment="닉네임을 변경하려면 중복 확인을 해주세요!"
             type="alert"
           />
@@ -395,7 +393,11 @@ export const EditProfile = () => {
               gap: '0.5rem',
             }}
           >
-            <Button color="danger" rounded={0.5} handler={() => nav(-1)}>
+            <Button
+              color="danger"
+              rounded={0.5}
+              handler={() => nav('/', { state: { menu: 4 } })}
+            >
               취소
             </Button>
             <Button rounded={0.5} handler={handleEdit}>

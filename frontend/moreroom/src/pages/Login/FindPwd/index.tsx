@@ -17,7 +17,7 @@ export const FindPwd = () => {
         <TopBar.Title
           type="default"
           title="비밀번호 찾기"
-          backHandler={() => nav(-1)}
+          backHandler={() => nav('/auth/login')}
         />
       </TopBar>
       <Progress

@@ -18,7 +18,11 @@ import { MegaphoneIcon, CogIcon } from '@heroicons/react/24/solid'; // 설정 �
 import { Icon } from '../../../components/Icon';
 import { ArrowUpCircleIcon } from '@heroicons/react/24/solid'; // 전송 버튼으로 사용할 아이콘
 import { useSuspenseQueries } from '@tanstack/react-query';
-import { getChatRoomInfo, getNotice, registerNotice } from '../../../apis/chatApi'; // 파티 목록 API 호출
+import {
+  getChatRoomInfo,
+  getNotice,
+  registerNotice,
+} from '../../../apis/chatApi'; // 파티 목록 API 호출
 import { useChat } from '../../../hooks/useChat';
 import { getMyInfo } from '../../../apis/mypageApi';
 import { Typography } from '../../../components/Typography';
@@ -157,7 +161,7 @@ export const ChatingRoomFetch = () => {
           type="default"
           defaultValue="파티 목록"
           title={roomQuery.data.data.roomName}
-          backHandler={() => navigate('/chating')}
+          backHandler={() => navigate('/', { state: { menu: 1 } })}
         />
 
         {/* 오른쪽에 설정 아이콘 추가 */}
@@ -172,10 +176,7 @@ export const ChatingRoomFetch = () => {
       </TopBar>
 
       {/* 공지사항 영역 */}
-      <div
-        css={noticeContainer}
-        onClick={() => setShowNotice((prev) => !prev)}
-      >
+      <div css={noticeContainer} onClick={() => setShowNotice((prev) => !prev)}>
         <div css={title}>
           <Icon size={1.5} color="secondary">
             <MegaphoneIcon />
@@ -211,7 +212,13 @@ export const ChatingRoomFetch = () => {
               onChange={(e) => setTempNotice(e.target.value)}
               css={inputStyle}
             />
-            <div style={{ display: 'flex', justifyContent: 'right', marginTop: '1rem' }}>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'right',
+                marginTop: '1rem',
+              }}
+            >
               <Button variant="contained" handler={handleNoticeSave}>
                 확인
               </Button>
