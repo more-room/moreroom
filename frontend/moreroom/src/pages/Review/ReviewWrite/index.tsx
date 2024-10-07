@@ -10,6 +10,7 @@ import { Rating } from '../../../components/Rating';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { createReview } from '../../../apis/reviewApi';
+import { Typography } from '../../../components/Typography';
 
 export const ReviewWrite = () => {
   const navigate = useNavigate();

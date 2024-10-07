@@ -281,7 +281,7 @@ export const AccountInfo = ({ onSubmit }: UserDataFormProps) => {
           error={!!passwordError}
           label="비밀번호"
           id="custom-css-outlined-input"
-          type={showPassword ? 'text' : 'password'}
+          type={!showPassword ? 'text' : 'password'}
           placeholder="영문, 숫자 포함 8글자 이상"
           value={password}
           InputProps={{
@@ -308,7 +308,7 @@ export const AccountInfo = ({ onSubmit }: UserDataFormProps) => {
           label="비밀번호 확인"
           placeholder="영문, 숫자 포함 8글자 이상"
           value={checkPassword}
-          type={showPasswordCheck ? 'text' : 'password'} // 비밀번호 보이기/숨기기 상태
+          type={!showPasswordCheck ? 'text' : 'password'} // 비밀번호 보이기/숨기기 상태
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
