@@ -41,4 +41,8 @@ public interface PartyRequestRepository extends JpaRepository<PartyRequest, Long
   @Modifying
   @Query("update PartyRequest pr set pr.matchingStatus = :status, pr.redisUuid = :uuid where pr.member.memberId in :memberIds and pr.theme.themeId = :themeId")
   int updateUuidAndStatusForMembers(@Param("uuid") String uuid, @Param("status") MatchingStatus status, @Param("themeId") Integer themeId, @Param("memberIds") List<Long> memberIdList);
+
+  @Modifying
+  @Query("update PartyRequest pr set pr.matchingStatus = :status")
+  int updateAllPartyRequestStatus(@Param("status") MatchingStatus status);
 }
