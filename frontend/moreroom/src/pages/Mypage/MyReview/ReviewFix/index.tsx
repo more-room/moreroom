@@ -1,21 +1,42 @@
 /** @jsxImportSource @emotion/react */
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { TopBar } from '../../../components/TopBar';
-import { largeBox, topbarcolor, bottombarcss, ratingcss, themeCardStyles, btncss } from './styles';
-import { BottomBar } from '../../../components/BottomBar';
-import { BellIcon } from '@heroicons/react/24/solid';
-import { ThemeItem } from '../../../components/ThemeItem';
-import { Rating } from '../../../components/Rating';
+import { useEffect } from 'react';
+import { TopBar } from '../../../../components/TopBar';
+import { 
+  largeBox, 
+  topbarcolor, 
+  bottombarcss, 
+  ratingcss, 
+  themeCardStyles, 
+  btncss,
+  containerCss,
+  headerCss,
+  leftContentCss,
+  profileCss,
+  themeCss,
+  brandCss,
+  posterCss,
+  contentCss,
+  updatedAtCss,
+
+ } from './styles';
+import { BottomBar } from '../../../../components/BottomBar';
+import { BellIcon, MapPinIcon } from '@heroicons/react/24/solid';
+import { ThemeItem } from '../../../../components/ThemeItem';
+import { Typography } from '../../../../components/Typography';
+import { IFixTheme} from '../../../../types/themeTypes';
+import { Rating } from '../../../../components/Rating';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import { createReview } from '../../../apis/reviewApi';
+import { createReview, reviewPatch} from '../../../../apis/reviewApi';
+import { Icon } from '../../../../components/Icon';
 
-export const ReviewWrite = () => {
+export const ReviewFix = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { themeItem } = location.state || {};
-
+  const { themeId, reviewId, themeTitle, content, score, poster, cafeBrand, cafeBranch, nickname, profileSrc } = location.state || {};
+  
   // 별점 상태를 관리하는 useState 훅
   const [ratingValue, setRatingValue] = useState(0);
   const [reviewContent, setReviewContent] = useState(""); // 리뷰 내용 상태 관리
@@ -29,7 +50,7 @@ export const ReviewWrite = () => {
 
   // 리뷰 제출 함수
   const handleSubmit = () => {
-    // 작성된 리뷰 데이터를 여기에 추가하여 제출 가능
+    // 별점과 리뷰의 최소 조건 확인
     if (ratingValue < 0.5) {
       setErrorMessage("별점은 최소 0.5점 이상이어야 합니다.");
       return;
@@ -41,30 +62,30 @@ export const ReviewWrite = () => {
     }
 
     // 오류가 없는 경우, 제출
-    setErrorMessage(""); // 오류 메시지 초기화
+    setErrorMessage(""); 
 
     const reviewData = {
-      themeId: themeItem?.themeId,
-      content: reviewContent, // 사용자가 작성한 리뷰 내용
-      score: ratingValue, // 사용자가 선택한 별점 값
+      content: reviewContent,
+      score: ratingValue,
     };
 
+    console.log('리뷰 수정 데이터:', reviewData);
+
+    // 리뷰 수정 API 호출
+    reviewPatch(reviewId, reviewData)
+      .then((response) => {
+        console.log('리뷰 수정 성공:', response.data);
+        // 성공적으로 수정한 경우 이전 화면으로 돌아가기
+        navigate(-1);
+      })
+      .catch((error) => {
+        console.error('리뷰 수정 실패:', error);
+        setErrorMessage("리뷰 수정에 실패했습니다. 다시 시도해주세요.");
+      });
+
     
-    // console.log
-    // 여기에 API 호출 (예: createReview(reviewData))을 추가하여 데이터 전송
-    createReview(reviewData)
-    .then((response) => {
-      console.log('리뷰 작성 성공:', response.data);
-      // 성공적으로 작성한 경우, 리뷰 리스트 페이지로 이동하거나 피드백을 사용자에게 제공할 수 있습니다.
-      navigate(-1); // 이전 화면으로 돌아가기
-    })
-    .catch((error) => {
-      console.error('리뷰 작성 실패:', error);
-      setErrorMessage("리뷰 작성에 실패했습니다. 다시 시도해주세요.");
-    });
   };
-    console.log('리뷰 제출 데이터:', themeItem);
-    console.log('테마 아이디', themeItem.themeId)
+
   return (
     <div>
       
@@ -74,8 +95,55 @@ export const ReviewWrite = () => {
         </TopBar>
       </div>
       
-      <div css={themeCardStyles}>
-        <ThemeItem theme={themeItem} />
+      {/* 이전 페이지에서 불러온 리뷰 정보를 그대로 표시 */}
+      <div css={containerCss}>
+        <div css={headerCss}>
+          <div css={leftContentCss}>
+            <div css={profileCss}>
+              <img src={profileSrc} alt="프로필 사진" />
+              <div>
+                <Typography color="light" size={0.8} weight={500}>
+                  {nickname}
+                </Typography>
+                <Rating
+                  activeColor="secondary"
+                  count={5}
+                  disabled
+                  size={0.8}
+                  value={score}
+                />
+              </div>
+            </div>
+            <div css={themeCss}>
+              <Typography color="grey" scale="600" size={0.8} weight={600}>
+                {themeTitle}
+              </Typography>
+              <div css={brandCss}>
+                <Icon color="primary" size={1}>
+                  <MapPinIcon />
+                </Icon>
+                {cafeBrand ? (
+                  <Typography color="grey" scale="600" size={0.8} weight={500}>
+                    {cafeBrand} - {cafeBranch || "장소 정보 없음"}
+                  </Typography>
+                ) : (
+                  <Typography color="grey" scale="600" size={0.8} weight={500}>
+                    장소 정보 없음
+                  </Typography>
+                )}
+              </div>
+            </div>
+          </div>
+          <div css={posterCss}>
+            <img src={poster} alt="테마 포스터" />
+          </div>
+        </div>
+        <div css={contentCss}>
+          <Typography color="grey" scale="100" size={0.8} weight={500}>
+            {content}
+          </Typography>
+          
+        </div>
       </div>
 
       <div style={{ margin: '2rem' }} css={ratingcss}>

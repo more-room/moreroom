@@ -26,6 +26,9 @@ export interface IReviewListItem {
   thumbsUp: number;
   createdAt: string;
   upFlag: boolean;
+  updatedAt: string;
+  
+  // isLikedByCurrentUser?: boolean;
 }
 
 /* 내부 리뷰 조회 */

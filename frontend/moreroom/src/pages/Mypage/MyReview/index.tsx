@@ -1,29 +1,43 @@
 /** @jsxImportSource @emotion/react */
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { TopBar } from '../../../components/TopBar';
 import { useNavigate } from 'react-router-dom';
 import { Icon } from '../../../components/Icon';
 import { ChevronDownIcon } from '@heroicons/react/24/solid';
 import { Typography } from '../../../components/Typography';
 import { containerCss, sortCss } from './styles';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getMyReview } from '../../../apis/mypageApi';
-import { ReivewList } from './ReviewList';
+import { ReviewList } from './ReviewList';
 import { useModal } from '../../../hooks/useModal';
 import { ReviewSort } from '../../../modals/mypage/ReviewSort';
 import { IMyReview } from '../../../types/mypageTypes';
+import { reviewDelete } from '../../../apis/reviewApi';
 import NoResult from '../../../components/common/NoResult';
 
 export const MyReview = () => {
   const nav = useNavigate();
   const modal = useModal();
-
+  const queryClient = useQueryClient();
 
   const [sortOption, setSortOption] = useState('최신 작성순');
   const ReviewQuery = useQuery({
     queryKey: ['myReview'],
     queryFn: async () => await getMyReview(),
   });
+
+  const handleReviewDeleted = async (reviewId: number) => {
+    try {
+      await reviewDelete(reviewId);
+      // 리뷰 삭제 후 데이터 갱신
+      queryClient.invalidateQueries({ queryKey: ['myReview'] });
+    } catch (error) {
+      console.error('Error deleting review:', error);
+      alert('리뷰 삭제 중 문제가 발생했습니다. 나중에 다시 시도해주세요.');
+    }
+  };
+
+  console.log('첫페이지 쿼리데이터', ReviewQuery.data);
 
   console.log(ReviewQuery);
 
@@ -90,7 +104,7 @@ export const MyReview = () => {
         </div>
         {sortedReviews.length > 0 ? (
           sortedReviews.map((review: IMyReview) => (
-            <ReivewList
+            <ReviewList
               key={review.reviewId}
               nickname={review.member.memberName}
               profileSrc={review.member.memberProfile}
@@ -102,10 +116,13 @@ export const MyReview = () => {
               cafeBrand={review.cafe.brandName}
               cafeBranch={review.cafe.branchName}
               updatedAt={review.createdAt}
+              reviewId={review.reviewId}
+              createdAt={review.createdAt}
+              onReviewDeleted={handleReviewDeleted}
             />
           ))
         ) : (
-          <div style={{height: '80vh'}}>
+          <div style={{ height: '80vh' }}>
             <NoResult
               msg="현재 존재하는 기록이 없습니다."
               url="/history"

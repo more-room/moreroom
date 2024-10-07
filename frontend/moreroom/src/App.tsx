@@ -30,6 +30,7 @@ import { SectorTheme } from './pages/Party/RegisterParty/SectorTheme';
 import { Review } from './pages/Review/ReviewRead';
 import { ReviewWrite } from './pages/Review/ReviewWrite';
 import { EditParty } from './pages/Party/EditParty';
+import { ReviewFix } from './pages/Mypage/MyReview/ReviewFix';
 import { sessionValidate } from './apis/authApi';
 
 function App() {
@@ -82,6 +83,7 @@ function App() {
         <Route path="/mypage/hashtag/edit" element={<EditHashTag />} />
         <Route path="/mypage/password/edit" element={<EditPassword />} />
         <Route path="/mypage/myreview" element={<MyReview />} />
+        <Route path="/mypage/myreview/fix" element={<ReviewFix />} />
 
         <Route path="/review" element={<Review />} />
         <Route path="/review/write" element={<ReviewWrite />} />
