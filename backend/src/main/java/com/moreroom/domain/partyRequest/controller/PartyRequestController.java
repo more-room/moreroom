@@ -3,10 +3,8 @@ package com.moreroom.domain.partyRequest.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.moreroom.domain.member.entity.Member;
 import com.moreroom.domain.partyRequest.dto.ActivateDto;
-import com.moreroom.domain.partyRequest.dto.MockDto;
 import com.moreroom.domain.partyRequest.dto.PartyRequestDto;
 import com.moreroom.domain.partyRequest.dto.SettingPartyRequestDto;
-import com.moreroom.domain.partyRequest.entity.PartyRequest;
 import com.moreroom.domain.partyRequest.service.PartyMatchingService;
 import com.moreroom.domain.partyRequest.service.PartyRequestService;
 import com.moreroom.global.util.FindMemberService;
@@ -25,7 +23,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/party/partyRequest")
@@ -95,4 +93,17 @@ public class PartyRequestController {
     }
     return new ResponseEntity<>("파티매칭 성공", HttpStatus.OK);
   }
+
+  //파티매칭 전체로직 트리거 api (실험용)
+  @GetMapping("/party-match-trigger-for-one")
+  public ResponseEntity<?> triggerForOne(
+      @RequestParam(name = "partyRequestId") Long partyRequestId) {
+    try {
+      partyMatchingService.partyMatchingAndRequestForOne(partyRequestId);
+    } catch (JsonProcessingException e) {
+      return new ResponseEntity<>("파티 매칭 중 오류 발생", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    return new ResponseEntity<>("파티매칭 성공", HttpStatus.OK);
+  }
+
 }

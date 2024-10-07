@@ -87,9 +87,9 @@ public class PartyRequestService {
   //파티요청 조회
   public List<PartyRequestDto> getPartyRequestList(Long memberId) {
     //파티요청 조회
-    List<PartyRequestDto> partyRequestDtoList = partyRequestQueryRepository.findPartyRequestByMemberId(memberId);
+    List<PartyRequestDto> partyRequestDtoList = partyRequestQueryRepository.findPartyRequestByMemberId(memberId); //쿼리
     Map<Long, PartyRequest> partyRequestMap = partyRequestRepository.findAllByMemberId(memberId).stream()
-            .collect(Collectors.toMap(PartyRequest::getPartyRequestId, item -> item));
+            .collect(Collectors.toMap(PartyRequest::getPartyRequestId, item -> item)); //쿼리
 
 
     //status에 member정보 채우기
@@ -152,20 +152,7 @@ public class PartyRequestService {
   }
 
   private String makeHashtagType(int[] yourHashtagIdList) {
-    if (yourHashtagIdList.length == 0) {
-      return "[]";
-    }
-
-    StringBuilder sb = new StringBuilder();
-    sb.append("[");
-    for (int i = 0; i < yourHashtagIdList.length; i++) {
-      sb.append(yourHashtagIdList[i]);
-      if (i < yourHashtagIdList.length - 1) {
-        sb.append(",");
-      }
-    }
-    sb.append("]");
-    return sb.toString();
+    return yourHashtagIdList == null ? "[]" : Arrays.toString(yourHashtagIdList);
   }
 
   public PartyRequestDto getHashtagsList(Long partyRequestId, Member member) {
