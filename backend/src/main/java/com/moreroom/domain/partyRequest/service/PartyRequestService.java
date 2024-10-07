@@ -25,13 +25,16 @@ import java.util.stream.Stream;
 
 import com.moreroom.global.exception.globalException.JsonSerializationException;
 import com.moreroom.global.util.RedisUtil;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class PartyRequestService {
 
   private final PartyRequestRepository partyRequestRepository;
@@ -45,7 +48,13 @@ public class PartyRequestService {
   //파티요청 등록
   @Transactional
   public void savePartyRequest(SettingPartyRequestDto partyRequestDto, Member member) {
-    Theme theme = themeRepository.getReferenceById(partyRequestDto.getThemeId());
+    Theme theme;
+    try {
+      theme = themeRepository.getReferenceById(partyRequestDto.getThemeId());
+    } catch (EntityNotFoundException e) {
+      log.error("themeId {}를 조회할 수 없음", partyRequestDto.getThemeId(), e);
+      throw new ThemeNotFoundException();
+    }
     PartyRequest partyRequest = PartyRequest.builder()
         .member(member)
         .theme(theme)
