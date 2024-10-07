@@ -47,7 +47,6 @@ public class RecommendationService {
         // 2. 테마 상세 정보 조회
         ThemeListResponseDto themeListResponseDto = themeQueryRepository.findByThemeIds(
             similarMemberTheme.getSimilarMemberThemes(), memberId);
-        System.out.println("similarMemberTheme = " + similarMemberTheme);
         return themeListResponseDto;
     }
 

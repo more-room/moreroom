@@ -24,7 +24,6 @@ public class RecommendationController {
         ThemeListResponseDto themeListResponseDto = recommendationService.getSimilarUserThemes(
             memberId);
         if (themeListResponseDto != null) {
-            System.out.println("themeListResponseDto = " + themeListResponseDto);
             return new ResponseEntity<>(themeListResponseDto,
                 HttpStatus.OK);
         }
