@@ -5,6 +5,7 @@ import com.moreroom.domain.member.entity.Member;
 import com.moreroom.domain.party.dto.*;
 import com.moreroom.domain.party.service.MessageService;
 import com.moreroom.domain.party.service.PartyService;
+import com.moreroom.domain.partyRequest.entity.MatchingStatus;
 import com.moreroom.domain.partyRequest.service.PartyMatchingService;
 import com.moreroom.global.util.FindMemberService;
 import java.util.HashMap;
@@ -35,16 +36,22 @@ public class PartyController {
 
   //파티 참가 수락/거절
   @PostMapping("")
-  public ResponseEntity<?> acceptPartyRequest(@RequestBody PartyRequestAcceptDto dto)
-      throws JsonProcessingException {
-    Long memberId = findMemberService.findCurrentMember(); //현재 세션 멤버
-    HashMap<Long, String> partyAcceptMap = partyMatchingService.setPartyAcceptStatus(dto.getUuid(), memberId, dto.getThemeId(),
-        dto.isAccept()); //파티 참가 상태 업데이트
-    if (partyAcceptMap != null && partyAcceptMap.get(-2L).equals("3")) {
-      partyService.createPartyAndJoin(dto.getThemeId(), partyAcceptMap, dto.getUuid()); //3명 모두 동의한 경우 파티 만들고 참가
-    }
+  public ResponseEntity<?> acceptPartyRequest(@RequestBody PartyRequestAcceptDto dto) throws JsonProcessingException {
+    Long memberId = findMemberService.findCurrentMember();
+    //파티 참가 상태 업데이트
+    HashMap<Long, String> partyAcceptMap = partyMatchingService.setPartyAcceptStatus(dto.getUuid(), memberId, dto.getThemeId(), dto.isAccept());
 
-    return new ResponseEntity<>(HttpStatus.OK);
+    if (partyAcceptMap == null) {
+      // null일 때는 파티매칭에 실패한 경우
+      return new ResponseEntity<>(new PartyRequestAcceptDto(false, MatchingStatus.NOT_MATCHED), HttpStatus.OK);
+    }
+    if (partyAcceptMap.get(-2L).equals("3")) {
+      //3명 모두 동의한 경우 파티 만들고 참가
+      partyService.createPartyAndJoin(dto.getThemeId(), partyAcceptMap, dto.getUuid());
+      return new ResponseEntity<>(new PartyRequestAcceptDto(true, MatchingStatus.ALL_MATCHED), HttpStatus.OK);
+    }
+    //3명 이하 동의한 경우 파티의 상태는 PENDING으로 바뀔 것임.
+    return new ResponseEntity<>(new PartyRequestAcceptDto(true, MatchingStatus.PENDING), HttpStatus.OK);
   }
 
   //채팅 내역 조회
