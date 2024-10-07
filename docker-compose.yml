@@ -29,6 +29,7 @@ services:
             - REACT_APP_KAKAOMAP_KEY=${REACT_APP_KAKAOMAP_KEY}
             - REACT_APP_CHAT_SOCKET=${REACT_APP_CHAT_SOCKET}
             - REACT_APP_CHAT_DEST=${REACT_APP_CHAT_DEST}
+            - DOCKER_TAG_FASTAPI=${DOCKER_TAG_FASTAPI}
             - TZ=Asia/Seoul
         volumes:
             - /home/ubuntu/data/certbot/conf:/etc/letsencrypt
