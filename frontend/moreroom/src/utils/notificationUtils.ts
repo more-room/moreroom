@@ -29,6 +29,11 @@ export const handleAllowNotification = async () => {
       const token = await getToken(messaging, {
         vapidKey:
           'BBzIVhn6Tz00wjAfqUb0CEPhg_Huuxo5WjbSYYUjE04sPoXyxR7ebGcwy-sULuMsnhMdoc4_phYSzM5-vOFwnL0',
+      }).catch(async () => {
+        await getToken(messaging, {
+          vapidKey:
+            'BBzIVhn6Tz00wjAfqUb0CEPhg_Huuxo5WjbSYYUjE04sPoXyxR7ebGcwy-sULuMsnhMdoc4_phYSzM5-vOFwnL0',
+        });
       });
 
       if (token) {
