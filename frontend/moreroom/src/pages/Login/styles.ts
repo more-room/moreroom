@@ -1,7 +1,6 @@
 import { css } from '@emotion/react';
 import { Colors } from '../../styles/globalStyle';
 
-
 export const loginpagecontainer = css`
   margin-top: 7rem;
   display: flex;
@@ -9,7 +8,7 @@ export const loginpagecontainer = css`
   justify-content: center;
   align-items: center;
   width: 100%;
-`
+`;
 export const imgCss = css`
   display: flex;
   justify-content: center;
@@ -36,12 +35,11 @@ export const formStyles = css`
   flex-direction: column;
   align-items: center;
   width: 100%;
-  
 
   .MuiTextField-root {
     width: 90%; /* 화면에 맞춰 너비 조정 */
     max-width: 25rem; /* 최대 너비를 25rem으로 설정 */
-    margin-bottom: 1.5rem; /* 필드 간 간격 조정 */
+    margin-bottom: 2rem;
   }
 
   .custom-textfield .MuiOutlinedInput-root {
@@ -68,10 +66,11 @@ export const formStyles = css`
     input {
       color: ${Colors['grey']['300']};
     }
-      
-    
-    margin-bottom: 2rem;
   }
+  .MuiFormHelperText-root {
+      margin-left: 0;
+      margin-top: 0.5rem;
+    }
 `;
 
 // 버튼 스타일
@@ -86,7 +85,7 @@ export const buttonStyles = css`
   max-width: 25rem;
   padding: 1rem;
   font-size: 1rem;
-  /* margin-top: 5rem; */
+  margin: 0.5rem 0 1rem;
 
   @media (max-width: 360px) {
     font-size: 0.875rem; /* 360px 이하 화면에서 버튼 텍스트 크기 줄임 */
@@ -96,9 +95,4 @@ export const buttonStyles = css`
 
 export const iconcolors = css`
   color: ${Colors['primary']['500']};
-`
-
-export const textcolors = css`
-  color: ${Colors['grey']['700']};
-
-`
+`;

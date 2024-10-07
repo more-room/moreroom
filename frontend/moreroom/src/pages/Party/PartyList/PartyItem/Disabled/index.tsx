@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React, { useState } from 'react';
+import React from 'react';
 import {
   btnContainerCss,
   chipCss,
@@ -15,9 +15,6 @@ import { Typography } from '../../../../../components/Typography';
 import { Button } from '../../../../../components/Button';
 import { Icon } from '../../../../../components/Icon';
 import { ClockIcon } from '@heroicons/react/24/outline';
-import { Toggle } from '../../../../../components/Toggle';
-import { fontSize } from '../../../../../components/MenuTab/MenuTab.stories';
-import { UserGroupIcon } from '@heroicons/react/24/solid';
 
 interface PartyItemProps {
   party: IParty;
@@ -45,7 +42,7 @@ export const Disabled = ({ party }: PartyItemProps) => {
             </Typography>
           </div>
           <div css={chipCss}>
-            {party.hashtagList?.map((hashtag: Hashtag) => (
+            {party.partyHashtagList?.map((hashtag: Hashtag) => (
               <Chip
                 key={hashtag.hashtagId}
                 border={1}

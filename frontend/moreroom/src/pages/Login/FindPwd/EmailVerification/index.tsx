@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { FormHelperText } from '@mui/material';
 import { validateEmail } from '../../../../utils/validationUtils';
 import { isEmail } from '../../../../apis/authApi';
@@ -11,9 +10,9 @@ import {
   containerCss,
   inputCss,
 } from '../../../Signup/AccountInfo/styles';
-import { CssTextField } from '../../../Signup/AccountInfo';
 import { Button } from '../../../../components/Button';
 import { nextStepBtnCss } from './styles';
+import { CssTextField } from '../../../../components/Mui/CssTextField';
 
 interface UserDataFormProps {
   onSubmit: () => void;
@@ -54,7 +53,7 @@ export const EmailVerificaion = ({ onSubmit }: UserDataFormProps) => {
           <div style={{ flex: '1' }}>
             <CssTextField
               fullWidth
-              // error={!!emailError}
+              error={!!emailError}
               label="이메일"
               id="custom-css-outlined-input"
               placeholder="abc@gmail.com"

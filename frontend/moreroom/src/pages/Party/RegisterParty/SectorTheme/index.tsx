@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { useSearchThemesStore, useSearchTitleStore, useThemePageStore } from '../../../../stores/themeStore';
 import { getThemeTitles } from '../../../../apis/themeApi';
@@ -8,7 +7,6 @@ import { TopBar } from '../../../../components/TopBar';
 import { SearchTitle } from './SearchTitle';
 import { SearchList } from './SearchList';
 import { useNavigate } from 'react-router-dom';
-
 
 export type TThemePage = 'default' | 'search';
 

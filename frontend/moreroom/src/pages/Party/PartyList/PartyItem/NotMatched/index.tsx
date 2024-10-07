@@ -14,7 +14,7 @@ import { IParty } from '../../../../../types/partyTypes';
 import { Typography } from '../../../../../components/Typography';
 import { Button } from '../../../../../components/Button';
 import { Icon } from '../../../../../components/Icon';
-import { ClockIcon } from '@heroicons/react/24/outline';
+import { ClockIcon, MapPinIcon } from '@heroicons/react/24/solid';
 import { Toggle } from '../../../../../components/Toggle';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { disabledParty } from '../../../../../apis/partyApi';
@@ -127,6 +127,14 @@ export const NotMatched = ({ party, onDeleteClick }: PartyItemProps) => {
             </Typography>
             <div css={timeCss}>
               <Icon color="primary" size={1}>
+                <MapPinIcon />
+              </Icon>
+              <Typography color="grey" scale="500" size={0.8} weight={700}>
+                {party.theme.brandName ? `${party.theme.brandName} - ${party.theme.branchName}` : '장소정보 없음'} 
+              </Typography>
+            </div>
+            <div css={timeCss}>
+              <Icon color="primary" size={1}>
                 <ClockIcon />
               </Icon>
               <Typography color="grey" scale="500" size={0.8} weight={700}>
@@ -134,7 +142,7 @@ export const NotMatched = ({ party, onDeleteClick }: PartyItemProps) => {
               </Typography>
             </div>
             <div css={chipCss}>
-              {party.hashtagList.map((hashtag: Hashtag) =>
+              {party.partyHashtagList.map((hashtag: Hashtag) =>
                 hashtag.hashtagId <= 5 ? (
                   <Chip
                     key={hashtag.hashtagId}

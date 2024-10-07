@@ -1,14 +1,19 @@
-import { css } from "@emotion/react";
+import { css } from '@emotion/react';
 
 export const containerCss = css`
-  margin: 1rem;
-`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding: 1rem;
+  box-sizing: border-box;
+`;
 
 export const fontCss = css`
   text-align: center;
-  margin: 2rem 0;
-`
+  margin-top: 1rem;
+`;
 
 export const btnCss = css`
-  margin: 2rem 0 1rem;
-`
+  margin: 1rem 0;
+`;

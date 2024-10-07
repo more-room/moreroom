@@ -6,8 +6,6 @@ import { topbarcolor, bottombarcss, ratingcss, themeCardStyles, btncss } from '.
 import { BottomBar } from '../../../components/BottomBar';
 import { BellIcon } from '@heroicons/react/24/solid';
 import { ThemeItem } from '../../../components/ThemeItem';
-import { Typography } from '../../../components/Typography';
-import { IThemeItem } from '../../../types/themeTypes';
 import { Rating } from '../../../components/Rating';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';

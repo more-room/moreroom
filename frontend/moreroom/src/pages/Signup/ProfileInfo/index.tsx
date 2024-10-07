@@ -1,31 +1,38 @@
 /** @jsxImportSource @emotion/react */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Typography } from '../../../components/Typography';
 import { FilterChip } from '../../../components/FilterChip';
 import { chipItemCss, containerCss, filterCss } from './styles';
-import { CssTextField } from '../AccountInfo';
 import { Button } from '../../../components/Button';
 import { btnCss } from '../AccountInfo/styles';
 import { useModal } from '../../../hooks/useModal';
-import { useSignUpStore } from '../../../stores/signupStore';
-import { useSearchThemesStore } from '../../../stores/themeStore';
+import {
+  useRegionSelectionStore,
+  useSignUpStore,
+} from '../../../stores/signupStore';
 import { Selectedtheme } from '../../../modals/mypage/Selectedtheme';
 import { useQuery } from '@tanstack/react-query';
 import { getRegions } from '../../../apis/infoApi';
-import { IRegionCommon, IRegionItem } from '../../../types/infoTypes';
+import { CssTextField } from '../../../components/Mui/CssTextField';
+import { handleDateChange } from '../../../utils/birthUtils';
 
 interface VerificationProps {
+  before: () => void;
   onSubmit: () => void;
 }
-
-export const ProfileInfo = ({ onSubmit }: VerificationProps) => {
-  const [gender, setGender] = useState<'M' | 'F' | undefined>(undefined);
-  const [birthYear, setBirthYear] = useState<string>('');
-  const [birthMonth, setBirthMonth] = useState<string>('');
-  const [birthDay, setBirthDay] = useState<string>('');
+export const ProfileInfo = ({ before, onSubmit }: VerificationProps) => {
+  const signUpStore = useSignUpStore();
+  const [gender, setGender] = useState<'M' | 'F' | undefined>(signUpStore.gender);
+  const birth = signUpStore.birth.split('-');
+  const [birthYear, setBirthYear] = useState<string>(birth[0]);
+  const [birthMonth, setBirthMonth] = useState<string>(birth[1]);
+  const [birthDay, setBirthDay] = useState<string>(birth[2]);
   const modal = useModal();
-  const { setSignUpData } = useSignUpStore();
-  const searchThemesStore = useSearchThemesStore();
+  const [available, setAvailable] = useState<boolean>(false);
+
+  const { selectedRegionId, selectedRegion, selectedCity } =
+    useRegionSelectionStore();
+
   const regionQuery = useQuery({
     queryKey: ['region'],
     queryFn: async () => await getRegions(),
@@ -34,9 +41,9 @@ export const ProfileInfo = ({ onSubmit }: VerificationProps) => {
   const handleSignUp = () => {
     const birthDate = `${birthYear}-${birthMonth.padStart(2, '0')}-${birthDay.padStart(2, '0')}`;
 
-    setSignUpData({
+    signUpStore.setSignUpData({
       gender,
-      regionId: searchThemesStore.filters.region,
+      regionId: selectedRegionId, // 직접 selectedRegionId 사용
       birth: birthDate,
     });
 
@@ -46,34 +53,58 @@ export const ProfileInfo = ({ onSubmit }: VerificationProps) => {
   };
 
   const getText = () => {
-    let str = '';
-    regionQuery.data?.data.regions.forEach((region: IRegionItem) => {
-      if (region.regionId === searchThemesStore.filters.region) {
-        // 시/도만 선택된 경우
-        str += region.regionName;
-      } else {
-        region.cities.forEach((city: IRegionCommon) => {
-          if (city.regionId === searchThemesStore.filters.region) {
-            // 시/도와 시/군/구를 모두 연결
-            str += `${region.regionName} ${city.regionName}`;
-          }
-        });
-      }
-    });
-    return str || '선택안함';
+    const regionText = selectedRegion && selectedCity
+      ? `${selectedRegion} ${selectedCity}`
+      : selectedRegion
+      ? selectedRegion
+      : selectedCity
+      ? selectedCity
+      : '선택안함';
+    return regionText;
   };
 
-  <div css={filterCss}>
-    <FilterChip
-      css={chipItemCss}
-      color="primary"
-      size={1}
-      selected={getText() !== '선택안함'}
-      onHandleClick={() => modal.show(<Selectedtheme />)}
-    >
-      {getText()}
-    </FilterChip>
-  </div>;
+  const handleYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    handleDateChange(value, 'year', setBirthYear)
+  };
+
+  const handleMonthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    handleDateChange(value, 'month', setBirthMonth)
+  };
+
+  const handleDayChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    handleDateChange(value, 'day', setBirthDay)
+  };
+
+  useEffect(() => {
+    validate();
+  }, [
+    gender,
+    birthYear,
+    birthMonth,
+    birthDay,
+    getText()
+  ]);
+
+  const validate = (): boolean => {
+    const isGenderSelected = gender !== undefined;
+    console.log("성별 선택됨:", isGenderSelected);
+    
+    const isRegionSelected = getText() !== '선택안함';
+    console.log("지역 선택됨:", isRegionSelected);
+
+    const isBirthValid =
+      birthYear?.length === 4 && birthMonth?.length === 2 && birthDay?.length === 2;
+    console.log("생년월일 유효:", isBirthValid);
+  
+    const allFieldsValid = isGenderSelected && isRegionSelected && isBirthValid;
+    setAvailable(allFieldsValid);
+    
+    return allFieldsValid;
+  };
+  
 
   return (
     <div>
@@ -87,7 +118,9 @@ export const ProfileInfo = ({ onSubmit }: VerificationProps) => {
             color="primary"
             size={1}
             selected={gender === 'M'}
-            onHandleClick={() => setGender('M')}
+            onHandleClick={() => {
+              setGender('M');
+            }}
           >
             남성
           </FilterChip>
@@ -96,7 +129,9 @@ export const ProfileInfo = ({ onSubmit }: VerificationProps) => {
             color="primary"
             size={1}
             selected={gender === 'F'}
-            onHandleClick={() => setGender('F')}
+            onHandleClick={() => {
+              setGender('F');
+            }}
           >
             여성
           </FilterChip>
@@ -110,21 +145,21 @@ export const ProfileInfo = ({ onSubmit }: VerificationProps) => {
             label="YYYY"
             id="year-input"
             value={birthYear}
-            onChange={(e) => setBirthYear(e.target.value)}
+            onChange={handleYearChange}
           />
           <CssTextField
             fullWidth
             label="MM"
             id="month-input"
             value={birthMonth}
-            onChange={(e) => setBirthMonth(e.target.value)}
+            onChange={handleMonthChange}
           />
           <CssTextField
             fullWidth
             label="DD"
             id="day-input"
             value={birthDay}
-            onChange={(e) => setBirthDay(e.target.value)}
+            onChange={handleDayChange}
           />
         </div>
         <Typography color="light" scale="400" size={1} weight={500}>
@@ -136,22 +171,33 @@ export const ProfileInfo = ({ onSubmit }: VerificationProps) => {
             color="primary"
             size={1}
             selected={getText() !== '선택안함'}
-            onHandleClick={() => modal.show(<Selectedtheme />)}
+            onHandleClick={() => {
+              modal.show(<Selectedtheme />);
+            }}
           >
             {getText()}
           </FilterChip>
         </div>
         <Button
           css={btnCss}
-          style={{ margin: '2rem 0' }}
-          fullwidth
+          style={{ margin: '2rem 0', justifyContent: 'flex-start' }}
           color="primary"
           rounded={0.5}
-          scale="A200"
           variant="contained"
+          handler={() => before()}
+        >
+          이전
+        </Button>
+        <Button
+          css={btnCss}
+          style={{ margin: '2rem 0', float: 'right' }}
+          color="primary"
+          rounded={0.5}
+          variant="contained"
+          disabled={!available}
           handler={handleSignUp}
         >
-          다음으로
+          다음
         </Button>
       </div>
     </div>
