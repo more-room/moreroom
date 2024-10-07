@@ -77,7 +77,6 @@ public class PartyService {
   }
 
   //유저 파티에 참가시키기 (매핑테이블 저장)
-//  @Transactional
   public void joinToParty(HashMap<Long, String> partyAcceptMap, Party party, Theme theme) {
     for (Long memberId : partyAcceptMap.keySet()) {
       if (memberId > 0) {

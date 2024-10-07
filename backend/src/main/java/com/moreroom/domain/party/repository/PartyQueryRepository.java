@@ -44,8 +44,7 @@ public class PartyQueryRepository extends QuerydslRepositoryCustom {
   private final JPAQueryFactory jpaQueryFactory;
   private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-  public PartyQueryRepository(JPAQueryFactory jpaQueryFactory,
-      ThemeGenreMappingRepository themeGenreMappingRepository) {
+  public PartyQueryRepository(JPAQueryFactory jpaQueryFactory) {
     super(party);
     this.jpaQueryFactory = jpaQueryFactory;
   }
@@ -81,9 +80,9 @@ public class PartyQueryRepository extends QuerydslRepositoryCustom {
             hashtag.hashtagId,
             hashtag.hashtagName
         )
-        .from(partyHashtagMapping)
-        .join(partyHashtagMapping.party, party)
-        .join(partyHashtagMapping.hashtag, hashtag)
+        .from(party)
+        .leftJoin(partyHashtagMapping).on(partyHashtagMapping.party.eq(party))
+        .leftJoin(partyHashtagMapping.hashtag, hashtag)
         .join(party.theme, theme)
         .join(theme.cafe, cafe)
         .join(cafe.brand, brand)
@@ -117,12 +116,12 @@ public class PartyQueryRepository extends QuerydslRepositoryCustom {
           PartyInfoDto partyInfoDto = PartyInfoDto.builder()
               .partyId(partyId)
               .roomName(tuple.get(party.roomName))
-              .date(tuple.get(party.date).format(formatter))
+              .date(Optional.ofNullable(tuple.get(party.date)).map(date -> date.format(formatter)).orElse(null))
               .maxMember(tuple.get(party.maxMember))
               .build();
 
           //partyId, themeId 추출
-          partyIdSet.add(tuple.get(party.partyId));
+          partyIdSet.add(partyId);
           themeIdSet.add(tuple.get(theme.themeId));
 
           //ThemeListComponentDto 생성
@@ -144,8 +143,7 @@ public class PartyQueryRepository extends QuerydslRepositoryCustom {
               .build();
 
           //List<HashTagsDto> 생성
-          List<Tuple> tuples = entry.getValue();
-          List<HashTagsDto> hashtagList = tuples.stream()
+          List<HashTagsDto> hashtagList = entry.getValue().stream()
               .filter(t -> t.get(hashtag.hashtagId) != null)
               .map(t -> new HashTagsDto(
                   t.get(hashtag.hashtagId),
