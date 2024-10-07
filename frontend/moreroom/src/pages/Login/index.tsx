@@ -17,6 +17,7 @@ import { Button } from '../../components/Button';
 import { useLoginStore } from '../../stores/loginStore';
 import { UserLogin } from '../../apis/loginApi'; // 로그인 API 호출 함수
 import { useNavigate } from 'react-router-dom';
+import { handleAllowNotification } from '../../utils/notificationUtils';
 import { Typography } from '../../components/Typography';
 
 export const Login = () => {
@@ -146,7 +147,7 @@ export const Login = () => {
 
       {/* 로그인 실패 메시지 */}
       {loginError && (
-        <Typography color="danger" scale='700' size={1} weight={500}>
+        <Typography color="danger" scale="700" size={1} weight={500}>
           {loginError}
         </Typography>
       )}
