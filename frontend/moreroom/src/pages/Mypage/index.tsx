@@ -80,18 +80,11 @@ export const MyPage = () => {
           type="confirm"
         />
       )}
-      <TopBar>
-        <TopBar.Title
-          type="default"
-          title="마이페이지"
-          backHandler={() => nav(-1)}
-        />
-      </TopBar>
       <div css={profileContainer}>
         {/* <UserCircleIcon css={profile} /> */}
         <img
           css={profile}
-          src={ProfileQuery.data?.data.photo}
+          src={`/profiles/profile${ProfileQuery.data?.data.photo}.png`}
           alt="프로필 사진"
         />
         <div>

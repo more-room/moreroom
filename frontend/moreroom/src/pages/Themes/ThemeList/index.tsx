@@ -12,7 +12,6 @@ import {
 import { SearchList } from './SearchList';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { useNavigate } from 'react-router-dom';
-import { Notification } from '../../../components/Notification';
 
 export type TThemePage = 'default' | 'search';
 

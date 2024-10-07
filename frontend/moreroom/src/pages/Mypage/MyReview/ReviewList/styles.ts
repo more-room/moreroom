@@ -71,3 +71,14 @@ export const contentCss = css`
 export const updatedAtCss = css`
   margin-top: 1rem;
 `;
+
+export const fixReview = css`
+  width: 25%;
+  /* z-index: 10; */
+  margin-bottom: 0.3rem ;
+  margin-left: 75%;
+  font-family: 'paperlogy';
+  display: flex; 
+  justify-content: center; 
+  align-items: center;
+`

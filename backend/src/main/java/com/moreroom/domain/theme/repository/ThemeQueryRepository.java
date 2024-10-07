@@ -128,6 +128,18 @@ public class ThemeQueryRepository extends QuerydslRepositoryCustom {
                     : null
             )
             .fetch();
+        // 검색 결과 없을 경우 빈 배열 반환
+        if (idList.isEmpty()) {
+            ThemeListResponseDto themeListResponseDto = ThemeListResponseDto.builder()
+                .themeList(new ArrayList<>())
+                .build();
+            Integer pn = pageRequest.getPageNumber();
+            Integer ps = idList.size();
+            Long te = (long) idList.size();
+            Long tp = (te + pageRequest.getPageSize() - 1) / pageRequest.getPageSize();
+
+            return PageResponseDto.toDto(themeListResponseDto, pn, ps, tp, te);
+        }
 
         // (2) 데이터 읽어오기
         List<Tuple> results = jpaQueryFactory

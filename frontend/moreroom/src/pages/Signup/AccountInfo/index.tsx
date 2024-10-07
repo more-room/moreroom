@@ -1,12 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import React, { useState } from 'react';
-import {
-  FormHelperText,
-  IconButton,
-  InputAdornment,
-} from '@mui/material';
+import { FormHelperText, IconButton, InputAdornment } from '@mui/material';
 import { Button } from '../../../components/Button';
-import { btnCss, inputCss, containerCss } from './styles';
+import { btnCss, inputCss, containerCss, iconcolors } from './styles';
 import {
   isEmail,
   isNickname,
@@ -20,7 +16,6 @@ import {
   validatePassword,
 } from '../../../utils/validationUtils';
 import { CssTextField } from '../../../components/Mui/CssTextField';
-import { iconcolors } from '../../Login/styles';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Visibility from '@mui/icons-material/Visibility';
 
@@ -36,11 +31,12 @@ export const AccountInfo = ({ onSubmit }: UserDataFormProps) => {
   const [email, setEmail] = useState<string>(signUpStore.email);
   const [code, setCode] = useState<string>('');
   const [password, setPassword] = useState<string>(signUpStore.password);
-  const [checkPassword, setCheckPassword] = useState<string>(signUpStore.passwordCheck);
+  const [checkPassword, setCheckPassword] = useState<string>(
+    signUpStore.passwordCheck,
+  );
   const [nickname, setNickname] = useState<string>(signUpStore.nickname);
   const [isNicknameVerified, setIsNicknameVerified] = useState<boolean>(false);
   const [available, setAvailable] = useState<boolean>(false);
-  
 
   const [check, setCheck] = useState<UserDateValidation>({
     email: false,
@@ -57,75 +53,81 @@ export const AccountInfo = ({ onSubmit }: UserDataFormProps) => {
   const [nicknameError, setNicknameError] = useState<string>('');
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordCheck, setShowPasswordCheck] = useState(false);
- // 이메일 유효성 검사
-const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  setEmail(e.target.value);
-  const error = validateEmail(e.target.value);
-  setEmailError(error);
-  
-  setCheck((prevCheck) => {
-    const newCheck = { ...prevCheck, email: error === '' };
-    validate(newCheck); // 항상 validate 호출
-    return newCheck;
-  });
-};
+  // 이메일 유효성 검사
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+    const error = validateEmail(e.target.value);
+    setEmailError(error);
 
-// 비밀번호 유효성 검사
-const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  setPassword(e.target.value);
-  const error = validatePassword(e.target.value);
-  setPasswordError(error);
-
-  setCheck((prevCheck) => {
-    const newCheck = { ...prevCheck, password: error === '' };
-    validate(newCheck); // 항상 validate 호출
-    return newCheck;
-  });
-};
-
-// 비밀번호 확인
-const handlePasswordCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const value = e.target.value;
-  setCheckPassword(value);
-  
-  const error = value !== password ? '입력하신 비밀번호랑 일치하지 않습니다.' : '';
-  setPasswordCheckError(error);
-
-  setCheck((prevCheck) => {
-    const newCheck = { ...prevCheck, passwordCheck: error === '' };
-    validate(newCheck); // 항상 validate 호출
-    return newCheck;
-  });
-};
-
-// 닉네임 유효성 검사
-const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  setNickname(e.target.value);
-  setNicknameError(validateNickname(e.target.value));
-  
-  // 닉네임을 변경할 때 인증 상태 리셋
-  setIsNicknameVerified(false);
-  
-  if (nicknameError !== '') {
     setCheck((prevCheck) => {
-      const newCheck = { ...prevCheck, nickname: false };
-      validate(newCheck);
+      const newCheck = { ...prevCheck, email: error === '' };
+      validate(newCheck); // 항상 validate 호출
       return newCheck;
     });
-  }
-  
-};
+  };
 
-// 유효성 검사 함수
-const validate = (updatedCheck: UserDateValidation): boolean => {
-  const allTrue = Object.values(updatedCheck).every((value) => value === true);
-  setAvailable(allTrue); // 전체 폼의 상태를 최신화
-  return allTrue;
-};
+  // 비밀번호 유효성 검사
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+    const error = validatePassword(e.target.value);
+    setPasswordError(error);
 
+    setCheck((prevCheck) => {
+      const newCheck = { ...prevCheck, password: error === '' };
+      validate(newCheck); // 항상 validate 호출
+      return newCheck;
+    });
+  };
+
+  // 비밀번호 확인
+  const handlePasswordCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setCheckPassword(value);
+
+    const error =
+      value !== password ? '입력하신 비밀번호랑 일치하지 않습니다.' : '';
+    setPasswordCheckError(error);
+
+    setCheck((prevCheck) => {
+      const newCheck = { ...prevCheck, passwordCheck: error === '' };
+      validate(newCheck); // 항상 validate 호출
+      return newCheck;
+    });
+  };
+
+  // 닉네임 유효성 검사
+  const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNickname(e.target.value);
+    setNicknameError(validateNickname(e.target.value));
+
+    // 닉네임을 변경할 때 인증 상태 리셋
+    setIsNicknameVerified(false);
+
+    if (nicknameError !== '') {
+      setCheck((prevCheck) => {
+        const newCheck = { ...prevCheck, nickname: false };
+        validate(newCheck);
+        return newCheck;
+      });
+    }
+  };
+
+  // 유효성 검사 함수
+  const validate = (updatedCheck: UserDateValidation): boolean => {
+    const allTrue = Object.values(updatedCheck).every(
+      (value) => value === true,
+    );
+    setAvailable(allTrue); // 전체 폼의 상태를 최신화
+    return allTrue;
+  };
 
   const handleSignUp = () => {
-    signUpStore.setSignUpData({ email, password, passwordCheck: checkPassword, nickname });
+    signUpStore.setSignUpData({
+      email,
+      password,
+      passwordCheck: checkPassword,
+      nickname,
+    });
 
     // 현재 스토어에 잘 저장되어있는 지 확인
     const curdata = useSignUpStore.getState();
