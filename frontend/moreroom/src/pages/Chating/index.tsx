@@ -1,8 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import React, { Suspense } from 'react';
-import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
+import { ErrorBoundary } from 'react-error-boundary';
 import { ChatingFetch } from './ChatingFetch';
-import Error from '../../components/common/Error';
 import Loading from '../../components/common/Loading';
 import NoResult from '../../components/common/NoResult';
 
