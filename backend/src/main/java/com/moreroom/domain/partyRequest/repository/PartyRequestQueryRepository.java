@@ -1,36 +1,31 @@
 package com.moreroom.domain.partyRequest.repository;
 
-import static com.moreroom.domain.member.entity.QMember.*;
-import static com.moreroom.domain.partyRequest.entity.QPartyRequest.partyRequest;
-import static com.moreroom.domain.mapping.partyRequest.entity.QPartyRequestHashtagMapping.partyRequestHashtagMapping;
-import static com.moreroom.domain.theme.entity.QTheme.theme;
-import static com.moreroom.domain.hashtag.entity.QHashtag.hashtag;
-import static com.moreroom.domain.member.entity.QMember.member;
-import static com.moreroom.domain.mapping.member.entity.QMemberHashtagMapping.memberHashtagMapping;
-import static com.moreroom.domain.cafe.entity.QCafe.cafe;
-
+import com.moreroom.domain.cafe.entity.Cafe;
 import com.moreroom.domain.hashtag.entity.Hashtag;
-import com.moreroom.domain.member.entity.Member;
-import com.moreroom.domain.member.entity.QMember;
-import com.moreroom.domain.partyRequest.dto.HashTagsDto;
-import com.moreroom.domain.partyRequest.dto.MemberDto;
-import com.moreroom.domain.partyRequest.dto.PartyRequestDto;
-import com.moreroom.domain.partyRequest.dto.StatusDto;
-import com.moreroom.domain.partyRequest.dto.ThemeDto;
+import com.moreroom.domain.mapping.partyRequest.entity.PartyRequestHashtagMapping;
+import com.moreroom.domain.partyRequest.dto.*;
 import com.moreroom.domain.partyRequest.exception.PartyRequestNotFoundException;
-import com.moreroom.domain.theme.entity.QTheme;
+import com.moreroom.domain.theme.entity.Theme;
+import com.moreroom.domain.theme.exception.ThemeNotFoundException;
 import com.moreroom.global.repository.QuerydslRepositoryCustom;
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
+
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static com.moreroom.domain.cafe.entity.QCafe.cafe;
+import static com.moreroom.domain.hashtag.entity.QHashtag.hashtag;
+import static com.moreroom.domain.mapping.member.entity.QMemberHashtagMapping.memberHashtagMapping;
+import static com.moreroom.domain.mapping.partyRequest.entity.QPartyRequestHashtagMapping.partyRequestHashtagMapping;
+import static com.moreroom.domain.member.entity.QMember.member;
+import static com.moreroom.domain.partyRequest.entity.QPartyRequest.partyRequest;
+import static com.moreroom.domain.theme.entity.QTheme.theme;
 
 @Slf4j
 @Repository
@@ -68,7 +63,7 @@ public class PartyRequestQueryRepository extends QuerydslRepositoryCustom {
 
     // 결과 처리
     if (results.isEmpty()) {
-      throw new PartyRequestNotFoundException();
+        return new ArrayList<>();
     }
 
     //List<PartyRequestDto> 생성
@@ -82,10 +77,14 @@ public class PartyRequestQueryRepository extends QuerydslRepositoryCustom {
           //공통 정보 추출
           Tuple tuple = entry.getValue().get(0);
           Long partyRequestId = entry.getKey();
-          StatusDto status = StatusDto.builder()
-              .statusId(tuple.get(partyRequest.matchingStatus).id())
-              .statusName(tuple.get(partyRequest.matchingStatus).toString())
-              .build();
+
+          StatusDto status = Optional.ofNullable(tuple.get(partyRequest.matchingStatus))
+              .map(matchingStatus -> StatusDto.builder()
+                      .statusId(matchingStatus.id())
+                      .statusName(matchingStatus.toString())
+                      .build())
+              .orElse(new StatusDto());
+
           ThemeDto themeDto = ThemeDto.builder()
               .themeId(tuple.get(theme.themeId))
               .poster(tuple.get(theme.poster))
@@ -93,15 +92,17 @@ public class PartyRequestQueryRepository extends QuerydslRepositoryCustom {
               .brandName(tuple.get(cafe.cafeName))
               .branchName(tuple.get(cafe.branchName))
               .build();
-          String createdAt = tuple.get(partyRequest.createdAt).format(formatter);
+
+          String createdAt = Optional.ofNullable(tuple.get(partyRequest.createdAt))
+              .map(dateTime -> dateTime.format(formatter))
+              .orElse("");
 
           //List<HashTagsDto> 생성
-          List<Tuple> tuples = entry.getValue();
-          List<HashTagsDto> hashtagList = tuples.stream()
+          List<HashTagsDto> hashtagList = entry.getValue().stream()
               .filter(t -> t.get(hashtag.hashtagId) != null)
               .map(t -> new HashTagsDto(
                   t.get(hashtag.hashtagId),
-                  t.get(hashtag.hashtagName)
+                  Optional.ofNullable(t.get(hashtag.hashtagName)).orElse("")
               ))
               .toList();
 
@@ -134,12 +135,12 @@ public class PartyRequestQueryRepository extends QuerydslRepositoryCustom {
             member.memberId,
             member.nickname,
             member.photo,
-            memberHashtagMapping.hashtag.hashtagId,
-            memberHashtagMapping.hashtag.hashtagName
+            hashtag.hashtagId,
+            hashtag.hashtagName
         )
         .from(member)
-        .join(memberHashtagMapping).on(member.memberId.eq(memberHashtagMapping.member.memberId))
-        .join(hashtag).on(hashtag.hashtagId.eq(memberHashtagMapping.hashtag.hashtagId))
+        .leftJoin(memberHashtagMapping).on(member.memberId.eq(memberHashtagMapping.member.memberId))
+        .leftJoin(hashtag).on(hashtag.hashtagId.eq(memberHashtagMapping.hashtag.hashtagId))
         .where(member.memberId.in(memberIdList))
         .fetch();
 
@@ -155,13 +156,14 @@ public class PartyRequestQueryRepository extends QuerydslRepositoryCustom {
         .map(entry -> {
           Long memberId = entry.getKey();
           Tuple tuple = entry.getValue().get(0);
-          String nickname = tuple.get(member.nickname);
-          String photo = tuple.get(member.photo);
+          String nickname = Optional.ofNullable(tuple.get(member.nickname)).orElse("");
+          String photo = Optional.ofNullable(tuple.get(member.photo)).orElse("");
 
           List<HashTagsDto> memberHashtag = entry.getValue().stream()
+              .filter(e -> e.get(hashtag.hashtagId) != null)
               .map(e -> {
-                Integer hashtagId = e.get(memberHashtagMapping.hashtag.hashtagId);
-                String hashtagName = e.get(memberHashtagMapping.hashtag.hashtagName);
+                Integer hashtagId = e.get(hashtag.hashtagId);
+                String hashtagName = Optional.ofNullable(e.get(hashtag.hashtagName)).orElse("");
                 return new HashTagsDto(hashtagId, hashtagName);
               })
               .toList();
@@ -194,19 +196,24 @@ public class PartyRequestQueryRepository extends QuerydslRepositoryCustom {
 
       Tuple tuple = results.get(0);
       ThemeDto themeDto = ThemeDto.builder()
-              .themeId(tuple.get(theme).getThemeId())
-              .poster(tuple.get(theme).getPoster())
-              .title(tuple.get(theme).getTitle())
-              .brandName(tuple.get(cafe).getCafeName())
-              .branchName(tuple.get(cafe).getBranchName())
+              .themeId(Optional.ofNullable(tuple.get(theme)).map(Theme::getThemeId).orElseThrow(ThemeNotFoundException::new))
+              .poster(Optional.ofNullable(tuple.get(theme)).map(Theme::getPoster).orElse(null))
+              .title(Optional.ofNullable(tuple.get(theme)).map(Theme::getTitle).orElse(null))
+              .brandName(Optional.ofNullable(tuple.get(cafe)).map(Cafe::getCafeName).orElse(null))
+              .branchName(Optional.ofNullable(tuple.get(cafe)).map(Cafe::getBranchName).orElse(null))
               .build();
 
-      String yours = tuple.get(partyRequestHashtagMapping).getHashtagType();
+      String yours = Optional.ofNullable(tuple.get(partyRequestHashtagMapping))
+              .map(PartyRequestHashtagMapping::getHashtagType)
+              .orElse("[]");
       List<Integer> yourHashtagIdList = convertToIntegerList(yours);
 
       //partyHashtagList 가공
       List<HashTagsDto> partyHashtagList = results.stream()
-              .map(t -> new HashTagsDto(t.get(hashtag).getHashtagId(), t.get(hashtag).getHashtagName()))
+              .map(t -> Optional.ofNullable(t.get(hashtag))
+                      .map(h -> new HashTagsDto(h.getHashtagId(), h.getHashtagName()))
+                      .orElse(new HashTagsDto()))
+              .distinct()
               .toList();
 
       //쿼리 2 : myHashtagList
