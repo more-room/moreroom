@@ -21,7 +21,7 @@ export const IconTypoMenu = ({
       <Typography
         size={0.75}
         color={selected ? 'primary' : 'grey'}
-        weight={selected ? 700 : 400}
+        weight={selected ? 500 : 400}
       >
         {menu}
       </Typography>

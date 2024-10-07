@@ -80,13 +80,6 @@ export const MyPage = () => {
           type="confirm"
         />
       )}
-      <TopBar>
-        <TopBar.Title
-          type="default"
-          title="마이페이지"
-          backHandler={() => nav(-1)}
-        />
-      </TopBar>
       <div css={profileContainer}>
         {/* <UserCircleIcon css={profile} /> */}
         <img

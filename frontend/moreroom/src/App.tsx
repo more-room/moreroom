@@ -44,36 +44,44 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<Main />} />
-        <Route path="/themes" element={<ThemeList />} />
-        <Route path="/themes/:themeId" element={<ThemeDetail />} />
-        <Route path="/auth/signup" element={<Signup />} />
-        <Route path="/cafes" element={<CafeList />} />
-        <Route path="/cafes/:cafeId" element={<CafeDetail />} />
+        {/* 사용자 인증/인가 */}
         <Route path="/auth/login" element={<Login />} />
+        <Route path="/auth/signup" element={<Signup />} />
         <Route path="/auth/find/password" element={<FindPwd />} />
         <Route path="/auth/find/password/done" element={<PwdDone />} />
 
-        <Route path="/party" element={<Party />} />
+        {/* 메인 화면 */}
+        <Route path="/" element={<Main />} />
+
+        {/* 테마 */}
+        <Route path="/themes" element={<ThemeList />} />
+        <Route path="/themes/:themeId" element={<ThemeDetail />} />
+
+        {/* 카페 */}
+        <Route path="/cafes" element={<CafeList />} />
+        <Route path="/cafes/:cafeId" element={<CafeDetail />} />
+
+        {/* 파티 */}
         <Route path="/party/register" element={<RegisterParty />} />
         <Route path="/party/edit/:partyRequestId" element={<EditParty />} />
         <Route path="/party/addtheme" element={<SectorTheme />} />
-        <Route path="/mypage" element={<MyPage />} />
+
+        {/* 채팅 */}
+        <Route path="/chatingroom/:partyId" element={<ChatingRoom />} />
+        <Route path="/roomdetail/:partyId" element={<Roomdetail />} />
+
+        {/* 기록 */}
+        <Route path="/history/detail/:historyId" element={<HistoryDetail />} />
+        <Route path="/history/write" element={<HistoryWrite />} />
+        <Route path="/history/edit/:historyId" element={<HistoryWrite />} />
+        <Route path="/themes/history" element={<ThemeList />} />
+
+        {/* 마이페이지 */}
         <Route path="/mypage/profile" element={<Profile />} />
         <Route path="/mypage/profile/edit" element={<EditProfile />} />
         <Route path="/mypage/hashtag/edit" element={<EditHashTag />} />
         <Route path="/mypage/password/edit" element={<EditPassword />} />
         <Route path="/mypage/myreview" element={<MyReview />} />
-
-        <Route path="/chating" element={<Chating />} />
-        <Route path="/chatingroom/:partyId" element={<ChatingRoom />} />
-        <Route path="/roomdetail/:partyId" element={<Roomdetail />} />
-
-        <Route path="/history" element={<HistoryList />} />
-        <Route path="/history/detail/:historyId" element={<HistoryDetail />} />
-        <Route path="/history/write" element={<HistoryWrite />} />
-        <Route path="/history/edit/:historyId" element={<HistoryWrite />} />
-        <Route path="/themes/history" element={<ThemeList />} />
 
         <Route path="/review" element={<Review />} />
         <Route path="/review/write" element={<ReviewWrite />} />
