@@ -20,7 +20,7 @@ export const ChatBubble = ({ isMine, chat }: ChatBubbleProps) => {
         </div>
       ) : (
         <>
-          <img src={chat.photo} css={profile} />
+          <img src={`/profiles/profile${chat.photo}.png`} css={profile} />
           <div>
             <Typography color="light" weight={400} size={0.75}>
               {chat.nickname}

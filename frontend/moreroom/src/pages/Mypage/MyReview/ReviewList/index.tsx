@@ -10,14 +10,17 @@ import {
   profileCss,
   themeCss,
   updatedAtCss,
+  fixReview
 } from './styles';
 import Rating from '../../../../components/Rating';
 import { Typography } from '../../../../components/Typography';
 import { Icon } from '../../../../components/Icon';
 import { MapPinIcon } from '@heroicons/react/24/solid';
 import { useNavigate } from 'react-router-dom';
+import { Button } from '../../../../components/Button';
+import { reviewDelete } from '../../../../apis/reviewApi';
 
-export const ReivewList = ({
+export const ReviewList = ({
   nickname,
   profileSrc,
   content,
@@ -28,6 +31,10 @@ export const ReivewList = ({
   cafeBrand,
   cafeBranch,
   updatedAt,
+  reviewId,
+  createdAt,
+  onReviewDeleted
+  
 }: {
   nickname: string;
   profileSrc: string;
@@ -39,11 +46,48 @@ export const ReivewList = ({
   cafeBrand?: string;
   cafeBranch?: string;
   updatedAt: string;
+  reviewId: number;
+  createdAt: string;
+  onReviewDeleted: (reviewId: number) => Promise<void>;
 }) => {
   const nav = useNavigate();
+
   const handleClick = () => {
     nav(`/themes/${themeId}`);
   };
+  const reviewFix = () => {
+    // 리뷰 수정 페이지로 이동하면서 해당 리뷰의 데이터 전달
+    nav('/mypage/myreview/fix', {
+      state: {
+        themeId,
+        themeTitle,
+        content,
+        score,
+        poster,
+        cafeBrand,
+        cafeBranch,
+        nickname,
+        profileSrc,
+        reviewId,
+        createdAt
+      },
+    });
+  };
+  
+  // 리뷰 삭제 핸들러
+  const handleDelete = async () => {
+    const confirmDelete = window.confirm("정말 이 리뷰를 삭제하시겠습니까?");
+    if (confirmDelete) {
+      try {
+        await onReviewDeleted(reviewId);
+        alert("리뷰가 성공적으로 삭제되었습니다.");
+      } catch (error) {
+        console.error("리뷰 삭제 중 오류 발생:", error);
+        alert("리뷰 삭제 중 문제가 발생했습니다. 나중에 다시 시도해주세요.");
+      }
+    }
+  };
+  // console.log(reviewId)
   return (
     <div css={containerCss}>
       <div css={headerCss}>
@@ -98,9 +142,18 @@ export const ReivewList = ({
           size={0.8}
           weight={500}
         >
-          {updatedAt} 작성
+          {createdAt} 작성 / 
+          <a onClick={handleDelete} style={{ cursor: 'pointer', color: 'red', marginLeft: '5px' }}> 삭제하기</a>
         </Typography>
       </div>
+        <Button css={fixReview}
+          variant='contained'
+          color='secondary'
+          handler={reviewFix}
+          rounded={0.5}
+        >리뷰 수정
+        </Button>
+        
     </div>
   );
 };

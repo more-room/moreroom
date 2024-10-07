@@ -1,79 +1,280 @@
 /** @jsxImportSource @emotion/react */
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { TopBar } from "../../../../components/TopBar";
-import { IParty } from "../../../../types/chatingTypes";
-import { useSearchPartiesStore } from "../../../../stores/chatingStore";
-import { getPartyList } from "../../../../apis/chatApi"; // 파티 목록 API 호출
-import { ThemeItem } from "../../../../components/ThemeItem"; // ThemeItem 컴포넌트 임포트
-import { titletext, topbarcolor, textcolor, infobox, buttoncss, hr, exitbutton, wait } from "./styles";
+import { IParty, IChatRoomInfo, IMemberListResponse } from "../../../../types/chatingTypes";
+import { getPartyList, getMyPartyList, getChatRoomInfo, patchChatRoomInfo, getPartyMembers } from "../../../../apis/chatApi";
+import { ThemeItem } from "../../../../components/ThemeItem";
+import { titletext, topbarcolor, textcolor, infobox, buttoncss, hr, exitbutton, memberContainer, memberItem, memberImage, memberName, inputStyle, modalContent, modalTitle, rangeInputStyle } from "./styles";
 import { InfoBox } from "../../../../components/InfoBox";
+import { Typography } from "../../../../components/Typography";
 import { UserIcon } from "@heroicons/react/24/solid";
 import { Button } from "../../../../components/Button";
 import { Colors } from "../../../../styles/globalStyle";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { Modal } from "../../../../components/Modal"; // Provided Modal component
+import { Notification } from "../../../../components/Notification"; // Provided Notification component
 
 export const RoomdetailFetch = () => {
-  const { partyId } = useParams<{ partyId: string }>(); // URL에서 partyId 가져오기
+  const { partyId } = useParams<{ partyId: string }>();
   const nav = useNavigate();
-  const [isClicked, setIsClicked] = useState(false);
-  const [buttonText, setButtonText] = useState("채팅방 공개");
+  const [chatRoomInfo, setChatRoomInfo] = useState<IChatRoomInfo | null>(null);
+  const [members, setMembers] = useState<IMemberListResponse | null>(null);
 
-  // 버튼 핸들러
-  const buttonhandle = () => {
-    console.log({ buttonText });
-    setIsClicked((prevState) => !prevState);
-    setButtonText((prevText) => (prevText === "채팅방 공개" ? "채팅방 비공개" : "채팅방 공개"));
+  // 각 모달의 열림 상태를 관리하는 상태 값
+  const [roomNameModalOpen, setRoomNameModalOpen] = useState(false);
+  const [dateModalOpen, setDateModalOpen] = useState(false);
+  const [maxMemberModalOpen, setMaxMemberModalOpen] = useState(false);
+  const [notificationOpen, setNotificationOpen] = useState(false);
+  const [newRoomName, setNewRoomName] = useState("");
+  const [newDate, setNewDate] = useState("");
+  const [newMaxMember, setNewMaxMember] = useState<number>(0);
+
+  // Suspense Query로 데이터 가져오기
+  const partyQuery = useSuspenseQuery({
+    queryKey: ["Roomdetail"],
+    queryFn: async () => await getPartyList(),
+  });
+
+  const mypartyQuery = useSuspenseQuery({
+    queryKey: ["MyRoomdetail"],
+    queryFn: async () => await getMyPartyList(),
+  });
+
+  const chatRoomQuery = useSuspenseQuery({
+    queryKey: ["ChatRoomInfo", partyId],
+    queryFn: async () => {
+      if (partyId) {
+        return await getChatRoomInfo(Number(partyId));
+      }
+      throw new Error("Party ID is missing");
+    },
+  });
+
+  // 파티원 정보를 가져오기 위한 useEffect
+  useEffect(() => {
+    if (partyId) {
+      getPartyMembers(Number(partyId))
+        .then((response) => setMembers(response.data))
+        .catch((error) => console.error("파티원 정보를 가져오는 중 오류 발생:", error));
+    }
+  }, [partyId]);
+
+  useEffect(() => {
+    if (chatRoomQuery.data) {
+      setChatRoomInfo(chatRoomQuery.data.data);
+    }
+  }, [chatRoomQuery.data]);
+
+  if (partyQuery.isLoading || mypartyQuery.isLoading || chatRoomQuery.isLoading || !chatRoomInfo) {
+    return <div>로딩 중...</div>;
+  }
+
+  if (partyQuery.error && !partyQuery.isFetching) {
+    throw partyQuery.error;
+  }
+
+  if (mypartyQuery.error && !mypartyQuery.isFetching) {
+    throw mypartyQuery.error;
+  }
+
+  if (chatRoomQuery.error && !chatRoomQuery.isFetching) {
+    throw chatRoomQuery.error;
+  }
+
+  // 파티 목록 가져오기
+  const partyList: IParty[] = partyQuery.data.data.partyList || [];
+  const mypartyList: IParty[] = mypartyQuery.data.data.partyList || [];
+
+  // 선택한 파티 찾기
+  const selectedParty = mypartyList.find((party) => party.partyId === Number(partyId)) || 
+                        partyList.find((party) => party.partyId === Number(partyId));
+
+  if (!selectedParty || !selectedParty.theme) {
+    return <div>해당 파티의 상세정보가 없습니다.</div>;
+  }
+
+  // 채팅방 정보를 업데이트하여 서버에 전송하는 함수
+  const updateChatRoomInfo = async (updatedFields: Partial<IChatRoomInfo>) => {
+    try {
+      const updatedInfo = {
+        ...chatRoomInfo,
+        ...updatedFields,
+      };
+      await patchChatRoomInfo(Number(partyId), updatedInfo);
+      setChatRoomInfo(updatedInfo); // 상태 업데이트
+      setNotificationOpen(true); // Notification 열기
+    } catch (error) {
+      console.error("채팅방 정보 수정 중 오류 발생:", error);
+    }
+  };
+
+  // 각 모달에서 확인 버튼 클릭 시 호출되는 핸들러
+  const handleConfirmRoomNameChange = () => {
+    if (newRoomName && newRoomName.length >= 1 && newRoomName.length <= 40 && !newRoomName.trim().includes(" ")) {
+      updateChatRoomInfo({ roomName: newRoomName });
+    } else {
+      alert("채팅방 제목은 1자 이상 40자 이하, 공백 없이 입력해야 합니다.");
+    }
+    setRoomNameModalOpen(false);
+  };
+
+  const handleConfirmDateChange = () => {
+    if (newDate) {
+      updateChatRoomInfo({ date: newDate });
+    } else {
+      alert("유효한 날짜를 입력하세요.");
+    }
+    setDateModalOpen(false);
+  };
+
+  const handleConfirmMaxMemberChange = () => {
+    if (newMaxMember > 0) {
+      updateChatRoomInfo({ maxMember: newMaxMember });
+    } else {
+      alert("최대 인원 수는 1명 이상이어야 합니다.");
+    }
+    setMaxMemberModalOpen(false);
+  };
+
+  const handleRoomNameModalOpen = () => {
+    setNewRoomName(chatRoomInfo.roomName);
+    setRoomNameModalOpen(true);
+  };
+
+  const handleDateModalOpen = () => {
+    setNewDate(chatRoomInfo.date);
+    setDateModalOpen(true);
+  };
+
+  const handleMaxMemberModalOpen = () => {
+    setNewMaxMember(chatRoomInfo.maxMember);
+    setMaxMemberModalOpen(true);
+  };
+
+  const handleToggleVisibility = () => {
+    const newAddFlag = !chatRoomInfo.addFlag;
+    updateChatRoomInfo({ addFlag: newAddFlag });
   };
 
   const exitbuttonhandle = () => {
     console.log("채팅방 나가기 버튼");
   };
 
-  // 파티 데이터를 가져오기 위해 useSuspenseQuery 사용
-  const partyQuery = useSuspenseQuery({
-    queryKey: ["Roomdetail"],
-    queryFn: async () => await getPartyList(),
-  });
-
-  // 로딩 상태 처리
-  if (partyQuery.isLoading) {
-    return <div>로딩 중...</div>;
-  }
-
-  // 에러 처리
-  if (partyQuery.error && !partyQuery.isFetching) {
-    throw partyQuery.error;
-  }
-
-  // 파티 목록 가져오기
-  console.log("전체 파티 목록:", partyQuery.data.data); // 데이터 구조 확인용 로그
-  const partyList: IParty[] = partyQuery.data.data.partyList || []; // partyList 필드 접근
-
-  // 선택한 파티 찾기 - partyId를 기준으로
-  const selectedParty = partyList.find((party) => party.partyId === Number(partyId));
-
-  // 해당 파티가 없는 경우 예외 처리
-  if (!selectedParty || !selectedParty.theme) {
-    return <div>해당 파티의 상세정보가 없습니다.</div>;
-  }
-
   return (
     <div>
       <TopBar css={topbarcolor}>
         <TopBar.Title type="default" defaultValue="파티 목록" title="채팅방 설정" backHandler={() => nav(-1)} />
       </TopBar>
-      <div css={titletext}>{selectedParty.roomName}</div>
+
+      {/* 채팅방 제목 클릭 시 수정 가능 */}
+      <div css={titletext} onClick={handleRoomNameModalOpen}>
+        {chatRoomInfo.roomName}
+      </div>
+
+      {/* 채팅방 이름 변경 모달 */}
+      {roomNameModalOpen && (
+        <Modal height={35}>
+          <div css={modalContent}>
+            <h3 css={modalTitle}>새로운 채팅방 제목을 입력하세요</h3>
+            <input
+              type="text"
+              value={newRoomName}
+              onChange={(e) => setNewRoomName(e.target.value)}
+              css={inputStyle}
+            />
+            <div style={{ display: "flex", justifyContent: "right", marginTop: "1rem" }}>
+              <Button variant="contained" handler={handleConfirmRoomNameChange}>
+                확인
+              </Button>
+              <Button variant="outlined" handler={() => setRoomNameModalOpen(false)}>
+                취소
+              </Button>
+            </div>
+          </div>
+        </Modal>
+      )}
+
+      {/* 날짜 변경 모달 */}
+      {dateModalOpen && (
+        <Modal height={35}>
+          <div css={modalContent}>
+            <h3 css={modalTitle}>새로운 날짜를 입력하세요</h3>
+            <input
+              type="text"
+              value={newDate}
+              onChange={(e) => setNewDate(e.target.value)}
+              css={inputStyle}
+            />
+            <div style={{ display: "flex", justifyContent: "right", marginTop: "1rem" }}>
+              <Button variant="contained" handler={handleConfirmDateChange}>
+                확인
+              </Button>
+              <Button variant="outlined" handler={() => setDateModalOpen(false)}>
+                취소
+              </Button>
+            </div>
+          </div>
+        </Modal>
+      )}
+
+      {/* 최대 멤버 변경 모달 */}
+      {maxMemberModalOpen && (
+        <Modal height={35}>
+          <div css={modalContent}>
+            <h3 css={modalTitle}>새로운 최대 인원 수를 입력하세요</h3>
+            <input
+              type="range"
+              min="1"
+              max="10"
+             
+              value={newMaxMember}
+              onChange={(e) => setNewMaxMember(parseInt(e.target.value))}
+              css={rangeInputStyle}
+            />
+            <div style={{ textAlign: 'center', margin: '0.5rem 0' }}>
+              <Typography color="grey">
+                현재 인원 수: {newMaxMember}
+              </Typography>
+            </div>
+            <div style={{ display: "flex", justifyContent: "right", marginTop: "1rem" }}>
+              <Button variant="contained" handler={handleConfirmMaxMemberChange}>
+                확인
+              </Button>
+              <Button variant="outlined" handler={() => setMaxMemberModalOpen(false)}>
+                취소
+              </Button>
+            </div>
+          </div>
+        </Modal>
+      )}
+
+      {/* Notification 모달 */}
+      {notificationOpen && (
+        <Notification
+          ment="채팅방 정보가 성공적으로 변경되었습니다."
+          type="confirm"
+          handler={() => setNotificationOpen(false)}
+        />
+      )}
 
       <div css={textcolor}>테마 정보</div>
       <ThemeItem theme={selectedParty.theme} />
 
       <div css={textcolor}>파티 정보</div>
       <div css={infobox}>
-        <InfoBox fontSize={0.8} fontWeight={500} size={1.3} style={{ margin: "0.5rem" }}>
-          {selectedParty.date}
+        {/* 날짜 변경 가능 */}
+        <InfoBox
+          fontSize={0.8}
+          fontWeight={500}
+          size={1.3}
+          style={{ margin: "0.5rem" }}
+          onClick={handleDateModalOpen}
+        >
+          {chatRoomInfo.date}
         </InfoBox>
 
+        {/* 최대 인원 변경 가능 */}
         <InfoBox
           fontSize={0.8}
           fontWeight={500}
@@ -81,28 +282,42 @@ export const RoomdetailFetch = () => {
           color={"secondary"}
           size={1.3}
           style={{ margin: "0.5rem" }}
+          onClick={handleMaxMemberModalOpen}
         >
-          최대 {selectedParty.maxMember}명
+          최대 {chatRoomInfo.maxMember}명
         </InfoBox>
       </div>
+
+      {/* 공개 상태 변경 버튼 */}
       <div css={buttoncss}>
         <Button
           variant="contained"
           fullwidth={true}
           rounded={0.4}
-          handler={buttonhandle}
+          handler={handleToggleVisibility}
           style={{
             border: "0",
             fontSize: "1rem",
-            backgroundColor: isClicked ? `${Colors["secondary"]["200"]}` : `${Colors["primary"]["A200"]}`,
+            backgroundColor: chatRoomInfo.addFlag ? `${Colors["primary"]["A200"]}` : `${Colors["secondary"]["200"]}`,
           }}
         >
-          {buttonText}
+          {chatRoomInfo.addFlag ? "채팅방 공개" : "채팅방 비공개"}
         </Button>
         <hr css={hr}></hr>
       </div>
+
+      {/* 파티원 정보 표시 */}
       <div css={textcolor}>파티원</div>
-      <div css={wait}>파티원 목록 자리</div>
+      <div css={memberContainer}>
+        {members?.memberList.map((member, index) => (
+          <div key={index} css={memberItem}>
+            <img src={`/profiles/profile${member.photo}.png`} alt={`profiles/profile${member.photo}.png`} css={memberImage} />
+            <div css={memberName}>{member.nickname}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* 나가기 버튼 */}
       <div css={buttoncss}>
         <Button
           css={exitbutton}
