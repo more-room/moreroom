@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import { ThemeList } from './pages/Themes/ThemeList';
 import { Modal } from './components/Modal';
 import { useModalStore } from './stores/modalStore';
@@ -24,17 +24,22 @@ import { EditPassword } from './pages/Mypage/EditUser/EditPassword';
 import { FindPwd } from './pages/Login/FindPwd';
 import { PwdDone } from './pages/Login/FindPwd/PwdDone';
 import { MyReview } from './pages/Mypage/MyReview';
-import { useUserValidation } from './hooks/useUserValidation';
 import { Party } from './pages/Party';
 import { RegisterParty } from './pages/Party/RegisterParty';
 import { SectorTheme } from './pages/Party/RegisterParty/SectorTheme';
 import { Review } from './pages/Review/ReviewRead';
 import { ReviewWrite } from './pages/Review/ReviewWrite';
 import { EditParty } from './pages/Party/EditParty';
+import { sessionValidate } from './apis/authApi';
 
 function App() {
   const modalStore = useModalStore();
-  useUserValidation();
+  const location = useLocation();
+  const authRef = /^(\/(auth))(\/.*)?$/;
+
+  if (!authRef.test(location.pathname)) {
+    sessionValidate();
+  }
 
   return (
     <>
@@ -42,12 +47,12 @@ function App() {
         <Route path="/" element={<Main />} />
         <Route path="/themes" element={<ThemeList />} />
         <Route path="/themes/:themeId" element={<ThemeDetail />} />
-        <Route path="/signup" element={<Signup />} />
+        <Route path="/auth/signup" element={<Signup />} />
         <Route path="/cafes" element={<CafeList />} />
         <Route path="/cafes/:cafeId" element={<CafeDetail />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/find/password" element={<FindPwd />} />
-        <Route path="/find/password/done" element={<PwdDone />} />
+        <Route path="/auth/login" element={<Login />} />
+        <Route path="/auth/find/password" element={<FindPwd />} />
+        <Route path="/auth/find/password/done" element={<PwdDone />} />
 
         <Route path="/party" element={<Party />} />
         <Route path="/party/register" element={<RegisterParty />} />
