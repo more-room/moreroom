@@ -199,7 +199,7 @@ public class PartyMatchingService {
   }
 
   // 오후 7시에 파티 요청 status를 not_matched로 바꾸는 함수
-  @Scheduled(cron = "0 0 19 * * *", zone = "Asia/Seoul")
+//  @Scheduled(cron = "0 0 19 * * *", zone = "Asia/Seoul")
   @Transactional
   public void makePartyRequestNotMatched() {
     int result = partyRequestRepository.updateAllPartyRequestStatus(MatchingStatus.NOT_MATCHED);
