@@ -100,7 +100,7 @@ public class RecommendationService {
         List<Integer> themeList = locationThemeRepository.findThemeByLocation(latitude, longitude);
         // 3. 테마 상세 정보 조회
         ThemeListResponseDto themeListResponseDto = themeQueryRepository.findByThemeIds(
-            themeList, memberId);
+            themeList, memberId, true);
         // 4. 인기 순으로 정렬 (원래 받았던 ID)
         themeListResponseDto.getThemeList()
             .sort(Comparator.comparingInt(o -> themeList.indexOf(o.getThemeId())));
