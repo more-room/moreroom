@@ -7,11 +7,11 @@ import {
   containerCss,
   inputCss,
 } from '../../../../Signup/AccountInfo/styles';
-import { CssTextField } from '../../../../Signup/AccountInfo';
 import { Typography } from '../../../../../components/Typography';
 import { useNavigate } from 'react-router-dom';
 import { validatePassword } from '../../../../../utils/validationUtils';
 import { pwdChange } from '../../../../../apis/mypageApi';
+import { CssTextField } from '../../../../../components/Mui/CssTextField';
 
 export const Password = () => {
   const nav = useNavigate();

@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React, { useState } from 'react';
+import React from 'react';
 import {
   btnContainerCss,
   chipCss,
@@ -14,7 +14,8 @@ import { IParty } from '../../../../../types/partyTypes';
 import { Typography } from '../../../../../components/Typography';
 import { Button } from '../../../../../components/Button';
 import { Icon } from '../../../../../components/Icon';
-import { ClockIcon } from '@heroicons/react/24/outline';
+import { ClockIcon } from '@heroicons/react/24/solid';
+import { MapPinIcon } from '@heroicons/react/24/solid';
 
 
 interface PartyItemProps {
@@ -35,6 +36,14 @@ export const Matched = ({ party, handler }: PartyItemProps) => {
             {party.theme.title}
           </Typography>
           <div css={timeCss}>
+              <Icon color="primary" size={1}>
+                <MapPinIcon />
+              </Icon>
+              <Typography color="grey" scale="500" size={0.8} weight={700}>
+                {party.theme.brandName ? `${party.theme.brandName} - ${party.theme.branchName}` : '장소정보 없음'} 
+              </Typography>
+            </div>
+          <div css={timeCss}>
             <Icon color="primary" size={1}>
               <ClockIcon />
             </Icon>
@@ -43,7 +52,7 @@ export const Matched = ({ party, handler }: PartyItemProps) => {
             </Typography>
           </div>
           <div css={chipCss}>
-            {party.hashtagList?.map((hashtag: Hashtag) => (
+            {party.partyHashtagList?.map((hashtag: Hashtag) => (
               <Chip
                 key={hashtag.hashtagId}
                 border={1}

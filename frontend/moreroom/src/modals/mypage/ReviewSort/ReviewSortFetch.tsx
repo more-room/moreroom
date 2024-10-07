@@ -1,43 +1,49 @@
 /** @jsxImportSource @emotion/react */
-import React, { Suspense, useState } from 'react';
-import {
-  checkmarkStyles,
-  confirmButtonStyles,
-  labelStyles,
-  modalStyles,
-  optionStyles,
-} from './styles';
+import React, { useState } from 'react';
 import { useModal } from '../../../hooks/useModal';
+import { Button } from '../../../components/Button';
+import {
+  containerCss,
+  confirmButtonStyles,
+  optionStyles,
+  labelStyles,
+  checkmarkStyles,
+} from './styles';
 
-export const ReviewSortFetch = () => {
-  const [selectedOption, setSelectedOption] = useState('방문 일자 순');
+interface ReviewSortFetchProps {
+  sortOption: string,
+  onSelect: (option: string) => void;
+}
+
+export const ReviewSortFetch = ({ sortOption, onSelect }: ReviewSortFetchProps) => {
+  const [selectedOption, setSelectedOption] = useState<string>(sortOption);
+  const sortOptions = ['최신 작성순', '오래된 작성순', '높은 별점순'];
   const modal = useModal();
-  const sortOptions = [
-    '방문 일자 순',
-    '최신 작성순',
-    '오래된 작성순',
-    '높은 별점순',
-  ];
+
   const clickHandler = () => {
-    // console.log(searchThemesStore.filters);
+    onSelect(selectedOption);
     modal.hide();
   };
 
   return (
-    <div css={modalStyles}>
-      {sortOptions.map((option) => (
-        <div
-          key={option}
-          css={optionStyles}
-          onClick={() => setSelectedOption(option)}
-        >
-          <span css={labelStyles}>{option}</span>
-          {selectedOption === option && <span css={checkmarkStyles}>✓</span>}
-        </div>
-      ))}
-      <button css={confirmButtonStyles} onClick={clickHandler}>
+    <div css={containerCss}>
+      {sortOptions.map((option) => {
+        const isChecked = selectedOption === option;
+
+        return (
+          <div
+            key={option}
+            css={optionStyles}
+            onClick={() => setSelectedOption(option)}
+          >
+            <span css={labelStyles}>{option}</span>
+            <span css={checkmarkStyles(isChecked)}>✓</span>
+          </div>
+        );
+      })}
+      <Button css={confirmButtonStyles} rounded={0.3125} handler={clickHandler}>
         확인
-      </button>
+      </Button>
     </div>
   );
 };

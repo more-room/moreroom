@@ -12,13 +12,13 @@ import {
   imgCss,
   loginpagecontainer,
   iconcolors,
-  textcolors,
 } from './styles';
 import { Button } from '../../components/Button';
 import { useLoginStore } from '../../stores/loginStore';
 import { UserLogin } from '../../apis/loginApi'; // 로그인 API 호출 함수
 import { useNavigate } from 'react-router-dom';
 import { handleAllowNotification } from '../../utils/notificationUtils';
+import { Typography } from '../../components/Typography';
 
 export const Login = () => {
   const {
@@ -59,8 +59,6 @@ export const Login = () => {
           // 세션 스토리지에 토큰 저장
           sessionStorage.setItem('sessionToken', response.data.token);
 
-          await handleAllowNotification();
-
           // 로그인 성공 후 홈으로 리다이렉트
           navigate('/');
           resetFields(); // 로그인 후 필드 초기화
@@ -84,9 +82,8 @@ export const Login = () => {
       <div css={formStyles}>
         {/* 이메일 입력 필드 */}
         <TextField
-          // required
-          id="outlined-basic"
           label="email"
+          placeholder="abc@mail.com"
           className="custom-textfield"
           value={email}
           onChange={(e) => {
@@ -112,11 +109,13 @@ export const Login = () => {
           }}
           fullWidth
         />
+      </div>
 
+      <div css={formStyles}>
         {/* 비밀번호 입력 필드 */}
         <TextField
-          id="outlined-password-input"
           label="password"
+          placeholder="영문, 숫자 포함 8글자 이상"
           type={showPassword ? 'text' : 'password'} // 비밀번호 보이기/숨기기 상태
           className="custom-textfield"
           value={password}
@@ -148,9 +147,9 @@ export const Login = () => {
 
       {/* 로그인 실패 메시지 */}
       {loginError && (
-        <div>
-          <p css={{ color: 'red' }}>{loginError}</p>
-        </div>
+        <Typography color="danger" scale="700" size={1} weight={500}>
+          {loginError}
+        </Typography>
       )}
 
       <div css={buttonStyles}>
@@ -166,20 +165,44 @@ export const Login = () => {
         </Button>
       </div>
 
-      <p css={textcolors}>
-        <a href="/find/password" css={iconcolors}>
+      <div style={{ display: 'flex' }}>
+        <Typography
+          style={{ textDecoration: 'underline' }}
+          onClick={() => {
+            navigate('/find/password');
+          }}
+          color="primary"
+          scale="500"
+          size={1}
+          weight={500}
+        >
           비밀번호
-        </a>
-        &nbsp;찾기
-      </p>
+        </Typography>
+        <Typography color="grey" scale="700" size={1} weight={500}>
+          &nbsp;찾기
+        </Typography>
+      </div>
 
-      <p css={textcolors}>
-        아직 계정이 없으신가요?-&nbsp;
-        <a href="/" css={iconcolors}>
+      <div style={{ display: 'flex', marginTop: '1rem' }}>
+        <Typography color="grey" scale="700" size={1} weight={500}>
+          아직 계정이 없으신가요? - &nbsp;
+        </Typography>
+        <Typography
+          style={{ textDecoration: 'underline' }}
+          onClick={() => {
+            navigate('/signup');
+          }}
+          color="primary"
+          scale="500"
+          size={1}
+          weight={500}
+        >
           회원가입
-        </a>
-        &nbsp;하러가기
-      </p>
+        </Typography>
+        <Typography color="grey" scale="700" size={1} weight={500}>
+          &nbsp;하러 가기
+        </Typography>
+      </div>
     </div>
   );
 };

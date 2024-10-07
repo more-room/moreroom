@@ -32,7 +32,6 @@ import { UserLogout } from '../../apis/loginApi';
 import { delUser } from '../../apis/authApi';
 import { useQuery } from '@tanstack/react-query';
 import { getMypage } from '../../apis/mypageApi';
-import { useSignUpStore } from '../../stores/signupStore';
 import { Notification } from '../../components/Notification';
 export const MyPage = () => {
   const nav = useNavigate();
@@ -133,7 +132,7 @@ export const MyPage = () => {
               </Icon>
             }
             children="채팅방"
-            url="/mypage/profile"
+            url="/chating"
           />
           <ManageInfo
             icon={
@@ -142,7 +141,7 @@ export const MyPage = () => {
               </Icon>
             }
             children="테마 기록"
-            url="/mypage/profile"
+            url="/history"
           />
           <div css={manageInfoContainerCss}>
             <ManageInfo

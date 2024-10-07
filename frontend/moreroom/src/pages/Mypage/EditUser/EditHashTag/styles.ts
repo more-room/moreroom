@@ -1,16 +1,11 @@
 import { css } from '@emotion/react';
 
 export const hashtagCss = css`
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.625rem;
-  margin-top: 1.25rem;
-`;
-
-export const hashtagItemCss = css`
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
 `;
 
 export const btnCss = css`

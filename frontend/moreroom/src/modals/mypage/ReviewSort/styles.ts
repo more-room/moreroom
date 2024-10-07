@@ -1,6 +1,7 @@
 import { css } from '@emotion/react';
+import { Colors } from '../../../styles/globalStyle';
 
-export const modalStyles = css`
+export const containerCss = css`
   position: absolute;
   left: 0;
   right: 0;
@@ -20,18 +21,13 @@ export const labelStyles = css`
   font-size: 1rem;
 `;
 
-export const checkmarkStyles = css`
-  color: #4caf50;
+export const checkmarkStyles = (ischecked:boolean) => css`
+  color: ${ischecked ? Colors['primary']['A200'] : Colors['grey']['A200']};
   font-size: 1.25rem;
 `;
 
 export const confirmButtonStyles = css`
   width: 100%;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  padding: 0.9375rem;
-  border-radius: 0.3125rem;
   font-size: 1rem;
   margin-top: 1.25rem;
 `;

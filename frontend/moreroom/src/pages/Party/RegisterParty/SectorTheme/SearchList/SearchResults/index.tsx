@@ -1,9 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import React, { useEffect, useRef, useState } from 'react';
-
 import { btnCss, checkboxCss, containerCss, listContainer } from './styles';
 import { useLocation, useNavigate } from 'react-router-dom';
-
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import {
   useSearchThemesStore,
