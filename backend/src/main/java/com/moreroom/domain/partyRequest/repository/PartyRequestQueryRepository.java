@@ -213,14 +213,20 @@ public class PartyRequestQueryRepository extends QuerydslRepositoryCustom {
       List<Hashtag> myHashtagList = jpaQueryFactory
               .select(hashtag)
               .from(member)
-              .leftJoin(memberHashtagMapping).on(memberHashtagMapping.member.eq(member))
-              .leftJoin(hashtag).on(hashtag.eq(memberHashtagMapping.hashtag))
+              .join(memberHashtagMapping).on(memberHashtagMapping.member.eq(member))
+              .join(hashtag).on(hashtag.eq(memberHashtagMapping.hashtag))
               .where(member.memberId.eq(memberId))
               .fetch();
 
-      List<HashTagsDto> myHashtagDtoList = myHashtagList.stream()
-              .map(h -> new HashTagsDto(h.getHashtagId(), h.getHashtagName()))
-              .toList();
+
+      List<HashTagsDto> myHashtagDtoList;
+      if (myHashtagList.isEmpty()) {
+          myHashtagDtoList = new ArrayList<>();
+      } else {
+          myHashtagDtoList = myHashtagList.stream()
+                  .map(h -> new HashTagsDto(h.getHashtagId(), h.getHashtagName()))
+                  .toList();
+      }
 
       //쿼리 3 : yourHashtagList
       List<Hashtag> yourHashtagList = jpaQueryFactory
@@ -229,9 +235,14 @@ public class PartyRequestQueryRepository extends QuerydslRepositoryCustom {
               .where(hashtag.hashtagId.in(yourHashtagIdList))
               .fetch();
 
-      List<HashTagsDto> yourHashtagDtoList = yourHashtagList.stream()
-              .map(h -> new HashTagsDto(h.getHashtagId(), h.getHashtagName()))
-              .toList();
+      List<HashTagsDto> yourHashtagDtoList;
+      if (yourHashtagList.isEmpty()) {
+          yourHashtagDtoList = new ArrayList<>();
+      } else {
+          yourHashtagDtoList = yourHashtagList.stream()
+                  .map(h -> new HashTagsDto(h.getHashtagId(), h.getHashtagName()))
+                  .toList();
+      }
 
       return PartyRequestDto.builder()
               .partyRequestId(partyRequestId)
@@ -245,7 +256,7 @@ public class PartyRequestQueryRepository extends QuerydslRepositoryCustom {
   private List<Integer> convertToIntegerList(String hashtagList) {
       List<Integer> result = new ArrayList<>();
 
-      if (hashtagList.equals("[]")) return result;
+      if (hashtagList == null || hashtagList.equals("[]")) return result;
 
       String[] numbers = hashtagList.substring(1, hashtagList.length() - 1).split(",");
       for (String number : numbers) {
