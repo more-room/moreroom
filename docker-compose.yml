@@ -38,6 +38,7 @@ services:
             - backend-network
         depends_on:
             - ${DOCKER_TAG_BE}
+            - ${DOCKER_TAG_FASTAPI}
 
     certbot:
         image: certbot/certbot
