@@ -50,24 +50,23 @@ export const EditProfile = () => {
   const [gender, setGender] = useState<'M' | 'F' | undefined>(
     MyInfoQuery.data?.data.gender,
   );
-  const birthdata = MyInfoQuery.data?.data?.birth.split('-');
-  console.log(birthdata);
-  const [birthYear, setBirthYear] = useState<string>('birthdata[0]');
-  const [birthMonth, setBirthMonth] = useState<string>('birthdata[1]');
-  const [birthDay, setBirthDay] = useState<string>('birthdata[2]');
+  
+  const [birthYear, setBirthYear] = useState<string>('');
+  const [birthMonth, setBirthMonth] = useState<string>('');
+  const [birthDay, setBirthDay] = useState<string>('');
 
-  console.log(MyInfoQuery.data);
   const [room, setRoom] = useState<string>(
     MyInfoQuery?.data?.data?.clearRoom || '',
   );
+
 
   useEffect(() => {
     if (MyInfoQuery.isSuccess && MyInfoQuery.data && MyInfoQuery.data.data) {
       const { nickname, gender, birth, clearRoom, regionId } =
         MyInfoQuery.data.data;
 
-      setNickname(nickname || ''); // 닉네임 초기화
-      setGender(gender || undefined); // 성별 초기화
+      setNickname(nickname || '');
+      setGender(gender || undefined);
 
       // 생년월일이 존재하는지 확인하고 분리
       if (birth && typeof birth === 'string') {
@@ -146,7 +145,7 @@ export const EditProfile = () => {
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(e.target.value);
     setNicknameError(validateNickname(e.target.value));
-    setIsNicknameVerified(false); // Set to false when nickname is changed
+    setIsNicknameVerified(false);
   };
 
   const isNicknamed = async () => {
@@ -161,6 +160,7 @@ export const EditProfile = () => {
   };
   const [isNicknameVerified, setIsNicknameVerified] = useState(true);
   const handleEdit = async () => {
+    // 만약 닉네임 중복확인 안하고 수정하면 뜨는 공지
     if (!isNicknameVerified) {
       setshowmodal(true)
       return;
@@ -182,7 +182,7 @@ export const EditProfile = () => {
         gender: gender,
         birth: birth,
         newRegionId: newRegionId,
-        clearRoom: parseInt(room) || 0, // 방 수는 숫자로 변환
+        clearRoom: parseInt(room) || 0, 
         genreIdList: genreIdList,
       });
     } else {
@@ -198,25 +198,24 @@ export const EditProfile = () => {
       );
     }
   };
-  // 장르 목록에서 선택된 장르 이름 가져오기
+
   const getSelectedGenresText = () => {
     let str = '';
-
-    const selectedGenres = ProfileQuery.data?.data.genreList; // 프로필에서 가져온 장르 리스트
-
+    const selectedGenres = ProfileQuery.data?.data.genreList; // ['SF', '동화']
+    
     if (selectedGenres && selectedGenres.length > 0) {
-      if (selectedGenres.length > 3) {
+      if (selectedGenres.length > 4) {
         str = '장르 ' + selectedGenres.length;
       } else {
-        str = selectedGenres.forEach((genre:string) => {
-          str += genre + ', '
-        });
+        str = selectedGenres.join(', ');
       }
     } else {
       str = '선택안함';
     }
+    
     return str;
   };
+  
 
   const getText = () => {
     const selectedRegion = regionStore.selectedRegion;
@@ -300,7 +299,6 @@ export const EditProfile = () => {
             <div style={{ flex: '1' }}>
               <CssTextField
                 fullWidth
-                // error={!!nicknameError}
                 label="클리어 방 수"
                 id="custom-css-outlined-input"
                 value={room}

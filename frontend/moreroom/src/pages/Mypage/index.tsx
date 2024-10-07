@@ -32,7 +32,6 @@ import { UserLogout } from '../../apis/loginApi';
 import { delUser } from '../../apis/authApi';
 import { useQuery } from '@tanstack/react-query';
 import { getMypage } from '../../apis/mypageApi';
-import { useSignUpStore } from '../../stores/signupStore';
 import { Notification } from '../../components/Notification';
 export const MyPage = () => {
   const nav = useNavigate();

@@ -20,7 +20,6 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { disabledParty } from '../../../../../apis/partyApi';
 import { useNavigate } from 'react-router-dom';
 import { Spinner } from '../../../../../components/Spinner';
-import { MapIcon } from '@heroicons/react/24/solid';
 
 interface PartyItemProps {
   party: IParty;

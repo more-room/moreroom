@@ -18,10 +18,8 @@ export const MyReview = () => {
   const nav = useNavigate();
   const modal = useModal();
 
-  // 정렬 기준 상태
-  const [sortOption, setSortOption] = useState('최신 작성순'); // 기본값: '작성순'
 
-  // 리뷰 데이터 가져오기
+  const [sortOption, setSortOption] = useState('최신 작성순');
   const ReviewQuery = useQuery({
     queryKey: ['myReview'],
     queryFn: async () => await getMyReview(),
@@ -53,7 +51,6 @@ export const MyReview = () => {
     }
   }, [ReviewQuery.data, sortOption]);
 
-  // 모달에서 정렬 옵션 선택 핸들러
   const handleSortSelect = (option: string) => {
     setSortOption(option);
     modal.hide();
@@ -88,7 +85,7 @@ export const MyReview = () => {
               )
             }
           >
-            {sortOption} {/* 현재 선택된 정렬 기준 */}
+            {sortOption}
           </Typography>
         </div>
         {sortedReviews.length > 0 ? (

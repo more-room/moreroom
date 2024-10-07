@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Button } from '../../../components/Button';
 import { btnCss } from '../AccountInfo/styles';
 import { useSuspenseQuery } from '@tanstack/react-query';
@@ -11,7 +10,6 @@ import { containerCss, itemrCss } from './styles';
 import { Typography } from '../../../components/Typography';
 import { useSignUpStore } from '../../../stores/signupStore';
 import { userSignup } from '../../../apis/authApi';
-import { Right } from '../../../components/TopBar/Right';
 
 interface VerificationProps {
   before: () => void;

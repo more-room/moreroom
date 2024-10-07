@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React, { useState } from 'react';
+import React from 'react';
 import {
   btnContainerCss,
   chipCss,
@@ -15,9 +15,7 @@ import { Typography } from '../../../../../components/Typography';
 import { Button } from '../../../../../components/Button';
 import { Icon } from '../../../../../components/Icon';
 import { ClockIcon } from '@heroicons/react/24/solid';
-import { Toggle } from '../../../../../components/Toggle';
-import { fontSize } from '../../../../../components/MenuTab/MenuTab.stories';
-import { MapPinIcon, UserGroupIcon } from '@heroicons/react/24/solid';
+import { MapPinIcon } from '@heroicons/react/24/solid';
 
 interface PartyItemProps {
   party: IParty;

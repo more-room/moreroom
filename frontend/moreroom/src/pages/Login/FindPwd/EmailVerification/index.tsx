@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { FormHelperText } from '@mui/material';
 import { validateEmail } from '../../../../utils/validationUtils';
 import { isEmail } from '../../../../apis/authApi';

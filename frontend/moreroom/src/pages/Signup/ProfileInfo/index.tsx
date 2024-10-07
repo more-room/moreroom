@@ -10,7 +10,6 @@ import {
   useRegionSelectionStore,
   useSignUpStore,
 } from '../../../stores/signupStore';
-import { useSearchThemesStore } from '../../../stores/themeStore';
 import { Selectedtheme } from '../../../modals/mypage/Selectedtheme';
 import { useQuery } from '@tanstack/react-query';
 import { getRegions } from '../../../apis/infoApi';
