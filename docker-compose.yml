@@ -73,6 +73,7 @@ services:
             - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
             - FAST_API_URL=${FAST_API_URL}
             - SERVER_DOMAIN=${SERVER_DOMAIN}
+            - ONE_URL=${ONE_URL}
             - TZ=Asia/Seoul
         expose:
             - ${BACKEND_PORT}
