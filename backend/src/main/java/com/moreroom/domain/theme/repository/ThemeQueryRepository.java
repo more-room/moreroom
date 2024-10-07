@@ -32,6 +32,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -315,8 +316,10 @@ public class ThemeQueryRepository extends QuerydslRepositoryCustom {
             }
         }
 
+        List<ThemeListComponentDto> result = new ArrayList<>(themeMap.values());
+        result.sort(Comparator.comparingInt(o -> themeIds.indexOf(o.getThemeId())));
         ThemeListResponseDto themeListResponseDto = ThemeListResponseDto.builder()
-            .themeList(new ArrayList<>(themeMap.values()))
+            .themeList(result)
             .build();
 
         return themeListResponseDto;
