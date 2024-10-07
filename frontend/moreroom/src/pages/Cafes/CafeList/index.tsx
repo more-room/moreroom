@@ -32,7 +32,7 @@ export const CafeList = () => {
   /* 뒤로가기 핸들러 */
   const onBackHandler = () => {
     if (cafePageStore.type === 'search') cafePageStore.setType('default');
-    else nav('/');
+    else nav('/', { state: { menu: 2 } });
   };
 
   /* 아이콘 핸들러 */

@@ -6,9 +6,7 @@ import { Modal } from './components/Modal';
 import { useModalStore } from './stores/modalStore';
 import { Signup } from './pages/Signup';
 import { Login } from './pages/Login';
-import { Chating } from './pages/Chating';
 import { Main } from './pages/Main';
-import { MyPage } from './pages/Mypage';
 import { Profile } from './pages/Mypage/Profile';
 import { EditProfile } from './pages/Mypage/EditUser/EditProfile';
 import { EditHashTag } from './pages/Mypage/EditUser/EditHashTag';
@@ -17,19 +15,18 @@ import { CafeList } from './pages/Cafes/CafeList';
 import { CafeDetail } from './pages/Cafes/CafeDetail';
 import { ChatingRoom } from './pages/Chating/Chatingroom';
 import { Roomdetail } from './pages/Chating/Chatingroom/Roomdetail';
-import { HistoryList } from './pages/History/HistoryList';
 import { HistoryDetail } from './pages/History/HistoryDetail';
 import { HistoryWrite } from './pages/History/HistoryWrite';
 import { EditPassword } from './pages/Mypage/EditUser/EditPassword';
 import { FindPwd } from './pages/Login/FindPwd';
 import { PwdDone } from './pages/Login/FindPwd/PwdDone';
 import { MyReview } from './pages/Mypage/MyReview';
-import { Party } from './pages/Party';
 import { RegisterParty } from './pages/Party/RegisterParty';
 import { SectorTheme } from './pages/Party/RegisterParty/SectorTheme';
 import { Review } from './pages/Review/ReviewRead';
 import { ReviewWrite } from './pages/Review/ReviewWrite';
 import { EditParty } from './pages/Party/EditParty';
+import { ReviewFix } from './pages/Mypage/MyReview/ReviewFix';
 import { sessionValidate } from './apis/authApi';
 
 function App() {
@@ -82,7 +79,7 @@ function App() {
         <Route path="/mypage/hashtag/edit" element={<EditHashTag />} />
         <Route path="/mypage/password/edit" element={<EditPassword />} />
         <Route path="/mypage/myreview" element={<MyReview />} />
-
+        <Route path="/mypage/myreview/fix" element={<ReviewFix />} />
         <Route path="/review" element={<Review />} />
         <Route path="/review/write" element={<ReviewWrite />} />
       </Routes>

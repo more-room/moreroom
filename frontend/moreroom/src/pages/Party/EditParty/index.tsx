@@ -22,10 +22,18 @@ export const EditParty = () => {
   // URL에서 partyRequestId를 가져옴
   const { partyRequestId } = useParams<{ partyRequestId: string }>();
 
-  const [currentPartyRequestId, setCurrentPartyRequestId] = useState<number>(Number(partyRequestId));
-  const [selectedMyHashtagIdList, setSelectedMyHashtagIdList] = useState<number[]>([]);
-  const [selectedYourHashtagIdList, setSelectedYourHashtagIdList] = useState<number[]>([]);
-  const [selectedPartyHashtagIdList, setSelectedPartyHashtagIdList] = useState<number[]>([]);
+  const [currentPartyRequestId, setCurrentPartyRequestId] = useState<number>(
+    Number(partyRequestId),
+  );
+  const [selectedMyHashtagIdList, setSelectedMyHashtagIdList] = useState<
+    number[]
+  >([]);
+  const [selectedYourHashtagIdList, setSelectedYourHashtagIdList] = useState<
+    number[]
+  >([]);
+  const [selectedPartyHashtagIdList, setSelectedPartyHashtagIdList] = useState<
+    number[]
+  >([]);
   const nav = useNavigate();
 
   const PartyQuery = useQuery({
@@ -38,7 +46,7 @@ export const EditParty = () => {
       }
     },
   });
-  
+
   if (PartyQuery.error && !PartyQuery.isFetching) {
     throw PartyQuery.error;
   }
@@ -46,18 +54,25 @@ export const EditParty = () => {
   // 이미 선택된 해시태그를 상태로 설정
   useEffect(() => {
     if (PartyQuery.data) {
-      const { partyHashtagList, myHashtagList, yourHashtagList } = PartyQuery.data.data;
+      const { partyHashtagList, myHashtagList, yourHashtagList } =
+        PartyQuery.data.data;
 
       // 파티 해시태그 매칭
-      const partyHashtagsIds = partyHashtagList.map((hashtag: IHashtag) => hashtag.hashtagId);
+      const partyHashtagsIds = partyHashtagList.map(
+        (hashtag: IHashtag) => hashtag.hashtagId,
+      );
       setSelectedPartyHashtagIdList(partyHashtagsIds);
 
       // 내 해시태그 매칭
-      const myHashtagsIds = myHashtagList.map((hashtag: IHashtag) => hashtag.hashtagId);
+      const myHashtagsIds = myHashtagList.map(
+        (hashtag: IHashtag) => hashtag.hashtagId,
+      );
       setSelectedMyHashtagIdList(myHashtagsIds);
 
       // 유저 해시태그 매칭
-      const yourHashtagsIds = yourHashtagList.map((hashtag: IHashtag) => hashtag.hashtagId);
+      const yourHashtagsIds = yourHashtagList.map(
+        (hashtag: IHashtag) => hashtag.hashtagId,
+      );
       setSelectedYourHashtagIdList(yourHashtagsIds);
     }
   }, [PartyQuery.data]);
@@ -85,8 +100,14 @@ export const EditParty = () => {
   const handleUpdateParty = async () => {
     try {
       const themeId = PartyQuery.data?.data.theme.themeId; // 선택된 테마 ID
-      await updateParty(currentPartyRequestId, themeId, selectedPartyHashtagIdList, selectedMyHashtagIdList, selectedYourHashtagIdList);
-      nav('/party'); // 수정 후 이동할 경로
+      await updateParty(
+        currentPartyRequestId,
+        themeId,
+        selectedPartyHashtagIdList,
+        selectedMyHashtagIdList,
+        selectedYourHashtagIdList,
+      );
+      nav('/', { state: { menu: 0 } }); // 수정 후 이동할 경로
     } catch (error) {
       console.error('파티 수정 중 오류 발생:', error);
       // 추가적인 에러 처리 로직을 여기에 작성할 수 있습니다.
@@ -99,7 +120,7 @@ export const EditParty = () => {
         <TopBar.Title
           type="default"
           title="파티 요청 등록"
-          backHandler={() => nav(-1)}
+          backHandler={() => nav('/', { state: { menu: 0 } })}
         />
       </TopBar>
 

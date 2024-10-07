@@ -25,23 +25,26 @@ export const EditHashTagFetch = () => {
   useEffect(() => {
     if (ProfileQuery.data) {
       const hashtagList = ProfileQuery.data.data.hashtagList; // API 응답에서 해시태그 리스트 가져오기
-      const initialSelectedHashtags = hashtagList.map((tag: IHashtag) => tag.hashtagId); // 해시태그 ID 추출
-      console.log('최초해시태그', initialSelectedHashtags)
+      const initialSelectedHashtags = hashtagList.map(
+        (tag: IHashtag) => tag.hashtagId,
+      ); // 해시태그 ID 추출
+      console.log('최초해시태그', initialSelectedHashtags);
       setHashtags(initialSelectedHashtags); // 초기 해시태그 설정
     }
   }, [ProfileQuery.data, setHashtags]);
 
   const { mutate } = useMutation({
-    mutationFn: async (hashtaglist: number[]) => await updateHashtag(hashtaglist),
+    mutationFn: async (hashtaglist: number[]) =>
+      await updateHashtag(hashtaglist),
     onSuccess: () => {
       console.log('변경 성공');
-      nav('/mypage');
+      nav('/', { state: { menu: 4 } });
     },
     onError: () => {
       alert('오류가 발생하였습니다.');
     },
   });
-  console.log('실제 선택된 아이',selectedHashtags)
+  console.log('실제 선택된 아이', selectedHashtags);
   const edithandler = () => {
     mutate(selectedHashtags); // 현재 선택된 해시태그를 사용하여 업데이트
   };
@@ -52,7 +55,7 @@ export const EditHashTagFetch = () => {
         <TopBar.Title
           type="default"
           title="해시태그 편집"
-          backHandler={() => nav(-1)}
+          backHandler={() => nav('/', { state: { menu: 4 } })}
         />
       </TopBar>
       <div>

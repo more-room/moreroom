@@ -63,3 +63,32 @@ export const input = css`
   outline: none;
   font-size: 0.875rem;
 `;
+
+export const modalContent = css`
+  /* display: flex; */
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  border-radius: 8px;
+  width: 100%;
+  box-sizing: border-box;
+  /* margin-top: 1rem; */
+`;
+
+export const modalTitle = css`
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  margin-top: 0.2rem;
+  color: ${Colors['grey']['700']}
+`;
+
+export const inputStyle = css`
+
+  width: 90%;
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+`;

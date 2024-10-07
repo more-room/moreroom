@@ -16,15 +16,21 @@ import { SelectedTheme } from './SectorTheme/SelectedTheme';
 import { addParty } from '../../../apis/partyApi';
 
 export const RegisterParty = () => {
-  const [selectedMyHashtagIdList, setSelectedMyHashtagIdList] = useState<number[]>([]);
-  const [selectedYourHashtagIdList, setSelectedYourHashtagIdList] = useState<number[]>([]);
-  const [selectedPartyHashtagIdList, setSelectedPartyHashtagIdList] = useState<number[]>([]);
+  const [selectedMyHashtagIdList, setSelectedMyHashtagIdList] = useState<
+    number[]
+  >([]);
+  const [selectedYourHashtagIdList, setSelectedYourHashtagIdList] = useState<
+    number[]
+  >([]);
+  const [selectedPartyHashtagIdList, setSelectedPartyHashtagIdList] = useState<
+    number[]
+  >([]);
   const partyStore = usePartyStore();
   const nav = useNavigate();
 
   // 테마 정보 가져오기
   useEffect(() => {
-    console.log("Current partyStore state:", partyStore);
+    console.log('Current partyStore state:', partyStore);
   }, [partyStore]);
 
   // 선택된 해시태그들을 스토어에 저장
@@ -34,7 +40,11 @@ export const RegisterParty = () => {
       yourHashtagIdList: selectedYourHashtagIdList,
       partyHashtagIdList: selectedPartyHashtagIdList,
     });
-  }, [selectedMyHashtagIdList, selectedYourHashtagIdList, selectedPartyHashtagIdList]);
+  }, [
+    selectedMyHashtagIdList,
+    selectedYourHashtagIdList,
+    selectedPartyHashtagIdList,
+  ]);
 
   const addNewParty = async () => {
     if (!partyStore.themeId) {
@@ -54,14 +64,14 @@ export const RegisterParty = () => {
 
       partyStore.setPartyData({
         themeId: undefined,
-        poster: undefined, 
+        poster: undefined,
         themeTitle: undefined,
-        brandName: undefined, 
+        brandName: undefined,
         branchName: undefined,
       });
 
       console.log(res);
-      
+
       nav('/party');
     } catch (err) {
       console.log(err);
@@ -90,16 +100,16 @@ export const RegisterParty = () => {
   const backHandler = () => {
     partyStore.setPartyData({
       themeId: undefined,
-      poster: undefined, 
+      poster: undefined,
       themeTitle: undefined,
-      brandName: undefined, 
+      brandName: undefined,
       branchName: undefined,
-      partyHashtagIdList: [], 
-      myHashtagIdList: [], 
-      yourHashtagIdList: []
+      partyHashtagIdList: [],
+      myHashtagIdList: [],
+      yourHashtagIdList: [],
     });
-    nav(-1);
-  }
+    nav('/', { state: { menu: 0 } });
+  };
 
   return (
     <div css={containerCss}>
@@ -168,17 +178,16 @@ export const RegisterParty = () => {
               {tag.label}
             </FilterChip>
           ))}
-        <Button
-          color="primary"
-          fullwidth
-          rounded={0.5}
-          variant="contained"
-          handler={addNewParty}
-        >
-          파티 요청 등록하기
-        </Button>
+          <Button
+            color="primary"
+            fullwidth
+            rounded={0.5}
+            variant="contained"
+            handler={addNewParty}
+          >
+            파티 요청 등록하기
+          </Button>
         </div>
-
       </div>
     </div>
   );

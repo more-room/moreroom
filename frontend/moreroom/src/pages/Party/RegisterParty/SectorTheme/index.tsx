@@ -1,6 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
-import { useSearchThemesStore, useSearchTitleStore, useThemePageStore } from '../../../../stores/themeStore';
+import {
+  useSearchThemesStore,
+  useSearchTitleStore,
+  useThemePageStore,
+} from '../../../../stores/themeStore';
 import { getThemeTitles } from '../../../../apis/themeApi';
 import { container } from '../../../Themes/ThemeList/styles';
 import { TopBar } from '../../../../components/TopBar';
@@ -14,7 +18,7 @@ export const SectorTheme = () => {
   const themePageStore = useThemePageStore();
   const searchTitleStore = useSearchTitleStore();
   const searchThemesStore = useSearchThemesStore();
-  const nav = useNavigate()
+  const nav = useNavigate();
 
   /* 테마 제목 검색 핸들러 */
   const onSearchHandler = async (value: string) => {
@@ -29,7 +33,7 @@ export const SectorTheme = () => {
   /* 뒤로가기 핸들러 */
   const onBackHandler = () => {
     if (themePageStore.type === 'search') themePageStore.setType('default');
-    nav(-1)
+    nav('/', { state: { menu: 0 } });
   };
 
   /* 아이콘 핸들러 */

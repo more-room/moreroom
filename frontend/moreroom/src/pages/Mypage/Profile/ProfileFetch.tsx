@@ -9,7 +9,12 @@ import {
   Square3Stack3DIcon,
   UserIcon,
 } from '@heroicons/react/24/solid';
-import { containerCss, userInfoCss, manageInfoContainerCss, profileCss } from './styles';
+import {
+  containerCss,
+  userInfoCss,
+  manageInfoContainerCss,
+  profileCss,
+} from './styles';
 import { Typography } from '../../../components/Typography';
 import { ManageInfo } from '../ManageInfo';
 import { Icon } from '../../../components/Icon';
@@ -39,7 +44,7 @@ export const ProfileFetch = () => {
 
   // 지역코드 지역이름이랑 매치시키기
   const matchedRegion =
-  myInfoQuery.data && regionQuery.data
+    myInfoQuery.data && regionQuery.data
       ? regionQuery.data.data.regions.find(
           (region) =>
             region.regionId === myInfoQuery.data.data.regionId ||
@@ -55,7 +60,6 @@ export const ProfileFetch = () => {
       (city) => city.regionId === myInfoQuery.data?.data.regionId,
     )?.regionName;
 
-
   const genderhandler = (gender: string) => {
     if (gender === 'M') {
       return '남성';
@@ -70,11 +74,15 @@ export const ProfileFetch = () => {
         <TopBar.Title
           type="default"
           title="내 정보 관리"
-          backHandler={() => nav(-1)}
+          backHandler={() => nav('/', { state: { menu: 4 } })}
         />
       </TopBar>
       <div css={containerCss}>
-        <img css= {profileCss} src={ProfileQuery.data?.data.photo} alt="프로필 사진" />
+        <img
+          css={profileCss}
+          src={ProfileQuery.data?.data.photo}
+          alt="프로필 사진"
+        />
         <div css={userInfoCss}>
           <Typography color="light" size={1.25} weight={700}>
             {myInfoQuery.data?.data.nickname}

@@ -72,3 +72,12 @@ export interface IChatList {
 export interface INotice {
   notice: string;
 }
+
+export interface IMember {
+  photo: string;
+  nickname: string;
+}
+
+export interface IMemberListResponse {
+  memberList: IMember[];
+}

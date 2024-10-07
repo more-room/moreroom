@@ -58,6 +58,8 @@ export const ReviewReadFetch = () => {
   const [thumbsUpReviews, setThumbsUpReviews] = useState<{
     [key: number]: boolean;
   }>({});
+  // 좋아요 로딩 상태를 관리
+  const [processingThumbsUp, setProcessingThumbsUp] = useState<{ [key: number]: boolean }>({});
 
   // 리뷰 데이터를 가져오는 쿼리
   const reviewQuery = useSuspenseQuery({
@@ -77,12 +79,10 @@ export const ReviewReadFetch = () => {
     queryFn: async () => await getThemeDetail(themeId),
   });
 
-  // 리뷰 에러 처리
   if (reviewQuery.error && !reviewQuery.isFetching) {
     throw reviewQuery.error;
   }
 
-  // 테마 에러 처리
   if (themeQuery.error && !themeQuery.isFetching) {
     return <div>테마 데이터를 불러오는 중 에러가 발생했습니다.</div>;
   }
@@ -104,7 +104,6 @@ export const ReviewReadFetch = () => {
     },
   };
 
-  // 리뷰 평균 별점 계산
   const reviews = reviewQuery.data.data.content;
   const averageRating =
     reviews.length > 0
@@ -114,9 +113,7 @@ export const ReviewReadFetch = () => {
         ).toFixed(1)
       : '0.0';
 
-  // 별점 분포 데이터 계산 (0.5 ~ 5.0 점 단위)
-  const ratingDistribution = new Array(10).fill(0); // 0.5점 단위로 10개의 구간 (0.5, 1.0, 1.5, ..., 5.0)
-
+  const ratingDistribution = new Array(10).fill(0);
   reviews.forEach((review) => {
     const index = Math.floor(review.score * 2 - 1);
     if (index >= 0 && index < ratingDistribution.length) {
@@ -124,7 +121,6 @@ export const ReviewReadFetch = () => {
     }
   });
 
-  // 차트 데이터 설정
   const chartData = {
     labels: [
       '0.5',
@@ -142,24 +138,22 @@ export const ReviewReadFetch = () => {
       {
         label: '별점 분포',
         data: ratingDistribution,
-        backgroundColor: '#80deea', // 색상 조정 가능
+        backgroundColor: '#80deea',
         borderColor: '#80deea',
         borderWidth: 1,
       },
     ],
   };
 
-  // "더 많은 리뷰 보기" 버튼을 클릭했을 때 더 많은 리뷰를 보여주기 위해 visibleReviewCount 증가
   const loadMoreReviews = () => {
     setVisibleReviewCount((prevCount) => {
       if (prevCount + 3 > reviews.length) {
-        return reviews.length; // 남은 모든 리뷰를 보여줍니다.
+        return reviews.length;
       }
-      return prevCount + 3; // 기본적으로 3씩 증가
+      return prevCount + 3;
     });
   };
 
-  // 리뷰 작성 페이지로 이동 (테마 정보 함께 전달)
   const reviewWriteMove = () => {
     console.log('페이지에서 넘길 때:', themeItem);
     navigate('/review/write', {
@@ -168,25 +162,21 @@ export const ReviewReadFetch = () => {
   };
 
   // 좋아요 핸들러 함수 정의
-  const handleThumbsUp = async (reviewId: number, currentThumbsUp: number) => {
-    console.log('추천 확인용:', reviewId); // 확인용 로그
+  const handleThumbsUp = async (reviewId: number) => {
+    if (processingThumbsUp[reviewId]) return; // 중복 클릭 방지
+
     try {
-      const isThumbsUp = thumbsUpReviews[reviewId] || false;
-      const newThumbsUpValue = isThumbsUp
-        ? currentThumbsUp - 1
-        : currentThumbsUp + 1;
+      setProcessingThumbsUp((prev) => ({ ...prev, [reviewId]: true })); // 로딩 상태로 설정
 
       // 좋아요 API 호출
       await patchThumbsUp(reviewId);
-      reviewQuery.refetch(); // 좋아요 반영 후 데이터 다시 불러오기
 
-      // 로컬 상태 업데이트: 좋아요 상태 토글
-      setThumbsUpReviews((prevThumbsUpReviews) => ({
-        ...prevThumbsUpReviews,
-        [reviewId]: !isThumbsUp,
-      }));
+      // 성공적으로 호출한 후 서버 데이터로 동기화
+      reviewQuery.refetch();
     } catch (error) {
       console.error('좋아요 요청 실패', error);
+    } finally {
+      setProcessingThumbsUp((prev) => ({ ...prev, [reviewId]: false })); // 로딩 상태 해제
     }
   };
 
@@ -288,15 +278,9 @@ export const ReviewReadFetch = () => {
                   },
                 },
                 y: {
-                  grid: {
-                    drawOnChartArea: false,
-                  },
-                  border: {
-                    display: false,
-                  },
-                  ticks: {
-                    display: false,
-                  },
+                  grid: { drawOnChartArea: false },
+                  border: { display: false },
+                  ticks: { display: false },
                 },
               },
             }}
@@ -367,16 +351,13 @@ export const ReviewReadFetch = () => {
               >
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <HandThumbUpIcon
-                    onClick={() =>
-                      handleThumbsUp(review.reviewId, review.thumbsUp)
-                    }
+                    onClick={() => handleThumbsUp(review.reviewId)}
                     style={{
                       width: '20px',
                       height: '20px',
                       marginRight: '0.5rem',
-                      color: thumbsUpReviews[review.reviewId]
-                        ? '#80deea'
-                        : '#ffffff',
+                      color: review.thumbsUp ? '#80deea' : '#ffffff',
+                      cursor: processingThumbsUp[review.reviewId] ? 'not-allowed' : 'pointer',
                     }}
                   />
                   <Typography color="light" size={0.875} weight={400}>
