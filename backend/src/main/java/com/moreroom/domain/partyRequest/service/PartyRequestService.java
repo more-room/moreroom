@@ -25,13 +25,16 @@ import java.util.stream.Stream;
 
 import com.moreroom.global.exception.globalException.JsonSerializationException;
 import com.moreroom.global.util.RedisUtil;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class PartyRequestService {
 
   private final PartyRequestRepository partyRequestRepository;
@@ -45,7 +48,13 @@ public class PartyRequestService {
   //파티요청 등록
   @Transactional
   public void savePartyRequest(SettingPartyRequestDto partyRequestDto, Member member) {
-    Theme theme = themeRepository.getReferenceById(partyRequestDto.getThemeId());
+    Theme theme;
+    try {
+      theme = themeRepository.getReferenceById(partyRequestDto.getThemeId());
+    } catch (EntityNotFoundException e) {
+      log.error("themeId {}를 조회할 수 없음", partyRequestDto.getThemeId(), e);
+      throw new ThemeNotFoundException();
+    }
     PartyRequest partyRequest = PartyRequest.builder()
         .member(member)
         .theme(theme)
@@ -78,9 +87,9 @@ public class PartyRequestService {
   //파티요청 조회
   public List<PartyRequestDto> getPartyRequestList(Long memberId) {
     //파티요청 조회
-    List<PartyRequestDto> partyRequestDtoList = partyRequestQueryRepository.findPartyRequestByMemberId(memberId);
+    List<PartyRequestDto> partyRequestDtoList = partyRequestQueryRepository.findPartyRequestByMemberId(memberId); //쿼리
     Map<Long, PartyRequest> partyRequestMap = partyRequestRepository.findAllByMemberId(memberId).stream()
-            .collect(Collectors.toMap(PartyRequest::getPartyRequestId, item -> item));
+            .collect(Collectors.toMap(PartyRequest::getPartyRequestId, item -> item)); //쿼리
 
 
     //status에 member정보 채우기
@@ -143,20 +152,7 @@ public class PartyRequestService {
   }
 
   private String makeHashtagType(int[] yourHashtagIdList) {
-    if (yourHashtagIdList.length == 0) {
-      return "[]";
-    }
-
-    StringBuilder sb = new StringBuilder();
-    sb.append("[");
-    for (int i = 0; i < yourHashtagIdList.length; i++) {
-      sb.append(yourHashtagIdList[i]);
-      if (i < yourHashtagIdList.length - 1) {
-        sb.append(",");
-      }
-    }
-    sb.append("]");
-    return sb.toString();
+    return yourHashtagIdList == null ? "[]" : Arrays.toString(yourHashtagIdList);
   }
 
   public PartyRequestDto getHashtagsList(Long partyRequestId, Member member) {

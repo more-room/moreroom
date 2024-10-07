@@ -3,9 +3,7 @@ import React from 'react';
 import { Typography } from '../../../components/Typography';
 import { Button } from '../../../components/Button';
 import { useNavigate } from 'react-router-dom';
-import { addCss, containerCss, navCss } from './styles';
-import { Icon } from '../../../components/Icon';
-import { PlusIcon } from '@heroicons/react/24/solid';
+import { containerCss, navCss } from './styles';
 
 export const NavChat = () => {
   const nav = useNavigate();

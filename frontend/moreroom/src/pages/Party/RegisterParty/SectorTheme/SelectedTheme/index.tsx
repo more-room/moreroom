@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
-import { IParty } from '../../../../../stores/partyStore';
 import { brandCss, containerCss, contentCss, imgCss, titleCss } from './styles';
 import { Typography } from '../../../../../components/Typography';
 import { Icon } from '../../../../../components/Icon';

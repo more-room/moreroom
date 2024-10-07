@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.moreroom.domain.deviceToken.dto.FcmMessageDto;
 import com.moreroom.domain.deviceToken.service.FcmService;
 import com.moreroom.domain.member.entity.Member;
-import com.moreroom.domain.member.exception.MemberNotFoundException;
 import com.moreroom.domain.member.repository.MemberRepository;
 import com.moreroom.domain.partyRequest.entity.MatchingStatus;
 import com.moreroom.domain.partyRequest.entity.PartyRequest;
@@ -14,20 +13,19 @@ import com.moreroom.domain.theme.entity.Theme;
 import com.moreroom.domain.theme.exception.ThemeNotFoundException;
 import com.moreroom.domain.theme.repository.ThemeRepository;
 import com.moreroom.global.util.RedisUtil;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.stream.Collectors;
-
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -36,7 +34,6 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 @Service
-@RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Slf4j
 public class PartyMatchingService {
@@ -47,9 +44,33 @@ public class PartyMatchingService {
   private final ThemeRepository themeRepository;
   private final RestTemplate restTemplate;
   private final FcmService fcmService;
-
-  private final String fastAPI_URL;
+  @Qualifier("fastApiUrl")
+  private final String FASTAPI_URL;
+  @Qualifier("fastApiOneUrl")
+  private final String FASTAPI_ONEURL;
   private final PartyRequestUtil partyRequestUtil;
+
+  // 생성자에서 @Qualifier 지정
+  @Autowired
+  public PartyMatchingService(MemberRepository memberRepository,
+      PartyRequestRepository partyRequestRepository,
+      RedisUtil redisUtil,
+      ThemeRepository themeRepository,
+      RestTemplate restTemplate,
+      FcmService fcmService,
+      @Qualifier("fastApiUrl") String FASTAPI_URL,
+      @Qualifier("fastApiOneUrl") String FASTAPI_ONEURL,
+      PartyRequestUtil partyRequestUtil) {
+    this.memberRepository = memberRepository;
+    this.partyRequestRepository = partyRequestRepository;
+    this.redisUtil = redisUtil;
+    this.themeRepository = themeRepository;
+    this.restTemplate = restTemplate;
+    this.fcmService = fcmService;
+    this.FASTAPI_URL = FASTAPI_URL;
+    this.FASTAPI_ONEURL = FASTAPI_ONEURL;
+    this.partyRequestUtil = partyRequestUtil;
+  }
 
   // FastAPI의 여러 파티 매칭 결과를 가져오는 메서드
   private List<Map<String, Object>> getBatchPartyMatchingResultFromFastAPI() {
@@ -59,7 +80,7 @@ public class PartyMatchingService {
 
       // FastAPI에서 매칭 결과 리스트를 받아옴
       ResponseEntity<List> response = restTemplate.exchange(
-          fastAPI_URL, HttpMethod.POST, requestEntity, List.class);
+          FASTAPI_URL, HttpMethod.POST, requestEntity, List.class);
 
       if (response.getStatusCode().is2xxSuccessful()) {
         return response.getBody();
@@ -73,9 +94,72 @@ public class PartyMatchingService {
     }
   }
 
+  // FastAPI의 단건 파티 매칭 결과를 가져오는 메서드
+  private Map<String, Object> getBatchPartyMatchingResultFromFastAPIForOne(Long partyRequestId) {
+    try {
+      // 헤더 설정
+      HttpHeaders headers = new HttpHeaders();
+      headers.setContentType(MediaType.APPLICATION_JSON);
+
+      // 요청 본문에 데이터를 담기 위한 Map 생성
+      Map<String, Long> requestBody = new HashMap<>();
+      requestBody.put("party_request_id", partyRequestId);
+
+      // 요청 엔티티 생성 (헤더 + 본문)
+      HttpEntity<Map<String, Long>> requestEntity = new HttpEntity<>(requestBody, headers);
+
+      // FastAPI에서 단일 매칭 결과를 받아옴
+      ResponseEntity<Map> response = restTemplate.exchange(
+          FASTAPI_ONEURL, HttpMethod.POST, requestEntity, Map.class);
+
+      // 성공적인 응답 처리
+      if (response.getStatusCode().is2xxSuccessful()) {
+        return response.getBody();
+      } else {
+        log.error("FastAPI 요청 실패: " + response.getStatusCode());
+        return Collections.emptyMap();
+      }
+    } catch (RestClientException e) {
+      log.error("FastAPI로부터 응답을 받는 중 오류 발생", e);
+      return Collections.emptyMap();
+    }
+  }
+
+
   // FastAPI에서 받은 partyMemberIds로 Member 엔티티 리스트를 가져오는 메서드
   private List<Member> getPartyMembersFromIds(List<Long> memberIds) {
     return memberRepository.findAllByMemberIdIn(memberIds);
+  }
+
+  @Transactional
+  public void partyMatchingAndRequestForOne(Long partyRequestId) throws JsonProcessingException {
+    log.info("스케줄러 동작함");
+    Map<String, Object> batchMatchingResult = getBatchPartyMatchingResultFromFastAPIForOne(
+        partyRequestId);
+
+    if (batchMatchingResult == null || batchMatchingResult.isEmpty()) {
+      log.error("FastAPI로부터 매칭 결과를 받지 못했습니다.");
+      return;
+    }
+
+    // 각 파티 매칭 결과에 대해 처리
+    Integer themeId = (Integer) batchMatchingResult.get("theme_id");
+    List<Integer> partyMemberIds = (List<Integer>) batchMatchingResult.get("party_members");
+
+    if (partyMemberIds == null || partyMemberIds.size() < 3) {
+      return;
+    }
+
+    // FastAPI 결과에서 멤버 ID 리스트를 가져와서 Member 엔티티 리스트를 가져옴
+    List<Long> memberIdList = partyMemberIds.stream().mapToLong(Long::valueOf).boxed().toList();
+    List<Member> partyMembers = getPartyMembersFromIds(memberIdList);
+
+    // 파티 매칭 UUID 생성 및 처리
+    String uuid = setUuidToRequest(memberIdList, themeId); // partyRequest의 uuid 필드에 uuid 저장
+    setPartyAcceptRecordMap(uuid, memberIdList); // redis에 accept 현황판 저장
+    sendPartyNotification(partyMembers, themeId, uuid); // 알림 보내기
+
+    log.info("파티 매칭 완료");
   }
 
   @Scheduled(cron = "0 0 18 * * *", zone = "Asia/Seoul")
@@ -105,6 +189,7 @@ public class PartyMatchingService {
 
       // 파티 매칭 UUID 생성 및 처리
       String uuid = setUuidToRequest(memberIdList, themeId); // partyRequest의 uuid 필드에 uuid 저장
+
       setPartyAcceptRecordMap(uuid, memberIdList); // redis에 accept 현황판 저장
       sendPartyNotification(partyMembers, themeId, uuid); //알림 보내기
     }
@@ -204,6 +289,14 @@ public class PartyMatchingService {
       redisUtil.deleteData(key);
     }
     return null;
+  }
+
+  // 오후 7시에 파티 요청 status를 not_matched로 바꾸는 함수
+//  @Scheduled(cron = "0 0 19 * * *", zone = "Asia/Seoul")
+  @Transactional
+  public void makePartyRequestNotMatched() {
+    int result = partyRequestRepository.updateAllPartyRequestStatus(MatchingStatus.NOT_MATCHED);
+    log.info("오후 7시 업데이트: 총 {}행 변경", result);
   }
 
 }

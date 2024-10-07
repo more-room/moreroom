@@ -3,18 +3,17 @@ package com.moreroom.domain.deviceToken.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;
-import com.moreroom.domain.deviceToken.entity.DeviceToken;
-import com.moreroom.domain.deviceToken.exception.DeviceTokenNotFoundException;
-import com.moreroom.domain.deviceToken.exception.PushNotificationException;
-import com.moreroom.domain.deviceToken.repository.DeviceTokenRepository;
-import com.moreroom.domain.mapping.member.repository.MemberPartyMappingRepository;
-import com.moreroom.domain.member.entity.Member;
-import com.moreroom.domain.theme.entity.Theme;
 import com.moreroom.domain.deviceToken.dto.FcmMessageDto;
 import com.moreroom.domain.deviceToken.dto.FcmMessageDto.Data;
 import com.moreroom.domain.deviceToken.dto.FcmMessageDto.Message;
 import com.moreroom.domain.deviceToken.dto.FcmMessageDto.MessageType;
 import com.moreroom.domain.deviceToken.dto.FcmMessageDto.Notification;
+import com.moreroom.domain.deviceToken.entity.DeviceToken;
+import com.moreroom.domain.deviceToken.exception.DeviceTokenNotFoundException;
+import com.moreroom.domain.deviceToken.repository.DeviceTokenRepository;
+import com.moreroom.domain.mapping.member.repository.MemberPartyMappingRepository;
+import com.moreroom.domain.member.entity.Member;
+import com.moreroom.domain.theme.entity.Theme;
 import com.moreroom.global.util.RedisUtil;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -58,13 +57,13 @@ public class FcmService {
       String API_URL = "https://fcm.googleapis.com/v1/projects/d206-moreroom/messages:send";
       ResponseEntity<String> response = restTemplate.exchange(API_URL, HttpMethod.POST, entity, String.class);
 
-      log.info("알림보내기: {}", response.getStatusCode());
+//      log.info("알림보내기: {}", response.getStatusCode());
 
       return response.getStatusCode() == HttpStatus.OK ? 1 : 0;
     } catch (IOException e) {
-      log.error("access token 발급 실패", e);
+//      log.error("access token 발급 실패");
     } catch (Exception e) {
-      log.error("해당 계정에 deviceToken이 없거나 올바르게 구성되지 않은 토큰임: {}", fcmMessageDto.getMessage().getToken(), e);
+//      log.error("해당 계정에 deviceToken이 없거나 올바르게 구성되지 않은 토큰임: {}", fcmMessageDto.getMessage().getToken());
     }
       return 0;
   }
@@ -77,13 +76,13 @@ public class FcmService {
   private String getAccessToken() throws IOException {
     String firebaseConfigPath = "firebase/d206-moreroom-firebase-adminsdk-byl7s-8676046b0a.json";
 
-    log.info("googleCredentials 진입 전");
+//    log.info("googleCredentials 진입 전");
     GoogleCredentials googleCredentials = GoogleCredentials
         .fromStream(new ClassPathResource(firebaseConfigPath).getInputStream())
         .createScoped(List.of("https://www.googleapis.com/auth/cloud-platform"));
 
     googleCredentials.refreshIfExpired();
-    log.info("액세스 토큰: {}", googleCredentials.getAccessToken().getTokenValue());
+//    log.info("액세스 토큰: {}", googleCredentials.getAccessToken().getTokenValue());
     return googleCredentials.getAccessToken().getTokenValue();
   }
 
@@ -213,11 +212,10 @@ public class FcmService {
           FcmMessageDto fcmMessageDto = makeChattingPush(senderNickname, message, emailAddress, partyId);
           sendMessageTo(fcmMessageDto);
         } catch (Exception e) {
-          log.error("푸시 알람 전송 실패: to {}", emailAddress, e);
+          log.error("푸시 알람 전송 실패: to {}", emailAddress);
         }
       }
     } catch (Exception e) {
-      e.printStackTrace();
       log.error("푸시 알림 로직 실패");
     }
   }

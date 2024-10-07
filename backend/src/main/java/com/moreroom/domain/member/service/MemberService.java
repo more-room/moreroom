@@ -154,23 +154,23 @@ public class MemberService {
 
         member.updateMember(memberUpdateRequestDTO, region);
 
+        List<MemberGenreMapping> genreMappingList = memberGenreMappingRepository.findByMember(
+            member);
+
+        memberGenreMappingRepository.deleteAll(genreMappingList);
+
         // 회원 정보 업데이트 시 장르 리스트 목록 업데이트(있으면 삭제, 없으면 생성)
         List<Integer> genreIdList = memberUpdateRequestDTO.getGenreIdList();
+
         for (Integer genreId : genreIdList) {
+
             Genre genre = genreRepository.getReferenceById(genreId);
-
-            if (memberGenreMappingRepository.existsByMemberAndGenre(member, genre)) {
-                MemberGenreMapping memberGenreMapping = memberGenreMappingRepository.findByMemberAndGenre(member, genre);
-
-                memberGenreMappingRepository.delete(memberGenreMapping);
-            } else {
                 MemberGenreMapping memberGenreMapping = MemberGenreMapping.builder()
                     .member(member)
                     .genre(genre)
                     .build();
 
-                memberGenreMappingRepository.save(memberGenreMapping);
-            }
+            memberGenreMappingRepository.save(memberGenreMapping);
         }
     }
 
@@ -214,18 +214,18 @@ public class MemberService {
 
         List<Hashtag> hashtagList = hashtagRepository.findAllById(hashtagIdList);
 
-        for (Hashtag hashtag : hashtagList) {
-            if (memberHashtagMappingRepository.existsMemberHashtagMappingByMemberAndHashtag(member, hashtag)) {
-                MemberHashtagMapping memberHashtagMapping = memberHashtagMappingRepository.findByMemberAndHashtag(member, hashtag);
+        List<MemberHashtagMapping> hashtagMappingList = memberHashtagMappingRepository.findByMember(
+            member);
 
-                memberHashtagMappingRepository.delete(memberHashtagMapping);
-            } else {
-                MemberHashtagMapping memberHashtagMapping = MemberHashtagMapping.builder()
-                    .member(member)
-                    .hashtag(hashtag)
-                    .build();
-                memberHashtagMappingRepository.save(memberHashtagMapping);
-            }
+        memberHashtagMappingRepository.deleteAll(hashtagMappingList);
+
+        for (Hashtag hashtag : hashtagList) {
+            MemberHashtagMapping memberHashtagMapping = MemberHashtagMapping.builder()
+                .member(member)
+                .hashtag(hashtag)
+                .build();
+
+            memberHashtagMappingRepository.save(memberHashtagMapping);
         }
     }
 

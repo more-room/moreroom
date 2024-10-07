@@ -68,7 +68,7 @@ public class MemberController {
                 // 비밀번호 불일치 처리
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.setContentType("application/json");
-                response.getWriter().write("{\"error\": \"비밀번호가 틀립니다.\"}");
+                response.getWriter().write("{\"error\": \"wrong password\"}");
                 return;
             }
 
@@ -110,7 +110,7 @@ public class MemberController {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json");
             try {
-                response.getWriter().write("{\"error\": \"이메일을 찾을 수 없습니다.\"}");
+                response.getWriter().write("{\"error\": \"wrong email\"}");
             } catch (IOException ioException) {
                 ioException.printStackTrace();
             }

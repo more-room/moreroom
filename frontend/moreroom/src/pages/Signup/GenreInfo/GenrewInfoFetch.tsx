@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Button } from '../../../components/Button';
 import { btnCss } from '../AccountInfo/styles';
 import { useSuspenseQuery } from '@tanstack/react-query';
@@ -13,10 +12,11 @@ import { useSignUpStore } from '../../../stores/signupStore';
 import { userSignup } from '../../../apis/authApi';
 
 interface VerificationProps {
+  before: () => void;
   onSubmit: () => void;
 }
 
-export const GenreInfoFetch = ({ onSubmit }: VerificationProps) => {
+export const GenreInfoFetch = ({ before, onSubmit }: VerificationProps) => {
   const { genreIdList, setSignUpData } = useSignUpStore();
   const genreQuery = useSuspenseQuery({
     queryKey: ['genre'],
@@ -102,18 +102,29 @@ export const GenreInfoFetch = ({ onSubmit }: VerificationProps) => {
             </FilterChip>
           ))}
         </div>
-
         <Button
           css={btnCss}
-          style={{ margin: '2rem 0' }}
-          fullwidth
+          style={{ margin: '2rem 0', justifyContent: 'flex-start' }}
           color="primary"
           rounded={0.5}
           scale="A200"
           variant="contained"
+          // disabled={!available}
+          handler={() => before()}
+        >
+          이전
+        </Button>
+        <Button
+          css={btnCss}
+          style={{ margin: '2rem 0', float: 'right'}}
+          color="primary"
+          rounded={0.5}
+          scale="A200"
+          variant="contained"
+          disabled={!selectedGenres.length}
           handler={handleNext}
         >
-          다음으로
+          다음
         </Button>
       </div>
     </div>

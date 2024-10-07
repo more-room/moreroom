@@ -95,17 +95,6 @@ export const ChatingFetch = () => {
 
   return (
     <>
-      <div>
-        <TopBar css={topbarcolor}>
-          <TopBar.Title
-            type="default"
-            defaultValue="파티 목록"
-            title="채팅방 리스트 조회"
-            backHandler={() => navigate(-1)}
-          />
-        </TopBar>
-      </div>
-
       <div css={container}>
         {/* 필터 버튼 추가 */}
         <div css={filterContainer}>
@@ -162,13 +151,6 @@ export const ChatingFetch = () => {
             <div>파티 목록이 없습니다.</div>
           )}
         </div>
-
-        <BottomBar
-          css={bottombarcss}
-          icons={[<BellIcon />, <BellIcon />, <BellIcon />]}
-          menus={['메뉴1', '메뉴2', '메뉴3']}
-          onHandleChange={() => console.log('바텀바 선택됨')}
-        />
       </div>
     </>
   );

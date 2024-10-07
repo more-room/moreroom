@@ -21,7 +21,7 @@ export const PartyItem = ({ party }: PartyItemProps) => {
         <div>{party.theme.title}</div>
         <div>{party.createdAt}</div>
         <div css={chipCss}>
-          {party.hashtagList?.map((hashtag: Hashtag) => (
+          {party.partyHashtagList?.map((hashtag: Hashtag) => (
             <Chip
               key={hashtag.hashtagId}
               border={1}

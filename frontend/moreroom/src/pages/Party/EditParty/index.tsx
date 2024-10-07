@@ -12,7 +12,7 @@ import {
 } from '../../../types/partyTypes';
 import { FilterChip } from '../../../components/FilterChip';
 import { Button } from '../../../components/Button';
-import { getPartyList } from '../../../apis/partyApi';
+import { getHashtag, updateParty } from '../../../apis/partyApi'; // updateParty 임포트
 import { containerCss } from '../styles';
 import { contentCss, itemCss, themesCss } from '../RegisterParty/styles';
 import { useQuery } from '@tanstack/react-query';
@@ -29,40 +29,38 @@ export const EditParty = () => {
   const nav = useNavigate();
 
   const PartyQuery = useQuery({
-    queryKey: ['party'],
-    queryFn: async () => await getPartyList(),
+    queryKey: ['partyHashtag'],
+    queryFn: async () => {
+      if (partyRequestId) {
+        return await getHashtag(partyRequestId);
+      } else {
+        throw new Error('partyRequestId가 정의되지 않았습니다.');
+      }
+    },
   });
-
+  
   if (PartyQuery.error && !PartyQuery.isFetching) {
     throw PartyQuery.error;
   }
 
-  const matchedParty = PartyQuery.data?.data?.requestList?.find(
-    (party: IParty) => party.partyRequestId === currentPartyRequestId,
-  );
-
-  console.log('matchedParty:',matchedParty);
-
   // 이미 선택된 해시태그를 상태로 설정
   useEffect(() => {
-    if (matchedParty?.hashtagList) {
-      matchedParty.hashtagList.forEach((hashtag: IHashtag) => {
-        const hashtagId = hashtag.hashtagId;
+    if (PartyQuery.data) {
+      const { partyHashtagList, myHashtagList, yourHashtagList } = PartyQuery.data.data;
 
-        if (hashtagId <= 5) {
-          setSelectedPartyHashtagIdList((prev) => [...prev, hashtagId]);
-        } else if (hashtagId >= 6 && hashtagId <= 17) {
-          setSelectedMyHashtagIdList((prev) => [...prev, hashtagId]);
-        } else if (hashtagId >= 18) {
-          setSelectedYourHashtagIdList((prev) => [...prev, hashtagId]);
-        }
-      });
+      // 파티 해시태그 매칭
+      const partyHashtagsIds = partyHashtagList.map((hashtag: IHashtag) => hashtag.hashtagId);
+      setSelectedPartyHashtagIdList(partyHashtagsIds);
 
-      console.log('파티 해시태그', selectedPartyHashtagIdList);
-      console.log('내 해시태그', selectedMyHashtagIdList);
-      console.log('유저 해시태그', selectedYourHashtagIdList);
+      // 내 해시태그 매칭
+      const myHashtagsIds = myHashtagList.map((hashtag: IHashtag) => hashtag.hashtagId);
+      setSelectedMyHashtagIdList(myHashtagsIds);
+
+      // 유저 해시태그 매칭
+      const yourHashtagsIds = yourHashtagList.map((hashtag: IHashtag) => hashtag.hashtagId);
+      setSelectedYourHashtagIdList(yourHashtagsIds);
     }
-  }, [matchedParty]);
+  }, [PartyQuery.data]);
 
   // 선택 해제 핸들러
   const handlePartyHashtagClick = (id: number) => {
@@ -83,8 +81,16 @@ export const EditParty = () => {
     );
   };
 
-  const updateParty = () => {
-    nav('/party')
+  // 파티 수정 요청 핸들러
+  const handleUpdateParty = async () => {
+    try {
+      const themeId = PartyQuery.data?.data.theme.themeId; // 선택된 테마 ID
+      await updateParty(currentPartyRequestId, themeId, selectedPartyHashtagIdList, selectedMyHashtagIdList, selectedYourHashtagIdList);
+      nav('/party'); // 수정 후 이동할 경로
+    } catch (error) {
+      console.error('파티 수정 중 오류 발생:', error);
+      // 추가적인 에러 처리 로직을 여기에 작성할 수 있습니다.
+    }
   };
 
   return (
@@ -97,12 +103,12 @@ export const EditParty = () => {
         />
       </TopBar>
 
-      {matchedParty.theme.themeId ? (
+      {PartyQuery.data?.data.theme.themeId ? (
         <SelectedTheme
-          poster={matchedParty.theme.poster}
-          themeTitle={matchedParty.theme.title}
-          brandName={matchedParty.brandName}
-          branchName={matchedParty.branchName}
+          poster={PartyQuery.data?.data.theme.poster}
+          themeTitle={PartyQuery.data?.data.theme.title}
+          brandName={PartyQuery.data?.data.theme.brandName}
+          branchName={PartyQuery.data?.data.theme.branchName}
         />
       ) : (
         <div css={themesCss} onClick={() => nav('/party/addtheme')}>
@@ -154,17 +160,17 @@ export const EditParty = () => {
               {tag.label}
             </FilterChip>
           ))}
+        </div>
+
         <Button
           color="primary"
           fullwidth
           rounded={0.5}
           variant="contained"
-          handler={updateParty}
+          handler={handleUpdateParty} // 수정 요청 핸들러
         >
           수정하기
         </Button>
-        </div>
-
       </div>
     </div>
   );

@@ -6,6 +6,12 @@ export const container = css`
   height: 100%;
 `;
 
+export const menuicons = css`
+  display: flex;
+  align-items: center;
+  column-gap: 0.5rem;
+`;
+
 export const recommendlist = css`
   display: flex;
   flex-direction: column;
