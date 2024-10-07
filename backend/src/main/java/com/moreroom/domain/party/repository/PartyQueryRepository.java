@@ -1,18 +1,5 @@
 package com.moreroom.domain.party.repository;
 
-import static com.moreroom.domain.party.entity.QParty.party;
-import static com.moreroom.domain.theme.entity.QTheme.theme;
-import static com.moreroom.domain.hashtag.entity.QHashtag.hashtag;
-import static com.moreroom.domain.cafe.entity.QCafe.cafe;
-import static com.moreroom.domain.brand.entity.QBrand.brand;
-import static com.moreroom.domain.review.entity.QReview.review;
-import static com.moreroom.domain.mapping.member.entity.QMemberPartyMapping.memberPartyMapping;
-import static com.moreroom.domain.mapping.party.entity.QPartyHashtagMapping.partyHashtagMapping;
-import static com.moreroom.domain.mapping.theme.entity.QThemeGenreMapping.themeGenreMapping;
-import static com.moreroom.domain.member.entity.QMember.member;
-
-
-import com.moreroom.domain.mapping.member.entity.QMemberPartyMapping;
 import com.moreroom.domain.mapping.theme.repository.ThemeGenreMappingRepository;
 import com.moreroom.domain.member.entity.Member;
 import com.moreroom.domain.party.dto.ChatroomListDto;
@@ -31,16 +18,24 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.time.format.DateTimeFormatter;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
+
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static com.moreroom.domain.brand.entity.QBrand.brand;
+import static com.moreroom.domain.cafe.entity.QCafe.cafe;
+import static com.moreroom.domain.hashtag.entity.QHashtag.hashtag;
+import static com.moreroom.domain.mapping.member.entity.QMemberPartyMapping.memberPartyMapping;
+import static com.moreroom.domain.mapping.party.entity.QPartyHashtagMapping.partyHashtagMapping;
+import static com.moreroom.domain.mapping.theme.entity.QThemeGenreMapping.themeGenreMapping;
+import static com.moreroom.domain.member.entity.QMember.member;
+import static com.moreroom.domain.party.entity.QParty.party;
+import static com.moreroom.domain.review.entity.QReview.review;
+import static com.moreroom.domain.theme.entity.QTheme.theme;
 
 @Slf4j
 @Repository
@@ -48,13 +43,11 @@ public class PartyQueryRepository extends QuerydslRepositoryCustom {
 
   private final JPAQueryFactory jpaQueryFactory;
   private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-  private final ThemeGenreMappingRepository themeGenreMappingRepository;
 
   public PartyQueryRepository(JPAQueryFactory jpaQueryFactory,
       ThemeGenreMappingRepository themeGenreMappingRepository) {
     super(party);
     this.jpaQueryFactory = jpaQueryFactory;
-    this.themeGenreMappingRepository = themeGenreMappingRepository;
   }
 
   public ChatroomListDto getAllPartyListByMemberId(Long memberId, boolean includeMember, Long lastPartyId, int pageSize) {
@@ -99,16 +92,15 @@ public class PartyQueryRepository extends QuerydslRepositoryCustom {
         .limit(pageSize+1) //다음 페지 존재 여부 확인
         .fetch();
 
+    if (results.isEmpty()) {
+        return new ChatroomListDto(Collections.emptyList(), false, lastPartyId);
+    }
+
     boolean hasMore = results.size() > pageSize;
     if (hasMore) {
       results.remove(results.size() - 1); //추가로 가져온 항목 제거
     }
     Long newLastPartyId = results.isEmpty() ? lastPartyId : results.get(results.size() - 1).get(party.partyId);
-
-    // 자료 가공
-    if (results.isEmpty()) {
-      throw new PartyNotFoundException();
-    }
 
     //List<PartyInfoDto> 생성
     Map<Long, List<Tuple>> resultsGroupedByPartyId = results.stream()
