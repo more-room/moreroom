@@ -108,7 +108,7 @@ services:
             - DATABASE=${DATABASE}
             - PORT=${PORT}
         expose:
-            - "5000"
+            - "5000:5000"
         networks:
             - backend-network
         depends_on:
