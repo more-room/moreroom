@@ -49,6 +49,7 @@ spring:
 
   fastAPI:
     URL: ${FAST_API_URL}
+    ONE_URL: ${FAST_API_ONE_URL}
 
 server:
   servlet:
