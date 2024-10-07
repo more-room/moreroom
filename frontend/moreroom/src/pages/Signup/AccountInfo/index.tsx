@@ -18,6 +18,7 @@ import {
 import { CssTextField } from '../../../components/Mui/CssTextField';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Visibility from '@mui/icons-material/Visibility';
+import { Colors } from '../../../styles/globalStyle';
 
 interface UserDataFormProps {
   onSubmit: () => void;
@@ -53,6 +54,9 @@ export const AccountInfo = ({ onSubmit }: UserDataFormProps) => {
   const [nicknameError, setNicknameError] = useState<string>('');
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordCheck, setShowPasswordCheck] = useState(false);
+
+  const [codemsg, setcodemsg] = useState<string>('');
+  const [namemsg, setnamemsg] = useState<string>('');
   // 이메일 유효성 검사
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -102,6 +106,7 @@ export const AccountInfo = ({ onSubmit }: UserDataFormProps) => {
 
     // 닉네임을 변경할 때 인증 상태 리셋
     setIsNicknameVerified(false);
+    setnamemsg('')
 
     if (nicknameError !== '') {
       setCheck((prevCheck) => {
@@ -172,6 +177,8 @@ export const AccountInfo = ({ onSubmit }: UserDataFormProps) => {
       setCheck((prevCheck) => {
         const newCheck = { ...prevCheck, code: true };
         validate(newCheck);
+        setcodemsg('인증이 되었습니다.');
+        setEmailcodeError('')
         return newCheck;
       });
       console.log(check);
@@ -195,6 +202,7 @@ export const AccountInfo = ({ onSubmit }: UserDataFormProps) => {
         setCheck((prevCheck) => {
           const newCheck = { ...prevCheck, nickname: true };
           validate(newCheck);
+          setnamemsg('사용가능한 닉네임입니다.');
           return newCheck;
         });
       } else {
@@ -205,7 +213,13 @@ export const AccountInfo = ({ onSubmit }: UserDataFormProps) => {
         });
       }
     } catch (err) {
-      setNicknameError('닉네임 인증 중 오류가 발생했습니다.');
+      console.log('닉네임 에러', err);
+      // setNicknameError(validateNickname(nickname));
+      if (validateNickname(nickname) !== '') {
+        setNicknameError(validateNickname(nickname));
+      } else {
+        setNicknameError('이미 사용 중인 닉네임입니다.');
+      }
       setCheck((prevCheck) => {
         const newCheck = { ...prevCheck, nickname: false };
         validate(newCheck);
@@ -264,12 +278,16 @@ export const AccountInfo = ({ onSubmit }: UserDataFormProps) => {
           css={btnCss}
           color="primary"
           rounded={0.5}
+          disabled={!check.email}
           variant="contained"
           handler={hadleCode}
         >
           확인
         </Button>
       </div>
+      <FormHelperText sx={{ color: Colors['secondary']['200'] }}>
+        {codemsg}
+      </FormHelperText>
       <FormHelperText error id="component-error-text">
         {emailcodeError}
       </FormHelperText>
@@ -335,7 +353,7 @@ export const AccountInfo = ({ onSubmit }: UserDataFormProps) => {
             fullWidth
             error={!!nicknameError}
             label="닉네임"
-            placeholder="한글, 영어, 숫자 상관없이 2~7글자"
+            placeholder="띄어쓰기없이 2~7글자"
             value={nickname}
             onChange={handleNicknameChange}
           />
@@ -350,6 +368,9 @@ export const AccountInfo = ({ onSubmit }: UserDataFormProps) => {
           확인
         </Button>
       </div>
+      <FormHelperText sx={{ color: Colors['secondary']['200'] }}>
+        {!nicknameError ? namemsg : undefined}
+      </FormHelperText>
       <FormHelperText error id="component-error-text">
         {nicknameError}
       </FormHelperText>

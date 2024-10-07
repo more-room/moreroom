@@ -41,7 +41,7 @@ export const SectorTheme = () => {
   /* 뒤로가기 핸들러 */
   const onBackHandler = () => {
     if (themePageStore.type === 'search') themePageStore.setType('default');
-    nav('/', { state: { menu: 0 } });
+    nav('/party/register');
   };
 
   /* 아이콘 핸들러 */

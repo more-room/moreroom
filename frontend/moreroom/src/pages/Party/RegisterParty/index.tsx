@@ -82,7 +82,7 @@ export const RegisterParty = () => {
 
       console.log(res);
 
-      nav('/party');
+      nav('/', {state : {menu: 0}});
     } catch (err) {
       console.log(err);
       alert('파티 등록에 실패했습니다. 다시 시도해주세요.');
@@ -118,7 +118,7 @@ export const RegisterParty = () => {
       myHashtagIdList: [],
       yourHashtagIdList: [],
     });
-    nav('/', { state: { menu: 0 } });
+    nav('/', {state : {menu: 0}});
   };
 
   return (

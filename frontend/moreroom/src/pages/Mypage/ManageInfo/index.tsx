@@ -10,9 +10,10 @@ interface ManageInfoProps {
   chips?: React.ReactNode;
   url?: string;
   onApi?: () => void
+  statedata?: any; // 공식적으로 state는 any라 이걸로 함
 }
 
-export const ManageInfo = ({ icon, children, chips, url, onApi }: ManageInfoProps) => {
+export const ManageInfo = ({ icon, children, chips, url, statedata, onApi }: ManageInfoProps) => {
   const nav = useNavigate();
 
   return (
@@ -25,7 +26,7 @@ export const ManageInfo = ({ icon, children, chips, url, onApi }: ManageInfoProp
             scale="400"
             size={1}
             weight={500}
-            onClick={url ? () => nav(url) : onApi}
+            onClick={url ? () => nav(url, { state : {statedata} }) : onApi}
           >
             {children}
           </Typography>

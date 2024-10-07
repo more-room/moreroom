@@ -39,15 +39,30 @@ export const Main = () => {
   const location = useLocation();
   const [curMenu, setCurMenu] = useState<number>(2);
 
+  // 이전코드
+  // 처음 렌더링할때ㅐ만 location.state를 검사해서 의존성 배열이
+  // 빈 배열로 설정되어 잉ㅆ어서 첫 렌더링 이후로 변경사항이 반영 X
+  // 0이 전달되더라도 처음실행할 때만 useEffect가 동작해서 초기상태인 2만 남아있음
+  // 0만 안됐던 이유는 0이 falsy한 값이라서 
+  // useEffect(() => {
+  //   if (location.state) {
+  //     if (location.state.token) {
+  //       handleAllowNotification();
+  //     } else if (location.state.menu) {
+  //       setCurMenu(location.state.menu);
+  //     }
+  //   }
+  // }, []);
   useEffect(() => {
     if (location.state) {
       if (location.state.token) {
         handleAllowNotification();
-      } else if (location.state.menu) {
+      } else if (location.state.menu !== undefined) {
         setCurMenu(location.state.menu);
       }
     }
-  }, []);
+  }, [location.state]);  // 의존성 배열에 location.state 추가
+  
 
   return (
     <>
