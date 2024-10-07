@@ -38,7 +38,7 @@ export const sendEmail = (email: string) => {
 
 export const verifyCode = (email: string, authToken: string) => {
   return api({
-    url: 'api/auth/member/check-email',
+    url: '/api/auth/member/check-email',
     method: 'post',
     data: {
       email: email,

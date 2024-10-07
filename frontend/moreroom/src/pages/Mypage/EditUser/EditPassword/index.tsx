@@ -7,7 +7,6 @@ import { Transition } from '../../../../components/common/Transition';
 import { EmailVerification } from './EmailVerification';
 import { Password } from './Password';
 
-
 export const EditPassword = () => {
   const nav = useNavigate();
   const [step, setStep] = useState<number>(0);
@@ -17,7 +16,7 @@ export const EditPassword = () => {
         <TopBar.Title
           type="default"
           title="비밀번호 변경"
-          backHandler={() => nav(-1)}
+          backHandler={() => nav('/', { state: { menu: 4 } })}
         />
       </TopBar>
       <Progress

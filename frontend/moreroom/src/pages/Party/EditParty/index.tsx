@@ -106,7 +106,7 @@ export const EditParty = () => {
         selectedMyHashtagIdList,
         selectedYourHashtagIdList,
       );
-      nav('/party'); // 수정 후 이동할 경로
+      nav('/', { state: { menu: 0 } }); // 수정 후 이동할 경로
     } catch (error) {
       console.error('파티 수정 중 오류 발생:', error);
       // 추가적인 에러 처리 로직을 여기에 작성할 수 있습니다.
@@ -119,7 +119,7 @@ export const EditParty = () => {
         <TopBar.Title
           type="default"
           title="파티 요청 등록"
-          backHandler={() => nav(-1)}
+          backHandler={() => nav('/', { state: { menu: 0 } })}
         />
       </TopBar>
 

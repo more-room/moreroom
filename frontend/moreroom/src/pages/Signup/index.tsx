@@ -18,7 +18,7 @@ export const Signup = () => {
         <TopBar.Title
           type="default"
           title="회원가입"
-          backHandler={() => nav(-1)}
+          backHandler={() => nav('/auth/login')}
         />
       </TopBar>
       <Progress
@@ -33,8 +33,16 @@ export const Signup = () => {
         // wrapperCss={{ padding: '20px' }}
       >
         <AccountInfo key={0} onSubmit={() => setStep(1)} />
-        <ProfileInfo key={1} before={() => setStep(0)} onSubmit={() => setStep(2)} />
-        <GenreInfo key={2} before = {()=>setStep(1)} onSubmit={() => setStep(3)} />
+        <ProfileInfo
+          key={1}
+          before={() => setStep(0)}
+          onSubmit={() => setStep(2)}
+        />
+        <GenreInfo
+          key={2}
+          before={() => setStep(1)}
+          onSubmit={() => setStep(3)}
+        />
         <Done key={3} />
       </Transition>
     </div>

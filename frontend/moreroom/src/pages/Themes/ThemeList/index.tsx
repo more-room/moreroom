@@ -34,7 +34,7 @@ export const ThemeList = () => {
   /* 뒤로가기 핸들러 */
   const onBackHandler = () => {
     if (themePageStore.type === 'search') themePageStore.setType('default');
-    else nav('/');
+    else nav('/', { state: { menu: 2 } });
   };
 
   /* 아이콘 핸들러 */

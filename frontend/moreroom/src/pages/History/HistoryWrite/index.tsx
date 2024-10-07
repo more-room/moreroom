@@ -27,9 +27,11 @@ export const HistoryWrite = () => {
         : await editHistory(historyInfo, Number(params.historyId)),
     onSuccess: () => {
       useHistoryWriteStore.persist.clearStorage();
-      nav(
-        params.historyId ? `/history/detail/${params.historyId}` : '/history',
-      );
+      if (params.historyId) {
+        nav(`/history/detail/${params.historyId}`);
+      } else {
+        nav('/', { state: { menu: 3 } });
+      }
     },
     onError: () => alert('오류 발생'),
   });
@@ -76,13 +78,13 @@ export const HistoryWrite = () => {
         <TopBar.Title
           type="withoutRight"
           title="기록 작성"
-          backHandler={() =>
-            nav(
-              params.historyId
-                ? `/history/detail/${params.historyId}`
-                : '/history',
-            )
-          }
+          backHandler={() => {
+            if (params.historyId) {
+              nav(`/history/detail/${params.historyId}`);
+            } else {
+              nav('/', { state: { menu: 3 } });
+            }
+          }}
         />
       </TopBar>
       <HistoryTheme />

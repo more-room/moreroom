@@ -37,7 +37,7 @@ export const HistoryDetailFetch = () => {
   });
   const { mutate } = useMutation({
     mutationFn: async () => await delHistory(historyQuery.data.data.historyId),
-    onSuccess: () => nav('/history'),
+    onSuccess: () => nav('/', { state: { menu: 3 } }),
     onError: () => alert('오류 발생'),
   });
 
@@ -66,7 +66,7 @@ export const HistoryDetailFetch = () => {
         <TopBar.Title
           type="default"
           title={themeQuery.data?.data.theme.title + ' 기록'}
-          backHandler={() => nav('/history')}
+          backHandler={() => nav('/', { state: { menu: 3 } })}
         />
       </TopBar>
       {!imgErr ? (

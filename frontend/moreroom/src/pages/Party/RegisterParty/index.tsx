@@ -118,7 +118,7 @@ export const RegisterParty = () => {
       myHashtagIdList: [],
       yourHashtagIdList: [],
     });
-    nav(-1);
+    nav('/', { state: { menu: 0 } });
   };
 
   return (

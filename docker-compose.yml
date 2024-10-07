@@ -29,6 +29,7 @@ services:
             - REACT_APP_KAKAOMAP_KEY=${REACT_APP_KAKAOMAP_KEY}
             - REACT_APP_CHAT_SOCKET=${REACT_APP_CHAT_SOCKET}
             - REACT_APP_CHAT_DEST=${REACT_APP_CHAT_DEST}
+            - DOCKER_TAG_FASTAPI=${DOCKER_TAG_FASTAPI}
             - TZ=Asia/Seoul
         volumes:
             - /home/ubuntu/data/certbot/conf:/etc/letsencrypt
@@ -73,7 +74,7 @@ services:
             - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
             - FAST_API_URL=${FAST_API_URL}
             - SERVER_DOMAIN=${SERVER_DOMAIN}
-            - ONE_URL=${ONE_URL}
+            - FAST_API_ONE_URL=${FAST_API_ONE_URL}
             - TZ=Asia/Seoul
         expose:
             - ${BACKEND_PORT}
@@ -108,7 +109,7 @@ services:
             - DATABASE=${DATABASE}
             - PORT=${PORT}
         expose:
-            - "5000"
+            - "5000:5000"
         networks:
             - backend-network
         depends_on:
