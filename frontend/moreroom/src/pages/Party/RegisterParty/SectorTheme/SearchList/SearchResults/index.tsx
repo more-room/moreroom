@@ -16,7 +16,11 @@ import { CheckIcon } from '@heroicons/react/24/solid';
 import { Button } from '../../../../../../components/Button';
 import { usePartyStore } from '../../../../../../stores/partyStore';
 
-export const SearchResults = () => {
+interface ISelected {
+  currentPartyRequestId?: number
+}
+
+export const SearchResults = ({currentPartyRequestId}:ISelected) => {
   const loc = useLocation();
   const nav = useNavigate();
   const searchThemeStore = useSearchThemesStore();
@@ -56,8 +60,12 @@ export const SearchResults = () => {
   const handleConfirm = () => {
     if (selectedThemeId) {
       console.log('선택된 테마: ', selectedThemeId);
-
-      nav('/party/register');
+      console.log('현재 번호',currentPartyRequestId)
+      if (currentPartyRequestId) {
+        nav(`/party/edit/${currentPartyRequestId}`)
+      } else {
+        nav('/party/register');
+      }
     } else {
       console.log('선택된 테마가 없습니다.');
     }

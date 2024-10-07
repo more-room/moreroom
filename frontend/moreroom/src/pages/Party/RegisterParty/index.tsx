@@ -6,6 +6,7 @@ import { Typography } from '../../../components/Typography';
 import { containerCss, contentCss, itemCss, themesCss } from './styles';
 import { usePartyStore } from '../../../stores/partyStore';
 import {
+  IHashtag,
   myHashtags,
   partyhastags,
   userHashtags,
@@ -14,17 +15,32 @@ import { FilterChip } from '../../../components/FilterChip';
 import { Button } from '../../../components/Button';
 import { SelectedTheme } from './SectorTheme/SelectedTheme';
 import { addParty } from '../../../apis/partyApi';
+import { Chip } from '../../../components/Chip';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { getMyInfo, getMypage } from '../../../apis/mypageApi';
 
 export const RegisterParty = () => {
-  const [selectedMyHashtagIdList, setSelectedMyHashtagIdList] = useState<number[]>([]);
-  const [selectedYourHashtagIdList, setSelectedYourHashtagIdList] = useState<number[]>([]);
-  const [selectedPartyHashtagIdList, setSelectedPartyHashtagIdList] = useState<number[]>([]);
+  const [selectedMyHashtagIdList, setSelectedMyHashtagIdList] = useState<
+    number[]
+  >([]);
+  const [selectedYourHashtagIdList, setSelectedYourHashtagIdList] = useState<
+    number[]
+  >([]);
+  const [selectedPartyHashtagIdList, setSelectedPartyHashtagIdList] = useState<
+    number[]
+  >([]);
   const partyStore = usePartyStore();
   const nav = useNavigate();
 
+  const profileQuery = useQuery({
+    queryKey: ['profile'],
+    queryFn: async () => await getMypage(),
+  });
+
+  console.log(profileQuery.data)
   // 테마 정보 가져오기
   useEffect(() => {
-    console.log("Current partyStore state:", partyStore);
+    console.log('Current partyStore state:', partyStore);
   }, [partyStore]);
 
   // 선택된 해시태그들을 스토어에 저장
@@ -34,7 +50,11 @@ export const RegisterParty = () => {
       yourHashtagIdList: selectedYourHashtagIdList,
       partyHashtagIdList: selectedPartyHashtagIdList,
     });
-  }, [selectedMyHashtagIdList, selectedYourHashtagIdList, selectedPartyHashtagIdList]);
+  }, [
+    selectedMyHashtagIdList,
+    selectedYourHashtagIdList,
+    selectedPartyHashtagIdList,
+  ]);
 
   const addNewParty = async () => {
     if (!partyStore.themeId) {
@@ -54,14 +74,14 @@ export const RegisterParty = () => {
 
       partyStore.setPartyData({
         themeId: undefined,
-        poster: undefined, 
+        poster: undefined,
         themeTitle: undefined,
-        brandName: undefined, 
+        brandName: undefined,
         branchName: undefined,
       });
 
       console.log(res);
-      
+
       nav('/party');
     } catch (err) {
       console.log(err);
@@ -90,16 +110,16 @@ export const RegisterParty = () => {
   const backHandler = () => {
     partyStore.setPartyData({
       themeId: undefined,
-      poster: undefined, 
+      poster: undefined,
       themeTitle: undefined,
-      brandName: undefined, 
+      brandName: undefined,
       branchName: undefined,
-      partyHashtagIdList: [], 
-      myHashtagIdList: [], 
-      yourHashtagIdList: []
+      partyHashtagIdList: [],
+      myHashtagIdList: [],
+      yourHashtagIdList: [],
     });
     nav(-1);
-  }
+  };
 
   return (
     <div css={containerCss}>
@@ -128,6 +148,18 @@ export const RegisterParty = () => {
 
       <div css={contentCss}>
         <Typography color="light" size={1} weight={500}>
+          현재 본인 성향 해시태그입니다.
+        </Typography>
+        <div css={itemCss}>
+          {profileQuery.data?.data.hashtagList.map((tag:IHashtag) => (
+            <Chip
+              key={tag.hashtagId}
+            >
+              {tag.hashtagName}
+            </Chip>
+          ))}
+        </div>
+        <Typography color="light" size={1} weight={500}>
           희망하는 파티의 성향을 선택해주세요!
         </Typography>
         <div css={itemCss}>
@@ -136,20 +168,6 @@ export const RegisterParty = () => {
               key={tag.id}
               selected={selectedPartyHashtagIdList.includes(tag.id)}
               onHandleClick={() => handlePartyHashtagClick(tag.id)}
-            >
-              {tag.label}
-            </FilterChip>
-          ))}
-        </div>
-        <Typography color="light" size={1} weight={500}>
-          본인의 성향을 선택해주세요!
-        </Typography>
-        <div css={itemCss}>
-          {myHashtags.map((tag) => (
-            <FilterChip
-              key={tag.id}
-              selected={selectedMyHashtagIdList.includes(tag.id)}
-              onHandleClick={() => handleMyHashtagClick(tag.id)}
             >
               {tag.label}
             </FilterChip>
@@ -168,17 +186,16 @@ export const RegisterParty = () => {
               {tag.label}
             </FilterChip>
           ))}
-        <Button
-          color="primary"
-          fullwidth
-          rounded={0.5}
-          variant="contained"
-          handler={addNewParty}
-        >
-          파티 요청 등록하기
-        </Button>
+          <Button
+            color="primary"
+            fullwidth
+            rounded={0.5}
+            variant="contained"
+            handler={addNewParty}
+          >
+            파티 요청 등록하기
+          </Button>
         </div>
-
       </div>
     </div>
   );
