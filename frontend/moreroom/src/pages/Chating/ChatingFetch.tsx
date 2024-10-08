@@ -37,9 +37,10 @@ import {
 } from '@heroicons/react/24/solid';
 import { Chip } from '../../components/Chip';
 import { Typography } from '../../components/Typography';
+import NoResult from '../../components/common/NoResult';
 
 export const ChatingFetch = () => {
-  const [selectedFilter, setSelectedFilter] = useState('속한 파티');  // '속한 파티'와 '일반 파티' 간의 필터를 결정하는 상태
+  const [selectedFilter, setSelectedFilter] = useState('속한 파티'); // '속한 파티'와 '일반 파티' 간의 필터를 결정하는 상태
   const navigate = useNavigate();
   // const client = useRef<StompJs.Client | null>(null);  // WebSocket client
   const [roomId, setRoomId] = useState<number | null>(null); // 현재 채팅방 ID
@@ -72,10 +73,9 @@ export const ChatingFetch = () => {
 
   console.log('파티 리스트', partyListQuery.data.data.partyList);
   console.log('파티 리스트2', partyListQuery.data.data);
-  
+
   console.log('내가 속한 파티', myPartyListQuery.data.data.partyList);
 
-  
   const handlePartyClick = (partyId: number) => {
     console.log(`선택된 파티 ID: ${partyId}`);
     setRoomId(partyId); // 선택된 파티 ID 설정
@@ -87,9 +87,8 @@ export const ChatingFetch = () => {
   };
 
   // 선택된 필터에 따른 파티 목록
-  const partiesToDisplay: IParty[] = selectedFilter === '속한 파티'
-    ? mypartyList || []
-    : partyList || []; 
+  const partiesToDisplay: IParty[] =
+    selectedFilter === '속한 파티' ? mypartyList || [] : partyList || [];
 
   // const nav = useNavigate();
 
@@ -102,15 +101,25 @@ export const ChatingFetch = () => {
             css={filterButton(selectedFilter === '속한 파티')}
             onClick={() => handleFilterChange('속한 파티')}
           >
-            <UserGroupIcon css={iconcolors} style={{ width: '1rem', marginRight: '0.25rem' }} />
-            <Typography color="light" weight={600} size={0.9}>속한 파티</Typography>
+            <UserGroupIcon
+              css={iconcolors}
+              style={{ width: '1rem', marginRight: '0.25rem' }}
+            />
+            <Typography color="light" weight={600} size={0.9}>
+              속한 파티
+            </Typography>
           </button>
           <button
             css={filterButton(selectedFilter === '일반 파티')}
             onClick={() => handleFilterChange('일반 파티')}
           >
-            <EllipsisHorizontalCircleIcon css={iconcolors2} style={{ width: '1rem', marginRight: '0.25rem' }} />
-            <Typography color="light" weight={600} size={0.9}>일반 파티</Typography>
+            <EllipsisHorizontalCircleIcon
+              css={iconcolors2}
+              style={{ width: '1rem', marginRight: '0.25rem' }}
+            />
+            <Typography color="light" weight={600} size={0.9}>
+              일반 파티
+            </Typography>
           </button>
         </div>
 
@@ -118,37 +127,66 @@ export const ChatingFetch = () => {
         <div css={cardcontainer}>
           {partiesToDisplay.length > 0 ? (
             partiesToDisplay.map((party: IParty, idx: number) => (
-              <div key={idx} css={themeCard} onClick={() => handlePartyClick(party.partyId)}>
+              <div
+                key={idx}
+                css={themeCard}
+                onClick={() => handlePartyClick(party.partyId)}
+              >
                 {/* 파티 이미지 및 정보 렌더링 */}
-                <img src={party.theme.poster} alt="포스터 이미지" css={posterImage} />
+                <img
+                  src={party.theme.poster}
+                  alt="포스터 이미지"
+                  css={posterImage}
+                />
                 <div css={cardContent}>
                   <h2 css={roomname}>{party.roomName}</h2>
                   <h3 css={themeTitle}>{party.theme.title}</h3>
                   <div css={themeDetails}>
                     <p>
-                      <MapPinIcon css={iconcolors} style={{ width: '1rem', marginRight: '0.25rem' }} />
+                      <MapPinIcon
+                        css={iconcolors}
+                        style={{ width: '1rem', marginRight: '0.25rem' }}
+                      />
                       {party.theme.cafe.brandName}-{party.theme.cafe.branchName}
                     </p>
                     <p>
-                      <ClockIcon css={iconcolors} style={{ width: '1rem', marginRight: '0.25rem' }} />
+                      <ClockIcon
+                        css={iconcolors}
+                        style={{ width: '1rem', marginRight: '0.25rem' }}
+                      />
                       {party.date}
                     </p>
                     <p>
-                      <UserGroupIcon css={iconcolors} style={{ width: '1rem', marginRight: '0.25rem' }} />
+                      <UserGroupIcon
+                        css={iconcolors}
+                        style={{ width: '1rem', marginRight: '0.25rem' }}
+                      />
                       {party.memberCount}/{party.maxMember} 명 참여
                     </p>
                     <div>
                       {party.hashtags.map((tag) => (
-                        <Chip css={chipstyle} border={0.6} fontSize={0.7} key={tag.hashtagId}>{tag.hashtagName}</Chip>
+                        <Chip
+                          css={chipstyle}
+                          border={0.6}
+                          fontSize={0.7}
+                          key={tag.hashtagId}
+                        >
+                          {tag.hashtagName}
+                        </Chip>
                       ))}
                     </div>
-
                   </div>
                 </div>
               </div>
             ))
           ) : (
-            <div>파티 목록이 없습니다.</div>
+            <div style={{height:'60vh'}}>
+              <NoResult
+                msg="현재 존재하는 채팅방이 없습니다."
+                url={['/', {state: {menu:0}}]}
+                btnmsg="파티 등록하러 가기"
+              />
+            </div>
           )}
         </div>
       </div>
