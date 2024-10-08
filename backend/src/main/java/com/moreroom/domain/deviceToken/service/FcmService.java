@@ -18,6 +18,8 @@ import com.moreroom.global.util.RedisUtil;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
@@ -28,6 +30,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -218,6 +221,18 @@ public class FcmService {
     } catch (Exception e) {
       log.error("푸시 알림 로직 실패");
     }
+  }
+
+  //채팅 푸시알림 전송 - 비동기 도입
+  @Async
+  public CompletableFuture<Void> sendChattingMessagePushAlarmAsync(String email, Long partyId, String senderNickname, String message) {
+    return CompletableFuture.runAsync(() -> {
+      try {
+        sendChattingMessagePushAlarm(email, partyId, senderNickname, message);
+      } catch (Exception e) {
+        log.error("비동기 푸시 알림 전송 실패", e);
+      }
+    });
   }
 
 }
