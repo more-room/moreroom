@@ -2,14 +2,19 @@ package com.moreroom.domain.party.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.moreroom.domain.member.entity.Member;
-import com.moreroom.domain.party.dto.*;
+import com.moreroom.domain.party.dto.ChatroomListDto;
+import com.moreroom.domain.party.dto.ChatroomSettingDto;
+import com.moreroom.domain.party.dto.NoticeDto;
+import com.moreroom.domain.party.dto.PartyIdListDto;
+import com.moreroom.domain.party.dto.PartyMemberDto;
+import com.moreroom.domain.party.dto.PartyMessageLogsDto;
+import com.moreroom.domain.party.dto.PartyRequestAcceptDto;
 import com.moreroom.domain.party.service.MessageService;
 import com.moreroom.domain.party.service.PartyService;
 import com.moreroom.domain.partyRequest.entity.MatchingStatus;
 import com.moreroom.domain.partyRequest.service.PartyMatchingService;
 import com.moreroom.global.util.FindMemberService;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -35,7 +40,7 @@ public class PartyController {
   private final MessageService messageService;
 
   //파티 참가 수락/거절
-  @PostMapping("")
+  @PostMapping()
   public ResponseEntity<?> acceptPartyRequest(@RequestBody PartyRequestAcceptDto dto) throws JsonProcessingException {
     Long memberId = findMemberService.findCurrentMember();
     //파티 참가 상태 업데이트
@@ -89,7 +94,7 @@ public class PartyController {
   }
 
   //전체 채팅방 리스트 조회 (내가 속한X, 비공개X)
-  @GetMapping("")
+  @GetMapping()
   public ResponseEntity<?> getAllChatroomList(@RequestParam(required = false) Long lastPartyId, @RequestParam(defaultValue = "5") int pageSize) {
     Member member = findMemberService.findCurrentMemberObject();
     ChatroomListDto allPartyList = partyService.getAllPartyList(member, lastPartyId, pageSize);
