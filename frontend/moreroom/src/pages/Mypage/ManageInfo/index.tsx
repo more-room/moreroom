@@ -22,6 +22,7 @@ export const ManageInfo = ({
   onApi,
 }: ManageInfoProps) => {
   const nav = useNavigate();
+
   const handlerClick = () => {
     if (url) {
       if (statedata) {
@@ -30,10 +31,8 @@ export const ManageInfo = ({
         nav(url!);
       }
     } else {
-      onApi
+      onApi!();
     }
-    
-    
   };
   return (
     <div css={containerCss}>
