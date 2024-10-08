@@ -21,12 +21,16 @@ export const MainPartyFetch = () => {
 
   return (
     <div className="slider-container">
-      <Slider speed={500} slidesToShow={1} slidesToScroll={1} arrows={false}>
-        {partyQuery.data.data.partyList?.map((party: IParty) => (
-          <PartyListCard party={party} />
-        ))}
+      {partyQuery.data.data.partyList?.length ? (
+        <Slider speed={500} slidesToShow={1} slidesToScroll={1} arrows={false}>
+          {partyQuery.data.data.partyList?.map((party: IParty) => (
+            <PartyListCard party={party} />
+          ))}
+          <Empty />
+        </Slider>
+      ) : (
         <Empty />
-      </Slider>
+      )}
     </div>
   );
 };
