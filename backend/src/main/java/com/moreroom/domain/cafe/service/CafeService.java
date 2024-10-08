@@ -25,15 +25,10 @@ public class CafeService {
 
     public CafeListResponseDto findCafes(CafeListRequestDto c) {
 //        System.out.println("\"%\" + c.getCafeName() + \"%\" = " + "%" + c.getCafeName() + "%");
-        System.out.println("c.getRegion() = " + c.getRegion());
-        long beforeTime = System.currentTimeMillis();
         List<Tuple> tuples = cafeRepository.findCafes(
             c.getCafeName() == null ? null : ("%" + c.getCafeName() + "%"), c.getBrandId(),
             c.getRegion());
         List<CafeListComponentDto> cafeList = new ArrayList<>();
-        long afterTime = System.currentTimeMillis(); // 코드 실행 후에 시간 받아오기
-        double secDiffTime = (double) (afterTime - beforeTime) / 1000; //두 시간에 차 계산
-        System.out.println("시간차이(m) : " + secDiffTime);
         for (Tuple tuple : tuples) {
             CafeListComponentDto dto = CafeListComponentDto.builder()
                 .cafeId(tuple.get(0, Integer.class))
@@ -50,9 +45,6 @@ public class CafeService {
 
             cafeList.add(dto);
         }
-        long afterTime2 = System.currentTimeMillis(); // 코드 실행 후에 시간 받아오기
-        double secDiffTime2 = (double) (afterTime2 - afterTime) / 1000; //두 시간에 차 계산
-        System.out.println("시간차이2(m) : " + secDiffTime2);
         return CafeListResponseDto.builder().cafeList(cafeList).build();
     }
 
