@@ -11,6 +11,9 @@ import { TopBar } from '../../../../components/TopBar';
 import { SearchTitle } from './SearchTitle';
 import { SearchList } from './SearchList';
 import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
+import { useEffect } from 'react';
 
 export type TThemePage = 'default' | 'search';
 
@@ -19,6 +22,11 @@ export const SectorTheme = () => {
   const searchTitleStore = useSearchTitleStore();
   const searchThemesStore = useSearchThemesStore();
   const nav = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    console.log('현재 파티 번호(SectorTheme)',location.state);
+  }, [location]);
 
   /* 테마 제목 검색 핸들러 */
   const onSearchHandler = async (value: string) => {
@@ -33,7 +41,7 @@ export const SectorTheme = () => {
   /* 뒤로가기 핸들러 */
   const onBackHandler = () => {
     if (themePageStore.type === 'search') themePageStore.setType('default');
-    nav('/', { state: { menu: 0 } });
+    nav('/party/register');
   };
 
   /* 아이콘 핸들러 */
@@ -58,7 +66,7 @@ export const SectorTheme = () => {
         <TopBar.Right icon={<MagnifyingGlassIcon />} handler={onTitleHandler} />
       </TopBar>
       {themePageStore.type === 'search' && <SearchTitle />}
-      {themePageStore.type === 'default' && <SearchList />}
+      {themePageStore.type === 'default' && <SearchList currentPartyRequestId={location.state}/>}
     </div>
   );
 };
