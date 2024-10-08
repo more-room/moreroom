@@ -209,11 +209,13 @@ public class FcmService {
   //푸시알림 전송 : 발신자를 제외한 파티원에게 전송
   public void sendChattingMessagePushAlarm(String email, Long partyId, String senderNickname, String message) {
     try {
+      log.info("채팅 알림 전송 로직 진입: {}이 보낸 채팅 알림 전송", email);
       List<String> emailList = memberPartyMappingRepository.getEmailListForChattingAlarm(partyId, email);
       for (String emailAddress : emailList) {
         try {
           FcmMessageDto fcmMessageDto = makeChattingPush(senderNickname, message, emailAddress, partyId);
           sendMessageTo(fcmMessageDto);
+          log.info("{}에게 푸시 알림 보냄", emailAddress);
         } catch (Exception e) {
           log.error("푸시 알람 전송 실패: to {}", emailAddress);
         }
@@ -228,6 +230,7 @@ public class FcmService {
   public CompletableFuture<Void> sendChattingMessagePushAlarmAsync(String email, Long partyId, String senderNickname, String message) {
     return CompletableFuture.runAsync(() -> {
       try {
+        log.info("비동기 푸시 알림 전송 시작");
         sendChattingMessagePushAlarm(email, partyId, senderNickname, message);
       } catch (Exception e) {
         log.error("비동기 푸시 알림 전송 실패", e);
