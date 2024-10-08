@@ -48,7 +48,6 @@ export const Main = () => {
       }
     }
   }, [location.state]);
-  
 
   return (
     <>
@@ -64,7 +63,7 @@ export const Main = () => {
             </Icon>
           </div>
         </TopBar>
-        <ErrorBoundary fallbackRender={Error}>
+        <ErrorBoundary fallbackRender={(props) => <Error {...props} />}>
           <Suspense fallback={<Loading height="50vh" />}>
             {curMenu === 0 && <Party />}
             {curMenu === 1 && <Chating />}

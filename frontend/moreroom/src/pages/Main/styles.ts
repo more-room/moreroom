@@ -16,5 +16,6 @@ export const recommendlist = css`
   display: flex;
   flex-direction: column;
   row-gap: 2rem;
+  margin-top: 2rem;
   padding-bottom: 5rem;
 `;
