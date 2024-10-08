@@ -114,7 +114,7 @@ export interface IThemeItem {
   title: string;
   playtime: number;
   genreList: string[];
-  review: IThemeReview
+  review: IThemeReview;
   regionId: string;
   cafe: ICafeThemeList;
 }
@@ -123,6 +123,17 @@ export interface IFixTheme {
   themeId: number;
   poster: string;
   title: string;
-  cafe: ICafeFix
-  
+  cafe: ICafeFix;
+}
+
+export interface IThemePositionRecommendList extends IThemeRecommendList {
+  region: {
+    regionName: string;
+    regionParentName?: string;
+  };
+}
+
+export interface IThemeGenreRecommendList {
+  mostGenreList: IThemeListItem[];
+  leastGenreList: IThemeListItem[];
 }

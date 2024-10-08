@@ -1,26 +1,36 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
-import { css } from '@emotion/react';
-import { Colors } from '../../styles/globalStyle';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+import { getMyPartyList } from '../../apis/chatApi';
+import { PartyListCard } from './PartyListCard';
+import { IParty } from '../../types/chatingTypes';
+import { Empty } from './PartyListCard/Empty';
 
 export const MainPartyFetch = () => {
+  const partyQuery = useSuspenseQuery({
+    queryKey: ['partylist'],
+    queryFn: async () => await getMyPartyList(),
+  });
+
+  if (partyQuery.error && !partyQuery.isFetching) {
+    throw partyQuery.error;
+  }
+
   return (
-    <div
-      css={css`
-        width: 100%;
-        min-height: 10rem;
-        box-sizing: border-box;
-        padding: 0 1rem;
-        margin: 2rem 0;
-      `}
-    >
-      <div
-        css={css`
-          width: 100%;
-          height: 100%;
-          background-color: ${Colors['grey']['700']};
-        `}
-      />
+    <div className="slider-container">
+      {partyQuery.data.data.partyList?.length ? (
+        <Slider speed={500} slidesToShow={1} slidesToScroll={1} arrows={false}>
+          {partyQuery.data.data.partyList?.map((party: IParty) => (
+            <PartyListCard party={party} />
+          ))}
+          <Empty />
+        </Slider>
+      ) : (
+        <Empty />
+      )}
     </div>
   );
 };

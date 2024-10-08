@@ -2,14 +2,14 @@
 import React from 'react';
 import { container, themelist } from './styles';
 import { Typography } from '../../../components/Typography';
-import { IThemeListItem, IThemeRecommendList } from '../../../types/themeTypes';
+import { IThemeListItem } from '../../../types/themeTypes';
 import { ThemeSimpleInfo } from '../../../components/ThemeSimpleInfo';
 import { StarPoint } from '../../../components/StarPoint';
 import { useNavigate } from 'react-router-dom';
 
 export interface ThemeListProps {
   title: string;
-  themes: IThemeRecommendList;
+  themes: IThemeListItem[];
 }
 
 export const ThemeList = ({ title, themes }: ThemeListProps) => {
@@ -21,7 +21,7 @@ export const ThemeList = ({ title, themes }: ThemeListProps) => {
         {title}
       </Typography>
       <div css={themelist}>
-        {themes.themeList.map((theme: IThemeListItem) => {
+        {themes.map((theme: IThemeListItem) => {
           return (
             <div
               key={theme.themeId}
