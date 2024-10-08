@@ -8,7 +8,6 @@ export const container = css`
   padding-left: 1rem;  /* 왼쪽에 여백 추가 */
   padding-right: 1rem; /* 오른쪽에 여백 추가 */
   background-color: #313131; /* 배경 색 설정 */
-  min-height: 100vh; /* 화면을 채우도록 설정 */
 `;
 
 export const cardcontainer = css`
