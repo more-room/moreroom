@@ -9,13 +9,32 @@ interface ManageInfoProps {
   children?: React.ReactNode;
   chips?: React.ReactNode;
   url?: string;
-  onApi?: () => void
-  statedata?: any; // 공식적으로 state는 any라 이걸로 함
+  onApi?: () => void;
+  statedata?: object;
 }
 
-export const ManageInfo = ({ icon, children, chips, url, statedata, onApi }: ManageInfoProps) => {
+export const ManageInfo = ({
+  icon,
+  children,
+  chips,
+  url,
+  statedata,
+  onApi,
+}: ManageInfoProps) => {
   const nav = useNavigate();
-
+  const handlerClick = () => {
+    if (url) {
+      if (statedata) {
+        nav(url!, { state: statedata });
+      } else {
+        nav(url!);
+      }
+    } else {
+      onApi
+    }
+    
+    
+  };
   return (
     <div css={containerCss}>
       <div>{icon}</div>
@@ -26,7 +45,7 @@ export const ManageInfo = ({ icon, children, chips, url, statedata, onApi }: Man
             scale="400"
             size={1}
             weight={500}
-            onClick={url ? () => nav(url, { state : {statedata} }) : onApi}
+            onClick={handlerClick}
           >
             {children}
           </Typography>

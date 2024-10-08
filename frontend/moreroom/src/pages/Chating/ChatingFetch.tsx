@@ -183,7 +183,9 @@ export const ChatingFetch = () => {
             <div style={{height:'60vh'}}>
               <NoResult
                 msg="현재 존재하는 채팅방이 없습니다."
-                url={['/', {state: {menu:0}}]}
+                url='/'
+                contents={{menu: 0}}
+                //url={['/', {state: {menu:0}}]}
                 btnmsg="파티 등록하러 가기"
               />
             </div>

@@ -10,17 +10,18 @@ import { useNavigate } from 'react-router-dom';
 interface NoResultProps {
   fit?: boolean;
   msg: string;
-  url?: any;
+  url?: string;
+  contents?: object;
   btnmsg?: string;
 }
 
-const NoResult = ({ fit = true, msg, url, btnmsg }: NoResultProps) => {
+const NoResult = ({ fit = true, msg, url, contents, btnmsg }: NoResultProps) => {
   const nav = useNavigate();
   const handleButtonClick = () => {
-    if (typeof url === 'string') {
-      nav(url); 
-    } else if (typeof url === 'object') {
-      nav(url[0], url[1]); 
+    if(contents) {
+      nav(url!, {state: contents});
+    } else {
+      nav(url!);
     }
   };
   return (
