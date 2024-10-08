@@ -115,8 +115,6 @@ public class RecommendationService {
         // 2. 인기/비인기 장르 조회 (mongoDB)
         GenresTheme genresThemeMost = null;
         GenresTheme genresThemeLeast = null;
-        System.out.println("genreList = " + genreList);
-        System.out.println("genreList.get(0) = " + genreList.get(0));
         if (genreList.size() >= 2) {
             System.out.println("genreList.size() = " + genreList.size());
             System.out.println(

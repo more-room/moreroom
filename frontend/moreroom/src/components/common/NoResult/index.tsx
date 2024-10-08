@@ -10,12 +10,20 @@ import { useNavigate } from 'react-router-dom';
 interface NoResultProps {
   fit?: boolean;
   msg: string;
-  url: string;
-  btnmsg: string;
+  url?: string;
+  contents?: object;
+  btnmsg?: string;
 }
 
-const NoResult = ({ fit = true, msg, url, btnmsg }: NoResultProps) => {
+const NoResult = ({ fit = true, msg, url, contents, btnmsg }: NoResultProps) => {
   const nav = useNavigate();
+  const handleButtonClick = () => {
+    if(contents) {
+      nav(url!, {state: contents});
+    } else {
+      nav(url!);
+    }
+  };
   return (
     <div css={[containerCss, fit && fitCss]}>
       <Icon size={5} color="grey">
@@ -24,14 +32,14 @@ const NoResult = ({ fit = true, msg, url, btnmsg }: NoResultProps) => {
       <Typography size={1} color="grey" css={textCss}>
         {msg}
       </Typography>
-      <Button
+      {url ? <Button
         color="primary"
-        handler={() => nav(url)}
+        handler={handleButtonClick}
         rounded={0.5}
         variant="contained"
       >
         {btnmsg}
-      </Button>
+      </Button> : undefined }
     </div>
   );
 };

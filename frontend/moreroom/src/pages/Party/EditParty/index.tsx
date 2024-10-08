@@ -17,6 +17,8 @@ import { containerCss } from '../styles';
 import { contentCss, itemCss, themesCss } from '../RegisterParty/styles';
 import { useQuery } from '@tanstack/react-query';
 import { SelectedTheme } from '../RegisterParty/SectorTheme/SelectedTheme';
+import { Chip } from '../../../components/Chip';
+import { getMypage } from '../../../apis/mypageApi';
 
 export const EditParty = () => {
   // URL에서 partyRequestId를 가져옴
@@ -47,6 +49,7 @@ export const EditParty = () => {
     },
   });
 
+  console.log(PartyQuery.data)
   if (PartyQuery.error && !PartyQuery.isFetching) {
     throw PartyQuery.error;
   }
@@ -74,6 +77,7 @@ export const EditParty = () => {
         (hashtag: IHashtag) => hashtag.hashtagId,
       );
       setSelectedYourHashtagIdList(yourHashtagsIds);
+      console.log('d',selectedYourHashtagIdList)
     }
   }, [PartyQuery.data]);
 
@@ -84,11 +88,6 @@ export const EditParty = () => {
     );
   };
 
-  const handleMyHashtagClick = (id: number) => {
-    setSelectedMyHashtagIdList((prev) =>
-      prev.includes(id) ? prev.filter((tag) => tag !== id) : [...prev, id],
-    );
-  };
 
   const handleYourHashtagClick = (id: number) => {
     setSelectedYourHashtagIdList((prev) =>
@@ -113,7 +112,7 @@ export const EditParty = () => {
       // 추가적인 에러 처리 로직을 여기에 작성할 수 있습니다.
     }
   };
-
+  console.log('currentPartyRequestId:', currentPartyRequestId);
   return (
     <div css={containerCss}>
       <TopBar>
@@ -130,6 +129,7 @@ export const EditParty = () => {
           themeTitle={PartyQuery.data?.data.theme.title}
           brandName={PartyQuery.data?.data.theme.brandName}
           branchName={PartyQuery.data?.data.theme.branchName}
+          currentPartyRequestId={currentPartyRequestId}
         />
       ) : (
         <div css={themesCss} onClick={() => nav('/party/addtheme')}>
@@ -141,6 +141,18 @@ export const EditParty = () => {
 
       <div css={contentCss}>
         <Typography color="light" size={1} weight={500}>
+          현재 본인 성향 해시태그입니다.
+        </Typography>
+        <div css={itemCss}>
+          {PartyQuery.data?.data.myHashtagList.map((tag:IHashtag) => (
+            <Chip
+              key={tag.hashtagId}
+            >
+              {tag.hashtagName}
+            </Chip>
+          ))}
+        </div>
+        <Typography color="light" size={1} weight={500}>
           희망하는 파티의 성향을 선택해주세요!
         </Typography>
         <div css={itemCss}>
@@ -149,20 +161,6 @@ export const EditParty = () => {
               key={tag.id}
               selected={selectedPartyHashtagIdList.includes(tag.id)}
               onHandleClick={() => handlePartyHashtagClick(tag.id)}
-            >
-              {tag.label}
-            </FilterChip>
-          ))}
-        </div>
-        <Typography color="light" size={1} weight={500}>
-          본인의 성향을 선택해주세요!
-        </Typography>
-        <div css={itemCss}>
-          {myHashtags.map((tag) => (
-            <FilterChip
-              key={tag.id}
-              selected={selectedMyHashtagIdList.includes(tag.id)}
-              onHandleClick={() => handleMyHashtagClick(tag.id)}
             >
               {tag.label}
             </FilterChip>

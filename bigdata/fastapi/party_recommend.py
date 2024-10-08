@@ -250,6 +250,10 @@ async def process_party_matching_batch(party_requests, theme_matched_users):
 # 비동기 처리 함수 실행
 async def run_batch_matching():
     theme_matched_users = {}
+    cached_party_request_df = None
+    cached_request_hashtag_df = None
+    cached_member_hashtag_df = None
+    
     load_data()  # 최초 1회 데이터 로드 및 캐싱
 
     # 배치로 파티 요청 가져오기

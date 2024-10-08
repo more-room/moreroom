@@ -23,7 +23,8 @@ export const validatePassword = (password:string) => {
 
 // 닉네임 유효성 검사
 export const validateNickname = (nickname:string) => {
-  const nicknameRegex = /^[a-zA-Z가-힣0-9]{2,7}$/;
+  // const nicknameRegex = /^[a-zA-Z가-힣0-9]{2,7}$/;
+  const nicknameRegex = /^[a-zA-Z가-힣ㄱ-ㅎㅏ-ㅣ0-9\s]{2,7}$/;
 
   if (!nickname) {
     return '닉네임을 입력해주세요.';

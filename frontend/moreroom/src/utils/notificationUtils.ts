@@ -1,6 +1,7 @@
 import { getToken, onMessage } from 'firebase/messaging';
 import { messaging } from '../settingFCM';
 import { postDeviceToken } from '../apis/notificationApi';
+import { useMatchedStore } from '../stores/partyStore';
 
 // service worker 등록
 export const registerServiceWorker = () => {
@@ -56,6 +57,15 @@ onMessage(messaging, (payload) => {
   const notificationOptions: NotificationOptions | undefined = {
     body: payload.notification?.body,
   };
+  console.log(payload.data);
+  const partyData = {
+    type: payload.data?.type,
+    uuid: payload.data?.uuid,
+    themeId: Number(payload.data?.themeId),
+    partyRequestId: payload.data?.partyRequestId,
+  };
+
+  useMatchedStore.getState().setPartyData(partyData);
 
   if (Notification.permission === 'granted') {
     new Notification(notificationTitle!, notificationOptions);
