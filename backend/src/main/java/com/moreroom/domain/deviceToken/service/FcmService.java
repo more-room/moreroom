@@ -33,6 +33,9 @@ import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
@@ -40,8 +43,8 @@ import org.springframework.web.client.RestTemplate;
 public class FcmService {
 
   private final DeviceTokenRepository deviceTokenRepository;
-  private final RedisUtil redisUtil;
   private final MemberPartyMappingRepository memberPartyMappingRepository;
+  private final WebClient webClient;
 
   public int sendMessageTo(FcmMessageDto fcmMessageDto) {
     try {
@@ -59,7 +62,7 @@ public class FcmService {
 
       String API_URL = "https://fcm.googleapis.com/v1/projects/d206-moreroom/messages:send";
       ResponseEntity<String> response = restTemplate.exchange(API_URL, HttpMethod.POST, entity, String.class);
-
+      log.info("fcm response: {}", response);
 //      log.info("알림보내기: {}", response.getStatusCode());
 
       return response.getStatusCode() == HttpStatus.OK ? 1 : 0;
@@ -70,6 +73,29 @@ public class FcmService {
     }
       return 0;
   }
+
+  public Mono<String> sendMessageToAsync(FcmMessageDto fcmMessageDto) {
+    return Mono.fromCallable(() -> makeMessage(fcmMessageDto))
+            .zipWith(Mono.fromCallable(this::getAccessToken))
+            .flatMap(tuple -> {
+              String message = tuple.getT1();
+              String token = tuple.getT2();
+
+              return webClient.post()
+                      .header("Authorization", "Bearer " + token)
+                      .contentType(MediaType.APPLICATION_JSON)
+                      .bodyValue(message)
+                      .retrieve()
+                      .bodyToMono(String.class)
+                      .doOnSuccess(response -> log.info("Async 알림보내기 성공: {}", response))
+                      .doOnError(error -> log.error("Async 알림보내기 실패", error));
+            })
+            .onErrorResume(e -> {
+              log.error("메시지 전송 준비 중 오류 발생", e);
+              return Mono.error(e);
+            });
+  }
+
 
   /**
    * Firebase Admin SDK의 비공개키를 참조하여 Bearer 토큰 발급
@@ -217,12 +243,24 @@ public class FcmService {
   @Async
   public CompletableFuture<Void> sendChattingMessagePushAlarmAsync(String email, Long partyId, String senderNickname, String message) {
     return CompletableFuture.runAsync(() -> {
-      try {
-        log.info("비동기 푸시 알림 전송 시작");
-        sendChattingMessagePushAlarm(email, partyId, senderNickname, message);
-      } catch (Exception e) {
-        log.error("비동기 푸시 알림 전송 실패", e);
-      }
+      log.info("비동기 푸시 알림 전송 시작: email={}, partyId={}, sender={}", email, partyId, senderNickname);
+      List<String> emailList = memberPartyMappingRepository.getEmailListForChattingAlarm(partyId, email);
+      log.info("알림 대상 이메일 목록: {}", emailList);
+
+      Flux.fromIterable(emailList)
+              .flatMap(emailAddress -> {
+                log.info("{}에게 푸시 알림 생성 중", emailAddress);
+                FcmMessageDto fcmMessageDto = makeChattingPush(senderNickname, message, emailAddress, partyId);
+                log.info("생성된 FCM 메시지: {}", fcmMessageDto);
+                return sendMessageToAsync(fcmMessageDto)
+                        .doOnSuccess(result -> log.info("{}에게 푸시 알림 보냄 - 전송 성공", emailAddress))
+                        .doOnError(error -> log.error("{}에게 푸시 알림 보냄 - 전송 실패", emailAddress, error))
+                        .onErrorResume(e -> Mono.empty());
+              })
+              .collectList()
+              .block();
+
+      log.info("비동기 푸시 알림 전송 완료");
     });
   }
 
