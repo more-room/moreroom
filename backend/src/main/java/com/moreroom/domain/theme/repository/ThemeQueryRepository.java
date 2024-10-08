@@ -33,6 +33,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -331,8 +332,11 @@ public class ThemeQueryRepository extends QuerydslRepositoryCustom {
             }
         }
 
+        List<ThemeListComponentDto> result = new ArrayList<>(themeMap.values());
+        result.sort(Comparator.comparingInt(o -> themeIds.indexOf(o.getThemeId())));
         ThemeListResponseDto themeListResponseDto = ThemeListResponseDto.builder()
             .themeList(sortedThemeList)  // 정렬된 리스트
+            .themeList(result)
             .build();
 
         // * nearby service는 지역 정보 추가로 넣어준다
