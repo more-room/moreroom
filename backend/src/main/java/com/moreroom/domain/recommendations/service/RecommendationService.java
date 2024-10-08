@@ -14,6 +14,7 @@ import com.moreroom.domain.recommendations.entity.SimilarTheme;
 import com.moreroom.domain.recommendations.exception.RecommendationNotFoundException;
 import com.moreroom.domain.recommendations.repository.DemographicsThemeRepository;
 import com.moreroom.domain.recommendations.repository.GenreThemeRepository;
+import com.moreroom.domain.recommendations.repository.LocationThemeRepository;
 import com.moreroom.domain.recommendations.repository.SimilarMemberThemeRepository;
 import com.moreroom.domain.recommendations.repository.SimilarThemeRepository;
 import com.moreroom.domain.theme.dto.response.ThemeListResponseDto;
@@ -22,7 +23,6 @@ import com.moreroom.global.util.GlobalUtil;
 import jakarta.persistence.Tuple;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +40,7 @@ public class RecommendationService {
     private final ThemeQueryRepository themeQueryRepository;
     private final MemberRepository memberRepository;
     private final HistoryRepository historyRepository;
+    private final LocationThemeRepository locationThemeRepository;
     private final MemberGenreMappingRepository memberGenreMappingRepository;
     private final GenreThemeRepository genreThemeRepository;
 
@@ -92,9 +93,18 @@ public class RecommendationService {
         List<Integer> themeList = demographicsTheme.getDemographicThemes();
         ThemeListResponseDto themeListResponseDto = themeQueryRepository.findByThemeIds(
             themeList, memberId);
-        // 4. 인기 순으로 정렬 (원래 받았던 ID)
-        themeListResponseDto.getThemeList()
-            .sort(Comparator.comparingInt(o -> themeList.indexOf(o.getThemeId())));
+        return themeListResponseDto;
+    }
+
+    public ThemeListResponseDto getNearbyThemes(Long memberId, Double latitude, Double longitude) {
+        // 1. 유저 정보 조회
+        Member member = memberRepository.findById(memberId)
+            .orElseThrow(MemberNotFoundException::new);
+        // 2. 인기 테마 조회 (mongoDB)
+        List<Integer> themeList = locationThemeRepository.findThemeByLocation(latitude, longitude);
+        // 3. 테마 상세 정보 조회
+        ThemeListResponseDto themeListResponseDto = themeQueryRepository.findByThemeIds(
+            themeList, memberId, true);
         return themeListResponseDto;
     }
 

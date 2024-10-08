@@ -15,6 +15,7 @@ import com.moreroom.domain.theme.dto.request.ThemeListRequestDto;
 import com.moreroom.domain.theme.dto.response.ThemeCafeResponseDto;
 import com.moreroom.domain.theme.dto.response.ThemeDetailResponseDto;
 import com.moreroom.domain.theme.dto.response.ThemeListResponseDto;
+import com.moreroom.domain.theme.dto.response.ThemeListResponseDto.RegionComponentDto;
 import com.moreroom.domain.theme.dto.response.ThemeListResponseDto.ThemeListComponentDto;
 import com.moreroom.domain.theme.dto.response.ThemeMemberResponseDto;
 import com.moreroom.domain.theme.dto.response.ThemeReviewResponseDto;
@@ -36,6 +37,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
@@ -248,14 +250,20 @@ public class ThemeQueryRepository extends QuerydslRepositoryCustom {
         return PageResponseDto.toDto(themeListResponseDto, pn, ps, tp, te);
     }
 
-
     public ThemeListResponseDto findByThemeIds(List<Integer> themeIds, Long memberId) {
+        return findByThemeIds(themeIds, memberId, false);  // regionNameFlag를 false로 설정
+    }
+
+
+    public ThemeListResponseDto findByThemeIds(List<Integer> themeIds, Long memberId,
+        boolean regionNameFlag) {
         // 1. 테마 및 관련 정보 조회
         List<Tuple> results = jpaQueryFactory
             .select(theme, cafe, region.regionId,
                 review.count(), review.score.avg(), genre.genreName
                 , playLog.playCount.coalesce(0).gt(0)
                 , brand
+                , region.regionName, region.parentRegionName
             )
             .from(theme)
             .leftJoin(cafe).on(cafe.cafeId.eq(theme.cafe.cafeId))
@@ -267,7 +275,7 @@ public class ThemeQueryRepository extends QuerydslRepositoryCustom {
             .leftJoin(brand).on(brand.brandId.eq(cafe.brand.brandId))
             .where(theme.themeId.in(themeIds))
             .groupBy(theme.themeId, cafe.cafeId, region.regionId, genre.genreName)
-            .orderBy(theme.themeId.asc())
+//            .orderBy(theme.themeId.asc())
             .fetch();
 
         // 2. 변환
@@ -316,11 +324,39 @@ public class ThemeQueryRepository extends QuerydslRepositoryCustom {
             }
         }
 
+        // 3. themeIds 순서에 맞게 DTO 리스트 생성
+        List<ThemeListComponentDto> sortedThemeList = new ArrayList<>(themeIds.size());
+        for (Integer themeId : themeIds) {
+            if (themeMap.containsKey(themeId)) {
+                sortedThemeList.add(themeMap.get(themeId));
+            }
+        }
+
         List<ThemeListComponentDto> result = new ArrayList<>(themeMap.values());
         result.sort(Comparator.comparingInt(o -> themeIds.indexOf(o.getThemeId())));
         ThemeListResponseDto themeListResponseDto = ThemeListResponseDto.builder()
+            .themeList(sortedThemeList)  // 정렬된 리스트
             .themeList(result)
             .build();
+
+        // * nearby service는 지역 정보 추가로 넣어준다
+        if (regionNameFlag && !results.isEmpty()) {
+            String regionName = null;
+            String regionParentName = null;
+            for (Tuple tuple : results) {
+                Theme theme = tuple.get(0, Theme.class);
+                if (Objects.equals(theme.getThemeId(), themeIds.get(0))) {
+                    regionName = tuple.get(8, String.class);
+                    regionParentName = tuple.get(9, String.class);
+                }
+            }
+            RegionComponentDto regionComponentDto = RegionComponentDto.builder()
+                .regionName(regionName)
+                .regionParentName(regionParentName)
+                .build();
+
+            themeListResponseDto.setRegion(regionComponentDto);
+        }
 
         return themeListResponseDto;
     }

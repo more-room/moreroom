@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -37,7 +38,6 @@ public class RecommendationController {
         ThemeListResponseDto themeListResponseDto = recommendationService.getSimilarThemes(
             memberId);
         if (themeListResponseDto != null) {
-            System.out.println("themeListResponseDto = " + themeListResponseDto);
             return new ResponseEntity<>(themeListResponseDto,
                 HttpStatus.OK);
         }
@@ -51,7 +51,20 @@ public class RecommendationController {
         ThemeListResponseDto themeListResponseDto = recommendationService.getDemographicsThemes(
             memberId);
         if (themeListResponseDto != null) {
-            System.out.println("themeListResponseDto = " + themeListResponseDto);
+            return new ResponseEntity<>(themeListResponseDto,
+                HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("nearby-themes")
+    public ResponseEntity<ThemeListResponseDto> getNearbyThemes(@RequestParam Double lat,
+        @RequestParam Double lon) {
+        long memberId = findMemberService.findCurrentMember();
+        ThemeListResponseDto themeListResponseDto = recommendationService.getNearbyThemes(
+            memberId, lat, lon);
+        if (themeListResponseDto != null) {
             return new ResponseEntity<>(themeListResponseDto,
                 HttpStatus.OK);
         }
