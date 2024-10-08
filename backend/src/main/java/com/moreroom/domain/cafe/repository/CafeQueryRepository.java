@@ -5,6 +5,7 @@ import static com.moreroom.domain.cafe.entity.QCafe.cafe;
 import static com.moreroom.domain.genre.entity.QGenre.genre;
 import static com.moreroom.domain.mapping.theme.entity.QThemeGenreMapping.themeGenreMapping;
 import static com.moreroom.domain.playLog.entity.QPlayLog.playLog;
+import static com.moreroom.domain.region.entity.QRegion.region;
 import static com.moreroom.domain.review.entity.QReview.review;
 import static com.moreroom.domain.theme.entity.QTheme.theme;
 
@@ -49,13 +50,13 @@ public class CafeQueryRepository extends QuerydslRepositoryCustom {
         String cafeName = c.getCafeName();
         List<Integer> brandIds = c.getBrandId();
         String regionId = c.getRegion();
+        System.out.println("regionId = " + regionId);
         BooleanExpression nameCondition = cafeName == null ? null : cafe.cafeName.like(cafeName);
         BooleanExpression brandCondition =
             brandIds == null || brandIds.isEmpty() ? null : cafe.brand.brandId.in(brandIds);
         BooleanExpression regionCondition =
-            regionId == null ? null
-                : StringUtil.isParent(regionId) ? cafe.region.parentRegionId.eq(regionId)
-                    : cafe.region.regionId.eq(regionId);
+            regionId != null ? StringUtil.isParent(regionId) ? region.parentRegionId.eq(regionId)
+                : region.regionId.eq(regionId) : null;
 
         List<Tuple> list = jpaQueryFactory
             .select(cafe.cafeId, theme.poster)

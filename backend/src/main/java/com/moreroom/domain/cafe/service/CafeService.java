@@ -29,7 +29,6 @@ public class CafeService {
             c.getCafeName() == null ? null : ("%" + c.getCafeName() + "%"), c.getBrandId(),
             c.getRegion());
         List<CafeListComponentDto> cafeList = new ArrayList<>();
-
         for (Tuple tuple : tuples) {
             CafeListComponentDto dto = CafeListComponentDto.builder()
                 .cafeId(tuple.get(0, Integer.class))
@@ -46,7 +45,6 @@ public class CafeService {
 
             cafeList.add(dto);
         }
-
         return CafeListResponseDto.builder().cafeList(cafeList).build();
     }
 
