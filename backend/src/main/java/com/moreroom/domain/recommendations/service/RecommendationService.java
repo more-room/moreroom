@@ -9,6 +9,7 @@ import com.moreroom.domain.recommendations.entity.DemographicsTheme;
 import com.moreroom.domain.recommendations.entity.SimilarMemberTheme;
 import com.moreroom.domain.recommendations.entity.SimilarTheme;
 import com.moreroom.domain.recommendations.repository.DemographicsThemeRepository;
+import com.moreroom.domain.recommendations.repository.LocationThemeRepository;
 import com.moreroom.domain.recommendations.repository.SimilarMemberThemeRepository;
 import com.moreroom.domain.recommendations.repository.SimilarThemeRepository;
 import com.moreroom.domain.theme.dto.response.ThemeListResponseDto;
@@ -34,6 +35,7 @@ public class RecommendationService {
     private final ThemeQueryRepository themeQueryRepository;
     private final MemberRepository memberRepository;
     private final HistoryRepository historyRepository;
+    private final LocationThemeRepository locationThemeRepository;
 
     public ThemeListResponseDto getSimilarUserThemes(long memberId) {
         // 1. 유사 유저 테마 조회 (mongoDB)
@@ -84,6 +86,21 @@ public class RecommendationService {
         List<Integer> themeList = demographicsTheme.getDemographicThemes();
         ThemeListResponseDto themeListResponseDto = themeQueryRepository.findByThemeIds(
             themeList, memberId);
+        // 4. 인기 순으로 정렬 (원래 받았던 ID)
+        themeListResponseDto.getThemeList()
+            .sort(Comparator.comparingInt(o -> themeList.indexOf(o.getThemeId())));
+        return themeListResponseDto;
+    }
+
+    public ThemeListResponseDto getNearbyThemes(Long memberId, Double latitude, Double longitude) {
+        // 1. 유저 정보 조회
+        Member member = memberRepository.findById(memberId)
+            .orElseThrow(MemberNotFoundException::new);
+        // 2. 인기 테마 조회 (mongoDB)
+        List<Integer> themeList = locationThemeRepository.findThemeByLocation(latitude, longitude);
+        // 3. 테마 상세 정보 조회
+        ThemeListResponseDto themeListResponseDto = themeQueryRepository.findByThemeIds(
+            themeList, memberId, true);
         // 4. 인기 순으로 정렬 (원래 받았던 ID)
         themeListResponseDto.getThemeList()
             .sort(Comparator.comparingInt(o -> themeList.indexOf(o.getThemeId())));

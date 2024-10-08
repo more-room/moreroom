@@ -9,9 +9,12 @@ import lombok.Setter;
 
 @Builder
 @Getter
+@Setter
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ThemeListResponseDto {
 
     List<ThemeListComponentDto> themeList;
+    RegionComponentDto region;
 
     @Builder
     @Getter
@@ -35,5 +38,13 @@ public class ThemeListResponseDto {
         public void setReview(ThemeReviewResponseDto review) {
             this.review = review;
         }
+    }
+
+    @Builder
+    @Getter
+    public static class RegionComponentDto {
+
+        String regionName;
+        String regionParentName;
     }
 }
