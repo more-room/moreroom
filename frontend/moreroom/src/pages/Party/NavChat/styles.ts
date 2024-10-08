@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 export const containerCss = css`
   display: flex;
   background-color: #424242;
-  margin: 1rem;
+  margin: 1rem 1rem 0;
   justify-content: center;
   align-items: center;
 `;

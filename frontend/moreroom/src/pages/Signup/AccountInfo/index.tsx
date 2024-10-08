@@ -353,7 +353,7 @@ export const AccountInfo = ({ onSubmit }: UserDataFormProps) => {
             fullWidth
             error={!!nicknameError}
             label="닉네임"
-            placeholder="띄어쓰기없이 2~7글자"
+            placeholder="영문, 한글, 숫자 상관없이 2~7글자"
             value={nickname}
             onChange={handleNicknameChange}
           />
