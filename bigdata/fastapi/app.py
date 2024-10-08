@@ -5,6 +5,7 @@ from datetime import datetime
 from similar_themes import get_recent_similar_theme
 from similar_member_themes import get_similar_member_theme, load_mysql_data
 from demographics_themes import get_demographics_theme 
+from genre_themes import get_genre_theme 
 from pydantic import BaseModel
 from party_recommend import process_party_matching, run_batch_matching
 
@@ -33,7 +34,6 @@ def similar_member_themes():
     start_time = datetime.now() 
     get_similar_member_theme()
     end_time = datetime.now()
-    current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     print("operation_time: "+str((end_time-start_time).total_seconds()))
     return {"message": "get_similar_member_theme success",
             "operation_time": (end_time-start_time).total_seconds()} 
@@ -45,6 +45,14 @@ def demographics_themes():
     return {"message": "get_demographics_theme success",
             "operation_time": current_time} 
 
+@app.get("/genre_themes")
+def genre_themes():
+    start_time = datetime.now() 
+    get_genre_theme()
+    end_time = datetime.now()
+    print("operation_time: "+str((end_time-start_time).total_seconds()))
+    return {"message": "get_genre_theme success",
+            "operation_time": (end_time-start_time).total_seconds()} 
 
 # FastAPI 엔드포인트 - 비동기적으로 30000개의 요청 처리
 @app.post("/recommend_party_batch/")

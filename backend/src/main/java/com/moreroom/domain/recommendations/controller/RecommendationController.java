@@ -1,5 +1,6 @@
 package com.moreroom.domain.recommendations.controller;
 
+import com.moreroom.domain.recommendations.dto.response.GenreThemeResponseDto;
 import com.moreroom.domain.recommendations.service.RecommendationService;
 import com.moreroom.domain.theme.dto.response.ThemeListResponseDto;
 import com.moreroom.global.util.FindMemberService;
@@ -65,6 +66,20 @@ public class RecommendationController {
             memberId, lat, lon);
         if (themeListResponseDto != null) {
             return new ResponseEntity<>(themeListResponseDto,
+                HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+
+    @GetMapping("genres-themes")
+    public ResponseEntity<GenreThemeResponseDto> getGenresThemes() {
+        long memberId = findMemberService.findCurrentMember();
+        GenreThemeResponseDto genreThemeResponseDto = recommendationService.getGenresThemes(
+            memberId);
+        if (genreThemeResponseDto != null) {
+            return new ResponseEntity<>(genreThemeResponseDto,
                 HttpStatus.OK);
         }
 
