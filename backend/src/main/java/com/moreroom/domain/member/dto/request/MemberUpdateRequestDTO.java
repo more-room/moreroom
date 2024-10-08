@@ -15,10 +15,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MemberUpdateRequestDTO {
-    // todo 장르 매핑
     @NotNull(message = "닉네임을 입력해주세요")
     @Pattern(
-        regexp = "^[가-힣a-zA-Z0-9]{2,7}$",
+        regexp = "^[a-zA-Z가-힣ㄱ-ㅎㅏ-ㅣ0-9\\s]{2,7}$",
         message = "닉네임은 2~7자 사이의 한글, 영문(대소문자 구분 없음), 숫자만 허용됩니다."
     )
     private String nickname;

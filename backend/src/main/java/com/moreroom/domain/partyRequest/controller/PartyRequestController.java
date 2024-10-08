@@ -36,7 +36,7 @@ public class PartyRequestController {
   private final PartyMatchingService partyMatchingService;
 
   //파티요청 목록 조회
-  @GetMapping("")
+  @GetMapping()
   public ResponseEntity<?> getMyPartyRequest() {
     Long currentMemberId = findMemberService.findCurrentMember();
     List<PartyRequestDto> partyRequestList = partyRequestService.getPartyRequestList(currentMemberId);
@@ -47,7 +47,7 @@ public class PartyRequestController {
   }
 
   //파티요청 등록
-  @PostMapping("")
+  @PostMapping()
   public ResponseEntity<?> setMyPartyRequest(@RequestBody SettingPartyRequestDto dto) {
     Member member = findMemberService.findCurrentMemberObject();
     partyRequestService.savePartyRequest(dto, member);

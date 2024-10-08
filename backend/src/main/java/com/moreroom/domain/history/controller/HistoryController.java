@@ -30,7 +30,7 @@ public class HistoryController {
     private final FindMemberService findMemberService;
     private final HistoryService historyService;
 
-    @GetMapping
+    @GetMapping()
     public ResponseEntity<HistoryListResponseDto> findByDate(
         @RequestParam(required = false) String startDate,
         @RequestParam(required = false) String endDate) {

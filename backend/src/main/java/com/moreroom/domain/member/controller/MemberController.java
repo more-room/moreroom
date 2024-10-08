@@ -50,7 +50,7 @@ public class MemberController {
     private final AuthenticationManager authenticationManager;
     private final FindMemberService findMemberService;
 
-    @PostMapping("")
+    @PostMapping()
     public ResponseEntity<Member> signup(@RequestBody @Valid MemberSignupRequestDTO memberSignupRequestDTO) {
 
         memberService.signup(memberSignupRequestDTO);
@@ -168,7 +168,7 @@ public class MemberController {
         }
     }
 
-    @GetMapping("")
+    @GetMapping()
     public ResponseEntity<MemberResponseDTO> getCurrentMember() {
 
         MemberResponseDTO memberResponseDTO = memberService.getMemberInformation();
@@ -202,7 +202,7 @@ public class MemberController {
         throw new MemberNotFoundException();
     }
 
-    @PatchMapping("")
+    @PatchMapping()
     public ResponseEntity<Member> updateMember(@RequestBody @Valid MemberUpdateRequestDTO memberUpdateRequestDTO) {
         memberService.updateMemberInformation(memberUpdateRequestDTO);
 
@@ -247,7 +247,7 @@ public class MemberController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("")
+    @DeleteMapping()
     public ResponseEntity<Member> deleteMember() {
         memberService.deleteMember();
 
