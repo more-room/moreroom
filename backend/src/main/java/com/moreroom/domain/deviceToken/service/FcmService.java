@@ -202,8 +202,8 @@ public class FcmService {
       for (String emailAddress : emailList) {
         try {
           FcmMessageDto fcmMessageDto = makeChattingPush(senderNickname, message, emailAddress, partyId);
-          sendMessageTo(fcmMessageDto);
-          log.info("{}에게 푸시 알림 보냄", emailAddress);
+          int result = sendMessageTo(fcmMessageDto);
+          log.info("{}에게 푸시 알림 보냄 - 전송 결과: {}", emailAddress, result == 1 ? "SUCCESS" : "FAIL");
         } catch (Exception e) {
           log.error("푸시 알람 전송 실패: to {}", emailAddress);
         }

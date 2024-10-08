@@ -42,7 +42,11 @@ public class SocketController {
     messageService.saveMessage(message, principal);
     //2. 푸시 알림 전송 (비동기)
     fcmService.sendChattingMessagePushAlarmAsync(principal.getName(), message.getPartyId(), nickname, message.getMessage())
-                    .thenRun(() -> log.debug("푸시 알림 전송 완료"));
+                    .thenRun(() -> log.debug("푸시 알림 전송 완료"))
+                    .exceptionally(ex -> {
+                      log.error("푸시 알림 전송 실패", ex);
+                      return null;
+                    });
     //3. 소켓 메시지 전송
     simpMessagingTemplate.convertAndSend("/topic/party/" + message.getPartyId(), message, headers);
   }
