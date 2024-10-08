@@ -11,6 +11,7 @@ interface ISelected {
   themeTitle: string;
   brandName: string;
   branchName: string;
+  currentPartyRequestId?: number
 }
 
 export const SelectedTheme = ({
@@ -18,10 +19,14 @@ export const SelectedTheme = ({
   themeTitle,
   brandName,
   branchName,
+  currentPartyRequestId
 }: ISelected) => {
   const nav = useNavigate();
   return (
-    <div css={containerCss} onClick={() => nav('/party/addtheme')}>
+    <div
+      css={containerCss}
+      onClick={() => nav('/party/addtheme', { state: currentPartyRequestId })}
+    >
       <img css={imgCss} src={poster} alt="포스터 사진" />
       <div css={contentCss}>
         <Typography css={titleCss} color="light" size={1} weight={700}>

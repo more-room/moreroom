@@ -11,22 +11,6 @@ export const NavChat = () => {
     <div css={containerCss}>
       <div css={navCss}>
         <Typography color="light" size={0.9} weight={500}>
-          매칭이 완료된 파티
-        </Typography>
-        <Button
-          color="primary"
-          rounded={0.5}
-          variant="contained"
-          handler={() => nav('/chating')}
-          style={{ padding: '0.5rem' }}
-        >
-          <Typography color="light" size={0.75} weight={500}>
-            채팅방으로 가기
-          </Typography>
-        </Button>
-      </div>
-      <div css={navCss}>
-        <Typography color="light" size={0.9} weight={500}>
           새로운 파티 등록
         </Typography>
         <Button

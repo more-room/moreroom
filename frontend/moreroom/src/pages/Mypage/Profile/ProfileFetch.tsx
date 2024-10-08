@@ -80,7 +80,7 @@ export const ProfileFetch = () => {
       <div css={containerCss}>
         <img
           css={profileCss}
-          src={ProfileQuery.data?.data.photo}
+          src={`/profiles/profile${ProfileQuery.data?.data.photo}.png`}
           alt="프로필 사진"
         />
         <div css={userInfoCss}>

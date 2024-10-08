@@ -116,7 +116,8 @@ export const MyPage = () => {
               </Icon>
             }
             children="파티"
-            url="/party"
+            url="/"
+            statedata={{ menu: 0 }}
           />
           <ManageInfo
             icon={
@@ -125,7 +126,8 @@ export const MyPage = () => {
               </Icon>
             }
             children="채팅방"
-            url="/chating"
+            url="/"
+            statedata={{ menu: 1 }}
           />
           <ManageInfo
             icon={
@@ -134,7 +136,8 @@ export const MyPage = () => {
               </Icon>
             }
             children="테마 기록"
-            url="/history"
+            url="/"
+            statedata={{ menu: 3 }}
           />
           <div css={manageInfoContainerCss}>
             <ManageInfo

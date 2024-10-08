@@ -6,6 +6,7 @@ export const containerCss = css`
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  height: 90%;
 `;
 
 export const profileContainer = css`

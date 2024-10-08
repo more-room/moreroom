@@ -43,11 +43,12 @@ export const Main = () => {
     if (location.state) {
       if (location.state.token) {
         handleAllowNotification();
-      } else if (location.state.menu) {
+      } else if (location.state.menu !== undefined) {
         setCurMenu(location.state.menu);
       }
     }
-  }, []);
+  }, [location.state]);
+  
 
   return (
     <>

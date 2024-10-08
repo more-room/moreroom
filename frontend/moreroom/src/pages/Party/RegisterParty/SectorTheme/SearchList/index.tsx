@@ -4,14 +4,16 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { SearchFilters } from '../../../../Themes/ThemeList/SearchList/SearchFilters';
 import { SearchResults } from './SearchResults';
 
-
-export const SearchList = () => {
+interface ISelected {
+  currentPartyRequestId?: number
+}
+export const SearchList = ({currentPartyRequestId}: ISelected) => {
   return (
     <>
       <SearchFilters />
       <ErrorBoundary fallback={<>에러</>}>
         <Suspense fallback={<>로딩중</>}>
-        <SearchResults/>
+        <SearchResults currentPartyRequestId={currentPartyRequestId}/>
         </Suspense>
       </ErrorBoundary>
     </>

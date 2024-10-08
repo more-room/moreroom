@@ -12,6 +12,7 @@ import { NotMatched } from './PartyItem/NotMatched';
 import { Matched } from './PartyItem/Matched';
 import { Pending } from './PartyItem/Pending';
 import { Notification } from '../../../components/Notification';
+import { containerCss } from './styles';
 
 export const PartyListFetch = () => {
   const [showDelNotification, setShowDelNotification] = useState(false);
@@ -58,11 +59,11 @@ export const PartyListFetch = () => {
   };
 
   return (
-    <>
+    <div>
       {PartyQuery?.data.data.requestList.map(
         (party: IParty) => {
           return (
-            <>
+            <div>
               {party.status.statusName === 'NOT_MATCHED' && (
                 <NotMatched
                   party={party}
@@ -84,7 +85,7 @@ export const PartyListFetch = () => {
                   onDeleteClick={() => handleDeleteClick(party.partyRequestId)}
                 />
               )}
-            </>
+            </div>
           );
         },
       )}
@@ -109,6 +110,6 @@ export const PartyListFetch = () => {
           type="confirm"
         />
       )}
-    </>
+    </div>
   );
 };
