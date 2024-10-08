@@ -45,6 +45,7 @@ public class PartyRequestQueryRepository extends QuerydslRepositoryCustom {
         .select(
             partyRequest.partyRequestId,
             partyRequest.matchingStatus,
+            partyRequest.redisUuid,
             theme.themeId,
             theme.poster,
             theme.title,
@@ -77,6 +78,7 @@ public class PartyRequestQueryRepository extends QuerydslRepositoryCustom {
           //공통 정보 추출
           Tuple tuple = entry.getValue().get(0);
           Long partyRequestId = entry.getKey();
+          String uuid = tuple.get(partyRequest.redisUuid);
 
           StatusDto status = Optional.ofNullable(tuple.get(partyRequest.matchingStatus))
               .map(matchingStatus -> StatusDto.builder()
@@ -108,6 +110,7 @@ public class PartyRequestQueryRepository extends QuerydslRepositoryCustom {
 
           return PartyRequestDto.builder()
               .partyRequestId(partyRequestId)
+              .uuid(uuid)
               .status(status)
               .theme(themeDto)
               .createdAt(createdAt)
