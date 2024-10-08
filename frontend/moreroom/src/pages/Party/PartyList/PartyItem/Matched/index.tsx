@@ -16,6 +16,7 @@ import { Button } from '../../../../../components/Button';
 import { Icon } from '../../../../../components/Icon';
 import { ClockIcon } from '@heroicons/react/24/solid';
 import { MapPinIcon } from '@heroicons/react/24/solid';
+import { useMatchedStore } from '../../../../../stores/partyStore';
 
 
 interface PartyItemProps {
@@ -27,6 +28,7 @@ type Hashtag = {
   hashtagName: string;
 };
 export const Matched = ({ party, handler }: PartyItemProps) => {
+  
   return (
     <div css={containerCss}>
       <div css={topContentCss}>
@@ -40,7 +42,7 @@ export const Matched = ({ party, handler }: PartyItemProps) => {
                 <MapPinIcon />
               </Icon>
               <Typography color="grey" scale="500" size={0.8} weight={700}>
-                {party.theme.brandName ? `${party.theme.brandName} - ${party.theme.branchName}` : '장소정보 없음'} 
+                {party.theme.brandName ? `${party.theme.brandName}` : '장소정보 없음'} 
               </Typography>
             </div>
           <div css={timeCss}>
