@@ -8,11 +8,7 @@ import com.moreroom.domain.member.exception.MemberNotFoundException;
 import com.moreroom.domain.member.repository.MemberRepository;
 import com.moreroom.domain.party.dto.*;
 import com.moreroom.domain.party.entity.Party;
-import com.moreroom.domain.party.exception.InputValidationException;
-import com.moreroom.domain.party.exception.NotPartyMasterException;
-import com.moreroom.domain.party.exception.PartyFullException;
-import com.moreroom.domain.party.exception.PartyNotFoundException;
-import com.moreroom.domain.party.exception.PartyNotRecruitingException;
+import com.moreroom.domain.party.exception.*;
 import com.moreroom.domain.party.repository.PartyQueryRepository;
 import com.moreroom.domain.party.repository.PartyRepository;
 import com.moreroom.domain.partyRequest.entity.PartyRequest;
@@ -65,6 +61,7 @@ public class PartyService {
         .masterMember(master)
         .notice("[" + theme.getTitle() + "]테마의 파티 채팅방입니다. 공지사항을 입력해 주세요.")
         .roomName(theme.getTitle() + " " + master.getNickname())
+        .date(LocalDateTime.now())
         .maxMember(3)
         .build();
   }
@@ -112,25 +109,27 @@ public class PartyService {
         .toString();
   }
 
-  // 채팅방(파티)에 참가하기 -> 이후에 동시성 개념 넣기
-  @Transactional
+  // 존재하는 채팅방(파티)에 참가하기
+  @Transactional(timeout = 5)
   public void joinExistParty(Member member, Long partyId) {
-    //파티 인원이 들어갈 수 있는지 확인
-    Party party = partyRepository.findById(partyId).orElseThrow(PartyNotFoundException::new);
-    if (party.isAddFlag()) {
-      int currentMembers = memberPartyMappingRepository.getNumberOfMemberByPartyId(partyId);
-      int maxMember = party.getMaxMember();
-      if (currentMembers < maxMember) {
-        //파티 정원 안참 : 저장
-        memberPartyMappingRepository.save(new MemberPartyMapping(member, party));
-        //이미 가입한 파티일 때는?? 방어로직 추가 필요
-      } else {
-        //파티 정원 다 참 : 예외 던짐
-        throw new PartyFullException();
-      }
+    //검증단계
+    //파티 인원이 들어갈 수 있는지 확인 - 비관적 락 사용
+    Party party = partyRepository.findByPartyIdWithPessimisticLock(partyId).orElseThrow(PartyNotFoundException::new);
+    //인원을 모집하지 않는 파티임
+    if (!party.isAddFlag()) throw new PartyNotRecruitingException();
+    //이미 가입한 파티라면 트랜잭션 종료
+    MemberPartyMapping memberParty = memberPartyMappingRepository.findByMemberAndParty(member, party).orElseGet(null);
+    if (memberParty != null) throw new JoinedPartyException();
+
+    //참가단계
+    int currentMembers = memberPartyMappingRepository.getNumberOfMemberByPartyId(partyId);
+    int maxMember = party.getMaxMember();
+    if (currentMembers < maxMember) {
+      //파티 정원 안참 : 저장
+      memberPartyMappingRepository.save(new MemberPartyMapping(member, party));
     } else {
-      // 인원을 모집하지 않는 파티임
-      throw new PartyNotRecruitingException();
+      //파티 정원 다 참 : 예외 던짐
+      throw new PartyFullException();
     }
   }
 

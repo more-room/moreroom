@@ -54,37 +54,42 @@ export const inputBar = css`
 `;
 
 export const input = css`
-  flex: 1;
-  min-height: 2.5rem;
-  padding: 0 0.5rem;
+  width: 100%;
+  color: white;
   border: none;
-  border-radius: 0.5rem;
-  background-color: white;
+  background-color: transparent;
   outline: none;
-  font-size: 0.875rem;
 `;
+
 
 export const modalContent = css`
-  /* display: flex; */
+  display: flex;
+  flex-direction: column;
   justify-content: center;
-  align-items: center;
-  padding: 1rem;
-  border-radius: 8px;
-  width: 100%;
-  box-sizing: border-box;
-  /* margin-top: 1rem; */
+  margin: 3rem 1.5rem;
 `;
 
-export const modalTitle = css`
-  font-size: 1.2rem;
-  font-weight: bold;
-  margin-bottom: 0.5rem;
-  margin-top: 0.2rem;
-  color: ${Colors['grey']['700']}
+
+export const inputbox = css`
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.5em;
+  display: flex;
+  align-items: center;
+  column-gap: 0.25rem;
+  border-radius: 0.5rem;
+  border: 0.0625rem solid white;
+  margin-top: 1rem;
+`;
+
+export const btnContainerCss = css`
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+  gap: 0.5rem;
 `;
 
 export const inputStyle = css`
-
   width: 90%;
   padding: 0.5rem;
   margin-top: 0.5rem;
@@ -92,3 +97,4 @@ export const inputStyle = css`
   border: 1px solid #ccc;
   border-radius: 4px;
 `;
+

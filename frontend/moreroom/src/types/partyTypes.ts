@@ -68,6 +68,7 @@ export interface IParty {
     poster: string;
     title: string;
   };
+  uuid: string,
   createdAt: string;
   partyHashtagList: {
     hashtagId: number;

@@ -27,6 +27,7 @@ import com.moreroom.domain.region.repository.RegionRepository;
 import com.moreroom.global.util.FindMemberService;
 import jakarta.transaction.Transactional;
 import java.util.List;
+import java.util.Random;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -62,6 +63,9 @@ public class MemberService {
             throw new MemberExistsNicknameException();
         }
 
+        Random random = new Random();
+        String randomPhotoValue = Integer.toString(random.nextInt(6) + 1);
+
         Member member = Member.builder()
             .email(memberSignupRequestDTO.getEmail())
             .password(passwordEncoder.encode(memberSignupRequestDTO.getPassword()))
@@ -69,6 +73,7 @@ public class MemberService {
             .gender(!memberSignupRequestDTO.getGender().equals("M"))
             .region(regionRepository.getReferenceById(memberSignupRequestDTO.getRegionId()))
             .birth(memberSignupRequestDTO.getBirth())
+            .photo(randomPhotoValue)
             .build();
 
         memberRepository.save(member);
