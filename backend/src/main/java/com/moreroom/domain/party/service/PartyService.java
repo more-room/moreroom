@@ -61,6 +61,7 @@ public class PartyService {
         .masterMember(master)
         .notice("[" + theme.getTitle() + "]테마의 파티 채팅방입니다. 공지사항을 입력해 주세요.")
         .roomName(theme.getTitle() + " " + master.getNickname())
+        .date(LocalDateTime.now())
         .maxMember(3)
         .build();
   }
