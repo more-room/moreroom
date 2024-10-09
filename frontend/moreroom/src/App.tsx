@@ -1,6 +1,12 @@
 import React from 'react';
 import './App.css';
-import { Route, Routes, useLocation } from 'react-router-dom';
+import {
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+  useParams,
+} from 'react-router-dom';
 import { ThemeList } from './pages/Themes/ThemeList';
 import { Modal } from './components/Modal';
 import { useModalStore } from './stores/modalStore';
@@ -28,14 +34,62 @@ import { ReviewWrite } from './pages/Review/ReviewWrite';
 import { EditParty } from './pages/Party/EditParty';
 import { ReviewFix } from './pages/Mypage/MyReview/ReviewFix';
 import { sessionValidate } from './apis/authApi';
+import { getQRReview } from './apis/reviewApi';
+import { useQueries } from '@tanstack/react-query';
+import { getThemeDetail } from './apis/themeApi';
+import { getCafeForTheme } from './apis/cafeApi';
+import { IThemeItem } from './types/themeTypes';
 
-function App() {
+async function App() {
   const modalStore = useModalStore();
   const location = useLocation();
+  const nav = useNavigate();
+  const themeId = useParams();
   const authRef = /^(\/(auth))(\/.*)?$/;
+  const [themeQuery, cafeQuery] = useQueries({
+    queries: [
+      {
+        queryKey: ['theme-detail'],
+        queryFn: async () => await getThemeDetail(Number(themeId.themeId)),
+        enabled: false,
+      },
+      {
+        queryKey: ['cafe-detail'],
+        queryFn: async () => await getCafeForTheme(Number(themeId.themeId)),
+        enabled: false,
+      },
+    ],
+  });
 
   if (!authRef.test(location.pathname)) {
     sessionValidate();
+  }
+
+  if (location.pathname.split('/').includes('api')) {
+    console.log(location.pathname);
+    await getQRReview(Number(themeId.themeId));
+    await themeQuery.refetch();
+    await cafeQuery.refetch();
+
+    const themeItem: IThemeItem = {
+      themeId: themeQuery.data!.data.theme.themeId,
+      poster: themeQuery.data!.data.theme.poster,
+      title: themeQuery.data!.data.theme.title,
+      playtime: themeQuery.data!.data.theme.playtime,
+      genreList: themeQuery.data!.data.theme.genreList,
+      review: themeQuery.data!.data.theme.review,
+      regionId: cafeQuery.data!.data.regionId,
+      cafe: {
+        cafeId: cafeQuery.data!.data.cafeId,
+        brandName: cafeQuery.data!.data.brandName,
+        branchName: cafeQuery.data!.data.branchName,
+        cafeName: '',
+        address: cafeQuery.data!.data.address,
+      },
+    };
+    nav('/review/write', {
+      state: { themeItem },
+    });
   }
 
   return (
