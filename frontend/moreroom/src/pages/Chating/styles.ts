@@ -59,6 +59,8 @@ export const roomname = css`
   font-size: 1rem; /* 기본 폰트 크기를 줄임 */
 `;
 
+
+
 export const themeTitle = css`
   color: ${Colors['light']['100']};
   font-size: 0.8rem; 

@@ -44,3 +44,34 @@ export const useHashtagStore = create<HashTagStoreState & HashTagAction>()(
       }),
   }),
 );
+
+
+
+interface GenreState {
+  selectedGenreIds: number[];
+  selectedGenreNames: string[];
+
+  setSelectedGenre: (genreId: number, genreName: string) => void;
+  removeSelectedGenre: (genreId: number) => void;
+  resetSelection: () => void;
+}
+
+export const useGenreSelectionStore = create<GenreState>((set) => ({
+  selectedGenreIds: [],
+  selectedGenreNames: [],
+  setSelectedGenre: (genreId, genreName) => 
+    set((state) => ({
+      selectedGenreIds: [...state.selectedGenreIds, genreId],
+      selectedGenreNames: [...state.selectedGenreNames, genreName],
+    })),
+  removeSelectedGenre: (genreId) => 
+    set((state) => ({
+      selectedGenreIds: state.selectedGenreIds.filter(id => id !== genreId),
+      selectedGenreNames: state.selectedGenreNames.filter((_, index) => state.selectedGenreIds[index] !== genreId),
+    })),
+  resetSelection: () =>
+    set({
+      selectedGenreIds: [],
+      selectedGenreNames: [],
+    }),
+}));
