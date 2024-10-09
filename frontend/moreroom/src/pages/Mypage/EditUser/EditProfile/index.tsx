@@ -26,6 +26,7 @@ import { CssTextField } from '../../../../components/Mui/CssTextField';
 import { useRegionSelectionStore } from '../../../../stores/signupStore';
 import { handleDateChange } from '../../../../utils/birthUtils';
 import { Notification } from '../../../../components/Notification';
+import { useGenreSelectionStore } from '../../../../stores/mypageStore';
 
 export const EditProfile = () => {
   const nav = useNavigate();
@@ -35,7 +36,7 @@ export const EditProfile = () => {
   const [showmodal, setshowmodal] = useState<boolean>(false);
 
   const regionStore = useRegionSelectionStore();
-
+  const genreStore = useGenreSelectionStore();
   const [regionQuery, MyInfoQuery, ProfileQuery] = useQueries({
     queries: [
       { queryKey: ['region'], queryFn: async () => await getRegions() },
@@ -172,7 +173,7 @@ export const EditProfile = () => {
     const newRegionId = regionStore.selectedRegionId || ''; // 기본값을 빈 문자열로 설정
 
     // 장르 ID 리스트를 가져오기
-    const genreIdList = searchThemesStore.filters.genreList || []; // 장르가 없을 경우 빈 배열로 설정
+    const genreIdList = genreStore.selectedGenreIds || []; // 장르가 없을 경우 빈 배열로 설정
 
     if (gender) {
       // gender가 정의된 경우에만 mutate 호출
@@ -199,22 +200,18 @@ export const EditProfile = () => {
   };
 
   const getSelectedGenresText = () => {
-    let str = '';
-    const selectedGenres = ProfileQuery.data?.data.genreList; // ['SF', '동화']
+    const selectedGenres = genreStore.selectedGenreNames;
 
-    if (selectedGenres && selectedGenres.length > 0) {
+    if (selectedGenres.length > 0) {
       if (selectedGenres.length > 4) {
-        str = '장르 ' + selectedGenres.length;
+        return `장르 ${selectedGenres.length}개`;
       } else {
-        str = selectedGenres.join(', ');
+        return selectedGenres.join(', ');
       }
     } else {
-      str = '선택안함';
+      return '선택안함';
     }
-
-    return str;
   };
-
   const getText = () => {
     const selectedRegion = regionStore.selectedRegion;
     const selectedCity = regionStore.selectedCity;

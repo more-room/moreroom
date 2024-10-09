@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React from 'react';
+import React, { useState } from 'react';
 import {
   brandCss,
   containerCss,
@@ -10,7 +10,8 @@ import {
   profileCss,
   themeCss,
   updatedAtCss,
-  fixReview
+  fixReview,
+  errorimg
 } from './styles';
 import Rating from '../../../../components/Rating';
 import { Typography } from '../../../../components/Typography';
@@ -51,6 +52,7 @@ export const ReviewList = ({
   onReviewDeleted: (reviewId: number) => Promise<void>;
 }) => {
   const nav = useNavigate();
+  const [imgErr, setImgErr] = useState<boolean>(false);
 
   const handleClick = () => {
     nav(`/themes/${themeId}`);
@@ -128,7 +130,19 @@ export const ReviewList = ({
           </div>
         </div>
         <div css={posterCss} onClick={handleClick}>
-          <img src={poster} alt="방탈출 사진" />
+          {!imgErr ? (
+            <img src={poster} alt="포스터 사진" onError={() => setImgErr(true)} />
+          ) : (
+            <div css={errorimg}>
+            <Typography color="light" weight={500} size={0.75}>
+              포스터를
+            </Typography>
+            <Typography color="light" weight={500} size={0.75}>
+              준비중입니다
+            </Typography>
+          </div>
+          )}
+          
         </div>
       </div>
       <div css={contentCss}>
