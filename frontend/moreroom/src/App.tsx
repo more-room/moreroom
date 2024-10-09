@@ -46,47 +46,59 @@ function App() {
   const nav = useNavigate();
   const themeId = useParams();
   const authRef = /^(\/(auth))(\/.*)?$/;
-  const [themeQuery, cafeQuery] = useQueries({
-    queries: [
-      {
-        queryKey: ['theme-detail'],
-        queryFn: async () => await getThemeDetail(Number(themeId.themeId)),
-        enabled: false,
-      },
-      {
-        queryKey: ['cafe-detail'],
-        queryFn: async () => await getCafeForTheme(Number(themeId.themeId)),
-        enabled: false,
-      },
-    ],
-  });
 
   if (!authRef.test(location.pathname)) {
     sessionValidate();
   }
 
   useEffect(() => {
-    if (location.pathname.split('/').includes('api')) {
-      getQRReview(Number(themeId.themeId));
-      themeQuery.refetch();
-      cafeQuery.refetch();
+    const paths = location.pathname.split('/');
+    if (paths.includes('api')) {
+      const themePath = location.pathname.split('?');
+      console.log('themePath = ', themePath);
+      const themeId = themePath[themePath.length - 1].split('=')[1];
+      console.log('themeId = ', themeId);
 
+      getQRReview(Number(themeId));
       const themeItem: IThemeItem = {
-        themeId: themeQuery.data!.data.theme.themeId,
-        poster: themeQuery.data!.data.theme.poster,
-        title: themeQuery.data!.data.theme.title,
-        playtime: themeQuery.data!.data.theme.playtime,
-        genreList: themeQuery.data!.data.theme.genreList,
-        review: themeQuery.data!.data.theme.review,
-        regionId: cafeQuery.data!.data.regionId,
+        themeId: 0,
+        poster: '',
+        title: '',
+        playtime: 0,
+        genreList: [],
+        review: {
+          count: 0,
+          score: 0,
+        },
+        regionId: '',
         cafe: {
-          cafeId: cafeQuery.data!.data.cafeId,
-          brandName: cafeQuery.data!.data.brandName,
-          branchName: cafeQuery.data!.data.branchName,
+          cafeId: 0,
+          brandName: '',
+          branchName: '',
           cafeName: '',
-          address: cafeQuery.data!.data.address,
+          address: '',
         },
       };
+
+      getThemeDetail(Number(themeId)).then((res) => {
+        themeItem.themeId = res.data.theme.themeId;
+        themeItem.poster = res.data.theme.poster;
+        themeItem.title = res.data.theme.title;
+        themeItem.playtime = res.data.theme.playtime;
+        themeItem.genreList = [...res.data.theme.genreList];
+        themeItem.review = { ...res.data.theme.review };
+      });
+      getCafeForTheme(Number(themeId)).then((res) => {
+        themeItem.regionId = res.data.regionId;
+        themeItem.cafe = {
+          cafeId: res.data.cafeId,
+          brandName: res.data.brandName,
+          branchName: res.data.branchName,
+          cafeName: '',
+          address: res.data.address,
+        };
+      });
+      console.log('themeItem = ', themeItem);
       nav('/review/write', {
         state: { themeItem },
       });
