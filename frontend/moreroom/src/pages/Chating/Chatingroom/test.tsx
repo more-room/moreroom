@@ -206,6 +206,28 @@ export const ChatingRoomFetch = () => {
       {/* 공지사항 수정 모달 */}
       {isNoticeModalOpen && (
         <div>
+          {/* <CustomModal
+            twoBtn
+            type="confirm"
+            handler={handleNoticeSave}
+            outlinedHandler={handleNoticeCancel}
+            children={['확인', '취소']}
+            ment={
+              <div css={container}>
+                <Typography color="light" size={1} weight={400}>
+                  공지사항 수정
+                </Typography>
+                <div css={inputbox}>
+                  <input
+                    type="text"
+                    value={tempNotice}
+                    onChange={(e) => setTempNotice(e.target.value)}
+                    css={input}
+                  />
+                </div>
+              </div>
+            }
+          ></CustomModal> */}
           <Modal height={30}>
             <div css={modalContent}>
               <Typography color="light" size={1} weight={400}>

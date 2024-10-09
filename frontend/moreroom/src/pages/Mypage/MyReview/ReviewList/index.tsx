@@ -93,7 +93,7 @@ export const ReviewList = ({
       <div css={headerCss}>
         <div css={leftContentCss}>
           <div css={profileCss}>
-            <img src={profileSrc} alt="프로필 사진" />
+            <img src={`/profiles/profile${profileSrc}.png`} alt="프로필 사진" />
             <div>
               <Typography color="light" size={0.8} weight={500}>
                 {nickname}

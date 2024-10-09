@@ -398,13 +398,6 @@ export const ReviewReadFetch = () => {
           </Button>
         </div>
       </div>
-
-      <BottomBar
-        css={bottombarcss}
-        icons={[<BellIcon />, <BellIcon />, <BellIcon />]}
-        menus={['메뉴1', '메뉴2', '메뉴3']}
-        onHandleChange={() => console.log('바텀바 선택됨')}
-      />
     </div>
   );
 };

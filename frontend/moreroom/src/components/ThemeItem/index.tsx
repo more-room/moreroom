@@ -12,6 +12,7 @@ import { MapPinIcon, StarIcon } from '@heroicons/react/24/solid';
 import { Icon } from '../Icon';
 import { Typography } from '../Typography';
 import { LabeledTypography } from '../LabeledTypography';
+import { css } from '@emotion/react';
 
 export const ThemeItem = ({
   theme,
@@ -41,19 +42,23 @@ export const ThemeItem = ({
       )}
       <div css={infoCss}>
         <div css={infoItemCss}>
-          <Icon color="primary" size={1}>
-            <MapPinIcon />
-          </Icon>
+          <div>
+            <Icon color="primary" size={1}>
+              <MapPinIcon />
+            </Icon>
+          </div>
           <Typography
             color="grey"
             scale="500"
             size={0.8125}
             weight={500}
-            style={{
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-            }}
+            css={css`
+              @media (max-width: 300px) {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+              }
+            `}
           >
             {theme.cafe.branchName
               ? theme.cafe.brandName + ' - ' + theme.cafe.branchName
