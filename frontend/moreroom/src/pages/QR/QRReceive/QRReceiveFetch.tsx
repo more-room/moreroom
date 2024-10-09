@@ -5,12 +5,17 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { getThemeDetail } from '../../../apis/themeApi';
 import { getCafeForTheme } from '../../../apis/cafeApi';
 import { IThemeItem } from '../../../types/themeTypes';
+import { getQRReview } from '../../../apis/reviewApi';
 
 export const QRReceiveFetch = () => {
   const params = useParams();
   const nav = useNavigate();
-  const [themeQuery, cafeQuery] = useSuspenseQueries({
+  const [qrQuery, themeQuery, cafeQuery] = useSuspenseQueries({
     queries: [
+      {
+        queryKey: ['qr'],
+        queryFn: async () => await getQRReview(Number(params.themeId)),
+      },
       {
         queryKey: ['theme-qr'],
         queryFn: async () => await getThemeDetail(Number(params.themeId)),
@@ -22,7 +27,7 @@ export const QRReceiveFetch = () => {
     ],
   });
 
-  [themeQuery, cafeQuery].some((query) => {
+  [qrQuery, themeQuery, cafeQuery].some((query) => {
     if (query.error && !query.isFetching) {
       throw query.error;
     }
