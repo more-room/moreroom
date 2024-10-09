@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './App.css';
 import {
   Route,
@@ -40,7 +40,7 @@ import { getThemeDetail } from './apis/themeApi';
 import { getCafeForTheme } from './apis/cafeApi';
 import { IThemeItem } from './types/themeTypes';
 
-async function App() {
+function App() {
   const modalStore = useModalStore();
   const location = useLocation();
   const nav = useNavigate();
@@ -65,32 +65,35 @@ async function App() {
     sessionValidate();
   }
 
-  if (location.pathname.split('/').includes('api')) {
-    console.log(location.pathname);
-    await getQRReview(Number(themeId.themeId));
-    await themeQuery.refetch();
-    await cafeQuery.refetch();
+  useEffect(() => {
+    if (location.pathname.split('/').includes('api')) {
+      getQRReview(Number(themeId.themeId));
+      themeQuery.refetch();
+      cafeQuery.refetch();
 
-    const themeItem: IThemeItem = {
-      themeId: themeQuery.data!.data.theme.themeId,
-      poster: themeQuery.data!.data.theme.poster,
-      title: themeQuery.data!.data.theme.title,
-      playtime: themeQuery.data!.data.theme.playtime,
-      genreList: themeQuery.data!.data.theme.genreList,
-      review: themeQuery.data!.data.theme.review,
-      regionId: cafeQuery.data!.data.regionId,
-      cafe: {
-        cafeId: cafeQuery.data!.data.cafeId,
-        brandName: cafeQuery.data!.data.brandName,
-        branchName: cafeQuery.data!.data.branchName,
-        cafeName: '',
-        address: cafeQuery.data!.data.address,
-      },
-    };
-    nav('/review/write', {
-      state: { themeItem },
-    });
-  }
+      const themeItem: IThemeItem = {
+        themeId: themeQuery.data!.data.theme.themeId,
+        poster: themeQuery.data!.data.theme.poster,
+        title: themeQuery.data!.data.theme.title,
+        playtime: themeQuery.data!.data.theme.playtime,
+        genreList: themeQuery.data!.data.theme.genreList,
+        review: themeQuery.data!.data.theme.review,
+        regionId: cafeQuery.data!.data.regionId,
+        cafe: {
+          cafeId: cafeQuery.data!.data.cafeId,
+          brandName: cafeQuery.data!.data.brandName,
+          branchName: cafeQuery.data!.data.branchName,
+          cafeName: '',
+          address: cafeQuery.data!.data.address,
+        },
+      };
+      nav('/review/write', {
+        state: { themeItem },
+      });
+    } else {
+      console.log(location.pathname);
+    }
+  }, []);
 
   return (
     <>
