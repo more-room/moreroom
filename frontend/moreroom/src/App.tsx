@@ -1,12 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import './App.css';
-import {
-  Route,
-  Routes,
-  useLocation,
-  useNavigate,
-  useParams,
-} from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import { ThemeList } from './pages/Themes/ThemeList';
 import { Modal } from './components/Modal';
 import { useModalStore } from './stores/modalStore';
@@ -34,78 +28,16 @@ import { ReviewWrite } from './pages/Review/ReviewWrite';
 import { EditParty } from './pages/Party/EditParty';
 import { ReviewFix } from './pages/Mypage/MyReview/ReviewFix';
 import { sessionValidate } from './apis/authApi';
-import { getQRReview } from './apis/reviewApi';
-import { useQueries } from '@tanstack/react-query';
-import { getThemeDetail } from './apis/themeApi';
-import { getCafeForTheme } from './apis/cafeApi';
-import { IThemeItem } from './types/themeTypes';
+import { QRReceive } from './pages/QR/QRReceive';
 
 function App() {
   const modalStore = useModalStore();
   const location = useLocation();
-  const nav = useNavigate();
-  const themeId = useParams();
   const authRef = /^(\/(auth))(\/.*)?$/;
 
   if (!authRef.test(location.pathname)) {
     sessionValidate();
   }
-
-  useEffect(() => {
-    const paths = location.pathname.split('/');
-    if (paths.includes('api')) {
-      const themePath = location.pathname.split('?');
-      console.log('themePath = ', themePath);
-      const themeId = themePath[themePath.length - 1].split('=')[1];
-      console.log('themeId = ', themeId);
-
-      getQRReview(Number(themeId));
-      const themeItem: IThemeItem = {
-        themeId: 0,
-        poster: '',
-        title: '',
-        playtime: 0,
-        genreList: [],
-        review: {
-          count: 0,
-          score: 0,
-        },
-        regionId: '',
-        cafe: {
-          cafeId: 0,
-          brandName: '',
-          branchName: '',
-          cafeName: '',
-          address: '',
-        },
-      };
-
-      getThemeDetail(Number(themeId)).then((res) => {
-        themeItem.themeId = res.data.theme.themeId;
-        themeItem.poster = res.data.theme.poster;
-        themeItem.title = res.data.theme.title;
-        themeItem.playtime = res.data.theme.playtime;
-        themeItem.genreList = [...res.data.theme.genreList];
-        themeItem.review = { ...res.data.theme.review };
-      });
-      getCafeForTheme(Number(themeId)).then((res) => {
-        themeItem.regionId = res.data.regionId;
-        themeItem.cafe = {
-          cafeId: res.data.cafeId,
-          brandName: res.data.brandName,
-          branchName: res.data.branchName,
-          cafeName: '',
-          address: res.data.address,
-        };
-      });
-      console.log('themeItem = ', themeItem);
-      nav('/review/write', {
-        state: { themeItem },
-      });
-    } else {
-      console.log(location.pathname);
-    }
-  }, []);
 
   return (
     <>
@@ -151,6 +83,12 @@ function App() {
         <Route path="/mypage/myreview/fix" element={<ReviewFix />} />
         <Route path="/review" element={<Review />} />
         <Route path="/review/write" element={<ReviewWrite />} />
+
+        {/* QR 수신 */}
+        <Route
+          path="/review/qr-verification/:themeId"
+          element={<QRReceive />}
+        />
       </Routes>
       {modalStore.isOpen && (
         <Modal height={modalStore.height}>{modalStore.contents}</Modal>
