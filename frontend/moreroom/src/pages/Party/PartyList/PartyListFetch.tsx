@@ -13,11 +13,12 @@ import { Pending } from './PartyItem/Pending';
 import { Notification } from '../../../components/Notification';
 import NoResult from '../../../components/common/NoResult';
 
-
 export const PartyListFetch = () => {
   const [showDelNotification, setShowDelNotification] =
     useState<boolean>(false);
   const [showMatchingNotification, setshowMatchingNotification] =
+    useState<boolean>(false);
+  const [showPendingNotification, setShowPendingNotification] =
     useState<boolean>(false);
 
   const [currentPartyId, setCurrentPartyId] = useState<number>(0);
@@ -29,10 +30,7 @@ export const PartyListFetch = () => {
     queryFn: async () => await getPartyList(),
   });
 
-  console.log(PartyQuery);
-
   const [uuid, setUuid] = useState<string>('');
-
 
   const { mutate: deleteMutate } = useMutation({
     mutationFn: async () => await delParty(currentPartyId),
@@ -55,9 +53,9 @@ export const PartyListFetch = () => {
     throw PartyQuery.error;
   }
 
-  const MatchedHandler = (uuid:string, themeId: number) => {
-    setUuid(uuid)
-    setCurrentthemeId(themeId)
+  const MatchedHandler = (uuid: string, themeId: number) => {
+    setUuid(uuid);
+    setCurrentthemeId(themeId);
     setshowMatchingNotification(true);
   };
 
@@ -71,18 +69,28 @@ export const PartyListFetch = () => {
   };
 
   const { mutate: approveMutate } = useMutation({
-    mutationFn: async ({ accept, uuid, themeId }: { accept: boolean; uuid: string, themeId:number }) => 
-      await partyApprove(accept, uuid, themeId),
+    mutationFn: async ({
+      accept,
+      uuid,
+      themeId,
+    }: {
+      accept: boolean;
+      uuid: string;
+      themeId: number;
+    }) => await partyApprove(accept, uuid, themeId),
     onSuccess: () => alert('매칭 완료'),
     onError: () => alert('매칭 응답 중 오류가 발생했습니다.'),
   });
-  
-  const handleMatchingResponse = (accept: boolean, uuid: string, themeId: number) => {
-    approveMutate({ accept, uuid, themeId }); // 객체로 전달
+
+  const handleMatchingResponse = (
+    accept: boolean,
+    uuid: string,
+    themeId: number,
+  ) => {
+    approveMutate({ accept, uuid, themeId });
     setshowMatchingNotification(false);
     window.location.reload(); // 강제 새로고침했지만 나중에 수정 예정
   };
-  
 
   return (
     <div>
@@ -103,11 +111,17 @@ export const PartyListFetch = () => {
               {party.status.statusName === 'MATCHED' && (
                 <Matched
                   party={party}
-                  handler={() => MatchedHandler(party.uuid, party.theme.themeId)} 
+                  handler={() =>
+                    MatchedHandler(party.uuid, party.theme.themeId)
+                  }
                 />
               )}
               {party.status.statusName === 'PENDING' && (
-                <Pending party={party} />
+                <Pending
+                party={party}
+                handler={() =>
+                  setShowPendingNotification(true)}
+              />
               )}
               {party.status.statusName === 'DISABLED' && (
                 <NotMatched
@@ -132,11 +146,20 @@ export const PartyListFetch = () => {
         <Notification
           handler={() => handleMatchingResponse(true, uuid, currenthemeId)}
           xhandler={() => setshowMatchingNotification(false)}
-          outlinedHandler={() => handleMatchingResponse(false, uuid, currenthemeId)}
+          outlinedHandler={() =>
+            handleMatchingResponse(false, uuid, currenthemeId)
+          }
           xbtn
           ment="파티 매칭을 수락하시겠습니까?"
           children={['수락하기', '거절하기']}
           twoBtn
+          type="confirm"
+        />
+      )}
+      {showPendingNotification && (
+        <Notification
+          handler={() => setShowPendingNotification(false)}
+          ment="모든 파티원이 수락하지 않았어요!"
           type="confirm"
         />
       )}

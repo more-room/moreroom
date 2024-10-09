@@ -104,25 +104,6 @@ export const inputStyle = css`
   font-family: 'paperlogy';
 `;
 
-export const modalContent = css`
-  /* display: flex; */
-  justify-content: center;
-  align-items: center;
-  padding: 1rem;
-  border-radius: 8px;
-  width: 100%;
-  box-sizing: border-box;
-  font-family: 'paperlogy';
-  /* margin-top: 1rem; */
-`;
-
-export const modalTitle = css`
-  font-size: 1.2rem;
-  font-weight: bold;
-  margin-bottom: 1rem;
-  color: ${Colors['grey']['700']};
-`;
-
 export const btnContainerCss = css`
   display: flex;
   justify-content: flex-end;

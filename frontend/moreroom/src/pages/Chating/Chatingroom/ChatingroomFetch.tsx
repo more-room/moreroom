@@ -10,28 +10,25 @@ import {
   inputBar,
   // input,
   modalContent,
-  modalTitle,
-  inputStyle,
   btnContainerCss,
-} from './styles'; // 필요한 스타일 임포트
-import { MegaphoneIcon, CogIcon } from '@heroicons/react/24/solid'; // 설정 아이콘 임포트
+} from './styles'; 
+import { MegaphoneIcon, CogIcon } from '@heroicons/react/24/solid'; 
 import { Icon } from '../../../components/Icon';
-import { ArrowUpCircleIcon } from '@heroicons/react/24/solid'; // 전송 버튼으로 사용할 아이콘
+import { ArrowUpCircleIcon } from '@heroicons/react/24/solid'; 
 import { useSuspenseQueries } from '@tanstack/react-query';
 import {
   getChatRoomInfo,
   getNotice,
   registerNotice,
-} from '../../../apis/chatApi'; // 파티 목록 API 호출
+} from '../../../apis/chatApi'; 
 import { useChat } from '../../../hooks/useChat';
 import { getMyInfo } from '../../../apis/mypageApi';
 import { Typography } from '../../../components/Typography';
 import { IChatListItem } from '../../../types/chatingTypes';
 import { ChatBubble } from './ChatBubble';
 import { useChatingRoomStore } from '../../../stores/chatingroomStore';
-import { Modal } from '../../../components/Modal'; // 모달 컴포넌트 임포트
-import { Button } from '../../../components/Button'; // 버튼 컴포넌트 임포트
-import { CustomModal } from '../../../components/common/CustomModal';
+import { Modal } from '../../../components/Modal'; 
+import { Button } from '../../../components/Button'; 
 import { container, input, inputbox } from '../Modal/RoomName/styles';
 
 export const ChatingRoomFetch = () => {

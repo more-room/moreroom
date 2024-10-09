@@ -67,14 +67,6 @@ export const modalContent = css`
   flex-direction: column;
   justify-content: center;
   margin: 3rem 1.5rem;
-  /* justify-content: center;
-  align-items: center;
-  padding: 1rem;
-  border-radius: 8px;
-  width: 100%;
-  box-sizing: border-box; */
-  /* margin-top: 1rem; */
-
 `;
 
 
@@ -95,14 +87,6 @@ export const btnContainerCss = css`
   justify-content: flex-end;
   margin-top: 1rem;
   gap: 0.5rem;
-`;
-
-export const modalTitle = css`
-  font-size: 1.2rem;
-  font-weight: bold;
-  margin-bottom: 0.5rem;
-  margin-top: 0.2rem;
-  color: ${Colors['grey']['700']};
 `;
 
 export const inputStyle = css`

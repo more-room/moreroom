@@ -28,8 +28,6 @@ import {
   memberImage,
   memberName,
   inputStyle,
-  modalContent,
-  modalTitle,
   rangeInputStyle,
   btnContainerCss,
   container,
@@ -40,10 +38,8 @@ import { UserIcon } from '@heroicons/react/24/solid';
 import { Button } from '../../../../components/Button';
 import { Colors } from '../../../../styles/globalStyle';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { Modal } from '../../../../components/Modal'; // Provided Modal component
-import { Notification } from '../../../../components/Notification'; // Provided Notification component
-import { CustomModal } from '../../../../components/common/CustomModal';
-import { RoomName } from '../../Modal/RoomName';
+import { Modal } from '../../../../components/Modal'; 
+import { Notification } from '../../../../components/Notification';
 import { input } from '../../Modal/RoomName/styles';
 import { inputbox } from '../styles';
 
@@ -187,10 +183,6 @@ export const RoomdetailFetch = () => {
     setRoomNameModalOpen(true);
   };
 
-  const handleRoomNameUpdate = (roomName: string) => {
-    setNewRoomName(roomName);
-  };
-
   const handleDateModalOpen = () => {
     setNewDate(chatRoomInfo.date);
     setDateModalOpen(true);
@@ -228,19 +220,6 @@ export const RoomdetailFetch = () => {
 
       {/* 채팅방 이름 변경 모달 */}
       {roomNameModalOpen && (
-        // <CustomModal
-        //   twoBtn
-        //   type="confirm"
-        //   handler={handleConfirmRoomNameChange}
-        //   outlinedHandler={() => setRoomNameModalOpen(false)}
-        //   children={['확인', '취소']}
-        //   ment={
-        //     <RoomName
-        //       roomname={chatRoomInfo.roomName}
-        //       onhandler={handleRoomNameUpdate}
-        //     />
-        //   }
-        // ></CustomModal>
         <Modal height={35}>
           <div css={container}>
             <Typography color="light" size={1} weight={400}>
@@ -278,26 +257,6 @@ export const RoomdetailFetch = () => {
 
       {/* 날짜 변경 모달 */}
       {dateModalOpen && (
-        // <CustomModal
-        //   twoBtn
-        //   type="confirm"
-        //   handler={handleConfirmDateChange}
-        //   outlinedHandler={() => setDateModalOpen(false)}
-        //   children={['확인', '취소']}
-        //   ment={
-        //     <div css={container}>
-        //       <Typography color="light" size={1} weight={400}>
-        //         새로운 날짜를 입력해주세요.
-        //       </Typography>
-        //       <input
-        //         type="text"
-        //         value={newDate}
-        //         onChange={(e) => setNewDate(e.target.value)}
-        //         css={inputStyle}
-        //       />
-        //     </div>
-        //   }
-        // ></CustomModal>
         <Modal height={35}>
           <div css={container}>
             <Typography color="light" size={1} weight={400}>
@@ -332,33 +291,6 @@ export const RoomdetailFetch = () => {
       {/* 최대 멤버 변경 모달 */}
       {maxMemberModalOpen && (
         <div>
-          {/* <CustomModal
-            twoBtn
-            type="confirm"
-            handler={handleConfirmMaxMemberChange}
-            outlinedHandler={() => setMaxMemberModalOpen(false)}
-            children={['확인', '취소']}
-            ment={
-              <div css={container}>
-                <Typography color="light" size={1} weight={400}>
-                  새로운 최대 인원 수를 입력하세요
-                </Typography>
-                <input
-                  type="range"
-                  min="1"
-                  max="10"
-                  value={newMaxMember}
-                  onChange={(e) => setNewMaxMember(parseInt(e.target.value))}
-                  css={rangeInputStyle}
-                />
-                <div style={{ textAlign: 'center', margin: '0.5rem 0' }}>
-                  <Typography color="grey">
-                    현재 인원 수: {newMaxMember}
-                  </Typography>
-                </div>
-              </div>
-            }
-          ></CustomModal> */}
           <Modal height={35}>
             <div css={container}>
               <Typography color="light" size={1} weight={400}>

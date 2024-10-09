@@ -21,7 +21,6 @@ export const Genre = () => {
   const { genreIdList, setSignUpData } = useSignUpStore();
   const { 
     selectedGenreIds, 
-    selectedGenreNames, 
     setSelectedGenre, 
     removeSelectedGenre, 
     resetSelection 
