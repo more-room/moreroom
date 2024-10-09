@@ -116,17 +116,10 @@ public class RecommendationService {
         GenresTheme genresThemeMost = null;
         GenresTheme genresThemeLeast = null;
         if (genreList.size() >= 2) {
-            System.out.println("genreList.size() = " + genreList.size());
-            System.out.println(
-                "genreThemeRepository.findByGroupId(\"1\") = " + genreThemeRepository.findByGroupId(
-                    "1"));
             genresThemeMost = genreThemeRepository.findByGroupId(
                 Integer.toString(genreList.get(0).get(0, Integer.class)));
             genresThemeLeast = genreThemeRepository.findByGroupId(
                 Integer.toString(genreList.get(genreList.size() - 1).get(0, Integer.class)));
-
-            System.out.println("genresThemeMost = " + genresThemeMost.getGenreTopThemes());
-            System.out.println("genresThemeLeast = " + genresThemeLeast.getGenreTopThemes());
         } else if (genreList.size() == 1) {
             Long l = genreList.get(0).get(1, Long.class);
             if (l == null) {

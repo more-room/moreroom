@@ -10,6 +10,7 @@ import com.moreroom.domain.review.dto.request.ReviewUpdateRequestDTO;
 import com.moreroom.domain.review.entity.Review;
 import com.moreroom.domain.review.service.ReviewService;
 import com.moreroom.global.dto.PageResponseDto;
+import com.moreroom.global.util.FindMemberService;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URI;
@@ -33,6 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ReviewController {
 
     private final ReviewService reviewService;
+    private final FindMemberService findMemberService;
 
     @PostMapping()
     public ResponseEntity<Review> addReview(@RequestBody ReviewRequestDTO reviewRequestDTO) {
@@ -49,9 +51,9 @@ public class ReviewController {
                                             @RequestParam(name = "pageSize", required = false, defaultValue = "10") Integer pageSize,
                                             @RequestParam(name = "sortOrder", required = false, defaultValue = "desc") String sortOrder,
         @RequestParam(name = "sortBy", required = false, defaultValue = "createdAt") String sortBy) {
-
+        Long memberId = findMemberService.findCurrentMember();
         PageResponseDto reviewList = reviewService.findAll(themeId, pageNumber, pageSize, sortOrder,
-            sortBy);
+            sortBy, memberId);
 
         return new ResponseEntity<>(reviewList, HttpStatus.OK);
     }
