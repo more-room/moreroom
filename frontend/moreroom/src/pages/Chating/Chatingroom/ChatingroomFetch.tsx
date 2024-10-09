@@ -3,34 +3,33 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { TopBar } from '../../../components/TopBar';
 import {
-  container,
   noticeContainer,
   title,
   noticedetail,
   chatbox,
   inputBar,
-  input,
+  // input,
   modalContent,
-  modalTitle,
-  inputStyle,
-} from './styles'; // 필요한 스타일 임포트
-import { MegaphoneIcon, CogIcon } from '@heroicons/react/24/solid'; // 설정 아이콘 임포트
+  btnContainerCss,
+} from './styles'; 
+import { MegaphoneIcon, CogIcon } from '@heroicons/react/24/solid'; 
 import { Icon } from '../../../components/Icon';
-import { ArrowUpCircleIcon } from '@heroicons/react/24/solid'; // 전송 버튼으로 사용할 아이콘
+import { ArrowUpCircleIcon } from '@heroicons/react/24/solid'; 
 import { useSuspenseQueries } from '@tanstack/react-query';
 import {
   getChatRoomInfo,
   getNotice,
   registerNotice,
-} from '../../../apis/chatApi'; // 파티 목록 API 호출
+} from '../../../apis/chatApi'; 
 import { useChat } from '../../../hooks/useChat';
 import { getMyInfo } from '../../../apis/mypageApi';
 import { Typography } from '../../../components/Typography';
 import { IChatListItem } from '../../../types/chatingTypes';
 import { ChatBubble } from './ChatBubble';
 import { useChatingRoomStore } from '../../../stores/chatingroomStore';
-import { Modal } from '../../../components/Modal'; // 모달 컴포넌트 임포트
-import { Button } from '../../../components/Button'; // 버튼 컴포넌트 임포트
+import { Modal } from '../../../components/Modal'; 
+import { Button } from '../../../components/Button'; 
+import { container, input, inputbox } from '../Modal/RoomName/styles';
 
 export const ChatingRoomFetch = () => {
   const navigate = useNavigate();
@@ -203,31 +202,32 @@ export const ChatingRoomFetch = () => {
 
       {/* 공지사항 수정 모달 */}
       {isNoticeModalOpen && (
-        <Modal height={35}>
-          <div css={modalContent}>
-            <h3 css={modalTitle}>공지사항 수정</h3>
-            <input
-              type="text"
-              value={tempNotice}
-              onChange={(e) => setTempNotice(e.target.value)}
-              css={inputStyle}
-            />
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'right',
-                marginTop: '1rem',
-              }}
-            >
-              <Button variant="contained" handler={handleNoticeSave}>
-                확인
-              </Button>
-              <Button variant="outlined" handler={handleNoticeCancel}>
-                취소
-              </Button>
+        <div>
+          <Modal height={30}>
+            <div css={modalContent}>
+              <Typography color="light" size={1} weight={400}>
+                공지사항 수정
+              </Typography>
+              <div css={inputbox}>
+                <input
+                  type="text"
+                  value={tempNotice}
+                  onChange={(e) => setTempNotice(e.target.value)}
+                  css={input}
+                />
+              </div>
+              <div css={btnContainerCss}
+              >
+                <Button variant="contained" rounded={0.5} handler={handleNoticeSave}>
+                  확인
+                </Button>
+                <Button variant="outlined" rounded={0.5} handler={handleNoticeCancel}>
+                  취소
+                </Button>
+              </div>
             </div>
-          </div>
-        </Modal>
+          </Modal>
+        </div>
       )}
 
       {/* 채팅 내역 */}

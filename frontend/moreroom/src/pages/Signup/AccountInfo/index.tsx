@@ -57,6 +57,7 @@ export const AccountInfo = ({ onSubmit }: UserDataFormProps) => {
 
   const [codemsg, setcodemsg] = useState<string>('');
   const [namemsg, setnamemsg] = useState<string>('');
+  const [emailmsg, setEmailmsg] = useState<string>('');
   // 이메일 유효성 검사
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -146,6 +147,7 @@ export const AccountInfo = ({ onSubmit }: UserDataFormProps) => {
       console.log(response);
       if (response.data.duplicated === 'False') {
         console.log('존재하지 않는 이메일입니다.');
+        setEmailmsg('사용 가능한 이메일입니다.')
         sendNumber();
         setCheck((prevCheck) => {
           const newCheck = { ...prevCheck, email: true };
@@ -256,6 +258,9 @@ export const AccountInfo = ({ onSubmit }: UserDataFormProps) => {
           전송
         </Button>
       </div>
+      <FormHelperText sx={{ color: Colors['secondary']['200'] }}>
+        {!emailError ? emailmsg : undefined}
+      </FormHelperText>
       <FormHelperText error id="component-error-text">
         {emailError}
       </FormHelperText>
