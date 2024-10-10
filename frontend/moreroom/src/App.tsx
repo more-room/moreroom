@@ -29,8 +29,6 @@ import { EditParty } from './pages/Party/EditParty';
 import { ReviewFix } from './pages/Mypage/MyReview/ReviewFix';
 import { sessionValidate } from './apis/authApi';
 import { QRReceive } from './pages/QR/QRReceive';
-import { onMessage } from 'firebase/messaging';
-import { messaging } from './settingFCM';
 
 function App() {
   const modalStore = useModalStore();
@@ -40,30 +38,6 @@ function App() {
   if (!authRef.test(location.pathname)) {
     sessionValidate();
   }
-
-  useEffect(() => {
-    // foreground 알림
-    onMessage(messaging, (payload) => {
-      const notificationTitle = payload.data?.title;
-      const notificationOptions: NotificationOptions | undefined = {
-        body: payload.data?.body,
-      };
-
-      /*console.log(payload.data);
-  const partyData = {
-    type: payload.data?.type,
-    uuid: payload.data?.uuid,
-    themeId: Number(payload.data?.themeId),
-    partyRequestId: payload.data?.partyRequestId,
-  };
-
-  useMatchedStore.getState().setPartyData(partyData);*/
-
-      if (Notification.permission === 'granted') {
-        new Notification(notificationTitle!, notificationOptions);
-      }
-    });
-  }, []);
 
   return (
     <>

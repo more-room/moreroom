@@ -51,13 +51,16 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-const messaging = firebase.messaging();
-
-messaging.onBackgroundMessage((payload) => {
-  const notificationTitle = payload.notification.title;
-  const notificationOptions = {
-    body: payload.notification.body,
-  };
-
-  self.registration.showNotification(notificationTitle, notificationOptions);
+self.addEventListener('push', function (e) {
+  if (e.data) {
+    const data = e.data.json();
+    console.log(data);
+    e.waitUntil(
+      self.registration.showNotification(data.notification.title, {
+        body: data.notification.body,
+        icon: '/profiles/profile1.png',
+        image: '/profiles/profile1.png',
+      }),
+    );
+  }
 });
