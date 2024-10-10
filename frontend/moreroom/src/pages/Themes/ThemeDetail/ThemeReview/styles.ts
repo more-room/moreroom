@@ -42,3 +42,19 @@ export const rating = css`
   align-items: center;
   column-gap: 0.125rem;
 `;
+
+/* 외부 리뷰 */
+export const row = css`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+export const center = css`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 0 0 0;
+`;

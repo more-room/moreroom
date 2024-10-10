@@ -2,6 +2,7 @@ import {
   IReviewList,
   IReviewListRequestParameter,
   IReviewCreate,
+  IExReviewList,
 } from '../types/reviewTypes';
 import { api } from './interceptors';
 
@@ -40,4 +41,9 @@ export const getQRReview = (themeId: number) => {
       themeId: themeId,
     },
   });
+};
+
+/* 외부 리뷰 조회 */
+export const getExternalReview = (params: IReviewListRequestParameter) => {
+  return api.get<IExReviewList>('/api/external-review', { params: params });
 };
