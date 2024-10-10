@@ -52,25 +52,3 @@ export const handleAllowNotification = async () => {
     console.error('토큰 에러', error);
   }
 };
-
-// foreground 알림
-onMessage(messaging, (payload) => {
-  const notificationTitle = payload.data?.title;
-  const notificationOptions: NotificationOptions | undefined = {
-    body: payload.data?.body,
-  };
-
-  /*console.log(payload.data);
-  const partyData = {
-    type: payload.data?.type,
-    uuid: payload.data?.uuid,
-    themeId: Number(payload.data?.themeId),
-    partyRequestId: payload.data?.partyRequestId,
-  };
-
-  useMatchedStore.getState().setPartyData(partyData);*/
-
-  if (Notification.permission === 'granted') {
-    new Notification(notificationTitle!, notificationOptions);
-  }
-});
