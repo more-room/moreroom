@@ -1,7 +1,7 @@
-import { getToken, onMessage } from 'firebase/messaging';
-import { messaging } from '../settingFCM';
+import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 import { postDeviceToken } from '../apis/notificationApi';
-import { useMatchedStore } from '../stores/partyStore';
+import { messaging } from '../settingFCM';
+// import { useMatchedStore } from '../stores/partyStore';
 
 // service worker 등록
 export const registerServiceWorker = () => {
@@ -18,6 +18,8 @@ export const registerServiceWorker = () => {
     });
   }
 };
+
+// const messaging = getMessaging();
 
 // 알림 허용
 export const handleAllowNotification = async () => {
@@ -53,11 +55,12 @@ export const handleAllowNotification = async () => {
 
 // foreground 알림
 onMessage(messaging, (payload) => {
-  const notificationTitle = payload.notification?.title;
+  const notificationTitle = payload.data?.title;
   const notificationOptions: NotificationOptions | undefined = {
-    body: payload.notification?.body,
+    body: payload.data?.body,
   };
-  console.log(payload.data);
+
+  /*console.log(payload.data);
   const partyData = {
     type: payload.data?.type,
     uuid: payload.data?.uuid,
@@ -65,7 +68,7 @@ onMessage(messaging, (payload) => {
     partyRequestId: payload.data?.partyRequestId,
   };
 
-  useMatchedStore.getState().setPartyData(partyData);
+  useMatchedStore.getState().setPartyData(partyData);*/
 
   if (Notification.permission === 'granted') {
     new Notification(notificationTitle!, notificationOptions);
