@@ -100,7 +100,7 @@ public class ReviewController {
         int width = 250;
         int height = 250;
 
-        String url = "https://j11d206.p.ssafy.io/api/review/qr-verification?themeId=" + themeId;
+        String url = "https://j11d206.p.ssafy.io/review/qr-verification/" + themeId;
 
         BitMatrix encode = new MultiFormatWriter()
             .encode(url, BarcodeFormat.QR_CODE, width, height);
