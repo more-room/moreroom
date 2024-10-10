@@ -27,6 +27,7 @@ import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -98,6 +99,12 @@ public class FcmService {
    */
   private String getAccessToken() throws IOException {
     String firebaseConfigPath = "firebase/d206-moreroom-firebase-adminsdk-byl7s-8676046b0a.json";
+    URL resourceUrl = getClass().getClassLoader().getResource("firebase/d206-moreroom-firebase-adminsdk-byl7s-8676046b0a.json");
+    if (resourceUrl != null) {
+      System.out.println("Resource URL: " + resourceUrl);
+    } else {
+      System.out.println("Resource not found");
+    }
     InputStream inputStream = getClass().getClassLoader().getResourceAsStream(firebaseConfigPath);
 //    try {
 //      inputStream = new ClassPathResource(firebaseConfigPath).getInputStream();
