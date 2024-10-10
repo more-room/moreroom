@@ -74,6 +74,7 @@ export interface ICafeThemeList {
 export interface ICafeThemeDetail extends Omit<ICafeCommon, 'cafeName'> {
   brandName: string;
   branchName: string;
+  cafeName: string;
   tel: string;
   link: string;
 }

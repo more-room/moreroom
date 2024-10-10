@@ -96,7 +96,7 @@ export const ReviewFix = () => {
         <div css={headerCss}>
           <div css={leftContentCss}>
             <div css={profileCss}>
-              <img src={profileSrc} alt="프로필 사진" />
+              <img src={`/profiles/profile${profileSrc}.png`} alt="프로필 사진" />
               <div>
                 <Typography color="light" size={0.8} weight={500}>
                   {nickname}
@@ -219,12 +219,7 @@ export const ReviewFix = () => {
         </Button>
       </div>
 
-      <BottomBar
-        css={bottombarcss}
-        icons={[<BellIcon />, <BellIcon />, <BellIcon />]}
-        menus={['메뉴1', '메뉴2', '메뉴3']}
-        onHandleChange={() => console.log('바텀바 선택됨')}
-      />
+      
     </div>
   );
 };

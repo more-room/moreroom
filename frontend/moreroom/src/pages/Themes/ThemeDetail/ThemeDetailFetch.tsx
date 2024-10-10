@@ -60,6 +60,7 @@ export const ThemeDetailFetch = () => {
   const cafeId = cafeQuery.data.data.cafeId;
   const brandName = cafeQuery.data.data.brandName;
   const branchName = cafeQuery.data.data.branchName;
+  const cafeName = cafeQuery.data.data.cafeName;
   const address = cafeQuery.data.data.address;
 
   return (
@@ -125,6 +126,7 @@ export const ThemeDetailFetch = () => {
               brandName,
               branchName,
               address,
+              cafeName
             },
           })
         }

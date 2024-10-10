@@ -46,7 +46,7 @@ export const ThemeList = () => {
     searchThemesStore.setFilters(after);
     themePageStore.setType('default');
   };
-
+  
   return (
     <div css={container}>
       <TopBar>

@@ -117,7 +117,7 @@ export const ReviewReadFetch = () => {
       cafeId: location.state?.cafeId,
       brandName: location.state?.brandName,
       branchName: location.state?.branchName,
-      cafeName: '',
+      cafeName: location.state?.cafeName,
       address: location.state?.address,
     },
   };
@@ -198,6 +198,10 @@ export const ReviewReadFetch = () => {
       setProcessingThumbsUp((prev) => ({ ...prev, [reviewId]: false })); // 로딩 상태 해제
     }
   };
+
+  
+  console.log(themeItem.cafe.cafeName)
+
 
   return (
     <>
