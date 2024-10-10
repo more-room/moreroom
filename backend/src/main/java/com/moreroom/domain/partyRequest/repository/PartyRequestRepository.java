@@ -55,4 +55,8 @@ public interface PartyRequestRepository extends JpaRepository<PartyRequest, Long
 
   @Query("select count(1) from PartyRequest pr where pr.matchingStatus = :status and pr.redisUuid = :uuid")
   int findAcceptedMemberCnt(@Param("status") MatchingStatus status, @Param("uuid") String uuid);
+
+  @Modifying
+  @Query("delete PartyRequest pr where pr.redisUuid = :uuid")
+  int deleteByUuid(String uuid);
 }
