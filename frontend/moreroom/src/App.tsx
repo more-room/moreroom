@@ -28,6 +28,7 @@ import { ReviewWrite } from './pages/Review/ReviewWrite';
 import { EditParty } from './pages/Party/EditParty';
 import { ReviewFix } from './pages/Mypage/MyReview/ReviewFix';
 import { sessionValidate } from './apis/authApi';
+import { QRReceive } from './pages/QR/QRReceive';
 
 function App() {
   const modalStore = useModalStore();
@@ -82,6 +83,12 @@ function App() {
         <Route path="/mypage/myreview/fix" element={<ReviewFix />} />
         <Route path="/review" element={<Review />} />
         <Route path="/review/write" element={<ReviewWrite />} />
+
+        {/* QR 수신 */}
+        <Route
+          path="/review/qr-verification/:themeId"
+          element={<QRReceive />}
+        />
       </Routes>
       {modalStore.isOpen && (
         <Modal height={modalStore.height}>{modalStore.contents}</Modal>
