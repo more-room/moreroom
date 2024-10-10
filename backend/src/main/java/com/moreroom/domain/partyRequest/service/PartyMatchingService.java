@@ -322,6 +322,8 @@ public class PartyMatchingService {
         partyRequestUtil.partyMade(uuid);
         //파티 결성
         partyService.createPartyAndJoin(themeId, uuid, member);
+        //파티 요청 삭제
+        partyRequestRepository.deleteByUuid(uuid);
         return Accept.PARTY_MADE;
       }
       return Accept.ACCEPTED;
