@@ -61,7 +61,7 @@ export const ReviewWrite = () => {
       .then((response) => {
         console.log('리뷰 작성 성공:', response.data);
         // 성공적으로 작성한 경우, 리뷰 리스트 페이지로 이동하거나 피드백을 사용자에게 제공할 수 있습니다.
-        navigate(-1); // 이전 화면으로 돌아가기
+        navigate('/mypage/myreview'); // 이전 화면으로 돌아가기
       })
       .catch((error) => {
         console.error('리뷰 작성 실패:', error);
