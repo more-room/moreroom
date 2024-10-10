@@ -13,6 +13,32 @@ self.addEventListener('activate', function (e) {
   console.log('FCM sw activate..');
 });
 
+self.addEventListener('notificationclick', function (event) {
+  event.notification.close();
+
+  event.waitUntil(
+    clients
+      .matchAll({ type: 'window', includeUncontrolled: true })
+      .then(function (clientList) {
+        // 이미 열려있는 창이 있는지 확인
+        for (var i = 0; i < clientList.length; i++) {
+          var client = clientList[i];
+          if (client.url === '/' && 'focus' in client) {
+            return client.focus();
+          }
+        }
+        // 앱이 열려있지 않은 경우, 새 창 열기
+        if (clients && clients.openWindow) {
+          // clients 객체 확인
+          return clients.openWindow('https://j11d206.p.ssafy.io');
+        } else {
+          console.log('clients 객체를 찾을 수 없습니다.');
+          return Promise.reject('clients.openWindow가 지원되지 않음');
+        }
+      }),
+  );
+});
+
 const firebaseConfig = {
   apiKey: 'AIzaSyA-a86dRyse6BqK0bSCJms1zHWMveTL00Q',
   authDomain: 'd206-moreroom.firebaseapp.com',
@@ -28,9 +54,10 @@ firebase.initializeApp(firebaseConfig);
 const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage((payload) => {
-  const notificationTitle = payload.title;
+  const notificationTitle = payload.notification.title;
   const notificationOptions = {
-    body: payload.body,
+    body: payload.notification.body,
   };
+
   self.registration.showNotification(notificationTitle, notificationOptions);
 });

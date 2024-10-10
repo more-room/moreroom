@@ -1,7 +1,7 @@
-import { getToken, onMessage } from 'firebase/messaging';
-import { messaging } from '../settingFCM';
+import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 import { postDeviceToken } from '../apis/notificationApi';
-import { useMatchedStore } from '../stores/partyStore';
+import { messaging } from '../settingFCM';
+// import { useMatchedStore } from '../stores/partyStore';
 
 // service worker 등록
 export const registerServiceWorker = () => {
@@ -18,6 +18,8 @@ export const registerServiceWorker = () => {
     });
   }
 };
+
+// const messaging = getMessaging();
 
 // 알림 허용
 export const handleAllowNotification = async () => {
@@ -50,24 +52,3 @@ export const handleAllowNotification = async () => {
     console.error('토큰 에러', error);
   }
 };
-
-// foreground 알림
-onMessage(messaging, (payload) => {
-  const notificationTitle = payload.notification?.title;
-  const notificationOptions: NotificationOptions | undefined = {
-    body: payload.notification?.body,
-  };
-  console.log(payload.data);
-  const partyData = {
-    type: payload.data?.type,
-    uuid: payload.data?.uuid,
-    themeId: Number(payload.data?.themeId),
-    partyRequestId: payload.data?.partyRequestId,
-  };
-
-  useMatchedStore.getState().setPartyData(partyData);
-
-  if (Notification.permission === 'granted') {
-    new Notification(notificationTitle!, notificationOptions);
-  }
-});

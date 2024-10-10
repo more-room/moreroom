@@ -106,23 +106,16 @@ public class FcmService {
       System.out.println("Resource not found");
     }
     InputStream inputStream = getClass().getClassLoader().getResourceAsStream(firebaseConfigPath);
-//    try {
-//      inputStream = new ClassPathResource(firebaseConfigPath).getInputStream();
-//      log.info("firebase json파일 열기 성공");
-//    } catch (IOException e) {
-//      log.info("IOException 또는 FileNotFoundException 발생", e);
-//    }
+
     if (inputStream == null) {
       log.info("inputStream이 null");
       return null;
     }
-//    log.info("googleCredentials 진입 전");
     GoogleCredentials googleCredentials = GoogleCredentials
         .fromStream(inputStream)
         .createScoped(List.of("https://www.googleapis.com/auth/cloud-platform"));
     inputStream.close();
     googleCredentials.refreshIfExpired();
-//    log.info("액세스 토큰: {}", googleCredentials.getAccessToken().getTokenValue());
     return googleCredentials.getAccessToken().getTokenValue();
   }
 
@@ -177,7 +170,7 @@ public class FcmService {
         .build();
   }
 
-  public FcmMessageDto makePartyFailedMessage(Member member, String deviceToken) {
+  public FcmMessageDto makePartyFailedMessage(String deviceToken) {
     Notification notification = Notification.builder()
         .title("파티 결성 실패!")
         .body("파티 결성에 실패했습니다😥")
@@ -196,6 +189,27 @@ public class FcmService {
             .data(data)
             .build())
         .build();
+  }
+
+  public FcmMessageDto makePartyMadeMessage(String deviceToken) {
+    Notification notification = Notification.builder()
+            .title("파티 결성 성공!")
+            .body("파티 결성에 성공했습니다")
+            .build();
+
+    Data data = Data.builder()
+            .type(MessageType.PARTY_MADE.toString())
+            .message("파티가 매칭되었습니다.")
+            .build();
+
+    return FcmMessageDto.builder()
+            .validateOnly(false)
+            .message(Message.builder()
+                    .token(deviceToken)
+                    .notification(notification)
+                    .data(data)
+                    .build())
+            .build();
   }
 
   private String getDeviceToken(Member member) {

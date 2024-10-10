@@ -233,6 +233,46 @@ async def process_party_matching(party_request, theme_matched_users):
     except Exception as e:
         print(f"파티 매칭 중 오류 발생: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
+    
+# 비동기 처리 및 최적화 적용
+async def process_party_matching_one(party_request, theme_matched_users):
+    global cached_party_request_df, cached_request_hashtag_df, cached_member_hashtag_df
+    cached_party_request_df = None
+    cached_request_hashtag_df = None
+    cached_member_hashtag_df = None
+    
+    try:
+        print(f"파티 요청 ID {party_request.party_request_id}을(를) 받았습니다.")
+        load_data()  # 데이터가 없으면 불러오고, 이미 있으면 캐싱된 데이터 사용
+        theme_id, member_id = get_theme_and_member_id_by_party_request(party_request.party_request_id, theme_matched_users)
+        if theme_id is None or member_id is None:
+            return {"party_request_id": int(party_request.party_request_id), "message": "이미 매칭된 유저이거나 잘못된 요청이므로 파티가 생성되지 않았습니다."}
+        candidate_users = get_candidate_users(theme_id, theme_matched_users)
+        if len(candidate_users) < 3:
+            return {"party_request_id": int(party_request.party_request_id), "message": "매칭에 필요한 유저 수가 부족합니다."}
+        similar_users = calculate_custom_similarity(candidate_users, member_id, party_request.party_request_id)
+        if not similar_users:
+            return {"party_request_id": int(party_request.party_request_id), "message": "파티를 구성할 충분한 유저를 찾지 못했습니다."}
+                # 해시태그 매트릭스를 생성하고 코사인 유사도 계산
+        member_hashtag_matrix = cached_member_hashtag_df.pivot_table(index='memberId', columns='hashtagId', aggfunc=lambda x: 1, fill_value=0)
+        filtered_matrix = member_hashtag_matrix.loc[similar_users]
+        similarity_matrix = cosine_similarity(filtered_matrix)
+
+        # 파티 생성
+        party_members = create_party(similarity_matrix=similarity_matrix, similar_users=similar_users, target_member_id=member_id, theme_id=theme_id, theme_matched_users=theme_matched_users)
+        if party_members is None:
+            return {"party_request_id": int(party_request.party_request_id), "message": "파티를 구성할 충분한 유저를 찾지 못했습니다."}
+
+        # 최종 결과 반환
+        return {
+            "party_request_id": int(party_request.party_request_id),
+            "theme_id": int(theme_id),
+            "masterId": int(member_id),
+            "party_members": party_members
+        }
+    except Exception as e:
+        print(f"파티 매칭 중 오류 발생: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 # 비동기 배치 처리 함수
 async def process_party_matching_batch(party_requests, theme_matched_users):
