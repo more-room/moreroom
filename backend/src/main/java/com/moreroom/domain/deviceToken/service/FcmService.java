@@ -110,7 +110,7 @@ public class FcmService {
     InputStream inputStream = null;
     try {
       inputStream = new ClassPathResource(firebaseConfigPath).getInputStream();
-      log.info("firebase jason파일 열기 성공");
+      log.info("firebase json파일 열기 성공");
     } catch (IOException e) {
       log.info("IOException 또는 FileNotFoundException 발생", e);
     }
