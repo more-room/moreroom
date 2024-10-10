@@ -4,7 +4,7 @@ import { useSuspenseQueries } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getThemeDetail } from '../../../apis/themeApi';
 import { getCafeForTheme } from '../../../apis/cafeApi';
-import { getReviewForTheme } from '../../../apis/reviewApi';
+import { getExternalReview, getReviewForTheme } from '../../../apis/reviewApi';
 import { container, description, posters } from './styles';
 import { TopBar } from '../../../components/TopBar';
 import { ThemeInfo } from './ThemeInfo';
@@ -17,7 +17,7 @@ export const ThemeDetailFetch = () => {
   const themeIdDetail = Number(useParams().themeId);
   const navigate = useNavigate();
 
-  const [themeQuery, cafeQuery, reviewQuery] = useSuspenseQueries({
+  const [themeQuery, cafeQuery, reviewQuery, exQuery] = useSuspenseQueries({
     queries: [
       {
         queryKey: ['theme-detail'],
@@ -35,10 +35,15 @@ export const ThemeDetailFetch = () => {
             pageNumber: 0,
           }),
       },
+      {
+        queryKey: ['theme-review-ex'],
+        queryFn: async () =>
+          await getExternalReview({ themeId: themeIdDetail, pageNumber: 0 }),
+      },
     ],
   });
 
-  [themeQuery, cafeQuery, reviewQuery].some((query) => {
+  [themeQuery, cafeQuery, reviewQuery, exQuery].some((query) => {
     if (query.error && !query.isFetching) {
       throw query.error;
     }
@@ -104,6 +109,7 @@ export const ThemeDetailFetch = () => {
       </div>
       <ThemeReview
         review={reviewQuery.data.data.content[0]}
+        exReview={exQuery.data.data.content[0]}
         cafe={cafeQuery.data.data}
         onClickReview={() =>
           navigate('/review', {
