@@ -15,7 +15,10 @@ import com.moreroom.domain.mapping.member.repository.MemberPartyMappingRepositor
 import com.moreroom.domain.member.entity.Member;
 import com.moreroom.domain.theme.entity.Theme;
 import com.moreroom.global.util.RedisUtil;
+
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -103,11 +106,21 @@ public class FcmService {
    * @throws IOException
    */
   private String getAccessToken() throws IOException {
-    String firebaseConfigPath = "firebase/d206-moreroom-firebase-adminsdk-byl7s-8676046b0a.json";
-
+    String firebaseConfigPath = "/firebase/d206-moreroom-firebase-adminsdk-byl7s-8676046b0a.json";
+    InputStream inputStream = null;
+    try {
+      inputStream = new ClassPathResource(firebaseConfigPath).getInputStream();
+      log.info("firebase json파일 열기 성공");
+    } catch (IOException e) {
+      log.info("IOException 또는 FileNotFoundException 발생", e);
+    }
+    if (inputStream == null) {
+      log.info("inputStream이 null");
+      return null;
+    }
 //    log.info("googleCredentials 진입 전");
     GoogleCredentials googleCredentials = GoogleCredentials
-        .fromStream(new ClassPathResource(firebaseConfigPath).getInputStream())
+        .fromStream(inputStream)
         .createScoped(List.of("https://www.googleapis.com/auth/cloud-platform"));
 
     googleCredentials.refreshIfExpired();
