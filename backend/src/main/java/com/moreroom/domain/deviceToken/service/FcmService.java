@@ -8,30 +8,15 @@ import com.moreroom.domain.deviceToken.dto.FcmMessageDto.Data;
 import com.moreroom.domain.deviceToken.dto.FcmMessageDto.Message;
 import com.moreroom.domain.deviceToken.dto.FcmMessageDto.MessageType;
 import com.moreroom.domain.deviceToken.dto.FcmMessageDto.Notification;
-import com.moreroom.domain.deviceToken.entity.DeviceToken;
 import com.moreroom.domain.deviceToken.exception.DeviceTokenNotFoundException;
 import com.moreroom.domain.deviceToken.repository.DeviceTokenRepository;
 import com.moreroom.domain.mapping.member.repository.MemberPartyMappingRepository;
 import com.moreroom.domain.member.entity.Member;
 import com.moreroom.domain.theme.entity.Theme;
-import com.moreroom.global.util.RedisUtil;
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -39,6 +24,12 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @RequiredArgsConstructor
@@ -106,14 +97,14 @@ public class FcmService {
    * @throws IOException
    */
   private String getAccessToken() throws IOException {
-    String firebaseConfigPath = "/firebase/d206-moreroom-firebase-adminsdk-byl7s-8676046b0a.json";
-    InputStream inputStream = null;
-    try {
-      inputStream = new ClassPathResource(firebaseConfigPath).getInputStream();
-      log.info("firebase json파일 열기 성공");
-    } catch (IOException e) {
-      log.info("IOException 또는 FileNotFoundException 발생", e);
-    }
+    String firebaseConfigPath = "firebase/d206-moreroom-firebase-adminsdk-byl7s-8676046b0a.json";
+    InputStream inputStream = getClass().getClassLoader().getResourceAsStream(firebaseConfigPath);
+//    try {
+//      inputStream = new ClassPathResource(firebaseConfigPath).getInputStream();
+//      log.info("firebase json파일 열기 성공");
+//    } catch (IOException e) {
+//      log.info("IOException 또는 FileNotFoundException 발생", e);
+//    }
     if (inputStream == null) {
       log.info("inputStream이 null");
       return null;
@@ -122,7 +113,7 @@ public class FcmService {
     GoogleCredentials googleCredentials = GoogleCredentials
         .fromStream(inputStream)
         .createScoped(List.of("https://www.googleapis.com/auth/cloud-platform"));
-
+    inputStream.close();
     googleCredentials.refreshIfExpired();
 //    log.info("액세스 토큰: {}", googleCredentials.getAccessToken().getTokenValue());
     return googleCredentials.getAccessToken().getTokenValue();

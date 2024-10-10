@@ -43,7 +43,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
   @Override
   public void registerStompEndpoints(StompEndpointRegistry registry) {
     registry.addEndpoint("/ws")  //ws://localhost:8081/api/ws 에서 웹소켓 연결
-//         .addInterceptors(testPrincipalHandshakeInterceptor)
+         .addInterceptors(testPrincipalHandshakeInterceptor)
         .setAllowedOriginPatterns("*");
   }
 
