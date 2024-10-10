@@ -327,6 +327,7 @@ export const ReviewReadFetch = () => {
                           value={review.score}
                           size={1}
                           transparentBackground={false}
+                          disabled
                         />
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center' }}>
