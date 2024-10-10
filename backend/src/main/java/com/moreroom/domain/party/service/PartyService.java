@@ -53,6 +53,18 @@ public class PartyService {
     changePartyRequestStatus(uuid); //partyRequest 삭제
   }
 
+  public void createPartyAndJoin(Integer themeId, String uuid, Member member) {
+    Theme theme = themeRepository.findById(themeId).orElseThrow();
+    Party party = createInitialParty(theme, member); //파티 만들기
+    partyRepository.save(party); //파티 저장
+    List<PartyRequest> prList = partyRequestRepository.findByUuidJoinMember(uuid);
+    //매핑 테이블에 저장
+    for (PartyRequest pr : prList) {
+      Member m = pr.getMember();
+      memberPartyMappingRepository.save(new MemberPartyMapping(m, party));
+    }
+  }
+
   // 파티 만들기
   private Party createInitialParty(Theme theme, HashMap<Long, String> partyAcceptMap) {
     Member master = nominateMaster(partyAcceptMap); //방장
@@ -65,6 +77,17 @@ public class PartyService {
         .date(LocalDateTime.now().truncatedTo(ChronoUnit.HOURS))
         .maxMember(3)
         .build();
+  }
+
+  private Party createInitialParty(Theme theme, Member member) {
+    return Party.builder()
+            .theme(theme)
+            .masterMember(member)
+            .notice("[" + theme.getTitle() + "]테마의 파티 채팅방입니다. 공지사항을 입력해 주세요.")
+            .roomName(theme.getTitle() + " " + member.getNickname())
+            .date(LocalDateTime.now().truncatedTo(ChronoUnit.HOURS))
+            .maxMember(3)
+            .build();
   }
 
   // 방장 정하기

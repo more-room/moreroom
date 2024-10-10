@@ -30,4 +30,5 @@ public interface MemberPartyMappingRepository extends JpaRepository<MemberPartyM
 
   @Query("select m.email from Member m join MemberPartyMapping mp on m = mp.member where mp.party.partyId = :partyId and m.email != :email")
   List<String> getEmailListForChattingAlarm(Long partyId, String email);
+
 }
