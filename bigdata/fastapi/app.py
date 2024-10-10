@@ -65,9 +65,6 @@ async def recommend_party_batch():
 async def recommend_party(request: dict):
     # 개별 요청 처리
     theme_matched_users = {}
-    cached_party_request_df = None
-    cached_request_hashtag_df = None
-    cached_member_hashtag_df = None
     party_request = PartyRequest(party_request_id=request["party_request_id"])
-    result = await process_party_matching_one(party_request, theme_matched_users, cached_party_request_df, cached_request_hashtag_df, cached_member_hashtag_df)
+    result = await process_party_matching_one(party_request, theme_matched_users)
     return result

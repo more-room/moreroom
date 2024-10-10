@@ -235,7 +235,12 @@ async def process_party_matching(party_request, theme_matched_users):
         raise HTTPException(status_code=500, detail=str(e))
     
 # 비동기 처리 및 최적화 적용
-async def process_party_matching_one(party_request, theme_matched_users, cached_party_request_df, cached_request_hashtag_df, cached_member_hashtag_df):
+async def process_party_matching_one(party_request, theme_matched_users):
+    global cached_party_request_df, cached_request_hashtag_df, cached_member_hashtag_df
+    cached_party_request_df = None
+    cached_request_hashtag_df = None
+    cached_member_hashtag_df = None
+    
     try:
         print(f"파티 요청 ID {party_request.party_request_id}을(를) 받았습니다.")
         load_data()  # 데이터가 없으면 불러오고, 이미 있으면 캐싱된 데이터 사용
