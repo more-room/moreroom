@@ -7,7 +7,7 @@ from similar_member_themes import get_similar_member_theme, load_mysql_data
 from demographics_themes import get_demographics_theme 
 from genre_themes import get_genre_theme 
 from pydantic import BaseModel
-from party_recommend import process_party_matching, run_batch_matching
+from party_recommend import process_party_matching_one, run_batch_matching
 
 app = FastAPI()
 
@@ -66,5 +66,5 @@ async def recommend_party(request: dict):
     # 개별 요청 처리
     theme_matched_users = {}
     party_request = PartyRequest(party_request_id=request["party_request_id"])
-    result = await process_party_matching(party_request, theme_matched_users)
+    result = await process_party_matching_one(party_request, theme_matched_users)
     return result
