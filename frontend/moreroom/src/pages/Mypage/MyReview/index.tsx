@@ -124,9 +124,7 @@ export const MyReview = () => {
         ) : (
           <div style={{ height: '80vh' }}>
             <NoResult
-              msg="현재 존재하는 기록이 없습니다."
-              url="/history"
-              btnmsg="기록 등록하러 가기"
+              msg="현재 존재하는 리뷰가 없습니다."
             />
           </div>
         )}

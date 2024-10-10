@@ -27,20 +27,7 @@ export const topbarcolor = css`
   }
 `;
 
-export const bottombarcss = css`
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  width: 100%;  /* 바텀바의 너비를 전체 화면에 맞춤 */
-  /* max-width: 22.5rem; 컨테이너와 동일한 최대 너비 */
-  margin: 0 auto; /* 중앙 정렬 */
-  background-color: #313131; /* 바텀바 배경색 */
-  z-index: 1000; /* 다른 요소 위에 위치 */
-  padding: 0.25rem; /* 바텀바 안의 패딩 */
-  border-top: 1px solid #ffffff;
-  font-family: 'paperlogy';
-`
+
 
 export const ratingcss = css`
    display: flex;
@@ -64,7 +51,7 @@ display: flex;
 align-items: center;
 background-color: #313131;
 padding: 0.5rem;
-margin: 1rem 0;
+margin: 0 0;
 border-radius: 10px;
 width: 100%;
 max-width: 600px;

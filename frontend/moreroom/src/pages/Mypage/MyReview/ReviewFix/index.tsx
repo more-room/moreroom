@@ -19,27 +19,26 @@ import {
   posterCss,
   contentCss,
   updatedAtCss,
-
- } from './styles';
+} from './styles';
 import { BottomBar } from '../../../../components/BottomBar';
 import { BellIcon, MapPinIcon } from '@heroicons/react/24/solid';
 import { ThemeItem } from '../../../../components/ThemeItem';
 import { Typography } from '../../../../components/Typography';
-import { IFixTheme} from '../../../../types/themeTypes';
+import { IFixTheme } from '../../../../types/themeTypes';
 import { Rating } from '../../../../components/Rating';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import { createReview, reviewPatch} from '../../../../apis/reviewApi';
+import { createReview, reviewPatch } from '../../../../apis/reviewApi';
 import { Icon } from '../../../../components/Icon';
 
 export const ReviewFix = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { themeId, reviewId, themeTitle, content, score, poster, cafeBrand, cafeBranch, nickname, profileSrc } = location.state || {};
-  
-  // 별점 상태를 관리하는 useState 훅
-  const [ratingValue, setRatingValue] = useState(0);
-  const [reviewContent, setReviewContent] = useState(""); // 리뷰 내용 상태 관리
+
+  // 이전에 작성한 별점과 리뷰 내용을 기본값으로 설정
+  const [ratingValue, setRatingValue] = useState(score || 0); // 이전 별점 기본값으로 설정
+  const [reviewContent, setReviewContent] = useState(content || ""); // 이전 리뷰 내용 기본값으로 설정
   const [errorMessage, setErrorMessage] = useState(""); // 오류 메시지 상태 관리
 
   // 별점 변경 핸들러
@@ -82,25 +81,22 @@ export const ReviewFix = () => {
         console.error('리뷰 수정 실패:', error);
         setErrorMessage("리뷰 수정에 실패했습니다. 다시 시도해주세요.");
       });
-
-    
   };
 
   return (
     <div>
-      
       <div style={{ height: '5vh', overflow: 'auto'}}>
         <TopBar css={topbarcolor}>
           <TopBar.Title type="default" title="리뷰 작성" backHandler={() => navigate(-1)} />
         </TopBar>
       </div>
-      
+
       {/* 이전 페이지에서 불러온 리뷰 정보를 그대로 표시 */}
       <div css={containerCss}>
         <div css={headerCss}>
           <div css={leftContentCss}>
             <div css={profileCss}>
-              <img src={profileSrc} alt="프로필 사진" />
+              <img src={`/profiles/profile${profileSrc}.png`} alt="프로필 사진" />
               <div>
                 <Typography color="light" size={0.8} weight={500}>
                   {nickname}
@@ -110,7 +106,7 @@ export const ReviewFix = () => {
                   count={5}
                   disabled
                   size={0.8}
-                  value={score}
+                  value={score} // 이전 별점 표시
                 />
               </div>
             </div>
@@ -142,16 +138,16 @@ export const ReviewFix = () => {
           <Typography color="grey" scale="100" size={0.8} weight={500}>
             {content}
           </Typography>
-          
         </div>
       </div>
 
+      {/* 별점 선택 영역 */}
       <div style={{ margin: '2rem' }} css={ratingcss}>
         <Rating
-          activeColor="secondary" 
-          count={5} 
+          activeColor="secondary"
+          count={5}
           value={ratingValue} // 현재 선택된 별점 값을 표시
-          size={2.5} 
+          size={2.5}
           transparentBackground={false}
           disabled={false}
           onChange={handleRatingChange} // 사용자가 별점을 선택할 때 호출되는 핸들러
@@ -159,51 +155,51 @@ export const ReviewFix = () => {
       </div>
       <hr style={{ width: '60%'}}></hr>
 
-      <div style={{ margin: '3rem 1rem', textAlign: 'center' , fontFamily: 'paperlogy'}}>
-      <TextField
-        id="outlined-multiline-static"
-        label={<Typography color='grey' weight={600}>리뷰</Typography>}
-        multiline
-        rows={8}
-        placeholder="테마에 대한 후기를 적어주세요." // 설명 추가
-        variant="outlined"
-        fullWidth={true} // 전체 너비로 설정
-        
-        value={reviewContent}
-        onChange={(e) => setReviewContent(e.target.value)} // 리뷰 내용 업데이트
-        InputLabelProps={{
-          style: { color: '#ffffff' }, // 라벨 색상을 흰색으로 변경
-        }}
-        sx={{
-          backgroundColor: '#333', // 배경 색상 어둡게 설정
-          borderRadius: '5px',
-          width: '90%', // 너비를 90%로 설정하여 적당히 확대
-          height: '70%',
-          margin: '0 auto', // 중앙에 배치되도록 설정
-          '& .MuiOutlinedInput-root': {
-            '& fieldset': {
-              borderColor: '#ffffff', // 외곽선 색상 설정
+      {/* 리뷰 내용 입력란 */}
+      <div style={{ margin: '3rem 1rem', textAlign: 'center', fontFamily: 'paperlogy'}}>
+        <TextField
+          id="outlined-multiline-static"
+          label={<Typography color='grey' weight={600}>리뷰</Typography>}
+          multiline
+          rows={8}
+          placeholder="테마에 대한 후기를 적어주세요." // 설명 추가
+          variant="outlined"
+          fullWidth={true} // 전체 너비로 설정
+          value={reviewContent} // 리뷰 내용 기본값으로 설정
+          onChange={(e) => setReviewContent(e.target.value)} // 리뷰 내용 업데이트
+          InputLabelProps={{
+            style: { color: '#ffffff' }, // 라벨 색상을 흰색으로 변경
+          }}
+          sx={{
+            backgroundColor: '#333', // 배경 색상 어둡게 설정
+            borderRadius: '5px',
+            width: '90%', // 너비를 90%로 설정하여 적당히 확대
+            height: '70%',
+            margin: '0 auto', // 중앙에 배치되도록 설정
+            '& .MuiOutlinedInput-root': {
+              '& fieldset': {
+                borderColor: '#ffffff', // 외곽선 색상 설정
+              },
+              '&:hover fieldset': {
+                borderColor: '#757271', // 호버 시 외곽선 색상 설정
+              },
             },
-            '&:hover fieldset': {
-              borderColor: '#757271', // 호버 시 외곽선 색상 설정
+            '& .MuiInputBase-input': {
+              color: '#ffffff', // 입력 텍스트 색상 설정
+              fontSize: '1.5rem'
             },
-          },
-          
-          '& .MuiInputBase-input': {
-            color: '#ffffff', // 입력 텍스트 색상 설정
-            fontSize:'1.5rem'
-          },
-        }}
-      />
-
+          }}
+        />
       </div>
 
+      {/* 오류 메시지 출력 */}
       {errorMessage && (
         <div style={{ color: 'red', textAlign: 'left', margin: '1rem 2rem' }}>
           {errorMessage}
         </div>
       )}
 
+      {/* 작성 완료 버튼 */}
       <div css={btncss}>
         <Button
           variant="contained"
@@ -223,12 +219,7 @@ export const ReviewFix = () => {
         </Button>
       </div>
 
-      <BottomBar
-        css={bottombarcss}
-        icons={[<BellIcon />, <BellIcon />, <BellIcon />]}
-        menus={['메뉴1', '메뉴2', '메뉴3']}
-        onHandleChange={() => console.log('바텀바 선택됨')}
-      />
+      
     </div>
   );
 };

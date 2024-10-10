@@ -78,19 +78,32 @@ export const errorimg = css`
 
 export const contentCss = css`
   width: 100%;
+  display: flex;
+  margin-bottom: 0.3rem;
 `;
 
 export const updatedAtCss = css`
-  margin-top: 1rem;
+  margin-top: 0.3rem;
 `;
 
 export const fixReview = css`
-  width: 25%;
-  /* z-index: 10; */
-  margin-bottom: 0.3rem;
-  margin-left: 75%;
+  padding: 0.5rem 1rem;
   font-family: 'paperlogy';
+  background-color: ${Colors['secondary']};
+  color: white;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-size: 0.875rem;
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-left: 1rem;
 `;
+
+export const btnCss = css`
+  display: flex;
+  justify-content: flex-start; /* 왼쪽 정렬 */
+  align-items: center; /* 수직 중앙 정렬 */
+  gap: 1rem; /* 삭제하기와 리뷰 수정 버튼 사이 간격 */
+  margin-top: 0.5rem;
+`

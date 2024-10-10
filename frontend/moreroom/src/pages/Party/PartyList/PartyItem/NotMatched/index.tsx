@@ -130,7 +130,7 @@ export const NotMatched = ({ party, onDeleteClick }: PartyItemProps) => {
                 <MapPinIcon />
               </Icon>
               <Typography color="grey" scale="500" size={0.8} weight={700}>
-                {party.theme.brandName ? `${party.theme.brandName} - ${party.theme.branchName}` : '장소정보 없음'} 
+                {party.theme.brandName ? `${party.theme.brandName}` : '장소정보 없음'} 
               </Typography>
             </div>
             <div css={timeCss}>
