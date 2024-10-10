@@ -32,7 +32,7 @@ import static com.moreroom.domain.theme.entity.QTheme.theme;
 public class PartyRequestQueryRepository extends QuerydslRepositoryCustom {
 
   private final JPAQueryFactory jpaQueryFactory;
-  private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+  private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:00");
 
   public PartyRequestQueryRepository(JPAQueryFactory jpaQueryFactory) {
     super(partyRequest);

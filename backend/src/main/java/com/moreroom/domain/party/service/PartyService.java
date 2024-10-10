@@ -18,6 +18,7 @@ import com.moreroom.domain.theme.repository.ThemeRepository;
 import com.moreroom.global.util.StringUtil;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -61,7 +62,7 @@ public class PartyService {
         .masterMember(master)
         .notice("[" + theme.getTitle() + "]테마의 파티 채팅방입니다. 공지사항을 입력해 주세요.")
         .roomName(theme.getTitle() + " " + master.getNickname())
-        .date(LocalDateTime.now())
+        .date(LocalDateTime.now().truncatedTo(ChronoUnit.HOURS))
         .maxMember(3)
         .build();
   }
