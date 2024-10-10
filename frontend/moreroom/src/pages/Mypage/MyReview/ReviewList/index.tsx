@@ -11,6 +11,7 @@ import {
   themeCss,
   updatedAtCss,
   fixReview,
+  btnCss,
   errorimg
 } from './styles';
 import Rating from '../../../../components/Rating';
@@ -19,7 +20,7 @@ import { Icon } from '../../../../components/Icon';
 import { MapPinIcon } from '@heroicons/react/24/solid';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../../../../components/Button';
-import { reviewDelete } from '../../../../apis/reviewApi';
+import { Notification } from '../../../../components/Notification';
 
 export const ReviewList = ({
   nickname,
@@ -35,7 +36,6 @@ export const ReviewList = ({
   reviewId,
   createdAt,
   onReviewDeleted
-  
 }: {
   nickname: string;
   profileSrc: string;
@@ -53,12 +53,14 @@ export const ReviewList = ({
 }) => {
   const nav = useNavigate();
   const [imgErr, setImgErr] = useState<boolean>(false);
+  const [isDeleteConfirmOpen, setDeleteConfirmOpen] = useState<boolean>(false); // 삭제 확인 모달 상태
+  const [isDeleteSuccessOpen, setDeleteSuccessOpen] = useState<boolean>(false); // 삭제 완료 모달 상태
 
   const handleClick = () => {
     nav(`/themes/${themeId}`);
   };
+
   const reviewFix = () => {
-    // 리뷰 수정 페이지로 이동하면서 해당 리뷰의 데이터 전달
     nav('/mypage/myreview/fix', {
       state: {
         themeId,
@@ -71,25 +73,29 @@ export const ReviewList = ({
         nickname,
         profileSrc,
         reviewId,
-        createdAt
+        createdAt,
       },
     });
   };
-  
-  // 리뷰 삭제 핸들러
-  const handleDelete = async () => {
-    const confirmDelete = window.confirm("정말 이 리뷰를 삭제하시겠습니까?");
-    if (confirmDelete) {
-      try {
-        await onReviewDeleted(reviewId);
-        alert("리뷰가 성공적으로 삭제되었습니다.");
-      } catch (error) {
-        console.error("리뷰 삭제 중 오류 발생:", error);
-        alert("리뷰 삭제 중 문제가 발생했습니다. 나중에 다시 시도해주세요.");
-      }
+
+  // 삭제 확인 모달 핸들러
+  const handleDelete = () => {
+    setDeleteConfirmOpen(true); // 삭제 확인 모달 열기
+  };
+
+  // 삭제 확정 처리 핸들러
+  const handleConfirmDelete = async () => {
+    try {
+      // 실제 리뷰 삭제 API 호출
+      await onReviewDeleted(reviewId);
+      setDeleteConfirmOpen(false); // 삭제 확인 모달 닫기
+      setDeleteSuccessOpen(true); // 삭제 성공 모달 열기
+    } catch (error) {
+      console.error("리뷰 삭제 중 오류 발생:", error);
+      alert("리뷰 삭제 중 문제가 발생했습니다. 나중에 다시 시도해주세요.");
     }
   };
-  // console.log(reviewId)
+
   return (
     <div css={containerCss}>
       <div css={headerCss}>
@@ -134,40 +140,53 @@ export const ReviewList = ({
             <img src={poster} alt="포스터 사진" onError={() => setImgErr(true)} />
           ) : (
             <div css={errorimg}>
-            <Typography color="light" weight={500} size={0.75}>
-              포스터를
-            </Typography>
-            <Typography color="light" weight={500} size={0.75}>
-              준비중입니다
-            </Typography>
-          </div>
+              <Typography color="light" weight={500} size={0.75}>
+                포스터를
+              </Typography>
+              <Typography color="light" weight={500} size={0.75}>
+                준비중입니다
+              </Typography>
+            </div>
           )}
-          
         </div>
       </div>
       <div css={contentCss}>
-        <Typography color="grey" scale="100" size={0.8} weight={500}>
+        <Typography color="grey" scale="100" size={1.2} weight={500}>
           {content}
         </Typography>
-        <Typography
-          css={updatedAtCss}
-          color="grey"
-          scale="500"
-          size={0.8}
-          weight={500}
-        >
+      </div>
+      <div css={btnCss}>
+        <Typography css={updatedAtCss} color="grey" scale="500" size={0.8} weight={500}>
           {createdAt} 작성 / 
           <a onClick={handleDelete} style={{ cursor: 'pointer', color: 'red', marginLeft: '5px' }}> 삭제하기</a>
         </Typography>
-      </div>
         <Button css={fixReview}
           variant='contained'
           color='secondary'
           handler={reviewFix}
           rounded={0.5}
-        >리뷰 수정
+        >
+          리뷰 수정
         </Button>
-        
+      </div>
+
+      {/* 삭제 확인 모달 */}
+      {isDeleteConfirmOpen && (
+        <Notification
+          ment="정말 이 리뷰를 삭제하시겠습니까?"
+          type="confirm"
+          handler={handleConfirmDelete} // 확인 시 리뷰 삭제 처리
+        />
+      )}
+
+      {/* 삭제 완료 모달 */}
+      {isDeleteSuccessOpen && (
+        <Notification
+          ment="리뷰가 성공적으로 삭제되었습니다."
+          type="confirm"
+          handler={() => setDeleteSuccessOpen(false)} // 확인 시 모달 닫기
+        />
+      )}
     </div>
   );
 };

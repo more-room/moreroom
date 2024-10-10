@@ -384,7 +384,7 @@ export const RoomdetailFetch = () => {
               : `${Colors['secondary']['200']}`,
           }}
         >
-          {chatRoomInfo.addFlag ? '채팅방 공개' : '채팅방 비공개'}
+          {chatRoomInfo.addFlag ? "공개" : "비공개"}
         </Button>
         <hr css={hr}></hr>
       </div>

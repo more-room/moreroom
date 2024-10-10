@@ -159,3 +159,20 @@ export const bottombarcss = css`
   padding: 0.25rem; /* 바텀바 안의 패딩 */
   border-top: 1px solid #ffffff;
 `
+export const posterText = css`
+  width: 25%; 
+  min-width: 95px;
+  height: 17vh;
+  border-radius: 0.3rem;
+  object-fit: cover;
+  margin-right: 0.7rem;
+  flex-shrink: 0;
+  background-color: #000; /* 검정색 배경 추가 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: ${Colors['light']};
+  
+  
+`;

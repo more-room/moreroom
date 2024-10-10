@@ -4,7 +4,6 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { TopBar } from '../../../components/TopBar';
 import {
   topbarcolor,
-  bottombarcss,
   ratingcss,
   themeCardStyles,
   btncss,
@@ -69,8 +68,7 @@ export const ReviewWrite = () => {
         setErrorMessage('리뷰 작성에 실패했습니다. 다시 시도해주세요.');
       });
   };
-  console.log('리뷰 제출 데이터:', themeItem);
-  console.log('테마 아이디', themeItem.themeId);
+
   return (
     <div>
       <div style={{ height: '5vh', overflow: 'auto' }}>
@@ -179,13 +177,6 @@ export const ReviewWrite = () => {
           </Typography>
         </Button>
       </div>
-
-      <BottomBar
-        css={bottombarcss}
-        icons={[<BellIcon />, <BellIcon />, <BellIcon />]}
-        menus={['메뉴1', '메뉴2', '메뉴3']}
-        onHandleChange={() => console.log('바텀바 선택됨')}
-      />
     </div>
   );
 };
