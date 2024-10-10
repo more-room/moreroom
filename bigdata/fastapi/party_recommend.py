@@ -236,10 +236,12 @@ async def process_party_matching(party_request, theme_matched_users):
     
 # 비동기 처리 및 최적화 적용
 async def process_party_matching_one(party_request, theme_matched_users):
+    global cached_party_request_df, cached_request_hashtag_df, cached_member_hashtag_df
+    cached_party_request_df = None
+    cached_request_hashtag_df = None
+    cached_member_hashtag_df = None
+    
     try:
-        cached_party_request_df = None
-        cached_request_hashtag_df = None
-        cached_member_hashtag_df = None
         print(f"파티 요청 ID {party_request.party_request_id}을(를) 받았습니다.")
         load_data()  # 데이터가 없으면 불러오고, 이미 있으면 캐싱된 데이터 사용
         theme_id, member_id = get_theme_and_member_id_by_party_request(party_request.party_request_id, theme_matched_users)
