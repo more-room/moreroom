@@ -60,12 +60,11 @@ public class ReviewService {
     }
 
     public PageResponseDto findAll(Integer themeId, int pageNumber, int pageSize, String sortOrder,
-        String sortBy) {
+        String sortBy, Long memberId) {
         Sort sort = sortOrder.equalsIgnoreCase("desc") ? Sort.by(sortBy).descending()
             : Sort.by(sortBy).ascending();
         Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
 
-        Long memberId = findMemberService.findCurrentMember();
 
         Page<Object[]> reviewList = reviewRepository.findAllByThemeThemeIdAndMemberMemberIdAndDelFlagFalse(
             themeId, memberId, pageable);

@@ -38,8 +38,16 @@ public class SocketController {
 
   @MessageMapping("/chat/message")
   public void sendMessage(ChatMessageDto message, Principal principal, MessageHeaders headers, @Header("nickname") String nickname) {
-    messageService.saveMessage(message, principal); //메시지 저장
-    fcmService.sendChattingMessagePushAlarm(principal.getName(), message.getPartyId(), nickname, message.getMessage()); //푸시알림 전송
-    simpMessagingTemplate.convertAndSend("/topic/party/" + message.getPartyId(), message, headers); //소켓메세지 전송
+    //1. 메시지 저장
+    messageService.saveMessage(message, principal);
+    //2. 푸시 알림 전송 (비동기)
+    fcmService.sendChattingMessagePushAlarmAsync(principal.getName(), message.getPartyId(), nickname, message.getMessage())
+                    .thenRun(() -> log.debug("푸시 알림 전송 완료"))
+                    .exceptionally(ex -> {
+                      log.error("푸시 알림 전송 실패", ex);
+                      return null;
+                    });
+    //3. 소켓 메시지 전송
+    simpMessagingTemplate.convertAndSend("/topic/party/" + message.getPartyId(), message, headers);
   }
 }

@@ -48,7 +48,7 @@ export const MyPage = () => {
   const handledelete = async () => {
     await delUser();
     setShowDelNotification(false);
-    nav('/auth/login');
+    nav('/auth/signup');
   };
 
   const ProfileQuery = useQuery({

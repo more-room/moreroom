@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 public class PartyRequestDto {
   private Long partyRequestId; //이거
   private Integer acceptedMemberCnt;
+  private String uuid;
   private StatusDto status;
   private ThemeDto theme;
   private String createdAt;

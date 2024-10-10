@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
   useMutation,
   useSuspenseQuery,
@@ -12,19 +11,18 @@ import { NotMatched } from './PartyItem/NotMatched';
 import { Matched } from './PartyItem/Matched';
 import { Pending } from './PartyItem/Pending';
 import { Notification } from '../../../components/Notification';
-import { containerCss } from './styles';
 import NoResult from '../../../components/common/NoResult';
-import { useMatchedStore } from '../../../stores/partyStore';
 
 export const PartyListFetch = () => {
   const [showDelNotification, setShowDelNotification] =
     useState<boolean>(false);
   const [showMatchingNotification, setshowMatchingNotification] =
     useState<boolean>(false);
-
-  const { uuid, themeId } = useMatchedStore();
+  const [showPendingNotification, setShowPendingNotification] =
+    useState<boolean>(false);
 
   const [currentPartyId, setCurrentPartyId] = useState<number>(0);
+  const [currenthemeId, setCurrentthemeId] = useState<number>(0);
   const queryClient = useQueryClient();
 
   const PartyQuery = useSuspenseQuery({
@@ -32,7 +30,7 @@ export const PartyListFetch = () => {
     queryFn: async () => await getPartyList(),
   });
 
-  console.log(PartyQuery);
+  const [uuid, setUuid] = useState<string>('');
 
   const { mutate: deleteMutate } = useMutation({
     mutationFn: async () => await delParty(currentPartyId),
@@ -55,6 +53,12 @@ export const PartyListFetch = () => {
     throw PartyQuery.error;
   }
 
+  const MatchedHandler = (uuid: string, themeId: number) => {
+    setUuid(uuid);
+    setCurrentthemeId(themeId);
+    setshowMatchingNotification(true);
+  };
+
   const handleDeleteClick = (partyId: number) => {
     setCurrentPartyId(partyId);
     setShowDelNotification(true);
@@ -65,25 +69,34 @@ export const PartyListFetch = () => {
   };
 
   const { mutate: approveMutate } = useMutation({
-    mutationFn: async (accept: boolean) =>
-      await partyApprove(accept, uuid, Number(themeId)),
+    mutationFn: async ({
+      accept,
+      uuid,
+      themeId,
+    }: {
+      accept: boolean;
+      uuid: string;
+      themeId: number;
+    }) => await partyApprove(accept, uuid, themeId),
     onSuccess: () => alert('매칭 완료'),
     onError: () => alert('매칭 응답 중 오류가 발생했습니다.'),
   });
 
-  if (PartyQuery.error && !PartyQuery.isFetching) {
-    throw PartyQuery.error;
-  }
-
-  const handleMatchingResponse = (accept: boolean) => {
-    approveMutate(accept);
+  const handleMatchingResponse = (
+    accept: boolean,
+    uuid: string,
+    themeId: number,
+  ) => {
+    approveMutate({ accept, uuid, themeId });
+    setshowMatchingNotification(false);
+    window.location.reload(); // 강제 새로고침했지만 나중에 수정 예정
   };
 
   return (
     <div>
       {PartyQuery.data.data.requestList.length === 0 ? (
         <div style={{ height: '60vh' }}>
-          <NoResult msg="현재 파티가 없습니다." />{' '}
+          <NoResult msg="현재 파티가 없습니다." />
         </div>
       ) : (
         PartyQuery.data.data.requestList.map((party: IParty) => {
@@ -98,11 +111,17 @@ export const PartyListFetch = () => {
               {party.status.statusName === 'MATCHED' && (
                 <Matched
                   party={party}
-                  handler={() => setshowMatchingNotification(true)}
+                  handler={() =>
+                    MatchedHandler(party.uuid, party.theme.themeId)
+                  }
                 />
               )}
               {party.status.statusName === 'PENDING' && (
-                <Pending party={party} />
+                <Pending
+                party={party}
+                handler={() =>
+                  setShowPendingNotification(true)}
+              />
               )}
               {party.status.statusName === 'DISABLED' && (
                 <NotMatched
@@ -114,35 +133,6 @@ export const PartyListFetch = () => {
           );
         })
       )}
-      {/* {PartyQuery?.data.data.requestList.map(
-        (party: IParty) => {
-          return (
-            <div>
-              {party.status.statusName === 'NOT_MATCHED' && (
-                <NotMatched
-                  party={party}
-                  onDeleteClick={() => handleDeleteClick(party.partyRequestId)}
-                />
-              )}
-              {party.status.statusName === 'MATCHED' && (
-                <Matched
-                  party={party}
-                  handler={() => setshowMatchingNotification(true)}
-                />
-              )}
-              {party.status.statusName === 'PENDING' && (
-                <Pending party={party} />
-              )}
-              {party.status.statusName === 'DISABLED' && (
-                <NotMatched
-                  party={party}
-                  onDeleteClick={() => handleDeleteClick(party.partyRequestId)}
-                />
-              )}
-            </div>
-          );
-        },
-      )} */}
       {showDelNotification && (
         <Notification
           handler={handleConfirmDelete}
@@ -154,13 +144,22 @@ export const PartyListFetch = () => {
       )}
       {showMatchingNotification && (
         <Notification
-          handler={() => handleMatchingResponse(true)}
+          handler={() => handleMatchingResponse(true, uuid, currenthemeId)}
           xhandler={() => setshowMatchingNotification(false)}
-          outlinedHandler={() => handleMatchingResponse(false)}
+          outlinedHandler={() =>
+            handleMatchingResponse(false, uuid, currenthemeId)
+          }
           xbtn
           ment="파티 매칭을 수락하시겠습니까?"
           children={['수락하기', '거절하기']}
           twoBtn
+          type="confirm"
+        />
+      )}
+      {showPendingNotification && (
+        <Notification
+          handler={() => setShowPendingNotification(false)}
+          ment="모든 파티원이 수락하지 않았어요!"
           type="confirm"
         />
       )}

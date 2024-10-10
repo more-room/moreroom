@@ -359,5 +359,6 @@ gradle-app.setting
 *.hprof
 
 application-secret.yml
+TestPrincipalHandshakeInterceptor.java
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,java,gradle,intellij+all,python,visualstudiocode

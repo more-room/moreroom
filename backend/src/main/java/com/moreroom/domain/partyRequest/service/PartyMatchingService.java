@@ -253,6 +253,7 @@ public class PartyMatchingService {
       throws JsonProcessingException {
     String key = "PARTYMATCH:" + uuid;
     HashMap<Long, String> partyAcceptRecordMap = redisUtil.getLongStringHashMap(key);
+    log.info("파티 매칭 현황 맵: {}", partyAcceptRecordMap.toString());
 
     if (partyAcceptRecordMap == null) {
       partyRequestUtil.partyBroke(uuid);
@@ -273,6 +274,7 @@ public class PartyMatchingService {
         int acceptMemberCnt = Integer.parseInt(partyAcceptRecordMap.get(-2L));
         acceptMemberCnt++;
         partyAcceptRecordMap.put(-2L, Integer.toString(acceptMemberCnt)); //accept한 멤버 수 업데이트
+        redisUtil.saveLongStringHashMapExpire(key, partyAcceptRecordMap, 3600); //레디스에 맵 저장
 
         //mysql 작업
         PartyRequest partyRequest = partyRequestRepository.findByThemeIdandMemberId(themeId, memberId);
