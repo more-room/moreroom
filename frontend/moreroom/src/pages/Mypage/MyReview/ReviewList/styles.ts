@@ -64,6 +64,18 @@ export const posterCss = css`
   }
 `;
 
+export const errorimg = css`
+  width: 4rem;
+  height: 5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  row-gap: 0.25rem;
+  margin-bottom: 0.25rem;
+  background-color: #212121;
+`;
+
 export const contentCss = css`
   width: 100%;
 `;
@@ -75,10 +87,10 @@ export const updatedAtCss = css`
 export const fixReview = css`
   width: 25%;
   /* z-index: 10; */
-  margin-bottom: 0.3rem ;
+  margin-bottom: 0.3rem;
   margin-left: 75%;
   font-family: 'paperlogy';
-  display: flex; 
-  justify-content: center; 
+  display: flex;
+  justify-content: center;
   align-items: center;
-`
+`;

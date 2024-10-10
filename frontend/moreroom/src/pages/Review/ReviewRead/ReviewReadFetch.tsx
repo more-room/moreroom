@@ -1,29 +1,36 @@
 /** @jsxImportSource @emotion/react */
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useSuspenseQueries, useSuspenseQuery } from '@tanstack/react-query';
 import {
   HandThumbUpIcon,
-  BellIcon,
   PencilIcon,
+  StarIcon,
 } from '@heroicons/react/24/solid';
 import { TopBar } from '../../../components/TopBar';
 import {
   cardcontainer,
   themeCard,
-  topbarcolor,
-  bottombarcss,
+  topbar,
   reviewWrite,
   allViewButton,
-  themeItemCss,
+  themeitem,
+  reviewchart,
+  row,
+  excard,
+  excontainer,
+  exrow,
 } from './styles';
-import { getReviewForTheme, patchThumbsUp } from '../../../apis/reviewApi'; // 리뷰 API 가져오기
+import {
+  getExternalReview,
+  getReviewForTheme,
+  patchThumbsUp,
+} from '../../../apis/reviewApi'; // 리뷰 API 가져오기
 import { getThemeDetail } from '../../../apis/themeApi';
 import { Typography } from '../../../components/Typography';
 import { Rating } from '../../../components/Rating';
 import { ThemeItem } from '../../../components/ThemeItem';
 import { IThemeItem } from '../../../types/themeTypes';
-import { BottomBar } from '../../../components/BottomBar';
 import { Button } from '../../../components/Button';
 import { Bar } from 'react-chartjs-2';
 import {
@@ -35,6 +42,10 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
+import { Icon } from '../../../components/Icon';
+import { MenuTab } from '../../../components/MenuTab';
+import { IExternalReview } from '../../../types/reviewTypes';
+import dayjs from 'dayjs';
 
 // ChartJS를 초기화합니다.
 ChartJS.register(
@@ -59,33 +70,40 @@ export const ReviewReadFetch = () => {
     [key: number]: boolean;
   }>({});
   // 좋아요 로딩 상태를 관리
-  const [processingThumbsUp, setProcessingThumbsUp] = useState<{ [key: number]: boolean }>({});
+  const [processingThumbsUp, setProcessingThumbsUp] = useState<{
+    [key: number]: boolean;
+  }>({});
 
   // 리뷰 데이터를 가져오는 쿼리
-  const reviewQuery = useSuspenseQuery({
-    queryKey: ['theme-review', themeId],
-    queryFn: async () =>
-      await getReviewForTheme({
-        themeId,
-        pageNumber: 0,
-        pageSize: 80,
-        sortOrder: 'desc',
-      }),
+  const [reviewQuery, exQuery, themeQuery] = useSuspenseQueries({
+    queries: [
+      {
+        queryKey: ['theme-review', themeId],
+        queryFn: async () =>
+          await getReviewForTheme({
+            themeId,
+            pageNumber: 0,
+            pageSize: 80,
+            sortOrder: 'desc',
+          }),
+      },
+      {
+        queryKey: ['theme-external', themeId],
+        queryFn: async () =>
+          await getExternalReview({ themeId: themeId, pageNumber: 0 }),
+      },
+      {
+        queryKey: ['theme-detail', themeId],
+        queryFn: async () => await getThemeDetail(themeId),
+      },
+    ],
   });
 
-  // 테마 상세 정보를 가져오는 쿼리
-  const themeQuery = useSuspenseQuery({
-    queryKey: ['theme-detail', themeId],
-    queryFn: async () => await getThemeDetail(themeId),
+  [reviewQuery, exQuery, themeQuery].some((query) => {
+    if (query.error && !query.isFetching) {
+      throw query.error;
+    }
   });
-
-  if (reviewQuery.error && !reviewQuery.isFetching) {
-    throw reviewQuery.error;
-  }
-
-  if (themeQuery.error && !themeQuery.isFetching) {
-    return <div>테마 데이터를 불러오는 중 에러가 발생했습니다.</div>;
-  }
 
   const themeItem: IThemeItem = {
     themeId: location.state?.themeId,
@@ -104,6 +122,7 @@ export const ReviewReadFetch = () => {
     },
   };
 
+  const [reviewType, setReviewType] = useState<number>(0);
   const reviews = reviewQuery.data.data.content;
   const averageRating =
     reviews.length > 0
@@ -181,230 +200,274 @@ export const ReviewReadFetch = () => {
   };
 
   return (
-    <div>
-      <TopBar css={topbarcolor}>
+    <>
+      <TopBar css={topbar}>
         <TopBar.Title
           type="default"
           title="리뷰 조회"
           backHandler={() => navigate(-1)}
         />
       </TopBar>
-      <div css={themeItemCss}>
-        <ThemeItem theme={themeItem} />
+      <ThemeItem theme={themeItem} css={themeitem} />
+      <div style={{ padding: '0 1rem' }}>
+        <MenuTab
+          children={['내부 리뷰', '외부 리뷰']}
+          border={0.5}
+          onChangeMenu={setReviewType}
+          fontSize={0.75}
+          style={{ padding: '0.375rem 0' }}
+        />
       </div>
 
-      {/* 평균 별점 및 별점 분포 표시 */}
-      <div
-        style={{
-          textAlign: 'left',
-          margin: '1rem',
-          display: 'flex',
-          alignItems: 'flex-start',
-        }}
-      >
-        <div style={{ marginRight: '2rem' }}>
-          <Typography color="light" size={1} weight={700}>
-            평균 별점
-          </Typography>
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'flex-start',
-              marginTop: '0.5rem',
-            }}
-          >
-            <Rating
-              activeColor="secondary"
-              count={1}
-              value={parseFloat(averageRating)}
-              size={1.5}
-              transparentBackground={true}
-            />
-            <Typography
-              color="secondary"
-              size={1}
-              weight={700}
-              style={{ marginLeft: '0.5rem' }}
-            >
-              {averageRating}
-            </Typography>
-          </div>
-        </div>
-        <div
-          style={{
-            width: '70%',
-            height: 'auto',
-            marginLeft: '0rem',
-            marginTop: '1rem',
-          }}
-        >
-          <Bar
-            data={chartData}
-            options={{
-              responsive: true,
-              maintainAspectRatio: true,
-              plugins: {
-                legend: {
-                  display: false,
-                },
-              },
-              scales: {
-                x: {
-                  grid: {
-                    drawOnChartArea: false,
-                    drawTicks: true,
-                    tickLength: 5,
-                    color: 'rgba(255, 255, 255, 1)',
-                  },
-                  border: {
-                    color: 'rgba(255, 255, 255, 1)',
-                  },
-                  ticks: {
-                    autoSkip: false,
-                    maxRotation: 0,
-                    minRotation: 0,
-                    padding: 10,
-                    color: 'rgba(255, 255, 255, 1)',
-                    callback: function (value, index) {
-                      if (
-                        ['0.5', '3.0', '5.0'].includes(chartData.labels[index])
-                      ) {
-                        return chartData.labels[index];
-                      } else {
-                        return '';
-                      }
-                    },
-                  },
-                },
-                y: {
-                  grid: { drawOnChartArea: false },
-                  border: { display: false },
-                  ticks: { display: false },
-                },
-              },
-            }}
-          />
-        </div>
-      </div>
-
-      {/* 테마 리뷰 리스트 표시 */}
-      <div style={{ marginTop: '2rem' }}>
-        <div css={cardcontainer}>
-          {reviews.slice(0, visibleReviewCount).map((review) => (
-            <div
-              key={review.reviewId}
-              css={themeCard}
-              style={{ padding: '0.5rem' }}
-            >
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}
-              >
+      {reviewType === 0 ? (
+        <>
+          {reviewQuery.data.data.content.length ? (
+            <>
+              {/* 평균 별점 및 별점 분포 표시 */}
+              <div css={reviewchart}>
+                <div>
+                  <Typography color="light" weight={500}>
+                    평균 별점
+                  </Typography>
+                  <div css={row(0.5)} style={{ marginTop: '0.25rem' }}>
+                    <Icon color="secondary">
+                      <StarIcon />
+                    </Icon>
+                    <Typography color="secondary" weight={500}>
+                      {averageRating}
+                    </Typography>
+                  </div>
+                </div>
                 <div
                   style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    marginBottom: '1rem',
+                    width: '70%',
+                    height: 'auto',
                   }}
                 >
-                  <Rating
-                    activeColor="secondary"
-                    count={5}
-                    value={review.score}
-                    size={1}
-                    transparentBackground={false}
+                  <Bar
+                    data={chartData}
+                    options={{
+                      responsive: true,
+                      maintainAspectRatio: true,
+                      plugins: {
+                        legend: {
+                          display: false,
+                        },
+                      },
+                      scales: {
+                        x: {
+                          grid: {
+                            drawOnChartArea: false,
+                            drawTicks: true,
+                            tickLength: 5,
+                            color: 'rgba(255, 255, 255, 1)',
+                          },
+                          border: {
+                            color: 'rgba(255, 255, 255, 1)',
+                          },
+                          ticks: {
+                            autoSkip: false,
+                            maxRotation: 0,
+                            minRotation: 0,
+                            padding: 10,
+                            color: 'rgba(255, 255, 255, 1)',
+                            callback: function (value, index) {
+                              if (
+                                ['0.5', '3.0', '5.0'].includes(
+                                  chartData.labels[index],
+                                )
+                              ) {
+                                return chartData.labels[index];
+                              } else {
+                                return '';
+                              }
+                            },
+                          },
+                        },
+                        y: {
+                          grid: { drawOnChartArea: false },
+                          border: { display: false },
+                          ticks: { display: false },
+                        },
+                      },
+                    }}
                   />
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
+              </div>
+
+              {/* 테마 리뷰 리스트 표시 */}
+              <div css={cardcontainer}>
+                {reviews.slice(0, visibleReviewCount).map((review) => (
+                  <div
+                    key={review.reviewId}
+                    css={themeCard}
+                    style={{ padding: '0.5rem' }}
+                  >
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          marginBottom: '1rem',
+                        }}
+                      >
+                        <Rating
+                          activeColor="secondary"
+                          count={5}
+                          value={review.score}
+                          size={1}
+                          transparentBackground={false}
+                        />
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <Typography
+                          color="light"
+                          size={0.875}
+                          weight={700}
+                          style={{ marginRight: '0.5rem' }}
+                        >
+                          {review.member.memberName}
+                        </Typography>
+                        <img
+                          src={`/profiles/profile${review.member.memberProfile}.png`}
+                          alt="프로필"
+                          style={{
+                            width: '40px',
+                            height: '40px',
+                            borderRadius: '50%',
+                          }}
+                        />
+                      </div>
+                    </div>
+                    <Typography color="light" size={0.875} weight={400}>
+                      {review.content}
+                    </Typography>
+                    <div
+                      style={{
+                        marginTop: '1rem',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <HandThumbUpIcon
+                          onClick={() => handleThumbsUp(review.reviewId)}
+                          style={{
+                            width: '20px',
+                            height: '20px',
+                            marginRight: '0.5rem',
+                            color: review.thumbsUp ? '#80deea' : '#ffffff',
+                            cursor: processingThumbsUp[review.reviewId]
+                              ? 'not-allowed'
+                              : 'pointer',
+                          }}
+                        />
+                        <Typography color="light" size={0.875} weight={400}>
+                          {thumbsUpReviews[review.reviewId]
+                            ? review.thumbsUp + 1
+                            : review.thumbsUp}
+                        </Typography>
+                      </div>
+                      <Typography color="light" size={0.75} weight={400}>
+                        {review.createdAt}
+                      </Typography>
+                    </div>
+                  </div>
+                ))}
+
+                {/* 더 많은 리뷰 보기 버튼 */}
+                {reviews.length > visibleReviewCount && (
+                  <Button
+                    css={allViewButton}
+                    variant="contained"
+                    fullwidth={true}
+                    rounded={0.4}
+                    handler={loadMoreReviews}
+                  >
+                    더 많은 리뷰 보기
+                  </Button>
+                )}
+              </div>
+            </>
+          ) : (
+            <Typography
+              color="light"
+              weight={600}
+              size={0.875}
+              style={{ textAlign: 'center', marginTop: '2rem' }}
+            >
+              등록된 리뷰가 없습니다
+            </Typography>
+          )}
+        </>
+      ) : (
+        <>
+          {exQuery.data.data.content.length ? (
+            <div css={excontainer}>
+              {exQuery.data.data.content.map((review: IExternalReview) => (
+                <div css={excard}>
+                  <div css={exrow}>
+                    <Typography color="grey" weight={400} size={0.75}>
+                      작성 날짜{' '}
+                      {dayjs(review.createdAt).format('YYYY년 MM월 DD일')}
+                    </Typography>
+                    <Typography
+                      color="secondary"
+                      weight={400}
+                      size={0.75}
+                      style={{ textDecoration: 'underline' }}
+                      onClick={() => (window.location.href = review.link)}
+                    >
+                      {review.source === 1 ? '네이버에서 보기' : '에서 보기'}
+                    </Typography>
+                  </div>
                   <Typography
                     color="light"
+                    weight={500}
                     size={0.875}
-                    weight={700}
-                    style={{ marginRight: '0.5rem' }}
+                    style={{ marginTop: '1rem' }}
                   >
-                    {review.member.memberName}
+                    {review.title}
                   </Typography>
-                  <img
-                    src={`/profiles/profile${review.member.memberProfile}.png`}
-                    alt="프로필"
-                    style={{
-                      width: '40px',
-                      height: '40px',
-                      borderRadius: '50%',
-                    }}
-                  />
-                </div>
-              </div>
-              <Typography color="light" size={0.875} weight={400}>
-                {review.content}
-              </Typography>
-              <div
-                style={{
-                  marginTop: '1rem',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <HandThumbUpIcon
-                    onClick={() => handleThumbsUp(review.reviewId)}
-                    style={{
-                      width: '20px',
-                      height: '20px',
-                      marginRight: '0.5rem',
-                      color: review.thumbsUp ? '#80deea' : '#ffffff',
-                      cursor: processingThumbsUp[review.reviewId] ? 'not-allowed' : 'pointer',
-                    }}
-                  />
-                  <Typography color="light" size={0.875} weight={400}>
-                    {thumbsUpReviews[review.reviewId]
-                      ? review.thumbsUp + 1
-                      : review.thumbsUp}
+                  <Typography
+                    color="light"
+                    weight={400}
+                    size={0.8125}
+                    style={{ marginTop: '1rem' }}
+                  >
+                    {review.content}
                   </Typography>
                 </div>
-                <Typography color="light" size={0.75} weight={400}>
-                  {review.createdAt}
-                </Typography>
-              </div>
+              ))}
             </div>
-          ))}
-
-          {/* 더 많은 리뷰 보기 버튼 */}
-          {reviews.length > visibleReviewCount && (
-            <Button
-              css={allViewButton}
-              variant="contained"
-              fullwidth={true}
-              rounded={0.4}
-              handler={loadMoreReviews}
+          ) : (
+            <Typography
+              color="light"
+              weight={600}
+              size={0.875}
+              style={{ textAlign: 'center', marginTop: '2rem' }}
             >
-              더 많은 리뷰 보기
-            </Button>
+              등록된 리뷰가 없습니다
+            </Typography>
           )}
-
-          <Button
-            css={reviewWrite}
-            variant="contained"
-            fullwidth={true}
-            rounded={0.4}
-            color="secondary"
-            handler={reviewWriteMove}
-          >
-            <PencilIcon />
-          </Button>
-        </div>
-      </div>
-
-      <BottomBar
-        css={bottombarcss}
-        icons={[<BellIcon />, <BellIcon />, <BellIcon />]}
-        menus={['메뉴1', '메뉴2', '메뉴3']}
-        onHandleChange={() => console.log('바텀바 선택됨')}
-      />
-    </div>
+        </>
+      )}
+      <Button
+        css={reviewWrite}
+        variant="contained"
+        fullwidth={true}
+        rounded={0.4}
+        color="secondary"
+        handler={reviewWriteMove}
+      >
+        <PencilIcon />
+      </Button>
+    </>
   );
 };

@@ -42,13 +42,13 @@ export const MyPage = () => {
   const handleLogout = async () => {
     await UserLogout();
     setShowLogoutNotification(false);
-    nav('/login');
+    nav('/auth/login');
   };
 
   const handledelete = async () => {
     await delUser();
     setShowDelNotification(false);
-    nav('/login');
+    nav('/auth/signup');
   };
 
   const ProfileQuery = useQuery({

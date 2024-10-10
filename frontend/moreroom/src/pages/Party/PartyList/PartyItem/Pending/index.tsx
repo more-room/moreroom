@@ -19,14 +19,14 @@ import { MapPinIcon } from '@heroicons/react/24/solid';
 
 interface PartyItemProps {
   party: IParty;
-  // handler: () => void;
+  handler: () => void;
 }
 
 type Hashtag = {
   hashtagId: number;
   hashtagName: string;
 };
-export const Pending = ({ party }: PartyItemProps) => {
+export const Pending = ({ party, handler }: PartyItemProps) => {
   return (
     <div css={containerCss}>
       <div css={topContentCss}>
@@ -76,7 +76,7 @@ export const Pending = ({ party }: PartyItemProps) => {
           fullwidth
           rounded={0.5}
           variant="contained"
-          handler={() => {}}
+          handler={handler}
         >
           수락 대기 중
         </Button>

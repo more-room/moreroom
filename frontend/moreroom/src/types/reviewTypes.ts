@@ -27,7 +27,7 @@ export interface IReviewListItem {
   createdAt: string;
   upFlag: boolean;
   updatedAt: string;
-  
+
   // isLikedByCurrentUser?: boolean;
 }
 
@@ -45,4 +45,22 @@ export interface IReviewCreate {
   themeId: number;
   content: string;
   score: number;
+}
+
+/* 외부 리뷰 조회 */
+export interface IExternalReview {
+  externalReviewId: number;
+  content: string;
+  title: string;
+  link: string;
+  createdAt: string;
+  source: number;
+}
+
+export interface IExReviewList {
+  content: IExternalReview[];
+  pageNumber: number;
+  pageSize: number;
+  totalPage: number;
+  totalElements: number;
 }
