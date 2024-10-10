@@ -82,5 +82,6 @@ public class FcmMessageDto {
     CHATROOM_SUBSCRIBE,
     PARTY_BROKEN,
     CHAT_MESSAGE,
+    PARTY_MADE,
   }
 }

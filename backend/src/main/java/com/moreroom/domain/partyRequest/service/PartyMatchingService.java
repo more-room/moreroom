@@ -5,8 +5,11 @@ import com.moreroom.domain.deviceToken.dto.FcmMessageDto;
 import com.moreroom.domain.deviceToken.service.FcmService;
 import com.moreroom.domain.member.entity.Member;
 import com.moreroom.domain.member.repository.MemberRepository;
+import com.moreroom.domain.party.dto.PartyRequestAcceptDto;
+import com.moreroom.domain.party.service.PartyService;
 import com.moreroom.domain.partyRequest.entity.MatchingStatus;
 import com.moreroom.domain.partyRequest.entity.PartyRequest;
+import com.moreroom.domain.partyRequest.exception.PartyAcceptFailedException;
 import com.moreroom.domain.partyRequest.exception.PartyRequestNotFoundException;
 import com.moreroom.domain.partyRequest.repository.PartyRequestRepository;
 import com.moreroom.domain.theme.entity.Theme;
@@ -49,18 +52,19 @@ public class PartyMatchingService {
   @Qualifier("fastApiOneUrl")
   private final String FASTAPI_ONEURL;
   private final PartyRequestUtil partyRequestUtil;
+  private final PartyService partyService;
 
   // 생성자에서 @Qualifier 지정
   @Autowired
   public PartyMatchingService(MemberRepository memberRepository,
-      PartyRequestRepository partyRequestRepository,
-      RedisUtil redisUtil,
-      ThemeRepository themeRepository,
-      RestTemplate restTemplate,
-      FcmService fcmService,
-      @Qualifier("fastApiUrl") String FASTAPI_URL,
-      @Qualifier("fastApiOneUrl") String FASTAPI_ONEURL,
-      PartyRequestUtil partyRequestUtil) {
+                              PartyRequestRepository partyRequestRepository,
+                              RedisUtil redisUtil,
+                              ThemeRepository themeRepository,
+                              RestTemplate restTemplate,
+                              FcmService fcmService,
+                              @Qualifier("fastApiUrl") String FASTAPI_URL,
+                              @Qualifier("fastApiOneUrl") String FASTAPI_ONEURL,
+                              PartyRequestUtil partyRequestUtil, PartyService partyService) {
     this.memberRepository = memberRepository;
     this.partyRequestRepository = partyRequestRepository;
     this.redisUtil = redisUtil;
@@ -70,6 +74,7 @@ public class PartyMatchingService {
     this.FASTAPI_URL = FASTAPI_URL;
     this.FASTAPI_ONEURL = FASTAPI_ONEURL;
     this.partyRequestUtil = partyRequestUtil;
+    this.partyService = partyService;
   }
 
   // FastAPI의 여러 파티 매칭 결과를 가져오는 메서드
@@ -299,6 +304,47 @@ public class PartyMatchingService {
   public void makePartyRequestNotMatched() {
     int result = partyRequestRepository.updateAllPartyRequestStatus(MatchingStatus.NOT_MATCHED);
     log.info("오후 7시 업데이트: 총 {}행 변경", result);
+  }
+
+  //멤버 수락/거절
+  @Transactional
+  public Accept acceptParty(PartyRequestAcceptDto dto, Member member) {
+    String uuid = dto.getUuid();
+    Integer themeId = dto.getThemeId();
+
+    try {
+      //Pending으로 업데이트
+      partyRequestRepository.acceptPartyRequest(MatchingStatus.PENDING, uuid, member.getMemberId());
+      //몇 명 업데이트했는지 세기
+      int acceptedMemberCnt = partyRequestRepository.findAcceptedMemberCnt(MatchingStatus.PENDING, uuid);
+      if (acceptedMemberCnt == 3) {
+        //푸시 알림
+        partyRequestUtil.partyMade(uuid);
+        //파티 결성
+        partyService.createPartyAndJoin(themeId, uuid, member);
+        return Accept.PARTY_MADE;
+      }
+      return Accept.ACCEPTED;
+    } catch (Exception e) {
+      log.error("멤버 수락 중 오류 발생", e);
+      throw new PartyAcceptFailedException();
+    }
+  }
+
+  @Transactional
+  public void refuseParty(PartyRequestAcceptDto dto) {
+    try {
+      String uuid = dto.getUuid();
+      partyRequestUtil.partyBroke(uuid);
+    } catch (Exception e) {
+      log.error("멤버 거절 중 오류 발생", e);
+      throw new PartyAcceptFailedException();
+    }
+  }
+
+  public static enum Accept {
+    ACCEPTED,
+    PARTY_MADE,
   }
 
 }
