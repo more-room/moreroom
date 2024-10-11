@@ -1,6 +1,7 @@
 # 몰¿룸?(MOREROOM)
 
 ![image (4)](https://github.com/user-attachments/assets/28c929d4-4150-4f1c-bc8b-3c8e69a7863d)
+![image](https://github.com/user-attachments/assets/70938639-59fd-4c48-a630-a21410d5dbe2)
 
 #### SSAFY 특화 PJT
 
