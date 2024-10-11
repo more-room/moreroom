@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: moreroom
+
+  profiles:
+    active: secret  # prod or other profile names (replace it with ${PROFILES_ACTIVE} when committing & pushing)
+
+  config:
+    import: optional:file:.env[.properties]
