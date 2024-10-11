@@ -27,7 +27,7 @@ https://youtu.be/7PE7mgw4Fow
 # ❤️  팀원 소개
 
 ![image](https://github.com/user-attachments/assets/7665fb2f-ea56-476c-bef0-ea01b5c2ea16)
-![image](https://github.com/user-attachments/assets/529c05c6-8f28-4654-897a-6158ee9f28df)
+![image](https://raw.githubusercontent.com/Elenaljh/studySSAFY/refs/heads/main/%EB%A9%A4%EB%B2%84%EC%86%8C%EA%B0%9C.PNG?token=GHSAT0AAAAAACYXHETOJFNRJYJSLSIVMAXYZYIQVAQ)
 
 ---
 
