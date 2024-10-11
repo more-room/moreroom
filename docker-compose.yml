@@ -1,0 +1,193 @@
+version: "3.3"
+
+services:
+    # jenkins:
+    #   image: jenkins/jenkins:latest
+    #   user: root
+    #   volumes:
+    #     - jenkins_home:/var/jenkins_home
+    #     - /var/run/docker.sock:/var/run/docker.sock # Docker socket mount
+    #   ports:
+    #     - "8080:8080"
+    #     - "50000:50000"
+
+    nginx:
+        image: ${DOCKER_IMAGE}:${DOCKER_TAG_FE}-latest
+        # build:
+        #   context: .
+        #   dockerfile: Dockerfile
+        container_name: ${DOCKER_TAG_FE}
+        ports:
+            - "80:80"
+            - "443:443"
+        environment:
+            - DOCKER_TAG_BE=${DOCKER_TAG_BE}
+            - BACKEND_PORT=${BACKEND_PORT}
+            - SERVER_NAME=${SERVER_NAME}
+            - CONTEXT_PATH=${CONTEXT_PATH}
+            - REACT_APP_API_BASE_URL=${REACT_APP_API_BASE_URL}
+            - REACT_APP_KAKAOMAP_KEY=${REACT_APP_KAKAOMAP_KEY}
+            - REACT_APP_CHAT_SOCKET=${REACT_APP_CHAT_SOCKET}
+            - REACT_APP_CHAT_DEST=${REACT_APP_CHAT_DEST}
+            - DOCKER_TAG_FASTAPI=${DOCKER_TAG_FASTAPI}
+            - TZ=Asia/Seoul
+        volumes:
+            - /home/ubuntu/data/certbot/conf:/etc/letsencrypt
+            - /home/ubuntu/data/certbot/www:/var/www/certbot
+        networks:
+            - backend-network
+        depends_on:
+            - ${DOCKER_TAG_BE}
+            - ${DOCKER_TAG_FASTAPI}
+
+    certbot:
+        image: certbot/certbot
+        container_name: certbot
+        volumes:
+            - /home/ubuntu/data/certbot/conf:/etc/letsencrypt
+            - /home/ubuntu/data/certbot/www:/var/www/certbot
+        depends_on:
+            - nginx
+        entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew --webroot -w /var/www/certbot sleep 60d & wait $${!}; done;'"
+
+    springboot:
+        image: ${DOCKER_IMAGE}:${DOCKER_TAG_BE}-latest
+        # build:
+        #   context: ./backend
+        #   dockerfile: Dockerfile
+        container_name: ${DOCKER_TAG_BE}
+        environment:
+            - PROFILES_ACTIVE=${PROFILES_ACTIVE}
+            - BACKEND_PORT=${BACKEND_PORT}
+            - MYSQL_URL=${MYSQL_URL}
+            - MYSQL_ROOT_USERNAME=${MYSQL_ROOT_USERNAME}
+            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+            - REDIS_HOST=${REDIS_HOST}
+            - REDIS_PORT=${REDIS_PORT}
+            - REDIS_PASSWORD=${REDIS_PASSWORD}
+            - MONGODB_URL=${MONGODB_URL}
+            - MAIL_USERNAME=${MAIL_USERNAME}
+            - MAIL_PASSWORD=${MAIL_PASSWORD}
+            - CONTEXT_PATH=${CONTEXT_PATH}
+            - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+            - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+            - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+            - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+            - FAST_API_URL=${FAST_API_URL}
+            - SERVER_DOMAIN=${SERVER_DOMAIN}
+            - FAST_API_ONE_URL=${FAST_API_ONE_URL}
+            - TZ=Asia/Seoul
+        expose:
+            - ${BACKEND_PORT}
+        networks:
+            - backend-network
+        depends_on:
+            - mysql
+            - redis
+            - mongodb
+            - rabbitmq
+
+    fastapi:
+        image: ${DOCKER_IMAGE}:${DOCKER_TAG_FASTAPI}-latest
+        # build: 
+        #     context: ./bigdata/fastapi
+        #     dockerfile: Dockerfile
+        container_name: ${DOCKER_TAG_FASTAPI}
+        environment:
+            - TZ=Asia/Seoul
+            - MYSQL_HOST=${MYSQL_HOST}
+            - MYSQL_USER=${MYSQL_USER}
+            - MYSQL_PW=${MYSQL_PW}
+            - MYSQL_DB=${MYSQL_DB}
+            - MYSQL_PORT=${MYSQL_PORT}
+            - MONGO_HOST=${MONGO_HOST}
+            - MONGO_PORT=${MONGO_PORT}
+            - MONGO_USER=${MONGO_USER}
+            - MONGO_PW=${MONGO_PW}
+            - HOST=${HOST}
+            - USER=${USER}
+            - PASSWORD=${PASSWORD}
+            - DATABASE=${DATABASE}
+            - PORT=${PORT}
+        expose:
+            - "5000:5000"
+        networks:
+            - backend-network
+        depends_on:
+            - mysql
+            - mongodb
+
+    rabbitmq:
+        container_name: rabbitmq
+        image: rabbitmq:3-management-alpine
+        user: "1001:1001"
+        init: true
+        volumes:
+            - /home/ubuntu/rabbitmq/data:/var/lib/rabbitmq # rabbitmq 데이터 접근
+            - /home/ubuntu/rabbitmq/etc:/etc/rabbitmq # rabbitmq configuration 파일 설정
+            - /home/ubuntu/rabbitmq/logs:/var/log/rabbitmq # rabbitmq 로그 접근
+        ports:
+            - "5672:5672" # AMQP 프로토콜
+            - "15672:15672" # 관리 UI
+            - "61613:61613" # STOMP 프로토콜
+            - "15674:15674" # Web STOMP (웹소켓)
+        environment:
+            - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+            - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+        networks:
+            - backend-network
+
+    mysql:
+        image: mysql:8.0.32
+        container_name: mysql-con
+        environment:
+            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+            - TZ=Asia/Seoul
+        volumes:
+            - mysql-vol:/var/lib/mysql
+        ports:
+            - "${MYSQL_BINDING_PORT}:3306"
+        networks:
+            - backend-network
+        command: --lower_case_table_names=1
+
+    redis:
+        image: redis:latest
+        container_name: my-redis
+        environment:
+            - TZ=Asia/Seoul
+        volumes:
+            - redis_data:/data
+            - ${REDIS_DEFAULT_CONFIG_FILE}:/usr/local/etc/redis/redis.conf
+        ports:
+            - "${REDIS_BINDING_PORT}:6379"
+        command: redis-server /usr/local/etc/redis/redis.conf
+        networks:
+            - backend-network
+
+    mongodb:
+        image: mongo:latest
+        container_name: mongodb-con
+        volumes:
+            - mongo-vol:/data/db
+        environment:
+            - TZ=Asia/Seoul
+            - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+            - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+        ports:
+            - "${MONGO_BINDING_PORT}:27017"
+        networks:
+            - backend-network
+volumes:
+    mysql-vol:
+        external: true
+    redis_data:
+        external: true
+    mongo-vol:
+        external: true
+    # jenkins_home:
+
+networks:
+    backend-network:
+        name: backend-network
+        driver: bridge
